@@ -1,0 +1,76 @@
+--- blicki/blicki.php	2008-02-19 20:29:08.000000000 -0500
++++ ../blicki/blicki.php	2008-04-04 13:37:22.000000000 -0400
+@@ -8,6 +8,8 @@
+ Author URI: http://automattic.com/
+ */ 
+ 
++global $wpdb;
++
+ $wpdb->post_revision_ids = $wpdb->prefix . 'post_revision_ids';	
+ $wpdb->post_revisions = $wpdb->prefix . 'post_revisions';
+ 
+@@ -41,6 +43,8 @@
+ 		post_title text NOT NULL,
+ 		post_category int(4) NOT NULL default '0',
+ 		post_excerpt text NOT NULL,
++		post_lat float default NULL,
++  		post_lon float default NULL,
+ 		post_status enum('publish','draft','private','static','object','attachment','inherit','future') NOT NULL default 'publish',
+ 		comment_status enum('open','closed','registered_only') NOT NULL default 'open',
+ 		ping_status enum('open','closed') NOT NULL default 'open',
+@@ -280,6 +284,7 @@
+ 
+ 	unset($post['ID']);
+ 	unset($post['fullpath']);
++	unset($post['ancestors']);	
+ 	$post['post_revision_author'] = $current_user->ID;
+ 	$post['post_revision_author_IP'] = $_SERVER['REMOTE_ADDR'];
+ 	$keys = implode(', ', array_keys($post));
+@@ -435,13 +440,18 @@
+ 
+ 	if ( ! blicki_get_revisions($post_id) )
+ 		return;
++	if (!function_exists('add_meta_box')) {
++		echo '<fieldset id="postrevisions" class="dbx-box">';
++		echo '<h3 class="dbx-handle">' .  __('Revisions') . '</h3>';
++		echo '<div class="dbx-content">';
++	}
+ 
+-	echo '<fieldset id="postrevisions" class="dbx-box">';
+-	echo '<h3 class="dbx-handle">' .  __('Revisions') . '</h3>';
+-	echo '<div class="dbx-content">';
+ 	blicki_list_revisions($post_id);
+-	echo '</div>';
+-	echo '</fieldset>';	
++
++	if (!function_exists('add_meta_box')) {
++		echo '</div>';
++		echo '</fieldset>';	
++	}
+ }
+ 
+ function blicki_publish_page($post_ID) {
+@@ -512,11 +522,21 @@
+ 	return $posts;
+ }
+ 
++function blicki_init() {
++	if (function_exists('add_meta_box')) {
++		add_meta_box('pagerevisions', __('Revisions'), 'blicki_post_form_list', 'page'); 
++	}
++	else {
++		add_action('dbx_post_advanced', 'blicki_post_form_list');
++		add_action('dbx_page_advanced', 'blicki_post_form_list');
++	}
++}
++
++
+ blicki_register_plugin_page_hook();
+ register_activation_hook(__FILE__, 'blicki_activate');
+ add_action('save_post', 'blicki_insert_revision', 5);
+-add_action('dbx_post_advanced', 'blicki_post_form_list');
+-add_action('dbx_page_advanced', 'blicki_post_form_list');
++add_filter('admin_init', 'blicki_init');
+ add_filter('the_posts', 'blicki_the_posts');
+ add_filter('user_has_cap', 'blicki_current_user_can', 10, 3);
+ add_action('admin_menu', 'blicki_add_options_page');

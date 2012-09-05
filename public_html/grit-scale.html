@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Grit Scale</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <style>
+    body { font-family:sans-serif; padding: 2% 5%; line-height: 1.5em; background-color: #f9f9f9; color: #333; }
+    a { color: #333; }
+    form p { margin: 0; }
+    h4 { margin: 2em 0 0.5em 0; }
+    fieldset { border: 0; padding: 0; margin-bottom: 2em; }
+    button { margin-bottom: 2em; }
+    #score { margin-bottom: 5em; }
+    #credit, #credit a { color: #999; }
+    </style>
+    <script type="text/javascript">
+    
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-315453-4']);
+      _gaq.push(['_trackPageview']);
+    
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    
+    </script>
+</head>
+
+<body>
+
+<h1>Grit Scale</h1>
+
+<p>
+    This is a web version of the <a href="http://www.sas.upenn.edu/~duckwort/images/12-item%20Grit%20Scale.05312011.pdf">grit scale (PDF)</a>.
+    What is "grit"? <a href="http://tedxtalks.ted.com/video/TEDxBlue-Angela-Lee-Duckworth-P">Watch Dr. Angela Lee Duckworth's TEDx talk.</a><br />
+</p>
+
+<form>
+    <fieldset></fieldset>
+    <button type="button">Submit</button>
+</form>
+
+<div id="score" style="display:none;">
+    <strong>Your Score: <span class="num"></span></strong><br />
+    Max score is 5 (extremely gritty), lowest is 1 (not at all gritty).<br />
+    Share your score on <a href="" class="twitter" target="_blank">Twitter</a>
+    or <a href="" class="facebook" target="_blank">Facebook</a>
+</div>
+
+<script>
+var questions = [
+    'I have overcome setbacks to conquer an important challenge.',
+    'New ideas and projects sometimes distract me from previous ones.*',
+    'My interests change from year to year.*',
+    'Setbacks don\'t discourage me.',
+    'I have been obsessed with a certain idea or project for a short time but later lost interest.*',
+    'I am a hard worker.',
+    'I often set a goal but later choose to pursue a different one.*',
+    'I have difficulty maintaining my focus on projects that take more than a few months to complete.*',
+    'I finish whatever I begin.',
+    'I have achieved a goal that took years of work.',
+    'I become interested in new pursuits every few months.*',
+    'I am diligent.'
+];
+
+var reverse = [1,4,6,9,10,12];
+
+var $form = $('form'),
+    $score = $('#score');
+
+var options = [
+    'Very much like me',
+    'Mostly like me',
+    'Somewhat like me',
+    'Not much like me',
+    'Not like me at all'
+];
+
+$.each(questions, function(i, question) {
+    var out = '<h4>' + (i+1) + '. ' + question + '</h4><p>';
+    $.each(options, function(j, option) {
+        out += '<label><input type="radio" name="question-' + (i+1) + '" value="' + (j+1) + '"/> ' + option + '</label><br />';
+    });
+    
+    out += '</p>';
+
+    $('fieldset', $form).append(out);
+});
+
+/* Randomly choose answers to the questions
+$.each(questions, function(i, question) {
+    var rand = Math.floor(Math.random() * 5);
+    $('input[name="question-' + (i+1) + '"]', $form).eq(rand).attr('checked', 'checked');
+});
+*/
+
+function roundNumber(number, digits) {
+    var multiple = Math.pow(10, digits);
+    var rndedNum = Math.round(number * multiple) / multiple;
+    return rndedNum;
+}
+
+$('button', $form).click(function() {
+    var unanswered = [];
+    $.each(questions, function(i, question) {
+        if (!$('input[name="question-' + (i+1) + '"]:checked', $form).get(0)) {
+            unanswered.push(i+1);
+        }
+    });
+    
+    if (unanswered.length > 0) {
+        var msg = "You haven't answered ";
+        if (unanswered.length > 1) {
+            msg += 'questions ' + unanswered.join(', ') + '.';
+        }
+        else {
+            msg += 'question ' + unanswered.pop() + '.';
+        }
+        alert(msg);
+        return;
+    }
+
+    var score = 0;
+    $.each(questions, function(i, question) {
+        var answer = parseInt($('input[name="question-' + (i+1) + '"]:checked', $form).val());
+
+        if ($.inArray((i+1), reverse) > -1) {
+            console.log('Question ' + (i+1) + ' Answer ' + answer + ' Reverse');
+            score += 5 - (answer - 1);
+        }
+        else {
+            console.log('Question' + (i+1) + ' Answer ' + answer);
+            score += answer;
+        }
+    });
+    
+    score = roundNumber(score/12,2);
+    
+    $('.num', $score).html(score);
+
+    var grit_url = 'http://bradt.ca/grit-scale.html',
+        msg = 'Looks like I rank ' + score + ' out of 5 on the grit scale.',
+        url = 'https://twitter.com/home?status=' + escape(msg + ' ' + grit_url);
+    $('.twitter', $score).attr('href', url);
+    url = 'http://www.facebook.com/sharer.php?u=' + escape(grit_url) + '&t=' + escape(msg);
+    $('.facebook', $score).attr('href', url);
+    
+    $score.hide().fadeIn();
+    
+    return false;
+});
+
+</script>
+
+<p id="credit">
+    Coded by <a href="http://bradt.ca/">Brad Touesnard</a>. Licensed under <a href="http://creativecommons.org/licenses/by-nc/2.5/ca/">Creative Commons Attribution-Noncommercial 2.5 Canada License</a>.
+</p>
+
+</body>
+</html>

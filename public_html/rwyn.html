@@ -1,0 +1,344 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+<title>Rwyn</title>
+<meta name="Generator" content="EditPlus">
+<meta name="Author" content="">
+<meta name="Keywords" content="">
+<meta name="Description" content="">
+
+<script type="text/javascript">
+<!--
+/*
+ * Rwyn Menu
+ * Author: Brad Touesnard
+ * http://brad.touesnard.com/
+*/
+
+// Start Configuration
+var pixels_per_frame = 4;       // number of pixels to grow every frame
+var frame_rate_ms = 50;         // number of millisecondes to pause between frames
+var accelerator_on = true;      // toggle acceleration
+var single_open_mode = true;    // toggle if only a single blind can be open at a time
+var menuid = 'rwynmenu';
+// End of Configuration
+
+var height = 0;
+var max_height = 0;
+var the_node = null;
+var accelerator = 1;
+
+function get_max_height(node) {
+	node.style.height = 'auto';
+	node.style.position = 'absolute';
+	node.style.left = '-1000px';
+	node.style.display = 'block';
+	var height = node.offsetHeight;
+	node.style.height = '0px';
+	node.style.position = 'static';
+	node.style.left = '0px';
+
+	return height;
+}
+
+function animate_expand() {
+	height = height + pixels_per_frame * accelerator;
+
+	if (height < max_height) {
+		the_node.style.height = height + 'px';
+		if (accelerator_on) {
+			if (height < max_height / 2) {
+				accelerator++;
+			}
+			else {
+				accelerator--;
+				if (accelerator <= 0) {
+					accelerator = 1;
+				}
+			}
+		}
+		var timeout = setTimeout("animate_expand();", frame_rate_ms);
+	}
+	else {
+		the_node.style.height = 'auto';
+	}
+}
+
+function animate_collapse() {
+	height = height - pixels_per_frame * accelerator;
+
+	if (height > 0) {
+		the_node.style.height = height + 'px';
+		if (accelerator_on) {
+			if (height > max_height / 2) {
+				accelerator++;
+			}
+			else {
+				accelerator--;
+				if (accelerator <= 0) {
+					accelerator = 1;
+				}
+			}
+		}
+		var timeout = setTimeout("animate_collapse();", frame_rate_ms);
+	}
+	else {
+		the_node.style.display = 'none';
+	}
+}
+
+function expand(node) {
+	height = 0;
+	max_height = get_max_height(node.nextSibling);
+	accelerator = 1;
+	the_node = node.nextSibling;
+	animate_expand();
+}
+
+function collapse(node) {
+	height = node.nextSibling.offsetHeight;
+	max_height = node.nextSibling.offsetHeight;
+	accelerator = 1;
+	the_node = node.nextSibling;
+	animate_collapse();
+}
+
+function close_open_groups() {
+	if (document.getElementById) { //  Netscape, Mozilla, etc.
+		var obj = document.getElementById(menuid);
+	}
+	else if (document.all) {      //  IE, Konqueror, etc.
+		var obj = document.all[menuid];
+	}
+
+	recur_close_groups(obj);
+}
+
+function recur_close_groups(node) {
+	if (node.nodeName == "DIV") {
+		//alert(node.nodeName);
+		if (node.style.display != 'none' && node.className == 'items') {
+			node.style.display = 'none';
+		}
+	}
+
+	if (node.hasChildNodes()) {
+		node = node.firstChild;
+		recur_close_groups(node);
+		while (node = node.nextSibling) {
+			recur_close_groups(node);
+		}
+	}
+}
+
+function act(node) {
+	if (node.nextSibling.style.display == 'none') {
+		if (single_open_mode) {
+			close_open_groups();
+		}
+
+		expand(node);
+	}
+	else {
+		collapse(node);
+	}
+}
+//-->
+</script>
+
+<style type="text/css">
+div.rwynmenu {
+	font-size: 0.7em;
+	font-family: verdana;
+	width: 160px;
+	border: 1px solid black;
+}
+
+.rwynmenu a {
+	color: #333333;
+	text-decoration: none;
+}
+
+.rwynmenu a:hover {
+	color: #000000;
+	text-decoration: underline;
+}
+
+.rwynmenu a.group {
+	color: #000000;
+	font-weight: bold;
+	border-bottom: 1px solid black;
+	border-top: 1px solid white;
+	border-left: 10px solid black;
+	display: block;
+	width: 140px !important;  /* IE hack */
+	width: 100%;
+	padding: 10px 5px 10px 5px;
+	clear: right;
+	text-decoration: none;
+	background-color: #cccccc;
+}
+
+.rwynmenu a.group:hover {
+	border-left: 10px solid #666;
+	border-bottom-color: #666;
+	color: #000000;
+	background-color: #eeeeee;
+	text-decoration: none;
+}
+
+.rwynmenu div {
+	margin-top: 0px;
+	margin-bottom: 0px;
+	overflow: hidden;
+	padding: 4px;
+	overflow-x: auto;
+}
+
+.rwynmenu ul {
+	list-style: none;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-left: 0px;
+}
+
+.rwynmenu .items ul {
+	list-style: square;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	padding-left: 15px;
+}
+
+.rwynmenu .items ul li {
+	margin-bottom: 4px;
+}
+
+.rwynmenu .item {
+	display: block;
+	clear: right;
+}
+
+.rwynmenu .bottomblock {
+	border-top: 1px solid white;
+	display: block;
+	width: 160px !important;  /* IE hack */
+	width: 100%;
+	clear: right;
+	background-color: #cccccc;
+	height: 10px;
+}
+
+/* Page formatting styles */
+
+#rwynmenu {
+	float: left;
+}
+
+#rwyn-content {
+	width: 750px;
+}
+
+#rwyn-details {
+	float: right;
+	font-family: Helvetica;
+	padding: 10px;
+	width: 550px;
+	background-color: #eee;
+	border: 1px solid #ccc;
+}
+
+#rwyn-details h1 {
+	margin: 0px;
+}
+
+#rwyn-details h2 {
+	margin: 0px;
+	font-style: italic;
+	font-weight: normal;
+	font-size: 1.2em;
+}
+
+.rwyn-license {
+	font-size: 0.8em;
+}
+</style>
+
+</head>
+
+<body>
+
+<div id="rwyn-content">
+	<div id="rwyn-details">
+		<h1><a href="http://brad.touesnard.com/rwyn.html">Rwyn</a></h1>
+		<h2><b>R</b>eveal <b>w</b>hat <b>y</b>ou <b>n</b>eed</h2>
+
+		<p>
+			<abbr title="Reveal what you need">Rwyn</abbr> was designed with usability in mind and created as an alternative to drop-down menus. It is composed of XHTML 1.0, CSS 2.0 and uses simple cross-browser compliant Javascript to manipulate the DOM.
+		</p>
+
+		<p>
+			Compatibility:<br />
+			<ul>
+				<li>MS IE 5+</li>
+				<li>Firefox 1.0.7+</li>
+			</ul>
+			<a href="http://brad.touesnard.com/archives/2006/02/27/103/">Click here to post your compatibilty testing results.</a>
+		</p>
+
+		<p>
+			To get Rwyn, simply view source or <a href="http://brad.touesnard.com/rwyn.html">download this page</a>. The Javascript and CSS is embedded in the page for easy viewing and downloading.
+		</p>
+
+		<br />
+
+		<p class="rwyn-license">
+			This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (GPL) as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+		</p>
+
+		<p class="rwyn-license">
+			This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the <a href="http://www.gnu.org/copyleft/gpl.html">GNU General Public License</a> for more details.
+		</p>
+
+		<p class="rwyn-license">
+		 Copyright &copy; 2005 <a href="http://brad.touesnard.com/">brad.touesnard.com</a>. All Rights Reserved.
+		</p>
+	</div>
+
+	<div class="rwynmenu" id="rwynmenu">
+		<ul>
+			<li>
+				<a href="javascript: ;" class="group" onclick="act(this);">Account Information</a><div class="items" style="display: none;">
+					<ul><li><a href="javascript: ;" class="item">Account Summary</a></li><li><a href="javascript: ;" class="item">Personal Information</a></li><li><a href="javascript: ;" class="item">Change Password</a></li><li><a href="javascript: ;" class="item">Account Usage</a></li></ul></div>
+			</li>
+			<li>
+				<a href="javascript: ;" class="group" onclick="act(this);">Account Configuration</a><div class="items" style="display: none;">
+					<ul><li><a href="javascript: ;" class="item">Backup Management</a></li><li><a href="javascript: ;" class="item">FTP Accounts</a></li><li><a href="javascript: ;" class="item">Subdomains</a></li><li><a href="javascript: ;" class="item">Domain Management</a></li><li><a href="javascript: ;" class="item">SSL Information</a></li><li><a href="javascript: ;" class="item">Raw Log Manager</a></li><li><a href="javascript: ;" class="item">Domain Management</a></li></ul></div>			
+			</li>
+			<li>
+				<a href="javascript: ;" class="group" onclick="act(this);">E-mail Options</a><div class="items" style="display: none;">
+					<ul><li><a href="javascript: ;" class="item">E-mail Summary</a></li><li><a href="javascript: ;" class="item">Alias E-mail Accounts</a></li><li><a href="javascript: ;" class="item">POP3 E-mail Accounts</a></li><li><a href="javascript: ;" class="item">E-mail Autoresponders</a></li><li><a href="javascript: ;" class="item">Catchall Forwarding</a></li><li><a href="javascript: ;" class="item">Webmail</a></li></ul></div>
+			</li>
+			<li>
+				<a href="javascript: ;" class="group" onclick="act(this);">Development Tools</a><div class="items" style="display: none;">
+					<ul><li><a href="javascript: ;" class="item">Frontpage</a></li><li><a href="javascript: ;" class="item">MySQL</a></li><li><a href="javascript: ;" class="item">PHP</a></li><li><a href="javascript: ;" class="item" id="mail">Perl</a></li><li><a href="javascript: ;" class="item">phpMyAdmin</a></li></ul></div>
+			</li>
+			<li>
+				<a href="javascript: ;" class="group" onclick="act(this);">Scripts and Applications</a><div class="items" style="display: none;">
+					<ul><li><a href="javascript: ;" class="item">announceMail</a></li><li><a href="javascript: ;" class="item">phpBB</a></li><li><a href="javascript: ;" class="item">Photo Gallery</a></li><li><a href="javascript: ;" class="item" id="mail">WaNewsletter</a></li></ul></div>
+			</li>
+			<li>
+				<a href="javascript: ;" class="group" onclick="act(this);">E-Commerce</a><div class="items" style="display: none;">
+					<ul><li><a href="javascript: ;" class="item">osCommerce Storefront</a></li><li><a href="javascript: ;" class="item">Zen-Cart Storefront</a></li></ul></div>
+			</li>
+				<li><a href="javascript: ;" class="group" onclick="act(this);">Website Statistics</a><div class="items" style="display: none;">
+					<ul><li><a href="javascript: ;" class="item">AWStats Reporting</a></li><li><a href="javascript: ;" class="item">Raw Log Files</a></li></ul></div>
+			</li>
+		</ul>
+		<span class="bottomblock"></span>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+Plugin Name: WordPress Export
+Plugin URI: http://blog.usf.edu
+Description: Export WordPress data to multiple formats
+Version: 0.3
+Author: Eric Pierce
+Author URI: http://epierce.blog.usf.edu
+Directions:  Copy the WPexport directory into wp-content/plug-ins/
+	     Open the WP admin page and select "Options"
+	     Select "Export"
+

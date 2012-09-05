@@ -1,0 +1,52 @@
+Index: openidserver.php
+===================================================================
+--- openidserver.php	(revision 11748)
++++ openidserver.php	(working copy)
+@@ -58,7 +58,7 @@
+ 
+ function openidserver_admin_show_pending() {
+ 	$pending = openidserver_get_pending_request();
+-	if ($pending && $pending['site_url'] == get_option('siteurl')) {
++	if ($pending && $pending['site_url'] == get_option('home')) {
+ 		$continue_url = htmlspecialchars($pending['continue_url']);
+ 		$trust_root = htmlspecialchars($pending['trust_root']);
+ 		echo '<div class="updated"><p>Now that you are signed in, you can '.
+@@ -71,7 +71,7 @@
+ function openidserver_link_rel_tags() {
+ 	if (is_home()) {
+ 		echo '<link rel="openid.server" href="' . 
+-			get_option('siteurl') . '/?openidserver=1" />';
++			get_option('home') . '/?openidserver=1" />';
+ 	}
+ }
+ 
+@@ -91,7 +91,7 @@
+ }
+ 
+ function openidserver_openid_for_current_site() {
+-	return get_option('siteurl') . '/';
++	return get_option('home') . '/';
+ }
+ 
+ function openidserver_is_trusted($identity, $trust_root) {
+@@ -133,7 +133,7 @@
+ }
+ 
+ function openidserver_get_server_url() {
+-	return get_option('siteurl') . '/?openidserver=1';
++	return get_option('home') . '/?openidserver=1';
+ }
+ 
+ function openidserver_user_is_logged_in() {
+@@ -518,9 +518,9 @@
+ 	*/
+ 	global $current_site;
+ 	$timestamp = time();
+-	$site_url = urlencode(get_option('siteurl'));
++	$site_url = urlencode(get_option('home'));
+ 	$continue_url = urlencode(
+-		get_option('siteurl') . '/?' . $_SERVER['QUERY_STRING']
++		get_option('home') . '/?' . $_SERVER['QUERY_STRING']
+ 	);
+ 	$trust_root = urlencode($request->trust_root);
+ 	$cookie_value = "$timestamp|$site_url|$continue_url|$trust_root";

@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>Example: overflow:hidden</title>
+
+	<style type="text/css">
+		body {
+			font-family: Georgia, "Times New Roman", serif;
+			font-style: italic;
+		}
+
+		.box {
+			padding: 20px;
+		}
+
+		.box-parent {
+			border: 1px solid #7dacfd;
+			background-color: #c3d9ff;
+			margin-bottom: 20px;
+
+			/* The parent box's height is preserved */
+			overflow: hidden;
+		}
+
+		.box-child {
+			border: 1px solid #b3d36d;
+			background-color: #cdeb8b;
+			width: 160px;
+			float: right;
+		}
+		
+		#parent-2 {
+			clear: both;
+		}
+	</style>
+
+	<!--[if lt IE 7]>
+	<style type="text/css">
+
+		/* Correcting overflow: hidden behavior in IE6. */
+		#parent-2 {
+			position: relative;
+			height: 100%;
+		}
+
+	</style>
+	<![endif]-->
+</head>
+
+<body>
+
+<h1>Example: overflow:hidden in IE6</h1>
+
+<p>
+	The first box does not behave in IE6, but the second box does.
+</p>
+
+<div id="parent-1" class="box box-parent">
+	<div id="child-1" class="box box-child">
+		The parent box only has overflow:hidden, which does not work in IE6.
+	</div>
+</div>
+
+<div id="parent-2" class="box box-parent">
+	<div id="child-1" class="box box-child">
+		The parent box has overflow:hidden plus position:relative and height:100% in IE6.
+	</div>
+</div>
+
+<p>
+	&copy; Copyright 2008 <a href="http://bradt.ca/">bradt.ca</a>. All rights reserved.
+</p>
+
+</body>
+</html>

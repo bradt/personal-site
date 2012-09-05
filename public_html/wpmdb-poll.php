@@ -1,0 +1,40 @@
+<?php
+if ( !isset( $_POST['willing-pay'] ) ) {
+	echo "Please choose an option.";
+	exit;
+}
+
+$mysqli = new mysqli( 'localhost', 'us4883_wpmdb', 'Bz8A6iqkYKnnJx', 'db4883_wpmdb' );
+
+$fields = array( 'willing-pay', 'how-much', 'notify-me', 'notify-email', 'comments' );
+
+$stmt = $mysqli->prepare( "INSERT INTO submission VALUES ( null, ?, ?, ?, ?, ?, NOW())" );
+
+if ( !$_POST['willing-pay'] ) {
+	$_POST['willing-pay'] = 'No';
+}
+
+if ( !$_POST['notify-me'] ) {
+	$_POST['notify-me'] = 'No';
+}
+
+foreach ( $fields as $field ) {
+	if ( !isset( $_POST[$field] ) ) {
+		$values[] = '';
+	}
+	else {
+		$values[] = $_POST[$field];
+	}
+}
+
+$types = 'sssss';
+array_unshift( $values, $types );
+call_user_func_array( array( $stmt, 'bind_param' ), $values );
+
+$stmt->execute();
+
+if ( $stmt->error ) {
+	echo "Error: ", $stmt->error;
+}
+
+$stmt->close();
