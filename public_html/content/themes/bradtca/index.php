@@ -2,7 +2,7 @@
 
 <div id="content" class="blog">
 
-	<?php if (in_category('travel')) : ?>
+	<?php if ( 'journal_entry' == get_post_type() ) : ?>
 	<h1>Travel Journal</h1>
 	<?php else: ?>
 	<h1>Blog</h1>

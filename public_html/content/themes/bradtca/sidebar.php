@@ -2,8 +2,8 @@
 	
 	<li class="module subscribe">
 		
-		<?php if (is_category('travel') || in_category('travel')) : ?>
-		<p class="blog"><a href="<?php bloginfo('rss2_url'); ?>" rel="alternate" type="application/rss+xml">Subscribe to Travel Journal</a></p>
+		<?php if ( is_post_type_archive( 'journal_entry' ) || ( is_single() && 'journal_entry' == get_post_type() ) ) : ?>
+		<p class="blog"><a href="<?php echo get_post_type_archive_feed_link( 'journal_entry' ); ?>" rel="alternate" type="application/rss+xml">Subscribe to Travel Journal</a></p>
 		<?php else: ?>
 		<p class="blog"><a href="<?php bloginfo('rss2_url'); ?>" rel="alternate" type="application/rss+xml">Subscribe to Blog</a></p>
 		<?php endif; ?>

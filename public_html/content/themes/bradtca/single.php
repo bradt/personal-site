@@ -2,7 +2,7 @@
 
 <div id="content" class="single">
 
-	<h1><?php echo (in_category('travel')) ? 'Travel Journal' : 'Blog'; ?></h1>
+	<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
 
 	<?php $i = 0; if (have_posts()) : while (have_posts()) : the_post();
 		$timezone = get_the_time('O');

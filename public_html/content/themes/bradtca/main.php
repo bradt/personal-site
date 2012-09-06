@@ -68,7 +68,7 @@ if ( $_GET['s3setup'] ) {
 		<div class="latest-project">
 			<h3>Featured Project</h3>
 			<?php
-			$latest_project = get_posts('post_type=portfolio_item&numberposts=1&category=246&meta_key=featured&meta_value=1');
+			$latest_project = get_posts('post_type=portfolio_item&numberposts=1&meta_key=featured&meta_value=1');
 			$post = $latest_project[0];
 			setup_postdata($post);
 			$attachs = my_get_attachments();
@@ -87,7 +87,7 @@ if ( $_GET['s3setup'] ) {
 			<h3>Tweets</h3>
 			<ul class="posts">
 			<?php
-			$recent_posts = get_posts('post_type=tweet&numberposts=5&category=245,263');
+			$recent_posts = get_posts('post_type=tweet&numberposts=5');
 			foreach ($recent_posts as $post) :
 				setup_postdata($post);
 				$timezone = my_timezone();
@@ -121,7 +121,7 @@ if ( $_GET['s3setup'] ) {
 
 	<div class="col col-left">
 		<?php
-		$recent_posts = get_posts('numberposts=3&category=164');
+		$recent_posts = get_posts('post_type=journal_entry&numberposts=3');
 		if (!empty($recent_posts)):
 		?>
 		<div class="travel">
@@ -145,7 +145,7 @@ if ( $_GET['s3setup'] ) {
 			?>
 			</ul>
 			<ul class="actions">
-				<li class="browse"><a href="/category/travel/">Browse all travel posts &raquo;</a></li>
+				<li class="browse"><a href="/journal/">Browse all travel posts &raquo;</a></li>
 				<li class="rss icon feed"><a href="<?php echo my_feed_url('travel'); ?>" rel="alternate" type="application/rss+xml">Subscribe (RSS)</a></li>
 			</ul>
 		</div>

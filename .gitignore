@@ -2,3 +2,4 @@ _archive
 tmp
 public_html/content/uploads
 public_html/content/object-cache.php
+public_thml/content/plugins/last.fm/cache

@@ -87,14 +87,6 @@ function my_microblog_content() {
 $plugin_showcase_dir = realpath(ABSPATH. '/../ps/plugins/');
 global $plugin_showcase_dir;
 
-function custom_rss_title($title) {
-	if (in_category('portfolio'))
-		return 'Portfolio: ' . $title;
-	else
-		return $title;
-}
-add_filter('the_title_rss', 'custom_rss_title');
-
 function bt_tiny_mce_before_init( $init ) {
     // Command separated string of extended elements
 	$ext = 'iframe[*]';

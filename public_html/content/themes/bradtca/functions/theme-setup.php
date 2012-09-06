@@ -48,7 +48,7 @@ function bt_theme_setup() {
 		'has_archive' => 'portfolio',
 		'taxonomies' => array( 'post_tag' ),
 		'rewrite' => array(
-			'slug' => 'portfolio-item',
+			'slug' => 'portfolio',
 			'with_front' => false
 		),
 		'supports' => array('title', 'editor', 'author', 'custom-fields', 'revisions', 'thumbnail')
@@ -74,7 +74,7 @@ function bt_theme_setup() {
 		'has_archive' => 'journal',
 		'taxonomies' => array( 'post_tag' ),
 		'rewrite' => array(
-			'slug' => 'journal-entry',
+			'slug' => 'journal',
 			'with_front' => false
 		),
 		'supports' => array('title', 'editor', 'author', 'custom-fields', 'revisions', 'thumbnail')
