@@ -1,23 +1,26 @@
-<?php 
-$r = new WP_Query(array(
-	'post_type' => 'page',
-	'pagename' => 'portfolio'
-));
-
-$r->the_post();
-
-get_header(); 
-?>
+<?php get_header(); ?>
 
 <div id="content" class="page page-portfolio-list">
 
 	<div class="top">
-		
+		<?php
+		$r = new WP_Query(array(
+			'post_type' => 'page',
+			'pagename' => 'portfolio'
+		));
+
+		$r->the_post();
+		?>		
+
 		<h1><?php the_title(); ?></h1>
 		
 		<div class="intro">
 			<?php the_content(); ?>
 		</div>
+
+		<?php
+		wp_reset_postdata();
+		?>
 	</div>
 
 	<ul class="tabs">
@@ -33,8 +36,6 @@ get_header();
 	
 		<ul class="projects">
 			<?php
-			wp_reset_postdata();
-
 			if (have_posts()) : while (have_posts()) :
 				the_post();
 	
