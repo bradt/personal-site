@@ -53,7 +53,7 @@ if (!empty($post->post_password)) { // if there's a password
 
 	<?php endif; ?>
 	
-	<?php live_preview() ?>
+	<?php if ( function_exists( 'live_preview' ) ) live_preview(); ?>
 
 	<?php
 	if (isset($_POST['comment'])) {
