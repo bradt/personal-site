@@ -2,13 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head profile="http://gmpg.org/xfn/1">
-	<?php if (is_front_page()): ?>
-		<title><?php echo get_post_meta($post->ID, 'head_title', true); ?> &raquo; <?php bloginfo('name'); ?></title>
-	<?php elseif (is_home()): ?>
-		<title>Blog &laquo; <?php bloginfo('name'); ?></title>
-	<?php else: ?>
-		<title><?php wp_title(''); ?> &laquo; <?php bloginfo('name'); ?></title>
-	<?php endif; ?>
+	<title><?php wp_title(''); ?></title>
 	<meta http-equiv="Content-Type" content="text/html; charset=<?php bloginfo('charset'); ?>" />
 	<meta name="generator" content="WordPress <?php bloginfo('version'); ?>" />
 	<meta name="google-site-verification" content="-HPbjD9Y0jlfGiwCKijuBuQ3P6hyDw1LyXyY9T6ytjg" />
