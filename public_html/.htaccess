@@ -7,7 +7,7 @@ RewriteBase /
 RewriteCond %{HTTP_HOST} ^brad\.touesnard\.com$ [NC]
 RewriteRule ^(.*)$ http://bradt.ca/$1 [R=301,L]
 RewriteRule ^p/([0-9]+)/? /?p=$1 [L,R=301]
-RewriteRule ^(documents/)?resume/? http://www.linkedin.com/in/bradt [L,R=301]
+RewriteRule ^(documents/)?resume/? http://zerply.com/bradt [L,R=301]
 RewriteRule ^(wp/wp-)?content/([A-Za-z0-9_-]+)(\.gif|\.jpg|\.png|\.mp3|\.txt|\.wav) /content/uploads/0000/$2$3 [L,R=301,NC]
 RewriteRule ^archives/[0-9]+/[0-9]+/[0-9]+/([0-9]+)/ /?p=$1 [L,R=301]
 RewriteRule ^archives/(.*) /blog/$1 [L,R=301]
