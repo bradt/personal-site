@@ -15,6 +15,16 @@ require BT_FUNCTIONS . '/theme-setup.php';
 // Widgets
 define('BT_WIDGETS', TEMPLATEPATH . '/widgets');
 
+add_filter( 'bloginfo_url', 'bt_bloginfo', null, 2 );
+
+function bt_bloginfo( $output, $show ) {
+	if ( 'template_url' == $show && !is_admin() && !defined( 'WP_LOCAL_DEV' ) ) {
+		return 'http://assets.bradt.ca';
+	}
+
+	return $output;
+}
+
 function my_get_attachments() {
 	global $post, $attachments;
 

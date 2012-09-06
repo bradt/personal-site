@@ -23,7 +23,7 @@
 	<?php endif; ?>
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 	<?php //if ( !is_naked_day(9) ) : ?>
-	<link type="text/css" rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>?20120819" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css" media="screen" />
 	<!--[if lt IE 7]>
 	<link rel="stylesheet" type="text/css" href="<?php bloginfo('template_url'); ?>/style_ie6.css" />
 	<![endif]-->
@@ -45,7 +45,7 @@
 	<![endif]-->
 	<?php //endif; ?>
 	<script src="<?php bloginfo('template_url'); ?>/js/jquery.js" type="text/javascript"></script>
-	<script src="<?php bloginfo('template_url'); ?>/js/default.js?20120217" type="text/javascript"></script>
+	<script src="<?php bloginfo('template_url'); ?>/js/default.js" type="text/javascript"></script>
 	<link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
 	<link rel='openid.delegate' href='http://bradt.wordpress.com/' />
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
