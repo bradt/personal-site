@@ -4,7 +4,7 @@ if ( !isset( $_POST['willing-pay'] ) ) {
 	exit;
 }
 
-$mysqli = new mysqli( 'localhost', 'us4883_wpmdb', 'Bz8A6iqkYKnnJx', 'db4883_wpmdb' );
+$mysqli = new mysqli( 'localhost', 'bradtca_wpmdb', 'Bz8A6iqkYKnnJx', 'bradtca_wpmdb' );
 
 $fields = array( 'willing-pay', 'how-much', 'notify-me', 'notify-email', 'comments' );
 
@@ -28,8 +28,12 @@ foreach ( $fields as $field ) {
 }
 
 $types = 'sssss';
-array_unshift( $values, $types );
-call_user_func_array( array( $stmt, 'bind_param' ), $values );
+$params = array();
+foreach ($values as $k => &$value) {
+	$params[$k] = &$value;
+}
+array_unshift( $params, $types );
+call_user_func_array( array( $stmt, 'bind_param' ), $params );
 
 $stmt->execute();
 
