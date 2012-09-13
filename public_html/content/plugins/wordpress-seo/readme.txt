@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
 Requires at least: 3.1
 Tested up to: 3.4
-Stable tag: 1.2.8.3
+Stable tag: 1.2.8.4
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -140,6 +140,14 @@ rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 las
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.2.8.4 =
+
+* Fix for double title issues with themes that filter `wp_title`, by having WP SEO filter a bit later in the process
+  (but no too late because the genesis <title> wrap filter is on 30).
+* Improved Twitter Card functionality: twitter meta tags now appear above OpenGraph meta tags.
+* Updated a bunch of languages: da_DK, de_DE, es_ES, fa_IR, fr_FR, he_IL, hu, hu_HU, it_IT, nl_NL, pt_BR, ru_RU, tr_TK, zh_CN.
+* Added Czech (cs_CZ) and Spanish - Venezuela (es_VE).
 
 = 1.2.8.3 =
 

@@ -24,8 +24,8 @@ class WPSEO_Frontend {
 		add_action( 'wp_head', array( $this, 'head' ), 1, 1 );
 		remove_action( 'wp_head', 'rel_canonical' );
 
-		add_filter( 'wp_title', array( $this, 'title' ), 10, 3 );
-		add_filter( 'thematic_doctitle', array( $this, 'title' ) );
+		add_filter( 'wp_title', array( $this, 'title' ), 15, 3 );
+		add_filter( 'thematic_doctitle', array( $this, 'title' ), 15 );
 
 		add_action( 'wp', array( $this, 'page_redirect' ), 99, 1 );
 

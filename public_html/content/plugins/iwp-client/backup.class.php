@@ -88,7 +88,33 @@ class IWP_MMB_Backup extends IWP_MMB_Core
         );
         $this->tasks     = get_option('iwp_client_backup_tasks');
     }
-    
+    function set_memory()
+   	{   		   		
+   		$changed = array('execution_time' => 0, 'memory_limit' => 0);
+   		
+   		$memory_limit = trim(ini_get('memory_limit'));    
+    	$last = strtolower(substr($memory_limit, -1));
+
+	    if($last == 'g')       
+	        $memory_limit = ((int) $memory_limit)*1024;
+	    else if($last == 'm')      
+	        $memory_limit = (int) $memory_limit;
+	    if($last == 'k')
+	        $memory_limit = ((int) $memory_limit)/1024;         
+        
+   		if ( $memory_limit < 384 )  {    
+      	@ini_set('memory_limit', '384M');
+      	$changed['memory_limit'] = 1;
+      }
+      
+      if ( (int) @ini_get('max_execution_time') < 1200 ) {
+     	  @set_time_limit(1200); //twenty minutes
+     		$changed['execution_time'] = 1;
+     	}
+     	
+     	return $changed;
+     	
+  	}
     function get_backup_settings()
     {
         $backup_settings = get_option('iwp_client_backup_tasks');
@@ -129,8 +155,8 @@ if (is_array($params['account_info'])) { //only if sends from IWP Admin Panel fi
                 $before[$task_name]['task_args'] = $args;
 		 //$before[$task_name]['task_args'] = $task_name;
                 
-if (strlen($args['schedule']))
-                    $before[$task_name]['task_args']['next'] = $this->schedule_next($args['type'], $args['schedule']);
+/*if (strlen($args['schedule']))
+                    $before[$task_name]['task_args']['next'] = $this->schedule_next($args['type'], $args['schedule']);*///to WP cron
 					$before[$task_name]['task_args']['task_name'] = $task_name;
 
                 $return = $before[$task_name];
@@ -295,8 +321,7 @@ function delete_task_now($task_name){
         extract($args); //extract settings
         
         //Try increase memory limit	and execution time
-        @ini_set('memory_limit', '256M');
-        @set_time_limit(1200); //20 mins
+     	$this->set_memory();
         
         //Remove old backup(s)
         $this->remove_old_backups($task_name);
@@ -599,7 +624,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
                     if ($sys == 'WIN')
                         $exclude_data .= " $data/*.*";
                     else
-                        $exclude_data .= " $data/*";
+                        $exclude_data .= " '$data/*'";
                         
                         
                 } else {
@@ -856,8 +881,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
         }
         
         extract($args);
-        @ini_set('memory_limit', '256M');
-        @set_time_limit(1200);
+     	$this->set_memory();
         
         $unlink_file = true; //Delete file after restore
         
@@ -940,7 +964,7 @@ elseif (isset($task['task_results'][$result_id]['ftp'])) {
                 $site_url    = get_option('site_url');
                 
                 $clone_options                       = array();
-                if (trim($clone_from_url) || trim($iwp_clone)) {
+                if (trim($clone_from_url) || trim($iwp_clone) || trim($maintain_old_key)) {
                     
                     $clone_options['iwp_client_nossl_key']  = get_option('iwp_client_nossl_key');
                     $clone_options['iwp_client_public_key'] = get_option('iwp_client_public_key');
@@ -1044,14 +1068,8 @@ elseif (isset($task['task_results'][$result_id]['ftp'])) {
                     $wpdb->query($wpdb->prepare($query));
                 }
             } else {
-                if ($clone_from_url) {
-                    if ($new_user && $new_password) {
-                        $query = "UPDATE " . $new_table_prefix . "users SET user_pass = '$new_password' WHERE user_login = '$new_user'";
-                        $wpdb->query($wpdb->prepare($query));
-                    }
-                }
-                
-                if ($iwp_clone) {
+				
+              // if ($iwp_clone) {
                     if ($admin_email) {
                         //Clean Install
                         $query = "UPDATE " . $new_table_prefix . "options SET option_value = '$admin_email' WHERE option_name = 'admin_email'";
@@ -1064,7 +1082,15 @@ elseif (isset($task['task_results'][$result_id]['ftp'])) {
                         }
                         
                     }
-                }
+               // }
+			   
+			    //if ($clone_from_url) {
+                    if ($new_user && $new_password) {
+                        $query = "UPDATE " . $new_table_prefix . "users SET user_pass = '$new_password' WHERE user_login = '$new_user'";
+                        $wpdb->query($wpdb->prepare($query));
+                    }
+               // }
+                
             }
             
             if (is_array($clone_options) && !empty($clone_options)) {
@@ -1179,7 +1205,7 @@ elseif (isset($task['task_results'][$result_id]['ftp'])) {
     function optimize_tables()
     {
         global $wpdb;
-        $query  = 'SHOW TABLE STATUS FROM ' . DB_NAME;
+        $query  = 'SHOW TABLES';
         $tables = $wpdb->get_results($wpdb->prepare($query), ARRAY_A);
         foreach ($tables as $table) {
             if (in_array($table['Engine'], array(
@@ -1606,7 +1632,7 @@ function ftp_backup($args)
         	if ($dropbox_site_folder == true)
             $dropbox_destination .= '/' . $this->site_name;
           
-          $temp = ABSPATH . 'mwp_temp_backup.zip';
+          $temp = ABSPATH . 'iwp_temp_backup.zip';
           
           try{
           	$file = $dropbox->filesGet($dropbox_destination.'/'.$backup_file, true);
@@ -1648,12 +1674,9 @@ function ftp_backup($args)
                 $as3_directory .= '/' . $this->site_name;
             
             $endpoint = isset($as3_bucket_region) ? $as3_bucket_region : 's3.amazonaws.com';
-            
-            $s3 = new S3(trim($as3_access_key), trim(str_replace(' ', '+', $as3_secure_key)), false, $endpoint);
-            
-            $s3->putBucket($as3_bucket, S3::ACL_PUBLIC_READ);
-            
-            if ($s3->putObjectFile($backup_file, $as3_bucket, $as3_directory . '/' . basename($backup_file), S3::ACL_PRIVATE)) {
+            try{
+            $s3 = new iwpS3(trim($as3_access_key), trim(str_replace(' ', '+', $as3_secure_key)), false, $endpoint);
+            if ($s3->putObjectFile($backup_file, $as3_bucket, $as3_directory . '/' . basename($backup_file), iwpS3::ACL_PRIVATE)) {
                 return true;
             } else {
                 return array(
@@ -1661,9 +1684,20 @@ function ftp_backup($args)
                     'partial' => 1
                 );
             }
-        
+
+        }catch (Exception $e){
+         $err = $e->getMessage();
+         if($err){
+         	 return array(
+                'error' => 'Failed to upload to AmazonS3 ('.$err.').'
+            );
+         } else {
+         	return array(
+                'error' => 'Failed to upload to Amazon S3.'
+            );
+         }
         }
-		 else {
+		} else {
             return array(
                 'error' => 'You cannot use Amazon S3 on your server. Please enable curl first.',
                 'partial' => 1
@@ -1680,7 +1714,7 @@ function ftp_backup($args)
             $as3_directory .= '/' . $this->site_name;
         $endpoint = isset($as3_bucket_region) ? $as3_bucket_region : 's3.amazonaws.com';
         try{
-        $s3       = new S3($as3_access_key, str_replace(' ', '+', $as3_secure_key), false, $endpoint);
+        $s3       = new iwpS3($as3_access_key, str_replace(' ', '+', $as3_secure_key), false, $endpoint);
         $s3->deleteObject($as3_bucket, $as3_directory . '/' . $backup_file);
       	} catch (Exception $e){
       		
@@ -1695,7 +1729,7 @@ function ftp_backup($args)
         $endpoint = isset($as3_bucket_region) ? $as3_bucket_region : 's3.amazonaws.com';
         $temp = '';
         try{
-        $s3       = new S3($as3_access_key, str_replace(' ', '+', $as3_secure_key), false, $endpoint);
+        $s3       = new iwpS3($as3_access_key, str_replace(' ', '+', $as3_secure_key), false, $endpoint);
         if ($as3_site_folder == true)
             $as3_directory .= '/' . $this->site_name;
         
@@ -1736,7 +1770,7 @@ function ftp_backup($args)
 				}
 				$time = time() + 30;
 				
-				file_put_contents("timetest.txt", var_export($time, true).'|'.var_export($schedule_hour, true).'|'.var_export($current_hour, true));
+			
                 break;
             
             
@@ -1817,8 +1851,7 @@ function ftp_backup($args)
                     }
                 }
                 if (is_array($info['task_results']))
-                	$stats[$task_name] = array_values($info['task_results']);
-                
+                	$stats[$task_name] = $info['task_results'];
             }
         }
         return $stats;
@@ -1877,10 +1910,10 @@ function get_next_schedules()
                     $this->remove_amazons3_backup($args);
                 }
                 
-                if (isset($backups[$task_name]['task_results'][$i]['dropbox']) && isset($backups[$task_name]['task_args']['account_info']['mwp_dropbox'])) {
+                if (isset($backups[$task_name]['task_results'][$i]['dropbox']) && isset($backups[$task_name]['task_args']['account_info']['iwp_dropbox'])) {
                     //To do: dropbox remove
                     $dropbox_file       = $backups[$task_name]['task_results'][$i]['dropbox'];
-                    $args                = $backups[$task_name]['task_args']['account_info']['mwp_dropbox'];
+                    $args                = $backups[$task_name]['task_args']['account_info']['iwp_dropbox'];
                     $args['backup_file'] = $dropbox_file;
                    $this->remove_dropbox_backup($args);
                 }

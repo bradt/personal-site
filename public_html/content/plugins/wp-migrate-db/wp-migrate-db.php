@@ -4,7 +4,7 @@ Plugin Name: WP-Migrate-DB
 Plugin URI: http://wordpress.org/extend/plugins/wp-migrate-db/
 Description: Exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer.
 Author: Brad Touesnard
-Version: 0.4.1
+Version: 0.4.2
 Author URI: http://bradt.ca/
 */
 
@@ -58,8 +58,25 @@ class WP_Migrate_DB {
         $this->replaced['nonserialized']['count'] = 0;
 
         add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+        add_action( 'wp_ajax_poll_submission', array( $this, 'poll_submission' ) );
 
         $this->handle_request();
+    }
+
+    function poll_submission() {
+        $response = wp_remote_post( 'http://bradt.ca/wpmdb-poll.php', array(
+            'timeout' => 60,
+            'body' => $_POST
+        ));
+
+        if ( is_wp_error( $response ) ) {
+            echo "Error attempting to save your submission.";
+        } 
+        else {
+            echo $response['body'];
+        }
+
+        die(); // this is required to return a proper result
     }
 
     function handle_request() {
@@ -121,6 +138,10 @@ class WP_Migrate_DB {
 
         <div class="wrap">
             <div id="icon-tools" class="icon32"><br /></div><h2>WP Migrate DB</h2>
+
+            <div id="wpmdb-container">
+
+            <div id="wpmdb-main">
 
             <?php
             if (isset($_POST['Submit'])) {
@@ -328,9 +349,98 @@ class WP_Migrate_DB {
                         <input class="button" type="submit" value="Export Database" name="Submit"/>
                     </p>
                 </form>
+
                 <?php
             }
             ?>
+            </div>
+
+            <div id="wpmdb-sidebar">
+
+                <div class="author">
+                    <img src="http://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?s=128&amp;d" width="64" height="64" />
+                    <div class="desc">
+                        <h3>Created &amp; maintained by</h3>
+                        <h2>Brad Touesnard</h2>
+                        <p>
+                            <a href="http://profiles.wordpress.org/bradt/">Profile</a>
+                            &nbsp;&nbsp;
+                            <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=5VPMGLLK94XJC">Donate</a>
+                        </p>
+                    </div>
+                </div>
+
+                <form method="post" action="http://bradt.ca/wpmdb-poll.php" class="poll">
+                    <h2>PRO Version?</h2>
+                    <p>
+                        What if there was a PRO version of this plugin that included the following?
+                    </p>
+
+                    <ul>
+                        <li>
+                            One click to transmit the data to the migrated
+                            site and import it. No downloading, no uploading,
+                            no command line, no phpMyAdmin.
+                        </li>
+                        <li>
+                            Automatically keep your local dev database
+                            in-sync with the live production database.
+                        <li>
+                            1 year of updates and priority email support.
+                        </li>
+                    </ul>
+
+                    <div class="field">
+                        <p class="willing-copy">Is that something you'd be willing to pay for?</p>
+                        <label><input type="radio" name="willing-pay" value="Yes" /> Yes</label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label><input type="radio" name="willing-pay" value="No" /> No</label>
+                    </div>
+
+                    <div class="yes-questions" style="display: none;">
+
+                        <div class="field how-much">
+                            <p>How much would you pay?</p>
+                            $ <input type="text" name="how-much" /> USD
+                        </div>
+
+                        <div class="field notify-me">
+                            <input type="checkbox" name="notify-me" value="Yes" id="notify-me" />
+                            <label for="notify-me">
+                                Send me an email if this thing ever gets off the ground.
+                            </label>
+                        </div>
+
+                        <div class="field notify-email" style="display: none;">
+                            <p>Your Email</p>
+                            <?php $user = wp_get_current_user(); ?>
+                            <input type="email" name="notify-email" value="<?php echo esc_attr( $user->user_email ); ?>" />
+                        </div>
+
+                    </div>
+
+                    <div class="field comments" style="display: none;">
+                        <p>Comments (optional)</p>
+                        <textarea name="comments"></textarea>
+                    </div>
+
+                    <div class="field submit-button">
+                        <input type="submit" class="button" value="Submit" />
+                    </div>
+                </form>
+
+                <?php $url = 'http://wpappstore.com/?utm_source=plugin&amp;utm_medium=wordpress&amp;utm_campaign=wpmigratedb'; ?>
+                <div class="wpas-promo">
+                    <a href="<?php echo $url; ?>"><img src="<?php echo plugins_url( 'asset/img/wpappstore-logo.png', __FILE__ ); ?>" alt="WP App Store" width="220" /></a>
+                    <p>
+                        Purchase &amp; install themes and plugins from top brands directly from your WordPress dashboard.
+                        <a href="<?php echo $url; ?>">Check&nbsp;it&nbsp;out&nbsp;&raquo;</a>
+                    </p>
+                </div>
+
+            </div>
+
+            </div>
         </div>
         <?php
     }
@@ -681,9 +791,9 @@ class WP_Migrate_DB {
             add_management_page('WP Migrate DB','WP Migrate DB','update_core','wp-migrate-db',array($this, 'options_page'));
         }
 
-        $src = plugins_url( 'styles.css', __FILE__ );
+        $src = plugins_url( 'asset/css/styles.css', __FILE__ );
         wp_enqueue_style( 'wp-migrate-db-styles', $src );
-        $src = plugins_url( 'script.js', __FILE__ );
+        $src = plugins_url( 'asset/js/script.js', __FILE__ );
         wp_enqueue_script( 'wp-migrate-db-script', $src, array( 'jquery' ), false, true );
     }
 

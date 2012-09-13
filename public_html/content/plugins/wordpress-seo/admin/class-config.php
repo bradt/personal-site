@@ -157,28 +157,6 @@ class WPSEO_Admin_Pages {
 	}
 
 	/**
-	 * Used for imports, this functions either copies $old_metakey into $new_metakey or just plain replaces $old_metakey with $new_metakey
-	 *
-	 * @param string $old_metakey The old name of the meta value.
-	 * @param string $new_metakey The new name of the meta value, usually the WP SEO name.
-	 * @param bool   $replace     Whether to replace or to copy the values.
-	 */
-	function replace_meta( $old_metakey, $new_metakey, $replace = false ) {
-		global $wpdb;
-		$oldies = $wpdb->get_results( "SELECT * FROM $wpdb->postmeta WHERE meta_key = '$old_metakey'" );
-		foreach ( $oldies as $old ) {
-			// Prevent inserting new meta values for posts that already have a value for that new meta key
-			$check = $wpdb->get_var( "SELECT count(*) FROM $wpdb->postmeta WHERE meta_key = '$new_metakey' AND post_id = " . $old->post_id );
-			if ( $check == 0 )
-				$wpdb->query( "INSERT INTO $wpdb->postmeta (post_id, meta_key, meta_value) VALUES (" . $old->post_id . ",'" . $new_metakey . "','" . addslashes( $old->meta_value ) . "')" );
-		}
-
-		if ( $replace ) {
-			$wpdb->query( "DELETE FROM $wpdb->postmeta WHERE meta_key = '$old_metakey'" );
-		}
-	}
-
-	/**
 	 * Deletes all post meta values with a given meta key from the database
 	 *
 	 * @param string $metakey Key to delete all meta values for.

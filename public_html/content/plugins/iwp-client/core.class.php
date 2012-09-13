@@ -220,14 +220,22 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		else{
 			$current_user = wp_get_current_user(); 
 			$username = $current_user->data->user_login;
-		}		
+		}	
+		
+		$iwp_client_activate_key = get_option('iwp_client_activate_key');
 		
 		echo '<div class="updated" style="text-align: center;"><p style="color: green; font-size: 14px; font-weight: bold;">Add this site to IWP Admin panel</p><p>
-		<table border="0" align="center">
-		<tr><td align="right">WEBSITE URL:</td><td align="left"><strong>'.get_option('home').'/</strong></td></tr>
-		<tr><td align="right">ADMIN USERNAME:</td><td align="left"><strong>'.$username.'</strong> (or any admin id)</td></tr>
-	  	<tr><td align="right">ACTIVATION KEY:</td><td align="left"><strong>'.get_option('iwp_client_activate_key').'</strong></td></tr>	
-		</table>
+		<table border="0" align="center">';
+		if(!empty($iwp_client_activate_key)){
+			echo '<tr><td align="right">WEBSITE URL:</td><td align="left"><strong>'.get_option('home').'/</strong></td></tr>
+			<tr><td align="right">ADMIN USERNAME:</td><td align="left"><strong>'.$username.'</strong> (or any admin id)</td></tr>
+			<tr><td align="right">ACTIVATION KEY:</td><td align="left"><strong>'.$iwp_client_activate_key.'</strong></td></tr>';
+		}
+		else{
+			echo '<tr><td align="center">Please deactivate and then activate InfiniteWP Client plugin.</td></tr>';
+		}
+		
+		echo '</table>
 	  	</p></div>';
 		
     }
@@ -514,7 +522,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
         }
         
         //Delete options
-				delete_option('iwp_client_maintenace_mode');
+		delete_option('iwp_client_maintenace_mode');
         delete_option('iwp_client_backup_tasks');
         wp_clear_scheduled_hook('iwp_client_backup_tasks');
         delete_option('iwp_client_notifications');

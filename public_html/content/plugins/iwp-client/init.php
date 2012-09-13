@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.0.4
+Version: 1.1.0
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -26,7 +26,7 @@ Author URI: http://www.revmakx.com
  **************************************************************/
 
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.0.4');
+	define('IWP_MMB_CLIENT_VERSION', '1.1.0');
 
 
 if ( !defined('IWP_MMB_XFRAME_COOKIE')){
@@ -47,6 +47,7 @@ require_once("$iwp_mmb_plugin_dir/core.class.php");
 require_once("$iwp_mmb_plugin_dir/stats.class.php");
 require_once("$iwp_mmb_plugin_dir/backup.class.php");
 require_once("$iwp_mmb_plugin_dir/installer.class.php");
+require_once("$iwp_mmb_plugin_dir/addons/manage_users/user.class.php");
 require_once("$iwp_mmb_plugin_dir/addons/backup_repository/backup_repository.class.php");
 require_once("$iwp_mmb_plugin_dir/api.php");
 require_once("$iwp_mmb_plugin_dir/plugins/search/search.php");
@@ -550,6 +551,46 @@ if( !function_exists ( 'iwp_mmb_do_upgrade' )) {
 	}
 }
 
+if( !function_exists ( 'iwp_mmb_add_user' )) {
+	function iwp_mmb_add_user($params)
+	{
+		global $iwp_mmb_core;
+		$iwp_mmb_core->get_user_instance();
+			$return = $iwp_mmb_core->user_instance->add_user($params);
+		if (is_array($return) && array_key_exists('error', $return))
+		
+			iwp_mmb_response($return['error'], false);
+		else {
+			iwp_mmb_response($return, true);
+		}
+		
+	}
+}
+
+if( !function_exists ('iwp_mmb_get_users')) {
+	function iwp_mmb_get_users($params)
+	{
+		global $iwp_mmb_core;
+		$iwp_mmb_core->get_user_instance();
+			$return = $iwp_mmb_core->user_instance->get_users($params);
+		if (is_array($return) && array_key_exists('error', $return))
+			iwp_mmb_response($return['error'], false);
+		else {
+			iwp_mmb_response($return, true);
+		}
+	}
+}
+
+if( !function_exists ('iwp_mmb_edit_users')) {
+	function iwp_mmb_edit_users($params)
+	{
+		global $iwp_mmb_core;
+		$iwp_mmb_core->get_user_instance();
+		$return = $iwp_mmb_core->user_instance->edit_users($params);
+		iwp_mmb_response($return, true);
+	}
+}
+
 if( !function_exists ( 'iwp_mmb_iframe_plugins_fix' )) {
 	function iwp_mmb_iframe_plugins_fix($update_actions)
 	{
@@ -588,6 +629,7 @@ if( !function_exists ( 'iwp_mmb_set_alerts' )) {
 	}		
 }
 
+/*
 if(!function_exists('iwp_mmb_more_reccurences')){
 	//Backup Tasks
 	add_filter('cron_schedules', 'iwp_mmb_more_reccurences');
@@ -612,6 +654,7 @@ if( !function_exists('iwp_client_check_backup_tasks') ){
 		$iwp_mmb_core->backup_instance->check_backup_tasks();
 	}
 }
+*/
 	
 if( !function_exists('iwp_check_notifications') ){
  	function iwp_check_notifications() {
@@ -708,6 +751,24 @@ if( !function_exists('iwp_mmb_plugin_actions') ){
 		}
 	}
 } 
+
+if( !function_exists ( 'iwp_mmb_execute_php_code' )) {
+	function iwp_mmb_execute_php_code($params)
+	{ 		
+		ob_start();
+		eval($params['code']);
+		$return = ob_get_flush();
+		iwp_mmb_response(print_r($return, true), true);
+	}
+}
+
+if( !function_exists('iwp_mmb_client_brand')){
+ 	function iwp_mmb_client_brand($params) {
+		update_option("iwp_client_brand",$params['brand']);
+		iwp_mmb_response(true, true);
+	}
+}
+
 
 if(!function_exists('checkOpenSSL')){
 	function checkOpenSSL(){

@@ -806,7 +806,7 @@ $url=str_replace("%2F", "/", rawurlencode($url));
 		exit;
 	}
 
-	public function mwp_oAuthAuthorize($oauthToken, $oauthCallback = null)
+	public function iwp_oAuthAuthorize($oauthToken, $oauthCallback = null)
 	{
 		// build parameters
 		$parameters = array();

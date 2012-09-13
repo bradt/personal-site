@@ -34,7 +34,7 @@
 * @link http://undesigned.org.za/2007/10/22/amazon-s3-php-class
 * @version 0.5.0-dev
 */
-class S3
+class iwpS3
 {
 	// ACL flags
 	const ACL_PRIVATE = 'private';
@@ -187,7 +187,7 @@ class S3
 		self::$__signingKeyPairId = $keyPairId;
 		if ((self::$__signingKeyResource = openssl_pkey_get_private($isFile ?
 		file_get_contents($signingKey) : $signingKey)) !== false) return true;
-		self::__triggerError('S3::setSigningKey(): Unable to open load private key: '.$signingKey, __FILE__, __LINE__);
+		self::__triggerError('iwpS3::setSigningKey(): Unable to open load private key: '.$signingKey, __FILE__, __LINE__);
 		return false;
 	}
 
@@ -218,7 +218,7 @@ class S3
 	{
 		
 		//if (self::$useExceptions)
-			throw new mwpS3Exception($message, $file, $line, $code);
+			throw new iwpS3Exception($message, $file, $line, $code);
 		//else
 			//trigger_error($message, E_USER_WARNING);
 	}
@@ -238,7 +238,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::listBuckets(): [%s] %s", $rest->error['code'],
+			self::__triggerError(sprintf("iwpS3::listBuckets(): [%s] %s", $rest->error['code'],
 			$rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -289,7 +289,7 @@ class S3
 			$response->error = array('code' => $response->code, 'message' => 'Unexpected HTTP status');
 		if ($response->error !== false)
 		{
-			self::__triggerError(sprintf("S3::getBucket(): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::getBucket(): [%s] %s",
 			$response->error['code'], $response->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -385,7 +385,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::putBucket({$bucket}, {$acl}, {$location}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::putBucket({$bucket}, {$acl}, {$location}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -407,7 +407,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::deleteBucket({$bucket}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::deleteBucket({$bucket}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -426,7 +426,7 @@ class S3
 	{
 		if (!file_exists($file) || !is_file($file) || !is_readable($file))
 		{
-			self::__triggerError('S3::inputFile(): Unable to open input file: '.$file, __FILE__, __LINE__);
+			self::__triggerError('iwpS3::inputFile(): Unable to open input file: '.$file, __FILE__, __LINE__);
 			return false;
 		}
 		return array('file' => $file, 'size' => filesize($file), 'md5sum' => $md5sum !== false ?
@@ -446,7 +446,7 @@ class S3
 	{
 		if (!is_resource($resource) || $bufferSize < 0)
 		{
-			self::__triggerError('S3::inputResource(): Invalid resource or buffer size', __FILE__, __LINE__);
+			self::__triggerError('iwpS3::inputResource(): Invalid resource or buffer size', __FILE__, __LINE__);
 			return false;
 		}
 		$input = array('size' => $bufferSize, 'md5sum' => $md5sum);
@@ -531,7 +531,7 @@ class S3
 			$rest->response->error = array('code' => $rest->response->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->response->error !== false)
 		{
-			self::__triggerError(sprintf("S3::putObject(): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::putObject(): [%s] %s",
 			$rest->response->error['code'], $rest->response->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -600,7 +600,7 @@ class S3
 			$rest->response->error = array('code' => $rest->response->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->response->error !== false)
 		{
-			self::__triggerError(sprintf("S3::getObject({$bucket}, {$uri}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::getObject({$bucket}, {$uri}): [%s] %s",
 			$rest->response->error['code'], $rest->response->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -624,7 +624,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::getObjectInfo({$bucket}, {$uri}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::getObjectInfo({$bucket}, {$uri}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -663,7 +663,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::copyObject({$srcBucket}, {$srcUri}, {$bucket}, {$uri}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::copyObject({$srcBucket}, {$srcUri}, {$bucket}, {$uri}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -729,7 +729,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::setBucketLogging({$bucket}, {$uri}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::setBucketLogging({$bucket}, {$uri}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -755,7 +755,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::getBucketLogging({$bucket}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::getBucketLogging({$bucket}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -794,7 +794,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::getBucketLocation({$bucket}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::getBucketLocation({$bucket}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -861,7 +861,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::setAccessControlPolicy({$bucket}, {$uri}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::setAccessControlPolicy({$bucket}, {$uri}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -885,7 +885,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::getAccessControlPolicy({$bucket}, {$uri}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::getAccessControlPolicy({$bucket}, {$uri}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -945,7 +945,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::deleteObject(): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::deleteObject(): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -1095,7 +1095,7 @@ class S3
 	{
 		if (!extension_loaded('openssl'))
 		{
-			self::__triggerError(sprintf("S3::createDistribution({$bucket}, ".(int)$enabled.", [], '$comment'): %s",
+			self::__triggerError(sprintf("iwpS3::createDistribution({$bucket}, ".(int)$enabled.", [], '$comment'): %s",
 			"CloudFront functionality requires SSL"), __FILE__, __LINE__);
 			return false;
 		}
@@ -1124,7 +1124,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::createDistribution({$bucket}, ".(int)$enabled.", [], '$comment'): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::createDistribution({$bucket}, ".(int)$enabled.", [], '$comment'): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		} elseif ($rest->body instanceof SimpleXMLElement)
@@ -1143,7 +1143,7 @@ class S3
 	{
 		if (!extension_loaded('openssl'))
 		{
-			self::__triggerError(sprintf("S3::getDistribution($distributionId): %s",
+			self::__triggerError(sprintf("iwpS3::getDistribution($distributionId): %s",
 			"CloudFront functionality requires SSL"), __FILE__, __LINE__);
 			return false;
 		}
@@ -1159,7 +1159,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::getDistribution($distributionId): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::getDistribution($distributionId): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -1184,7 +1184,7 @@ class S3
 	{
 		if (!extension_loaded('openssl'))
 		{
-			self::__triggerError(sprintf("S3::updateDistribution({$dist['id']}): %s",
+			self::__triggerError(sprintf("iwpS3::updateDistribution({$dist['id']}): %s",
 			"CloudFront functionality requires SSL"), __FILE__, __LINE__);
 			return false;
 		}
@@ -1214,7 +1214,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::updateDistribution({$dist['id']}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::updateDistribution({$dist['id']}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		} else {
@@ -1236,7 +1236,7 @@ class S3
 	{
 		if (!extension_loaded('openssl'))
 		{
-			self::__triggerError(sprintf("S3::deleteDistribution({$dist['id']}): %s",
+			self::__triggerError(sprintf("iwpS3::deleteDistribution({$dist['id']}): %s",
 			"CloudFront functionality requires SSL"), __FILE__, __LINE__);
 			return false;
 		}
@@ -1254,7 +1254,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::deleteDistribution({$dist['id']}): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::deleteDistribution({$dist['id']}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -1271,7 +1271,7 @@ class S3
 	{
 		if (!extension_loaded('openssl'))
 		{
-			self::__triggerError(sprintf("S3::listDistributions(): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::listDistributions(): [%s] %s",
 			"CloudFront functionality requires SSL"), __FILE__, __LINE__);
 			return false;
 		}
@@ -1286,7 +1286,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			self::__triggerError(sprintf("S3::listDistributions(): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::listDistributions(): [%s] %s",
 			$rest->error['code'], $rest->error['message']), __FILE__, __LINE__);
 			return false;
 		}
@@ -1316,7 +1316,7 @@ class S3
 	{
 		if (!extension_loaded('openssl'))
 		{
-			self::__triggerError(sprintf("S3::listOriginAccessIdentities(): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::listOriginAccessIdentities(): [%s] %s",
 			"CloudFront functionality requires SSL"), __FILE__, __LINE__);
 			return false;
 		}
@@ -1330,7 +1330,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			trigger_error(sprintf("S3::listOriginAccessIdentities(): [%s] %s",
+			trigger_error(sprintf("iwpS3::listOriginAccessIdentities(): [%s] %s",
 			$rest->error['code'], $rest->error['message']), E_USER_WARNING);
 			return false;
 		}
@@ -1350,7 +1350,7 @@ class S3
 	/**
 	* Invalidate objects in a CloudFront distribution
 	*
-	* Thanks to Martin Lindkvist for S3::invalidateDistribution()
+	* Thanks to Martin Lindkvist for iwpS3::invalidateDistribution()
 	*
 	* @param string $distributionId Distribution ID from listDistributions()
 	* @param array $paths Array of object paths to invalidate
@@ -1360,7 +1360,7 @@ class S3
 	{
 		if (!extension_loaded('openssl'))
 		{
-			self::__triggerError(sprintf("S3::invalidateDistribution(): [%s] %s",
+			self::__triggerError(sprintf("iwpS3::invalidateDistribution(): [%s] %s",
 			"CloudFront functionality requires SSL"), __FILE__, __LINE__);
 			return false;
 		}
@@ -1377,7 +1377,7 @@ class S3
 			$rest->error = array('code' => $rest->code, 'message' => 'Unexpected HTTP status');
 		if ($rest->error !== false)
 		{
-			trigger_error(sprintf("S3::invalidate('{$distributionId}',{$paths}): [%s] %s",
+			trigger_error(sprintf("iwpS3::invalidate('{$distributionId}',{$paths}): [%s] %s",
 			$rest->error['code'], $rest->error['message']), E_USER_WARNING);
 			return false;
 		}
@@ -1749,7 +1749,7 @@ final class iwpS3Request
 			array_key_exists('logging', $this->parameters))
 				$this->resource .= $query;
 		}
-		$url = (S3::$useSSL ? 'https://' : 'http://') . ($this->headers['Host'] !== '' ? $this->headers['Host'] : $this->endpoint) . $this->uri;
+		$url = (iwpS3::$useSSL ? 'https://' : 'http://') . ($this->headers['Host'] !== '' ? $this->headers['Host'] : $this->endpoint) . $this->uri;
 
 		//var_dump('bucket: ' . $this->bucket, 'uri: ' . $this->uri, 'resource: ' . $this->resource, 'url: ' . $url);
 
@@ -1757,25 +1757,25 @@ final class iwpS3Request
 		$curl = curl_init();
 		curl_setopt($curl, CURLOPT_USERAGENT, 'S3/php');
 		curl_setopt($curl,CURLOPT_TIMEOUT,600);
-		if (S3::$useSSL)
+		if (iwpS3::$useSSL)
 		{
 			// SSL Validation can now be optional for those with broken OpenSSL installations
-			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, S3::$useSSLValidation ? 1 : 0);
-			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, S3::$useSSLValidation ? 1 : 0);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, iwpS3::$useSSLValidation ? 1 : 0);
+			curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, iwpS3::$useSSLValidation ? 1 : 0);
 
-			if (S3::$sslKey !== null) curl_setopt($curl, CURLOPT_SSLKEY, S3::$sslKey);
-			if (S3::$sslCert !== null) curl_setopt($curl, CURLOPT_SSLCERT, S3::$sslCert);
-			if (S3::$sslCACert !== null) curl_setopt($curl, CURLOPT_CAINFO, S3::$sslCACert);
+			if (iwpS3::$sslKey !== null) curl_setopt($curl, CURLOPT_SSLKEY, iwpS3::$sslKey);
+			if (iwpS3::$sslCert !== null) curl_setopt($curl, CURLOPT_SSLCERT, iwpS3::$sslCert);
+			if (iwpS3::$sslCACert !== null) curl_setopt($curl, CURLOPT_CAINFO, iwpS3::$sslCACert);
 		}
 
 		curl_setopt($curl, CURLOPT_URL, $url);
 		
-		if (S3::$proxy != null && isset(S3::$proxy['host']))
+		if (iwpS3::$proxy != null && isset(iwpS3::$proxy['host']))
 		{
-			curl_setopt($curl, CURLOPT_PROXY, S3::$proxy['host']);
-			curl_setopt($curl, CURLOPT_PROXYTYPE, S3::$proxy['type']);
-			if (isset(S3::$proxy['user'], S3::$proxy['pass']) && $proxy['user'] != null && $proxy['pass'] != null)
-				curl_setopt($curl, CURLOPT_PROXYUSERPWD, sprintf('%s:%s', S3::$proxy['user'], S3::$proxy['pass']));
+			curl_setopt($curl, CURLOPT_PROXY, iwpS3::$proxy['host']);
+			curl_setopt($curl, CURLOPT_PROXYTYPE, iwpS3::$proxy['type']);
+			if (isset(iwpS3::$proxy['user'], iwpS3::$proxy['pass']) && $proxy['user'] != null && $proxy['pass'] != null)
+				curl_setopt($curl, CURLOPT_PROXYUSERPWD, sprintf('%s:%s', iwpS3::$proxy['user'], iwpS3::$proxy['pass']));
 		}
 
 		// Headers
@@ -1796,14 +1796,14 @@ final class iwpS3Request
 			$amz = "\n".implode("\n", $amz);
 		} else $amz = '';
 
-		if (S3::hasAuth())
+		if (iwpS3::hasAuth())
 		{
 			// Authorization string (CloudFront stringToSign should only contain a date)
 			if ($this->headers['Host'] == 'cloudfront.amazonaws.com')
-				$headers[] = 'Authorization: ' . S3::__getSignature($this->headers['Date']);
+				$headers[] = 'Authorization: ' . iwpS3::__getSignature($this->headers['Date']);
 			else
 			{
-				$headers[] = 'Authorization: ' . S3::__getSignature(
+				$headers[] = 'Authorization: ' . iwpS3::__getSignature(
 					$this->verb."\n".
 					$this->headers['Content-MD5']."\n".
 					$this->headers['Content-Type']."\n".
@@ -1956,7 +1956,7 @@ final class iwpS3Request
 
 }
 
-class mwpS3Exception extends Exception {
+class iwpS3Exception extends Exception {
 	function __construct($message, $file, $line, $code = 0)
 	{
 		parent::__construct($message, $code);
@@ -1964,3 +1964,4 @@ class mwpS3Exception extends Exception {
 		$this->line = $line;
 	}
 }
+

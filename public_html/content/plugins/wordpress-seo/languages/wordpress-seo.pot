@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-seo\n"
-"POT-Creation-Date: 2012-08-22 12:41:16+00:00\n"
+"POT-Creation-Date: 2012-09-07 12:17:51+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,101 +12,101 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: admin/ajax.php:71
+#: admin/ajax.php:54
 msgid "Some files could not be removed. Please remove them via FTP."
 msgstr ""
 
-#: admin/class-admin.php:106 admin/class-admin.php:132
+#: admin/class-admin.php:104 admin/class-admin.php:130
 msgid "WordPress SEO Configuration"
 msgstr ""
 
-#: admin/class-admin.php:106 admin/class-admin.php:132
+#: admin/class-admin.php:104 admin/class-admin.php:130
 #: admin/class-metabox.php:721 inc/wpseo-non-ajax-functions.php:226
 msgid "SEO"
 msgstr ""
 
-#: admin/class-admin.php:107
+#: admin/class-admin.php:105
 msgid "Titles &amp; Metas"
 msgstr ""
 
-#: admin/class-admin.php:108 admin/class-opengraph-admin.php:24
+#: admin/class-admin.php:106 admin/class-opengraph-admin.php:24
 #: admin/class-opengraph-admin.php:35 admin/pages/social.php:127
 #: inc/wpseo-non-ajax-functions.php:262
 msgid "Social"
 msgstr ""
 
-#: admin/class-admin.php:109 admin/class-pointers.php:101
+#: admin/class-admin.php:107 admin/class-pointers.php:108
 #: inc/wpseo-non-ajax-functions.php:263
 msgid "XML Sitemaps"
 msgstr ""
 
-#: admin/class-admin.php:110 admin/pages/permalinks.php:12
+#: admin/class-admin.php:108 admin/pages/permalinks.php:12
 #: inc/wpseo-non-ajax-functions.php:264
 msgid "Permalinks"
 msgstr ""
 
-#: admin/class-admin.php:111 admin/pages/internal-links.php:8
+#: admin/class-admin.php:109 admin/pages/internal-links.php:8
 #: inc/wpseo-non-ajax-functions.php:265
 msgid "Internal Links"
 msgstr ""
 
-#: admin/class-admin.php:112 inc/wpseo-non-ajax-functions.php:266
+#: admin/class-admin.php:110 inc/wpseo-non-ajax-functions.php:266
 msgid "RSS"
 msgstr ""
 
-#: admin/class-admin.php:113
+#: admin/class-admin.php:111
 msgid "Import & Export"
 msgstr ""
 
-#: admin/class-admin.php:118 admin/class-admin.php:120
+#: admin/class-admin.php:116 admin/class-admin.php:118
 msgid "Edit files"
 msgstr ""
 
-#: admin/class-admin.php:125 admin/class-pointers.php:63
+#: admin/class-admin.php:123 admin/class-pointers.php:70
 msgid "Dashboard"
 msgstr ""
 
-#: admin/class-admin.php:225
+#: admin/class-admin.php:223
 msgid "Huge SEO Issue: You're blocking access to robots."
 msgstr ""
 
-#: admin/class-admin.php:225
+#: admin/class-admin.php:223
 msgid ""
 "You must %sgo to your Privacy settings%s and set your blog visible to "
 "everyone."
 msgstr ""
 
-#: admin/class-admin.php:225
+#: admin/class-admin.php:223
 msgid "I know, don't bug me."
 msgstr ""
 
-#: admin/class-admin.php:240
+#: admin/class-admin.php:238
 msgid "Settings"
 msgstr ""
 
-#: admin/class-admin.php:276
+#: admin/class-admin.php:274
 msgid "Twitter username (without @)"
 msgstr ""
 
-#: admin/class-admin.php:292
+#: admin/class-admin.php:290
 msgid "WordPress SEO settings"
 msgstr ""
 
-#: admin/class-admin.php:295
+#: admin/class-admin.php:293
 msgid "Title to use for Author page"
 msgstr ""
 
-#: admin/class-admin.php:300
+#: admin/class-admin.php:298
 msgid "Meta description to use for Author page"
 msgstr ""
 
-#: admin/class-admin.php:307
+#: admin/class-admin.php:305
 msgid "Meta keywords to use for Author page"
 msgstr ""
 
 #. translators: this should be an array of stopwords for your language,
 #. separated by comma's.
-#: admin/class-admin.php:478
+#: admin/class-admin.php:500
 msgid ""
 "a,about,above,after,again,against,all,am,an,and,any,are,aren't,as,at,be,"
 "because,been,before,being,below,between,both,but,by,can't,cannot,could,"
@@ -181,45 +181,45 @@ msgstr ""
 msgid "Save Settings"
 msgstr ""
 
-#: admin/class-config.php:198
+#: admin/class-config.php:176
 msgid ""
 "This is a settings export file for the WordPress SEO plugin by Yoast.com"
 msgstr ""
 
-#: admin/class-config.php:521
+#: admin/class-config.php:499
 msgid ""
 "If you are having problems with this plugin, please talk about them in the"
 msgstr ""
 
-#: admin/class-config.php:521
+#: admin/class-config.php:499
 msgid "Support forums"
 msgstr ""
 
-#: admin/class-config.php:522
+#: admin/class-config.php:500
 msgid "Need support?"
 msgstr ""
 
-#: admin/class-config.php:562
+#: admin/class-config.php:540
 msgid "No news items, feed might be broken..."
 msgstr ""
 
-#: admin/class-config.php:571
+#: admin/class-config.php:549
 msgid "Like Yoast on Facebook"
 msgstr ""
 
-#: admin/class-config.php:572
+#: admin/class-config.php:550
 msgid "Follow Yoast on Twitter"
 msgstr ""
 
-#: admin/class-config.php:573
+#: admin/class-config.php:551
 msgid "Circle Yoast on Google+"
 msgstr ""
 
-#: admin/class-config.php:574
+#: admin/class-config.php:552
 msgid "Subscribe by email"
 msgstr ""
 
-#: admin/class-config.php:576
+#: admin/class-config.php:554
 msgid "Latest news from Yoast"
 msgstr ""
 
@@ -428,7 +428,7 @@ msgid "The URL that this page should redirect to."
 msgstr ""
 
 #: admin/class-metabox.php:431 admin/class-metabox.php:444
-#: admin/pages/dashboard.php:91 admin/pages/metas.php:41
+#: admin/pages/dashboard.php:104 admin/pages/metas.php:41
 msgid "General"
 msgstr ""
 
@@ -793,105 +793,106 @@ msgid ""
 "+ but want another description there, write it here."
 msgstr ""
 
-#: admin/class-pointers.php:41
-msgid "Help us improve WordPress SEO"
+#: admin/class-pointers.php:47
+msgid "Help improve WordPress SEO"
 msgstr ""
 
-#: admin/class-pointers.php:42
+#: admin/class-pointers.php:48
 msgid ""
 "You've just installed WordPress SEO by Yoast. Please helps us improve it by "
-"allowing us to gather anonymous usage stats through PressTrends."
+"allowing us to gather anonymous usage stats so we know which configurations, "
+"plugins and themes to test with."
 msgstr ""
 
-#: admin/class-pointers.php:47
-msgid "Allow"
+#: admin/class-pointers.php:53
+msgid "Allow tracking"
 msgstr ""
 
-#: admin/class-pointers.php:52
-msgid "Do not allow"
+#: admin/class-pointers.php:59
+msgid "Do not allow tracking"
 msgstr ""
 
-#: admin/class-pointers.php:63
+#: admin/class-pointers.php:70
 msgid ""
 "This is the WordPress SEO Dashboard, here you can restart this tour or "
 "revert the WP SEO settings to default."
 msgstr ""
 
-#: admin/class-pointers.php:64
+#: admin/class-pointers.php:71
 msgid "More WordPress SEO"
 msgstr ""
 
-#: admin/class-pointers.php:64
+#: admin/class-pointers.php:71
 msgid ""
 "There's more to learn about WordPress & SEO than just using this plugin. "
 "Read our article %1$sthe definitive guide to WordPress SEO%2$s."
 msgstr ""
 
-#: admin/class-pointers.php:65 admin/pages/dashboard.php:105
+#: admin/class-pointers.php:72 admin/pages/dashboard.php:122
 msgid "Webmaster Tools"
 msgstr ""
 
-#: admin/class-pointers.php:65
+#: admin/class-pointers.php:72
 msgid ""
 "Underneath the General Settings, you can add the verification codes for the "
 "different Webmaster Tools programs, I highly encourage you to check out both "
 "Google and Bing's Webmaster Tools."
 msgstr ""
 
-#: admin/class-pointers.php:66
+#: admin/class-pointers.php:73
 msgid "About This Tour"
 msgstr ""
 
-#: admin/class-pointers.php:66
+#: admin/class-pointers.php:73
 msgid ""
 "Clicking Next below takes you to the next page of the tour. If you want to "
 "stop this tour, click \"Close\"."
 msgstr ""
 
-#: admin/class-pointers.php:67
+#: admin/class-pointers.php:74
 msgid "Like this plugin?"
 msgstr ""
 
-#: admin/class-pointers.php:67
+#: admin/class-pointers.php:74
 msgid ""
 "If you like this plugin, please %srate it 5 stars on WordPress.org%s and "
 "consider making a donation by clicking the button on the right!"
 msgstr ""
 
-#: admin/class-pointers.php:68
+#: admin/class-pointers.php:75
 msgid "Newsletter"
 msgstr ""
 
-#: admin/class-pointers.php:69
+#: admin/class-pointers.php:76
 msgid ""
 "If you would like to keep up to date regarding the WordPress SEO plugin and "
 "other plugins by Yoast, subscribe to the newsletter:"
 msgstr ""
 
-#: admin/class-pointers.php:72
+#: admin/class-pointers.php:79
 msgid "Name"
 msgstr ""
 
-#: admin/class-pointers.php:73
+#: admin/class-pointers.php:80
 msgid "Email"
 msgstr ""
 
-#: admin/class-pointers.php:75
+#: admin/class-pointers.php:82
 msgid "Subscribe"
 msgstr ""
 
-#: admin/class-pointers.php:77 admin/class-pointers.php:87
-#: admin/class-pointers.php:97 admin/class-pointers.php:102
-#: admin/class-pointers.php:107 admin/class-pointers.php:112
-#: admin/class-pointers.php:117 admin/class-pointers.php:122
+#: admin/class-pointers.php:84 admin/class-pointers.php:94
+#: admin/class-pointers.php:104 admin/class-pointers.php:109
+#: admin/class-pointers.php:114 admin/class-pointers.php:119
+#: admin/class-pointers.php:124 admin/class-pointers.php:129
 msgid "Next"
 msgstr ""
 
-#: admin/class-pointers.php:81
+#: admin/class-pointers.php:88
 msgid "Title &amp; Description settings"
 msgstr ""
 
-#: admin/class-pointers.php:82
+#: admin/class-pointers.php:89
 msgid ""
 "This is were you set the templates for your titles and descriptions of all "
 "the different types of pages on your blog, be it your homepage, posts & "
@@ -900,84 +901,84 @@ msgid ""
 "is done from here."
 msgstr ""
 
-#: admin/class-pointers.php:83
+#: admin/class-pointers.php:90
 msgid "Templates"
 msgstr ""
 
-#: admin/class-pointers.php:84
+#: admin/class-pointers.php:91
 msgid ""
 "The templates are built using variables, the help tab for all the different "
 "variables available to you to use in these."
 msgstr ""
 
-#: admin/class-pointers.php:85
+#: admin/class-pointers.php:92
 msgid "Sitewide settings"
 msgstr ""
 
-#: admin/class-pointers.php:86
+#: admin/class-pointers.php:93
 msgid ""
 "You can also set some sidewide settings here to add specific meta tags or to "
 "remove some unneeded cruft."
 msgstr ""
 
-#: admin/class-pointers.php:91
+#: admin/class-pointers.php:98
 msgid "Social settings"
 msgstr ""
 
-#: admin/class-pointers.php:92 admin/pages/social.php:132
+#: admin/class-pointers.php:99 admin/pages/social.php:132
 msgid "Facebook OpenGraph"
 msgstr ""
 
-#: admin/class-pointers.php:93
+#: admin/class-pointers.php:100
 msgid ""
 "On this page you can enable the OpenGraph functionality from this plugin, as "
 "well as assign a Facebook user or Application to be the admin of your site, "
 "so you can view the Facebook insights."
 msgstr ""
 
-#: admin/class-pointers.php:94
+#: admin/class-pointers.php:101
 msgid "Read more about %1$sFacebook OpenGraph%2$s."
 msgstr ""
 
-#: admin/class-pointers.php:95
+#: admin/class-pointers.php:102
 msgid "Twitter Cards"
 msgstr ""
 
-#: admin/class-pointers.php:96
+#: admin/class-pointers.php:103
 msgid ""
 "This functionality is currently in beta, but it allows for %1$sTwitter Cards"
 "%2$s."
 msgstr ""
 
-#: admin/class-pointers.php:101
+#: admin/class-pointers.php:108
 msgid ""
 "This plugin adds an XML sitemap to your site. It's automatically updated "
 "when you publish a new post, page or custom post and Google and Bing will be "
 "automatically notified."
 msgstr ""
 
-#: admin/class-pointers.php:101
+#: admin/class-pointers.php:108
 msgid ""
 "Be sure to check whether post types or taxonomies are showing that search "
 "engines shouldn't be indexing, if so, check the box before them to hide them "
 "from the XML sitemaps."
 msgstr ""
 
-#: admin/class-pointers.php:106 admin/pages/permalinks.php:26
+#: admin/class-pointers.php:113 admin/pages/permalinks.php:26
 msgid "Permalink Settings"
 msgstr ""
 
-#: admin/class-pointers.php:106
+#: admin/class-pointers.php:113
 msgid ""
 "All of the options here are for advanced users only, if you don't know "
 "whether you should check any, don't touch them."
 msgstr ""
 
-#: admin/class-pointers.php:111 admin/pages/internal-links.php:54
+#: admin/class-pointers.php:118 admin/pages/internal-links.php:54
 msgid "Breadcrumbs Settings"
 msgstr ""
 
-#: admin/class-pointers.php:111
+#: admin/class-pointers.php:118
 msgid ""
 "If your theme supports my breadcrumbs, as all Genesis and WooThemes themes "
 "as well as a couple of other ones do, you can change the settings for those "
@@ -985,73 +986,73 @@ msgid ""
 "instructions%s."
 msgstr ""
 
-#: admin/class-pointers.php:116
+#: admin/class-pointers.php:123
 msgid "RSS Settings"
 msgstr ""
 
-#: admin/class-pointers.php:116
+#: admin/class-pointers.php:123
 msgid ""
 "This incredibly powerful function allows you to add content to the beginning "
 "and end of your posts in your RSS feed. This helps you gain links from "
 "people who steal your content!"
 msgstr ""
 
-#: admin/class-pointers.php:121
+#: admin/class-pointers.php:128
 msgid "Import &amp; Export"
 msgstr ""
 
-#: admin/class-pointers.php:121
+#: admin/class-pointers.php:128
 msgid ""
 "Just switched over from another SEO plugin? Use the options here to switch "
 "your data over. If you were using some of my older plugins like Robots Meta "
 "&amp; RSS Footer, you can import the settings here too."
 msgstr ""
 
-#: admin/class-pointers.php:121
+#: admin/class-pointers.php:128
 msgid ""
 "If you have multiple blogs and you're happy with how you've configured this "
 "blog, you can export the settings and import them on another blog so you "
 "don't have to go through this process twice!"
 msgstr ""
 
-#: admin/class-pointers.php:126
+#: admin/class-pointers.php:133
 msgid "File Editor"
 msgstr ""
 
-#: admin/class-pointers.php:126
+#: admin/class-pointers.php:133
 msgid ""
 "Here you can edit the .htaccess and robots.txt files, two of the most "
 "powerful files in your WordPress install. Only touch these files if you know "
 "what you're doing!"
 msgstr ""
 
-#: admin/class-pointers.php:127
+#: admin/class-pointers.php:134
 msgid ""
 "The tour ends here, thank you for using my plugin and good luck with your "
 "SEO!<br/><br/>Best,<br/>Joost de Valk - %1$sYoast.com%2$s"
 msgstr ""
 
-#: admin/class-pointers.php:135
+#: admin/class-pointers.php:142
 msgid ""
 "The tour ends here,thank you for using my plugin and good luck with your SEO!"
 "<br/><br/>Best,<br/>Joost de Valk - %1$sYoast.com%2$s"
 msgstr ""
 
-#: admin/class-pointers.php:147
+#: admin/class-pointers.php:154
 msgid "Congratulations!"
 msgstr ""
 
-#: admin/class-pointers.php:148
+#: admin/class-pointers.php:155
 msgid ""
 "You've just installed WordPress SEO by Yoast! Click \"Start Tour\" to view a "
 "quick introduction of this plugins core functionality."
 msgstr ""
 
-#: admin/class-pointers.php:153 admin/pages/dashboard.php:94
+#: admin/class-pointers.php:160 admin/pages/dashboard.php:107
 msgid "Start Tour"
 msgstr ""
 
-#: admin/class-pointers.php:167
+#: admin/class-pointers.php:174
 msgid "Close"
 msgstr ""
 
@@ -1119,111 +1120,127 @@ msgstr ""
 msgid "Include in sitemap?"
 msgstr ""
 
-#: admin/pages/dashboard.php:10
+#: admin/pages/dashboard.php:19
 msgid "General Settings"
 msgstr ""
 
-#: admin/pages/dashboard.php:22 admin/pages/dashboard.php:73
-#: admin/pages/dashboard.php:81 admin/pages/dashboard.php:87
+#: admin/pages/dashboard.php:32 admin/pages/dashboard.php:85
+#: admin/pages/dashboard.php:94 admin/pages/dashboard.php:100
 msgid "Fix it."
 msgstr ""
 
-#: admin/pages/dashboard.php:23
+#: admin/pages/dashboard.php:33
 msgid ""
 "The following file(s) is/are blocking your XML sitemaps from working "
 "properly:"
 msgstr ""
 
-#: admin/pages/dashboard.php:27
+#: admin/pages/dashboard.php:37
 msgid ""
 "Either delete them (this can be done with the \"Fix it\" button) or disable "
 "WP SEO XML sitemaps."
 msgstr ""
 
-#: admin/pages/dashboard.php:39
+#: admin/pages/dashboard.php:49
 msgid "Backed up the original file header.php to header.php.wpseobak, "
 msgstr ""
 
-#: admin/pages/dashboard.php:48
+#: admin/pages/dashboard.php:58
 msgid "removed hardcoded meta description."
 msgstr ""
 
-#: admin/pages/dashboard.php:74
+#: admin/pages/dashboard.php:86
 msgid ""
 "Your theme contains a meta description, which blocks WordPress SEO from "
 "working properly, please delete the following line, or press fix it:"
 msgstr ""
 
-#: admin/pages/dashboard.php:82 admin/pages/dashboard.php:88
+#: admin/pages/dashboard.php:95 admin/pages/dashboard.php:101
 msgid "Ignore."
 msgstr ""
 
-#: admin/pages/dashboard.php:83
+#: admin/pages/dashboard.php:96
 msgid ""
 "You do not have your postname in the URL of your posts and pages, it is "
 "highly recommended that you do. Consider setting your permalink structure to "
 "<strong>/%postname%/</strong>."
 msgstr ""
 
-#: admin/pages/dashboard.php:89
+#: admin/pages/dashboard.php:102
 msgid ""
 "Paging comments is enabled, this is not needed in 999 out of 1000 cases, so "
 "the suggestion is to disable it, to do that, simply uncheck the box before "
 "\"Break comments into pages...\""
 msgstr ""
 
-#: admin/pages/dashboard.php:94
+#: admin/pages/dashboard.php:107
 msgid "Introduction Tour:"
 msgstr ""
 
-#: admin/pages/dashboard.php:95
+#: admin/pages/dashboard.php:108
 msgid "Take this tour to quickly learn about the use of this plugin."
 msgstr ""
 
-#: admin/pages/dashboard.php:98
+#: admin/pages/dashboard.php:111
 msgid "Default Settings:"
 msgstr ""
 
-#: admin/pages/dashboard.php:98
+#: admin/pages/dashboard.php:111
 msgid "Reset Default Settings"
 msgstr ""
 
-#: admin/pages/dashboard.php:99
+#: admin/pages/dashboard.php:112
 msgid ""
 "If you want to restore a site to the default WordPress SEO settings, press "
 "this button."
 msgstr ""
 
-#: admin/pages/dashboard.php:101
+#: admin/pages/dashboard.php:114
+msgid "Tracking"
+msgstr ""
+
+#: admin/pages/dashboard.php:115
+msgid "Allow tracking of this WordPress installs anonymous data."
+msgstr ""
+
+#: admin/pages/dashboard.php:116
+msgid ""
+"To maintain a plugin as big as WordPress SEO, we need to know what we're "
+"dealing: what kinds of other plugins our users are using, what themes, etc. "
+"Please allow us to track that data from your install. It will not track "
+"<em>any</em> user details, so your security and privacy are safe with us."
+msgstr ""
+
+#: admin/pages/dashboard.php:118
 msgid "Security"
 msgstr ""
 
-#: admin/pages/dashboard.php:102
+#: admin/pages/dashboard.php:119
 msgid "Disable the Advanced part of the WordPress SEO meta box"
 msgstr ""
 
-#: admin/pages/dashboard.php:103
+#: admin/pages/dashboard.php:120
 msgid ""
 "Unchecking this box allows authors and editors to redirect posts, noindex "
 "them and do other things you might not want if you don't trust your authors."
 msgstr ""
 
-#: admin/pages/dashboard.php:106
+#: admin/pages/dashboard.php:123
 msgid ""
 "You can use the boxes below to verify with the different Webmaster Tools, if "
 "your site is already verified, you can just forget about these. Enter the "
 "verify meta values for:"
 msgstr ""
 
-#: admin/pages/dashboard.php:107
+#: admin/pages/dashboard.php:124
 msgid "Google Webmaster Tools"
 msgstr ""
 
-#: admin/pages/dashboard.php:108
+#: admin/pages/dashboard.php:125
 msgid "Bing Webmaster Tools"
 msgstr ""
 
-#: admin/pages/dashboard.php:109
+#: admin/pages/dashboard.php:126
 msgid "Alexa Verification ID"
 msgstr ""
 
@@ -1271,39 +1288,47 @@ msgstr ""
 msgid ".htaccess file"
 msgstr ""
 
-#: admin/pages/import.php:53
+#: admin/pages/import.php:158
+msgid "WooThemes SEO framework settings &amp; data successfully imported."
+msgstr ""
+
+#: admin/pages/import.php:189
+msgid "HeadSpace2 data successfully imported"
+msgstr ""
+
+#: admin/pages/import.php:195
 msgid "All in One SEO data successfully imported."
 msgstr ""
 
-#: admin/pages/import.php:59
+#: admin/pages/import.php:201
 msgid "All in One SEO (Old version) data successfully imported."
 msgstr ""
 
-#: admin/pages/import.php:70
+#: admin/pages/import.php:212
 msgid "Robots Meta values imported."
 msgstr ""
 
-#: admin/pages/import.php:83
+#: admin/pages/import.php:225
 msgid "RSS Footer options imported successfully."
 msgstr ""
 
-#: admin/pages/import.php:97
+#: admin/pages/import.php:239
 msgid "Yoast Breadcrumbs options imported successfully."
 msgstr ""
 
-#: admin/pages/import.php:99
+#: admin/pages/import.php:241
 msgid "Yoast Breadcrumbs options could not be found"
 msgstr ""
 
-#: admin/pages/import.php:103
-msgid ", and old data deleted"
+#: admin/pages/import.php:245
+msgid ", and old data deleted."
 msgstr ""
 
-#: admin/pages/import.php:105
-msgid ", and meta keywords data deleted"
+#: admin/pages/import.php:247
+msgid ", and meta keywords data deleted."
 msgstr ""
 
-#: admin/pages/import.php:112
+#: admin/pages/import.php:254
 msgid ""
 "No doubt you've used an SEO plugin before if this site isn't new. Let's make "
 "it easy on you, you can import the data below. If you want, you can import "
@@ -1311,93 +1336,97 @@ msgid ""
 "duplicate data will be imported."
 msgstr ""
 
-#: admin/pages/import.php:113
+#: admin/pages/import.php:255
 msgid ""
 "If you've used another SEO plugin, try the %sSEO Data Transporter%s plugin "
 "to move your data into this plugin, it rocks!"
 msgstr ""
 
-#: admin/pages/import.php:115
+#: admin/pages/import.php:257
 msgid "Import from HeadSpace2?"
 msgstr ""
 
-#: admin/pages/import.php:116
+#: admin/pages/import.php:258
 msgid "Import from All-in-One SEO?"
 msgstr ""
 
-#: admin/pages/import.php:117
+#: admin/pages/import.php:259
 msgid "Import from OLD All-in-One SEO?"
 msgstr ""
 
-#: admin/pages/import.php:119
+#: admin/pages/import.php:260
+msgid "Import from WooThemes SEO framework?"
+msgstr ""
+
+#: admin/pages/import.php:262
 msgid "Delete the old data after import? (recommended)"
 msgstr ""
 
-#: admin/pages/import.php:120 admin/pages/import.php:127
-#: admin/pages/import.php:130 admin/pages/import.php:156
+#: admin/pages/import.php:263 admin/pages/import.php:270
+#: admin/pages/import.php:273 admin/pages/import.php:299
 msgid "Import"
 msgstr ""
 
-#: admin/pages/import.php:123
+#: admin/pages/import.php:266
 msgid "Import settings from other plugins"
 msgstr ""
 
-#: admin/pages/import.php:124
+#: admin/pages/import.php:267
 msgid "Import from Robots Meta (by Yoast)?"
 msgstr ""
 
-#: admin/pages/import.php:125
+#: admin/pages/import.php:268
 msgid "Import from RSS Footer (by Yoast)?"
 msgstr ""
 
-#: admin/pages/import.php:126
+#: admin/pages/import.php:269
 msgid "Import from Yoast Breadcrumbs?"
 msgstr ""
 
-#: admin/pages/import.php:135
+#: admin/pages/import.php:278
 msgid "Export"
 msgstr ""
 
-#: admin/pages/import.php:137
+#: admin/pages/import.php:280
 msgid ""
 "Export your WordPress SEO settings here, to import them again later or to "
 "import them on another site."
 msgstr ""
 
-#: admin/pages/import.php:139
+#: admin/pages/import.php:282
 msgid "Include Taxonomy Metadata"
 msgstr ""
 
-#: admin/pages/import.php:140
+#: admin/pages/import.php:283
 msgid "Export settings"
 msgstr ""
 
-#: admin/pages/import.php:158
+#: admin/pages/import.php:301
 msgid "Import settings by locating <em>settings.zip</em> and clicking"
 msgstr ""
 
-#: admin/pages/import.php:158 admin/pages/import.php:162
+#: admin/pages/import.php:301 admin/pages/import.php:305
 msgid "Import settings"
 msgstr ""
 
-#: admin/pages/import.php:182
+#: admin/pages/import.php:325
 msgid "Settings successfully imported."
 msgstr ""
 
-#: admin/pages/import.php:184 admin/pages/import.php:188
-#: admin/pages/import.php:190
+#: admin/pages/import.php:327 admin/pages/import.php:331
+#: admin/pages/import.php:333
 msgid "Settings could not be imported:"
 msgstr ""
 
-#: admin/pages/import.php:184
+#: admin/pages/import.php:327
 msgid "Unzipping failed."
 msgstr ""
 
-#: admin/pages/import.php:190
+#: admin/pages/import.php:333
 msgid "Upload failed."
 msgstr ""
 
-#: admin/pages/import.php:193
+#: admin/pages/import.php:336
 msgid "Export & Import SEO Settings"
 msgstr ""
 
@@ -2287,7 +2316,7 @@ msgstr ""
 msgid "Page not found"
 msgstr ""
 
-#: frontend/class-frontend.php:842
+#: frontend/class-frontend.php:846
 msgid ""
 "Admin only notice: this page doesn't show a meta description because it "
 "doesn't have one, either write it for this page specifically or go into the "

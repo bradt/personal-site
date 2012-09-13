@@ -38,11 +38,12 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 		$this->author_twitter();
 		// No need to show these when OpenGraph is also showing, as it'd be the same contents and Twitter
 		// would fallback to OpenGraph anyway.
+		$this->image();
+		$options = get_wpseo_options();
 		if ( !isset( $options['opengraph'] ) || !$options['opengraph'] ) {
 			$this->twitter_title();
 			$this->twitter_description();
 			$this->twitter_url();
-			$this->image();
 		}
 
 		do_action('wpseo_twitter');
@@ -121,7 +122,11 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 				$img = apply_filters( 'wpseo_opengraph_image', $featured_img[0] );
 				echo "<meta name='twitter:image' content='".esc_attr( $img )."'>\n";
 			}
-		} 
+		} else {
+			$options = get_wpseo_options();
+			if ( isset( $options['og_frontpage_image'] ) && !empty( $options['og_frontpage_image'] ) )
+				echo "<meta name='twitter:image' content='".esc_attr( $options['og_frontpage_image'] )."'>\n";
+		}
 		
 	}
 }
