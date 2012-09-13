@@ -4,25 +4,6 @@
 get_header(); 
 ?>
 
-<?php
-if ( $_GET['s3setup'] ) {
-	set_time_limit(0);
-	global $wpdb;
-	$sql = "SELECT post_id, meta_value FROM wp_postmeta WHERE meta_key = '_wp_attached_file'";
-	$results = $wpdb->get_results( $sql );
-
-	foreach ( $results as $result ) {
-		$info = array(
-			'bucket' => 'uploads.bradt.ca',
-			'key' => 'content/uploads/' . $result->meta_value
-		);
-		$sql = "INSERT INTO wp_postmeta VALUES ( null, %d, 'amazonS3_info', %s )";
-		$sql = $wpdb->prepare( $sql, $result->post_id, serialize( $info ) );
-		$wpdb->query( $sql );
-	}
-}
-?>
-
 <div class="homepage hp-white">
 
 	<div class="col col-left">
