@@ -43,4 +43,4 @@ if ( $stmt->error ) {
 
 $stmt->close();
 
-mail( 'brad.touesnard@gmail.com', 'New WP Migrate DB Survey Submission', message)
+mail( 'brad.touesnard@gmail.com', 'New WP Migrate DB Survey Submission', print_r( $values, true ) );
