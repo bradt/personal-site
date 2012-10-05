@@ -152,9 +152,13 @@ ul {
 
 /* Header */
 
+.page-main-page #header {
+	padding-bottom: 0;
+}
+
 #header {
 	position: relative;
-	background: #000 url(images/header/tear.gif) repeat-x bottom left;
+	background: #000 url(images/header/tear.gif) repeat-x bottom center;
 	padding-bottom: 75px;
 }
 
@@ -181,17 +185,6 @@ ul {
 	text-indent: -5000px;
 	background: transparent url(images/header/title.gif) no-repeat;
 	height: 51px;
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2),
-	only screen and (-moz-min-device-pixel-ratio: 2),
-	only screen and (-o-min-device-pixel-ratio: 2/1),
-	only screen and (min-device-pixel-ratio: 2) {
-
-	#header h1 a {
-		background-image: url(images/header/title-2x.png);
-        background-size: 281px 51px;
-    }
 }
 
 #header ul.nav {
@@ -221,57 +214,80 @@ ul {
 }
 
 #header div.home {
-	overflow: hidden;
-	margin: 50px 0 40px 0;
-}
-
-#header div.home div.photo {
 	position: relative;
-	float: left;
-	width: 45%;
-	height: 313px;
-	background: url(images/home/photo.jpg) no-repeat top right;
+	padding-top: 50px;
 }
 
-#header div.home div.photo img {
+#header div.home .photo {
+	margin: 0 auto;
+	background: url(images/home/speaking.jpg) no-repeat;
+	width: 597px;
+	height: 398px;
+	position: relative;
+	left: 220px;
+}
+
+#header div.home h1 {
+	overflow: hidden;
+	text-indent: -5000px;
+	background: transparent url(images/home/title.png) no-repeat;
+	width: 520px;
+	height: 203px;
 	position: absolute;
-	top: 128px;
-	right: 161px;
+	top: -20px;
+	left: 50px;
 }
 
-#header div.home .bio {
-	float: left;
-	width: 45%;
-	margin: 20px 0 2em 0;
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (-moz-min-device-pixel-ratio: 2),
+	only screen and (-o-min-device-pixel-ratio: 2/1),
+	only screen and (min-device-pixel-ratio: 2) {
+
+	#header h1 a {
+		background-image: url(images/header/title-2x.png);
+        background-size: 281px 51px;
+    }
+
+    #header div.home h1 {
+		background-image: url(images/home/title@2x.png);
+    	background-size: 520px 203px;
+    }
+
+	#header div.home .photo {
+		background-image: url(images/home/speaking@2x.jpg);
+		background-size: 597px 398px;
+	}
 }
 
-#header div.home .bio h2 {
-	font-weight: 900;
-	font-size: 4em;
-	line-height: 1em;
-	color: #ccc;
-	margin: 0;
-	text-transform: uppercase;
-	text-shadow: -1px -1px 0 #999;
-}
-
-#header div.home .bio h2 span {
+#header div.home h1 span {
 	display: block;
 }
 
-#header div.home .bio a.more {
+#header div.home h1 .fname {
+	margin-left: 0.5em;
+}
+
+#header div.home h1 .lname {
+	font-size: 1.1em;
+}
+
+#header div.home a.more {
 	white-space: nowrap;
 	text-decoration: none;
 	font-size: 0.7em;
 	color: #888;
 }
 
-#header div.home .bio a.more:hover {
+#header div.home a.more:hover {
 	color: #bbb;
 	text-decoration: none;
 }
 
-#header div.home .bio p {
+#header div.home p {
+	position: absolute;
+	top: 220px;
+	left: 50px;
+	width: 40%;
 	margin: 0;
 	font-size: 1.4em;
 	line-height: 1.3em;
@@ -280,15 +296,15 @@ ul {
 	font-family: Lora, Georgia, "Times New Roman", Times, serif;
 }
 
-#header div.home .bio p span {
+#header div.home p span {
 	white-space: nowrap;
 }
 
-#header div.home .bio p a {
+#header div.home p a {
 	color: #bbb;
 }
 
-#header div.home .bio p a:hover {
+#header div.home p a:hover {
 	text-decoration: none;
 	color: #888;
 }

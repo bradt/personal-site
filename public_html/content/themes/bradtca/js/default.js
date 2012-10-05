@@ -137,24 +137,6 @@ var Bradt = {
 		}
 	},
 	
-	homepage: {
-		init: function() {
-			var photo = $('#header .home .photo');
-			if (photo.get(0)) {
-				photo.append('<img src="' + Bradt.template_url + '/images/home/photo-glow.jpg" alt="" />');
-				$('img', photo).hide().fadeIn(2000, Bradt.homepage.fadeIn);
-			}
-		},
-		
-		fadeIn: function() {
-			$(this).fadeIn(1000, Bradt.homepage.fadeOut);
-		},
-		
-		fadeOut: function() {
-			$(this).fadeOut(1000, Bradt.homepage.fadeIn);
-		}
-	},
-	
 	menu: function() {
 		$('#header ul.nav li a').click(function() {
 			$('#header ul.nav li a').removeClass('active');

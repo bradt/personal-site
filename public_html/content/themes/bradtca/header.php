@@ -42,7 +42,7 @@
 	<script src="<?php bloginfo('template_url'); ?>/js/default.js" type="text/javascript"></script>
 	<link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
 	<link rel='openid.delegate' href='http://bradt.wordpress.com/' />
-	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic|La+Belle+Aurore' rel='stylesheet' type='text/css'>
 <?php wp_head(); ?>
 </head>
 
@@ -59,7 +59,9 @@ Annual CSS Naked Day</a> website for more information.</p>
 
 <div id="header">
 	<div class="top">
+		<?php if (!is_page('main-page')) : ?>
 		<h1><a href="<?php bloginfo('url'); ?>"><?php bloginfo('name'); ?></a></h1>
+		<?php endif; ?>
 		<ul class="nav">
 			<li><a href="/about/" <?php echo is_page('about') ? ' class="active"' : ''  ?>>About</a></li>
 			<li><a href="/blog/" <?php echo (is_home() || is_tax( 'post_tag' ) || ( is_single() && 'post' == get_post_type() ) ) ? ' class="active"' : ''  ?>>Blog</a></li>
@@ -73,17 +75,14 @@ Annual CSS Naked Day</a> website for more information.</p>
 	<?php if (is_page('main-page')) : ?>
 	<div class="home">
 		<div class="photo"></div>
-		<div class="bio">
-			<h2>
-				<span class="fname">Brad</span>
-				<span class="lname">Touesnard</span>
-			</h2>
-			<p>
-				Founder of <a href="http://wpappstore.com">WP App Store</a>.
-				<span>Co-founder</span> of <a href="http://www.zenutech.ca/?ref=bradt.ca">Zenutech web hosting</a>.
-				Creative coder living in Halifax,&nbsp;Canada.&nbsp;<a href="/about/" class="more">more &raquo;</a>
-			</p>
-		</div>
+		<h1>
+			<span class="fname">Brad</span> <span class="lname">Touesnard</span>
+		</h1>
+		<p>
+			Founder of <a href="http://wpappstore.com">WP App Store</a>.
+			<span>Co-founder</span> of <a href="http://www.zenutech.ca/?ref=bradt.ca">Zenutech web hosting</a>.
+			Creative coder living in Halifax,&nbsp;Canada.&nbsp;<a href="/about/" class="more">more &raquo;</a>
+		</p>
 	</div>
 	<?php endif; ?>
 </div>
