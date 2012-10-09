@@ -11,7 +11,6 @@ var Bradt = {
 		Bradt.portfolio.init();
 		Bradt.portfolio_list.init();
 		Bradt.safari();
-		Bradt.homepage.init();
 		Bradt.contact.init();
 		Bradt.about.init();
 		Bradt.photos.init();
