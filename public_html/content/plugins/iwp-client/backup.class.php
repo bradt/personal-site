@@ -108,7 +108,8 @@ class IWP_MMB_Backup extends IWP_MMB_Core
       }
       
       if ( (int) @ini_get('max_execution_time') < 1200 ) {
-     	  @set_time_limit(1200); //twenty minutes
+     	  	@ini_set('max_execution_time', 1200);//twenty minutes
+			@set_time_limit(1200); 
      		$changed['execution_time'] = 1;
      	}
      	
@@ -259,11 +260,11 @@ if (is_array($params['account_info'])) { //only if sends from IWP Admin Panel fi
         }
         
     }
-    
+     
   
 function task_now($task_name){
 
-    	 $settings = $this->tasks;
+	 $settings = $this->tasks;
     	 if(!array_key_exists($task_name,$settings)){
     	 	return array('error' => $task_name." does not exist.");
     	 } else {
@@ -352,6 +353,8 @@ function delete_task_now($task_name){
         if (trim($what) == 'db') {
             //Take database backup
             $this->update_status($task_name, $this->statuses['db_dump']);
+			$GLOBALS['fail_safe_db'] = $this->tasks[$task_name]['task_args']['fail_safe_db'];
+
             $db_result = $this->backup_db();
             if ($db_result == false) {
                 return array(
@@ -365,6 +368,7 @@ function delete_task_now($task_name){
                 $this->update_status($task_name, $this->statuses['db_dump'], true);
                 $this->update_status($task_name, $this->statuses['db_zip']);
                 
+				$fail_safe_files = $this->tasks[$task_name]['task_args']['fail_safe_files'];
                 $disable_comp = $this->tasks[$task_name]['task_args']['disable_comp'];
                 $comp_level   = $disable_comp ? '-0' : '-1';
                 
@@ -376,14 +380,27 @@ function delete_task_now($task_name){
                 ob_get_clean();
                 if (!$result) { // fallback to pclzip
                     define('PCLZIP_TEMPORARY_DIR', IWP_BACKUP_DIR . '/');
-                    require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
-                    $archive = new PclZip($backup_file);
-                    if ($disable_comp) {
+                    //require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
+					require_once $GLOBALS['iwp_mmb_plugin_dir'].'/pclzip.class.php';
+                    $archive = new IWPPclZip($backup_file);
+                    /*if ($disable_comp) {
                         $result = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_NO_COMPRESSION);
 						
                     } else {
                         $result = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR);
-                    }
+                    }*/
+					if($fail_safe_files && $disable_comp){
+						 $result = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_NO_COMPRESSION, PCLZIP_OPT_TEMP_FILE_THRESHOLD, 1);
+					}
+					elseif(!$fail_safe_files && $disable_comp){
+						 $result = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_NO_COMPRESSION);
+					}
+					elseif($fail_safe_files && !$disable_comp){
+						 $result = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_TEMP_FILE_THRESHOLD, 1);
+					}
+					else{
+						 $result = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR);
+					}
                     @unlink($db_result);
                     @rmdir(IWP_DB_DIR);
                     if (!$result) {
@@ -554,6 +571,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
         $sys = substr(PHP_OS, 0, 3);
         
         $this->update_status($task_name, $this->statuses['db_dump']);
+		$GLOBALS['fail_safe_db'] = $this->tasks[$task_name]['task_args']['fail_safe_db'];
         $db_result = $this->backup_db();
         
         if ($db_result == false) {
@@ -568,6 +586,8 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
         
         $this->update_status($task_name, $this->statuses['db_dump'], true);
         $this->update_status($task_name, $this->statuses['db_zip']);
+		
+		$fail_safe_files = $this->tasks[$task_name]['task_args']['fail_safe_files'];		
         $disable_comp = $this->tasks[$task_name]['task_args']['disable_comp'];
         $comp_level   = $disable_comp ? '-0' : '-1';
         
@@ -582,14 +602,28 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
         
         if (!$result) {
             define('PCLZIP_TEMPORARY_DIR', IWP_BACKUP_DIR . '/');
-            require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
-            $archive = new PclZip($backup_file);
+            //require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
+			require_once $GLOBALS['iwp_mmb_plugin_dir'].'/pclzip.class.php';
+            $archive = new IWPPclZip($backup_file);
             
-            if ($disable_comp) {
+			/*if ($disable_comp) {
                 $result_db = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_NO_COMPRESSION);
             } else {
                 $result_db = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR);
-            }
+            }*/
+			
+			if($fail_safe_files && $disable_comp){
+				 $result_db = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_NO_COMPRESSION, PCLZIP_OPT_TEMP_FILE_THRESHOLD, 1);
+			}
+			elseif(!$fail_safe_files && $disable_comp){
+				 $result_db = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_NO_COMPRESSION);
+			}
+			elseif($fail_safe_files && !$disable_comp){
+				 $result_db = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR, PCLZIP_OPT_TEMP_FILE_THRESHOLD, 1);
+			}
+			else{
+				 $result_db = $archive->add($db_result, PCLZIP_OPT_REMOVE_PATH, IWP_BACKUP_DIR);
+			}
             
             @unlink($db_result);
             @rmdir(IWP_DB_DIR);
@@ -618,7 +652,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
         
         $exclude_file_data = '';
         
-        if (!empty($exclude)) {
+        if (!empty($exclude) && is_array($exclude)) {
             foreach ($exclude as $data) {
                 if (is_dir(ABSPATH . $data)) {
                     if ($sys == 'WIN')
@@ -670,7 +704,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
         }
         
         //Additional includes?
-        if (!empty($include)) {
+        if (!empty($include) && is_array($include)) {
             foreach ($include as $data) {
                 if ($data) {
                     if ($sys == 'WIN')
@@ -707,13 +741,14 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
             
             if (!isset($archive)) {
                 define('PCLZIP_TEMPORARY_DIR', IWP_BACKUP_DIR . '/');
-                require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
-                $archive = new PclZip($backup_file);
+                //require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
+				require_once $GLOBALS['iwp_mmb_plugin_dir'].'/pclzip.class.php';
+                $archive = new IWPPclZip($backup_file);
             }
             
             //Include paths
             $include_data = array();
-            if (!empty($include)) {
+            if (!empty($include) && is_array($include)) {
                 foreach ($include as $data) {
                     if ($data && file_exists(ABSPATH . $data))
                         $include_data[] = ABSPATH . $data . '/';
@@ -734,12 +769,35 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
                 }
                 closedir($handle);
             }
-            
-            if ($disable_comp) {
-                $result = $archive->add($include_data, PCLZIP_OPT_REMOVE_PATH, ABSPATH, PCLZIP_OPT_NO_COMPRESSION);
-            } else {
-                $result = $archive->add($include_data, PCLZIP_OPT_REMOVE_PATH, ABSPATH);
+			
+			//exclude paths
+			$exclude_data = array();
+            if (!empty($exclude) && is_array($exclude)) {
+                foreach ($exclude as $data) {
+                    if (is_dir(ABSPATH . $data))
+                        $exclude_data[] = $data . '/';
+                    else
+                        $exclude_data[] = $data;
+                }
             }
+            
+            foreach ($remove as $rem) {
+                $exclude_data[] = $rem . '/';
+            }
+            
+			if($fail_safe_files && $disable_comp){
+				$result = $archive->add($include_data, PCLZIP_OPT_REMOVE_PATH, ABSPATH, PCLZIP_OPT_IWP_EXCLUDE, $exclude_data, PCLZIP_OPT_NO_COMPRESSION, PCLZIP_OPT_TEMP_FILE_THRESHOLD, 1);
+			}
+			elseif(!$fail_safe_files && $disable_comp){
+				$result = $archive->add($include_data, PCLZIP_OPT_REMOVE_PATH, ABSPATH, PCLZIP_OPT_IWP_EXCLUDE, $exclude_data, PCLZIP_OPT_NO_COMPRESSION);
+			}
+			elseif($fail_safe_files && !$disable_comp){
+				$result = $archive->add($include_data, PCLZIP_OPT_REMOVE_PATH, ABSPATH, PCLZIP_OPT_IWP_EXCLUDE, $exclude_data,  PCLZIP_OPT_TEMP_FILE_THRESHOLD, 1);
+			}
+			else{
+				$result = $archive->add($include_data, PCLZIP_OPT_REMOVE_PATH, ABSPATH, PCLZIP_OPT_IWP_EXCLUDE, $exclude_data);
+			}
+			
             if (!$result) {
                 @unlink($backup_file);
                 return array(
@@ -748,7 +806,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
             }
             
             //Now exclude paths
-            $exclude_data = array();
+            /*$exclude_data = array();
             if (!empty($exclude)) {
                 foreach ($exclude as $data) {
                     if (is_dir(ABSPATH . $data))
@@ -768,7 +826,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
                 return array(
                     'error' => 'Failed to zip files. pclZip error (' . $archive->error_code . '): .' . $archive->error_string
                 );
-            }
+            }*/
         }
         
         //Reconnect
@@ -799,7 +857,7 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
         global $wpdb;
         $paths   = $this->check_mysql_paths();
         $brace   = (substr(PHP_OS, 0, 3) == 'WIN') ? '"' : '';
-        $command = $brace . $paths['mysqldump'] . $brace . ' --host="' . DB_HOST . '" --user="' . DB_USER . '" --password="' . DB_PASSWORD . '" --add-drop-table --skip-lock-tables "' . DB_NAME . '" > ' . $brace . $file . $brace;
+        $command = $brace . $paths['mysqldump'] . $brace . ' --force --host="' . DB_HOST . '" --user="' . DB_USER . '" --password="' . DB_PASSWORD . '" --add-drop-table --skip-lock-tables "' . DB_NAME . '" > ' . $brace . $file . $brace;
         ob_start();
         $result = $this->iwp_mmb_exec($command);
         ob_get_clean();
@@ -820,46 +878,131 @@ if (isset($account_info['iwp_ftp']) && !empty($account_info['iwp_ftp'])) {
     function backup_db_php($file)
     {
         global $wpdb;
-        $tables = $wpdb->get_results('SHOW TABLES', ARRAY_N);
-        foreach ($tables as $table) {
-            //drop existing table
-            $dump_data    = "DROP TABLE IF EXISTS $table[0];";
-            //create table
-            $create_table = $wpdb->get_row("SHOW CREATE TABLE $table[0]", ARRAY_N);
-            $dump_data .= "\n\n" . $create_table[1] . ";\n\n";
-            
-            $count = $wpdb->get_var("SELECT count(*) FROM $table[0]");
-            if ($count > 100)
-                $count = ceil($count / 100);
-            else if ($count > 0)            
-                $count = 1;                
-                
-            for ($i = 0; $i < $count; $i++) {
-                $low_limit = $i * 100;
-                $qry       = "SELECT * FROM $table[0] LIMIT $low_limit, 100";
-                $rows      = $wpdb->get_results($qry, ARRAY_A);
-                if (is_array($rows)) {
-                    foreach ($rows as $row) {
-                        //insert single row
-                        $dump_data .= "INSERT INTO $table[0] VALUES(";
-                        $num_values = count($row);
-                        $j          = 1;
-                        foreach ($row as $value) {
-                            $value = addslashes($value);
-                            $value = preg_replace("/\n/Ui", "\\n", $value);
-                            $num_values == $j ? $dump_data .= "'" . $value . "'" : $dump_data .= "'" . $value . "', ";
-                            $j++;
-                            unset($value);
-                        }
-                        $dump_data .= ");\n";
-                    }
-                }
-            }
-            $dump_data .= "\n\n\n";
-            
-            unset($rows);
-            file_put_contents($file, $dump_data, FILE_APPEND);
-            unset($dump_data);
+		
+		if(empty($GLOBALS['fail_safe_db'])){
+			$fp = fopen( $file, 'w' );
+			if ( !mysql_ping( $wpdb->dbh ) ) {
+				mysql_connect( DB_HOST, DB_USER, DB_PASSWORD );
+				mysql_select_db( DB_NAME );
+			}
+			$_count = 0;
+			$insert_sql = '';
+			$result = mysql_query( 'SHOW TABLES' );
+			if(!$result)
+			{
+				 return array(
+					'error' => 'MySQL '.mysql_error()." "
+				);
+			}
+			while( $row = mysql_fetch_row( $result ) ) {
+				$tables[]=$row[0];
+				//array_push( $tables, $row[0] );
+			}
+			
+	
+			//$tables = $wpdb->get_results('SHOW TABLES', ARRAY_N);
+			foreach ($tables as $table) {
+				
+				$insert_sql .= "DROP TABLE IF EXISTS $table;";
+				//create table
+				$table_descr_query = mysql_query("SHOW CREATE TABLE `$table`");
+				$fetch_table_descr_row = mysql_fetch_array( $table_descr_query );
+				$insert_sql .= "\n\n" . $fetch_table_descr_row[1] . ";\n\n";
+				
+				fwrite( $fp, $insert_sql );
+				$insert_sql = '';
+				
+				$table_query = mysql_query("SELECT * FROM `$table`");
+				$num_fields = mysql_num_fields($table_query);
+				while ( $fetch_row = mysql_fetch_array( $table_query ) ) {
+					$insert_sql .= "INSERT INTO $table VALUES(";
+					for ( $n=1; $n<=$num_fields; $n++ ) {
+						$m = $n - 1;
+										
+						if ( $fetch_row[$m] === NULL ) {
+							$insert_sql .= "NULL, ";
+						} else {
+							$insert_sql .= "'" . mysql_real_escape_string( $fetch_row[$m] ) . "', ";
+						}
+					}
+					$insert_sql = substr( $insert_sql, 0, -2 );
+					$insert_sql .= ");\n";
+					
+					fwrite( $fp, $insert_sql );
+					$insert_sql = '';
+					
+					// Help keep HTTP alive.
+					$_count++;
+					if ($_count >= 400) {
+						echo ' ';
+						flush();
+						$_count = 0;
+					}
+				} // End foreach $tables.
+				
+				$insert_sql .= "\n\n\n";
+				
+				// testing: mysql_close( $wpdb->dbh );
+				// Verify database is still connected and working properly. Sometimes mysql runs out of memory and dies in the above foreach.
+				// No point in reconnecting as we can NOT trust that our dump was succesful anymore (it most likely was not).
+				if ( @mysql_ping( $wpdb->dbh ) ) { // Still connected to database.
+					mysql_free_result( $table_query ); // Free memory.
+				} /*else { // Database not connected.
+			
+					return false;
+				}*/
+				
+				// Help keep HTTP alive.
+				echo ' ';
+				flush();
+				
+				//unset( $tables[$table_key] );
+			}
+			fclose( $fp );
+			unset ($fp);
+		}
+		else{
+			$tables = $wpdb->get_results('SHOW TABLES', ARRAY_N);
+			foreach ($tables as $table) {
+				//drop existing table
+				$dump_data    = "DROP TABLE IF EXISTS $table[0];";
+				//create table
+				$create_table = $wpdb->get_row("SHOW CREATE TABLE $table[0]", ARRAY_N);
+				$dump_data .= "\n\n" . $create_table[1] . ";\n\n";
+				
+				$count = $wpdb->get_var("SELECT count(*) FROM $table[0]");
+				if ($count > 100)
+					$count = ceil($count / 100);
+				else if ($count > 0)            
+					$count = 1;                
+					
+				for ($i = 0; $i < $count; $i++) {
+					$low_limit = $i * 100;
+					$qry       = "SELECT * FROM $table[0] LIMIT $low_limit, 100";
+					$rows      = $wpdb->get_results($qry, ARRAY_A);
+					if (is_array($rows)) {
+						foreach ($rows as $row) {
+							//insert single row
+							$dump_data .= "INSERT INTO $table[0] VALUES(";
+							$num_values = count($row);
+							$j          = 1;
+							foreach ($row as $value) {
+								$value = addslashes($value);
+								$value = preg_replace("/\n/Ui", "\\n", $value);
+								$num_values == $j ? $dump_data .= "'" . $value . "'" : $dump_data .= "'" . $value . "', ";
+								$j++;
+								unset($value);
+							}
+							$dump_data .= ");\n";
+						}
+					}
+				}
+				$dump_data .= "\n\n\n";
+				
+				unset($rows);
+				file_put_contents($file, $dump_data, FILE_APPEND);
+				unset($dump_data);
+			}
         }
         
         if (filesize($file) == 0 || !is_file($file)) {
@@ -994,8 +1137,9 @@ elseif (isset($task['task_results'][$result_id]['ftp'])) {
             
             if (!$result) { //fallback to pclzip
                 define('PCLZIP_TEMPORARY_DIR', IWP_BACKUP_DIR . '/');
-                require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
-                $archive = new PclZip($backup_file);
+                //require_once ABSPATH . '/wp-admin/includes/class-pclzip.php';
+				require_once $GLOBALS['iwp_mmb_plugin_dir'].'/pclzip.class.php';
+                $archive = new IWPPclZip($backup_file);
                 $result  = $archive->extract(PCLZIP_OPT_PATH, ABSPATH, PCLZIP_OPT_REPLACE_NEWER);
             }
             
@@ -1143,7 +1287,7 @@ elseif (isset($task['task_results'][$result_id]['ftp'])) {
         }
         
         $brace     = (substr(PHP_OS, 0, 3) == 'WIN') ? '"' : '';
-        $command   = $brace . $paths['mysql'] . $brace . ' --host="' . DB_HOST . '" --user="' . DB_USER . '" --password="' . DB_PASSWORD . '" ' . DB_NAME . ' < ' . $brace . $file_name . $brace;
+        $command   = $brace . $paths['mysql'] . $brace . ' --host="' . DB_HOST . '" --user="' . DB_USER . '" --password="' . DB_PASSWORD . '" --default-character-set="utf8" ' . DB_NAME . ' < ' . $brace . $file_name . $brace;
         
         ob_start();
         $result = $this->iwp_mmb_exec($command);
@@ -1165,23 +1309,25 @@ elseif (isset($task['task_results'][$result_id]['ftp'])) {
         // Read in entire file
         $lines         = file($file_name);
         // Loop through each line
-        foreach ($lines as $line) {
-            // Skip it if it's a comment
-            if (substr($line, 0, 2) == '--' || $line == '')
-                continue;
-            
-            // Add this line to the current query
-            $current_query .= $line;
-            // If it has a semicolon at the end, it's the end of the query
-            if (substr(trim($line), -1, 1) == ';') {
-                // Perform the query
-                $result = $wpdb->query($current_query);
-                if ($result === false)
-                    return false;
-                // Reset temp variable to empty
-                $current_query = '';
-            }
-        }
+		if(!empty($lines)){
+			foreach ($lines as $line) {
+				// Skip it if it's a comment
+				if (substr($line, 0, 2) == '--' || $line == '')
+					continue;
+				
+				// Add this line to the current query
+				$current_query .= $line;
+				// If it has a semicolon at the end, it's the end of the query
+				if (substr(trim($line), -1, 1) == ';') {
+					// Perform the query
+					$result = $wpdb->query($current_query);
+					if ($result === false)
+						return false;
+					// Reset temp variable to empty
+					$current_query = '';
+				}
+			}
+		}
         
         @unlink($file_name);
         return true;
@@ -2012,7 +2158,7 @@ function get_next_schedules()
         
         
         //clean_old folder?
-        if ((basename($files[0]) == 'index.php' && count($files) == 1) || (empty($files))) {  //USE  (!empty($files)
+        if ((basename($files[0]) == 'index.php' && count($files) == 1) || (!empty($files))) {  //USE  (!empty($files)
             foreach ($files as $file) {
                 @unlink($file);
             }

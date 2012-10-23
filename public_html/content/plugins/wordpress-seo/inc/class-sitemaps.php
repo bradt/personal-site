@@ -15,7 +15,7 @@ class WPSEO_Sitemaps {
 	private $stylesheet = '';
 
 	/**
-	 * Flag to indicate if this is an invalid or empty sitemap.
+	 * 	Flag to indicate if this is an invalid or empty sitemap.
 	 */
 	private $bad_sitemap = false;
 

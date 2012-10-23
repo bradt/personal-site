@@ -537,9 +537,10 @@ class WPSEO_Frontend {
 
 		$robotsstr = preg_replace( '/^index,follow,?/', '', $robotsstr );
 
-		if ( $robotsstr != '' ) {
-			echo '<meta name="robots" content="' . $robotsstr . '"/>' . "\n";
-		}
+		$robotsstr = apply_filters( 'wpseo_robots', $robotsstr );
+
+		if ( $robotsstr != '' )
+			echo '<meta name="robots" content="' . esc_attr( $robotsstr ) . '"/>' . "\n";
 	}
 
 	/**

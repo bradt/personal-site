@@ -48,6 +48,15 @@ Credits: [Vladimir Prelovac](http://prelovac.com/vladimir) for his worker plugin
 
 == Changelog == 
 
+= 1.1.2 =
+* Respository issue when openSSL is not available, fixed
+* Restore MySQL charset issue fixed
+* Backups will not be removed when sites are re-added
+
+= 1.1.1 =
+* Improved backups
+* Bug fixes
+
 = 1.1.0 =
 * Premium addons bugs fixed
 * Reload data improved

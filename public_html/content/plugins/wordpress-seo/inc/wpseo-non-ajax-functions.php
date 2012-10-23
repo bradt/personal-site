@@ -211,7 +211,7 @@ function wpseo_admin_bar_menu() {
 
 	$focuskw = '';
 	$score   = '';
-	$seo_url = get_admin_url( 'admin.php?page=wpseo_dashboard' );
+	$seo_url = get_admin_url( null, 'admin.php?page=wpseo_dashboard' );
 
 	if ( is_singular() && isset( $post ) && is_object( $post ) && apply_filters( 'wpseo_use_page_analysis', true ) === true ) {
 		$focuskw    = wpseo_get_value( 'focuskw', $post->ID );

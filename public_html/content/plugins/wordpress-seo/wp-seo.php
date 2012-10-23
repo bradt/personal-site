@@ -1,7 +1,7 @@
 <?php 
 /*
 Plugin Name: WordPress SEO
-Version: 1.2.8.4
+Version: 1.2.8.7
 Plugin URI: http://yoast.com/wordpress/seo/#utm_source=wpadmin&utm_medium=plugin&utm_campaign=wpseoplugin
 Description: The first true all-in-one SEO solution for WordPress, including on-page content analysis, XML sitemaps and much more.
 Author: Joost de Valk
@@ -49,7 +49,7 @@ if ( version_compare(PHP_VERSION, '5.2', '<') ) {
 	}
 }
 
-define( 'WPSEO_VERSION', '1.2.8.4' );
+define( 'WPSEO_VERSION', '1.2.8.7' );
 
 $pluginurl = plugin_dir_url( __FILE__ );
 if ( preg_match( '/^https/', $pluginurl ) && !preg_match( '/^https/', get_bloginfo('url') ) )
@@ -93,8 +93,10 @@ function wpseo_admin_init() {
 		update_option( 'wpseo', $options );
 	}
 
-	if ( isset( $options['yoast_tracking'] ) && ( 'on' ==  $options['yoast_tracking'] || true === $options['yoast_tracking'] ) )
+	if ( isset( $options['yoast_tracking'] ) && ( 'on' ==  $options['yoast_tracking'] || true === $options['yoast_tracking'] ) ) {
 		require WPSEO_PATH.'admin/class-tracking.php';
+	}
+
 
 	require WPSEO_PATH.'admin/class-admin.php';
 

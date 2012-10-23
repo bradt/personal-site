@@ -13,7 +13,7 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 		 * Class constructor
 		 */
 		function __construct() {
-			add_action( 'admin_footer', array( $this, 'tracking' ), 99 );
+			add_action( 'admin_head', array( $this, 'tracking' ), 10 );
 
 			// Invalidate the cache when changes are being made.
 			add_action( 'switch_theme', array( $this, 'delete_cache' ) );
@@ -44,6 +44,10 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 		 * Main tracking function.
 		 */
 		function tracking() {
+			global $pagenow;
+			if ( in_array( $pagenow, array('index.php','plugins.php','update-core.php','themes.php') ) === false )
+				return;
+
 			// Start of Metrics
 			global $wpdb;
 
@@ -55,7 +59,7 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 			}
 
 			$data = get_transient( 'yoast_tracking_cache' );
-			if ( ( defined( 'DEBUG_YOAST_TRACKING' ) && DEBUG_YOAST_TRACKING ) || !$data || $data == '' ) {
+			if ( !$data ) {
 
 				$pts = array();
 				foreach ( get_post_types( array( 'public' => true ) ) as $pt ) {
@@ -138,7 +142,7 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 				wp_remote_post( 'https://tracking.yoast.com/', $args );
 
 				// Store for a week, then push data again.
-				set_transient( 'yoast_tracking_cache', $data, 7 * 60 * 60 * 24 );
+				set_transient( 'yoast_tracking_cache', true, 7 * 60 * 60 * 24 );
 			}
 		}
 	}

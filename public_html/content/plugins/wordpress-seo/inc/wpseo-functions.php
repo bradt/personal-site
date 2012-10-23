@@ -152,26 +152,36 @@ function wpseo_replace_vars( $string, $args, $omit = array() ) {
 
 	$replacements = array(
 		'%%date%%'                      => $date,
-		'%%title%%'                     => stripslashes( $r->post_title ),
-		'%%excerpt%%'                   => ( !empty( $r->post_excerpt ) ) ? strip_tags( $r->post_excerpt ) : utf8_encode( substr( strip_shortcodes( strip_tags( utf8_decode( $r->post_content ) ) ), 0, 155 ) ),
-		'%%excerpt_only%%'              => strip_tags( $r->post_excerpt ),
-		'%%category%%'                  => wpseo_get_terms( $r->ID, 'category' ),
-		'%%category_description%%'      => !empty( $r->taxonomy ) ? trim( strip_tags( get_term_field( 'description', $r->term_id, $r->taxonomy ) ) ) : '',
-		'%%tag_description%%'           => !empty( $r->taxonomy ) ? trim( strip_tags( get_term_field( 'description', $r->term_id, $r->taxonomy ) ) ) : '',
-		'%%term_description%%'          => !empty( $r->taxonomy ) ? trim( strip_tags( get_term_field( 'description', $r->term_id, $r->taxonomy ) ) ) : '',
-		'%%term_title%%'                => $r->name,
-		'%%focuskw%%'                   => wpseo_get_value( 'focuskw', $r->ID ),
-		'%%tag%%'                       => wpseo_get_terms( $r->ID, 'post_tag' ),
-		'%%modified%%'                  => mysql2date( get_option( 'date_format' ), $r->post_modified ),
-		'%%id%%'                        => $r->ID,
-		'%%name%%'                      => get_the_author_meta( 'display_name', !empty( $r->post_author ) ? $r->post_author : get_query_var( 'author' ) ),
-		'%%userid%%'                    => !empty( $r->post_author ) ? $r->post_author : get_query_var( 'author' ),
 		'%%searchphrase%%'              => esc_html( get_query_var( 's' ) ),
 		'%%page%%'                      => ( $max_num_pages > 1 && $pagenum > 1 ) ? sprintf( $sep . ' ' . __( 'Page %d of %d', 'wordpress-seo' ), $pagenum, $max_num_pages ) : '',
 		'%%pagetotal%%'                 => $max_num_pages,
 		'%%pagenumber%%'                => $pagenum,
-		'%%caption%%'                   => $r->post_excerpt,
 	);
+
+	if ( isset( $r->ID ) ) {
+		$replacements = array_merge( $replacements, array(
+			'%%caption%%'                   => $r->post_excerpt,
+			'%%category%%'                  => wpseo_get_terms( $r->ID, 'category' ),
+			'%%excerpt%%'                   => ( !empty( $r->post_excerpt ) ) ? strip_tags( $r->post_excerpt ) : utf8_encode( substr( strip_shortcodes( strip_tags( utf8_decode( $r->post_content ) ) ), 0, 155 ) ),
+			'%%excerpt_only%%'              => strip_tags( $r->post_excerpt ),
+			'%%focuskw%%'                   => wpseo_get_value( 'focuskw', $r->ID ),
+			'%%id%%'                        => $r->ID,
+			'%%modified%%'                  => mysql2date( get_option( 'date_format' ), $r->post_modified ),
+			'%%name%%'                      => get_the_author_meta( 'display_name', !empty( $r->post_author ) ? $r->post_author : get_query_var( 'author' ) ),
+			'%%tag%%'                       => wpseo_get_terms( $r->ID, 'post_tag' ),
+			'%%title%%'                     => stripslashes( $r->post_title ),
+			'%%userid%%'                    => !empty( $r->post_author ) ? $r->post_author : get_query_var( 'author' ),
+		) );
+	}
+
+	if ( !empty( $r->taxonomy ) ) {
+		$replacements = array_merge( $replacements, array(
+			'%%category_description%%'      => trim( strip_tags( get_term_field( 'description', $r->term_id, $r->taxonomy ) ) ),
+			'%%tag_description%%'           => trim( strip_tags( get_term_field( 'description', $r->term_id, $r->taxonomy ) ) ),
+			'%%term_description%%'          => trim( strip_tags( get_term_field( 'description', $r->term_id, $r->taxonomy ) ) ),
+			'%%term_title%%'                => $r->name,
+		) );
+	}
 
 	foreach ( $replacements as $var => $repl ) {
 		if ( !in_array( $var, $omit ) )
