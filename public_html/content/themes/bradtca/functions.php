@@ -111,12 +111,3 @@ function bt_tiny_mce_before_init( $init ) {
 	return $init;
 }
 add_filter('tiny_mce_before_init', 'bt_tiny_mce_before_init');
-
-// Use custom post type for Twitter Tools plugin
-add_filter( 'aktt_do_tweet_post', 'bt_aktt_do_tweet_post' );
-
-function bt_aktt_do_tweet_post( $post_data ) {
-	unset( $post_data['post_category'] );
-	$post_data['post_type'] = 'tweet';
-	return $post_data;
-}
