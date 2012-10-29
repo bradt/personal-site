@@ -905,7 +905,7 @@ class AKTT {
 					$usernames = wp_get_object_terms($t->post->ID, 'aktt_accounts');
 					$username = $usernames[0]->slug;
 					
-					$tweet = self::download_tweet($_GET['tweet_id'], $usename);
+					$tweet = self::download_tweet($_GET['tweet_id'], $username);
 					
 					if (!is_a($tweet, 'stdClass')) {
 						wp_die('Failed to download tweet');
@@ -1114,7 +1114,7 @@ jQuery(function($) {
 		}
 		return $tweet;
 	}
-
+	
 	static function gmt_to_wp_time($gmt_time) {
 		$timezone_string = get_option('timezone_string');
 		if (!empty($timezone_string)) {
