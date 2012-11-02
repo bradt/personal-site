@@ -50,7 +50,7 @@ get_header();
 	</div>
 
 	<div class="col col-right">
-		<?/*
+		<?php /*
 		<div class="latest-project">
 			<h3>Featured Project</h3>
 			<?php
@@ -69,7 +69,7 @@ get_header();
 				<p class="link"><a href="/portfolio/">More projects &raquo;</a></p>
 			</div>
 		</div>
-		*/?>
+		*/ ?>
 		<div class="microblog">
 			<h3>Tweets</h3>
 			<ul class="posts">
