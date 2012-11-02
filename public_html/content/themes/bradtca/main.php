@@ -50,6 +50,7 @@ get_header();
 	</div>
 
 	<div class="col col-right">
+		<?/*
 		<div class="latest-project">
 			<h3>Featured Project</h3>
 			<?php
@@ -68,6 +69,7 @@ get_header();
 				<p class="link"><a href="/portfolio/">More projects &raquo;</a></p>
 			</div>
 		</div>
+		*/?>
 		<div class="microblog">
 			<h3>Tweets</h3>
 			<ul class="posts">
@@ -169,6 +171,7 @@ get_header();
 		</div>
 		<div class="books">
 			<h3>Books I'm Reading</h3>
+      		<script src="http://www.goodreads.com/review/grid_widget/13642489.Brad's%20currently-reading%20book%20montage?cover_size=medium&hide_link=true&hide_title=true&num_books=10&order=d&shelf=currently-reading&sort=date_added&widget_id=1351879486" type="text/javascript" charset="utf-8"></script>
 		</div>
 	</div>
 
@@ -193,17 +196,17 @@ get_header();
 				while ($r->have_posts()) :
 					$r->the_post();
 					
-					list($image_src, $w, $h) = wp_get_attachment_image_src(get_the_ID(), 'photo_home_hd');
 					$meta = wp_get_attachment_metadata(get_the_ID());
 					$date_taken = gmdate( 'M j, Y', ( $meta['image_meta']['created_timestamp'] + ( get_option( 'gmt_offset' ) * 3600 ) ) );
 					?>
 					<li>
-						<a href="<?php the_permalink(); ?>" style="background-image: url(<?php echo $image_src; ?>);">
-							<span class="desc">
-								<span class="title"><?php the_title(); ?></span>
-								<span class="date"><?php echo $date_taken; ?></span>
-							</span>
+						<a href="<?php the_permalink(); ?>">
+							<?php echo wp_get_attachment_image( get_the_ID(), 'photo_home_hd' ); ?>
 						</a>
+						<div class="desc">
+							<span class="title"><?php the_title(); ?></span>
+							<span class="date"><?php echo $date_taken; ?></span>
+						</div>
 					</li>
 					<?php
 				endwhile;

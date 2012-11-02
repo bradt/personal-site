@@ -7,7 +7,7 @@
 	<meta name="generator" content="WordPress <?php bloginfo('version'); ?>" />
 	<meta name="google-site-verification" content="-HPbjD9Y0jlfGiwCKijuBuQ3P6hyDw1LyXyY9T6ytjg" />
 <?php wp_get_archives('type=monthly&format=link'); ?>
-	<link rel="shortcut icon" href="/favicon.ico" />
+	<link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/images/favicon-32.png" />
 	<link rel="alternate" type="application/rss+xml" title="Blog" href="<?php bloginfo('rss2_url'); ?>" />
 	<link rel="alternate" type="application/rss+xml" title="Tweets" href="<?php echo my_feed_url('microblog'); ?>" />
 	<link rel="alternate" type="application/rss+xml" title="Photos" href="<?php echo my_feed_url('photos'); ?>" />

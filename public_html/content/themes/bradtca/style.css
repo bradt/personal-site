@@ -231,32 +231,11 @@ ul {
 	overflow: hidden;
 	text-indent: -5000px;
 	background: transparent url(images/home/title.png) no-repeat;
-	width: 520px;
-	height: 203px;
+	width: 511px;
+	height: 160px;
 	position: absolute;
-	top: -20px;
+	top: 30px;
 	left: 50px;
-}
-
-@media only screen and (-webkit-min-device-pixel-ratio: 2),
-	only screen and (-moz-min-device-pixel-ratio: 2),
-	only screen and (-o-min-device-pixel-ratio: 2/1),
-	only screen and (min-device-pixel-ratio: 2) {
-
-	#header h1 a {
-		background-image: url(images/header/title-2x.png);
-        background-size: 281px 51px;
-    }
-
-    #header div.home h1 {
-		background-image: url(images/home/title@2x.png);
-    	background-size: 520px 203px;
-    }
-
-	#header div.home .photo {
-		background-image: url(images/home/speaking@2x.jpg);
-		background-size: 597px 398px;
-	}
 }
 
 #header div.home h1 span {
@@ -273,14 +252,10 @@ ul {
 
 #header div.home a.more {
 	white-space: nowrap;
-	text-decoration: none;
-	font-size: 0.7em;
-	color: #888;
+	font-size: 0.8em;
 }
 
 #header div.home a.more:hover {
-	color: #bbb;
-	text-decoration: none;
 }
 
 #header div.home p {
@@ -292,8 +267,7 @@ ul {
 	font-size: 1.4em;
 	line-height: 1.3em;
 	font-weight: 200;
-	color: #bbb;
-	font-family: Lora, Georgia, "Times New Roman", Times, serif;
+	color: #fff;
 }
 
 #header div.home p span {
@@ -306,7 +280,7 @@ ul {
 
 #header div.home p a:hover {
 	text-decoration: none;
-	color: #888;
+	color: #fff;
 }
 
 /* Content */
@@ -551,7 +525,7 @@ ul {
 
 
 .hp-green {
-	color: #fff;
+	color: #ddd;
 	background: #0a2a11 url(images/home/tear-green-bottom.gif) repeat-x bottom left;
 }
 
@@ -636,60 +610,55 @@ ul {
 	margin-bottom: 0.5em;
 }
 
+.hp-green .books .gr_grid_book_container {
+	float: left; 
+	width: 98px; 
+	height: 160px;
+	margin-right: 10px;
+	padding: 0px 0px;
+	overflow: hidden;
+}
+
 .hp-green .photos .wrapper {
 	width: 520px;
 	margin: 0 auto;
 }
 
 .hp-green .photos .recent li {
-	background-color: #051508;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	padding: 10px;
+	background-color: #14401e;	
 	width: 500px;
+	padding: 10px;
+	margin-top: 1em;
 }
 
 .hp-green .photos .recent li a {
-	position: relative;
-	display: block;
-	overflow: hidden;
-	height: 240px;
-	background-position: center center;
-	color: #fff;
-	text-decoration: none;
-	font-style: italic;
-	font-size: 0.9em;
-	background-color: #19652a;
-}
-
-.hp-green .photos .recent li a .desc {
-	opacity: 0.6;
-	background-color: #000;
-	position: absolute;
-	bottom: 0;
-	left: 0;
 	display: block;
 	width: 500px;
-	height: 1.5em;
-	padding-top: 0.3em;
-	overflow: hidden;
+	height: 240px;
+	color: #fff;
 }
 
-.hp-green .photos .recent li a .desc .title {
+.hp-green .photos .recent li .desc {
+	font-style: italic;
+	font-size: 0.9em;
+	overflow: hidden;
+	padding-top: 0.5em;
+}
+
+.hp-green .photos .recent li .desc .title {
 	display: block;
 	width: 60%;
 	float: left;
-	padding-left: 10px;
 	white-space: nowrap;
 	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
-.hp-green .photos .recent li a .desc .date {
+.hp-green .photos .recent li .desc .date {
 	display: block;
 	width: 30%;
 	float: right;
 	text-align: right;
-	padding-right: 10px;
 }
 
 
@@ -1847,4 +1816,32 @@ body.page-about .post {
 
 body.page-about .promo {
 	font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
+	background: url(images/about/banner.jpg) no-repeat;
+	height: 293px;
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio: 2),
+	only screen and (-moz-min-device-pixel-ratio: 2),
+	only screen and (-o-min-device-pixel-ratio: 2/1),
+	only screen and (min-device-pixel-ratio: 2) {
+
+	#header h1 a {
+		background-image: url(images/header/title-2x.png);
+        background-size: 281px 51px;
+    }
+
+    #header div.home h1 {
+		background-image: url(images/home/title@2x.png);
+    	background-size: 511px 160px;
+    }
+
+	#header div.home .photo {
+		background-image: url(images/home/speaking@2x.jpg);
+		background-size: 597px 398px;
+	}
+
+	body.page-about .promo {
+		background-image: url(images/about/banner@2x.jpg);
+		background-size: 993px 293px;
+	}
 }

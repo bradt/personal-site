@@ -10,18 +10,13 @@ var Bradt = {
 		Bradt.menu();
 		Bradt.portfolio.init();
 		Bradt.portfolio_list.init();
-		Bradt.safari();
 		Bradt.contact.init();
 		Bradt.about.init();
 		Bradt.photos.init();
 		
 		$('.active-plugins .plugin').gridify();
 	},
-	
-	safari: function() {
-		$('.homepage .books').append('<div id="ShelfariWidget85430"><a href="http://www.shelfari.com/">Shelfari: Book reviews on your book blog</a><script src="http://www.shelfari.com/ws/85430/widget.js" type="text/javascript" language="javascript"></script><noscript><p>Find new <a href="http://www.shelfari.com/books">books</a> and literate friends with Shelfari, the online <a href="http://www.shelfari.com/">book club</a>.</p></noscript></div>');
-	},
-	
+
 	photos: {
 		init: function() {
 			if (!$('#content.photos').get(0)) return;
