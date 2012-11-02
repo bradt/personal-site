@@ -17,7 +17,7 @@
 	<?php endif; ?>
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 	<?php //if ( !is_naked_day(9) ) : ?>
-	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2012110201" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2012110202" media="screen" />
 	<!--[if lt IE 7]>
 	<link rel="stylesheet" type="text/css" href="<?php bloginfo('template_url'); ?>/style_ie6.css" />
 	<![endif]-->

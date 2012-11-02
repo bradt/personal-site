@@ -230,7 +230,7 @@ ul {
 #header div.home h1 {
 	overflow: hidden;
 	text-indent: -5000px;
-	background: transparent url(images/home/title.png) no-repeat;
+	background: transparent url(images/home/title.png?2012110201) no-repeat;
 	width: 511px;
 	height: 160px;
 	position: absolute;
@@ -1831,7 +1831,7 @@ body.page-about .promo {
     }
 
     #header div.home h1 {
-		background-image: url(images/home/title@2x.png);
+		background-image: url(images/home/title@2x.png?2012110201);
     	background-size: 511px 160px;
     }
 
