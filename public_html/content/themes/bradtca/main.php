@@ -70,31 +70,15 @@ get_header();
 			</div>
 		</div>
 		*/ ?>
+		<?php if ( class_exists( 'AKTT' ) ) : ?>
 		<div class="microblog">
 			<h3>Tweets</h3>
-			<ul class="posts">
-			<?php
-			$recent_posts = get_posts('post_type=tweet&numberposts=5');
-			foreach ($recent_posts as $post) :
-				setup_postdata($post);
-				$timezone = my_timezone();
-				$time = get_post_time('G', true, $post);
-				?>
-				<li class="hentry">
-					<?php my_microblog_content(); ?>
-					<span class="date published" title="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>"><?php echo human_time_diff($time); ?> ago</span>
-					<!-- <a id="post-<?php the_ID(); ?>" href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title(); ?>">#</a> -->
-				</li>
-				<?php
-			endforeach;
-			?>
-			</ul>
+			<?php echo aktt_shortcode_tweets(array()); ?>
 			<ul class="actions">
-				<li class="browse"><a href="http://twitter.com/bradt">Browse all entries &raquo;</a></li>
-				<li class="rss icon feed"><a href="<?php echo my_feed_url('microblog'); ?>" rel="alternate" type="application/rss+xml">Subscribe (RSS)</a></li>
-				<li class="icon twitter"><a href="http://twitter.com/bradt">Follow me on Twitter</a></li>
+				<li class="icon twitter"><a href="http://twitter.com/bradt">Follow me on Twitter &raquo;</a></li>
 			</ul>
 		</div>
+		<?php endif; ?>
 		<div class="sponsors">
 			<h3>Sponsors</h3>
 			<?php tla_ads(); ?>
@@ -124,7 +108,6 @@ get_header();
 					<span class="date published" title="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>"><?php the_time('F jS, Y') ?></span>
 					<p class="entry-summary">
 						<?php my_excerpt(100) ?>
-						<a href="<?php the_permalink() ?>" class="read-more">more &raquo;</a>
 					</p>
 				</li>
 				<?php
@@ -144,7 +127,7 @@ get_header();
 			<?php
 			$lfm = new LastFmRecords();
 			$albums = $lfm->getalbums();
-			for ($i = 0; $i < 2; $i++) {
+			for ($i = 0; $i < 4; $i++) {
 				$album = $albums[$i];
 				if ($album['coverimage']['large']) {
 					$coverimage = $album['coverimage']['large'];
@@ -158,8 +141,8 @@ get_header();
 				?>
 				<li>
 					<div class="cdcover"><?php if (isset($coverimage)) : ?><img src="<?php echo $coverimage; ?>" alt="" width="152" height="152" /><?php endif; ?></div>
+					<h6><?php echo $album['artist']; ?></h6>
 					<h5><?php echo $album['title']; ?></h5>
-					<p>by <?php echo $album['artist']; ?></p>
 				</li>
 				<?php
 			}
@@ -172,6 +155,10 @@ get_header();
 		<div class="books">
 			<h3>Books I'm Reading</h3>
       		<script src="http://www.goodreads.com/review/grid_widget/13642489.Brad's%20currently-reading%20book%20montage?cover_size=medium&hide_link=true&hide_title=true&num_books=10&order=d&shelf=currently-reading&sort=date_added&widget_id=1351879486" type="text/javascript" charset="utf-8"></script>
+			<ul class="actions">
+				<li class="browse"><a href="http://goodreads.com/bradt">Browse all my books &raquo;</a></li>
+			</ul>
+
 		</div>
 	</div>
 

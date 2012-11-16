@@ -13,8 +13,16 @@ var Bradt = {
 		Bradt.contact.init();
 		Bradt.about.init();
 		Bradt.photos.init();
+		Bradt.home.init();
 		
 		$('.active-plugins .plugin').gridify();
+	},
+
+	home: {
+		init: function() {
+			if (!$('.homepage').get(0)) return;
+			$('.albums li').gridify(2);
+		}
 	},
 
 	photos: {

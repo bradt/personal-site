@@ -31,13 +31,17 @@ body {
 }
 
 a {
-	color: #3333cc;
+	color: #21218A;
 	text-decoration: none;
 }
 
 a:hover {
-	color: #0000cc;
+	color: #3333cc;
 	text-decoration: underline;
+}
+
+a:visited {
+	color: #4F4F7D;
 }
 
 form {
@@ -375,13 +379,13 @@ ul {
 	padding-left: 22px;
 }
 
-.homepage .actions .rss,
-.homepage .actions .twitter {
+.homepage .actions .rss {
 	font-style: italic;
 	font-size: 0.9em;
 }
 
 .homepage .actions .twitter {
+	font-weight: bold;
 	background-image: url(images/icons/twitter.gif);
 }
 
@@ -513,14 +517,14 @@ ul {
 	margin: 0 0 3em 0;
 }
 
-.hp-white .microblog .date {
+.hp-white .microblog .aktt_tweet_time {
 	color: #666;
 	font-size: 0.8em;
 	white-space: nowrap;
 }
 
-.hp-white .microblog .posts li {
-	margin-top: 1em;
+.hp-white .microblog ul li {
+	margin-top: 1.5em;
 }
 
 
@@ -530,15 +534,17 @@ ul {
 }
 
 .hp-green h3 {
-	color: #18cb3f;
+	color: #1A632A;
+	font-size: 1.6em;
+	text-shadow: 1px 1px 0 #071C0B;
 }
 
 .hp-green a {
-	color: #eaea02;
+	color: #5EE07B;
 }
 
 .hp-green a:hover {
-	color: #ffff00;
+	color: #22A83F	;
 }
 
 .hp-green .col-left {
@@ -560,8 +566,8 @@ ul {
 }
 
 .hp-green .travel .date {
-	font-size: 0.9em;
-	color: #18cb3f;
+	font-size: 0.8em;
+	color: #29753A;
 	white-space: nowrap;
 }
 
@@ -578,28 +584,43 @@ ul {
 	margin: 0;
 }
 
+.hp-green .music .albums {
+	overflow: hidden;
+}
+
 .hp-green .music .albums li {
 	overflow: hidden;
-	margin-top: 2em;
+	margin-top: 1em;
+	float: left;
+	width: 152px;
+	margin-right: 1em;
+	background-color: #14401e;	
+	padding: 10px;
+}
+
+.hp-green .music .albums li:nth-of-type(2n) {
+	margin-right: 0;
+}
+
+.hp-green .music .albums li:nth-of-type(3n) {
+	clear: left;
 }
 
 .hp-green .music .albums li .cdcover {
 	width: 152px;
 	height: 152px;
 	background-color: #19652a;
-	float: left;
-	margin-right: 10px;
 }
 
 .hp-green .music .albums li h5 {
 	margin: 0;
-	font-size: 1.1em;
+	font-weight: normal;
 }
 
-.hp-green .music .albums li p {
-	margin: 0.2em 0 0 0;
+.hp-green .music .albums li h6 {
+	margin: 0.5em 0 0 0;
 	font-size: 0.9em;
-	color: #18cb3f;
+	color: #29753A;
 }
 
 .hp-green .books {
@@ -610,13 +631,22 @@ ul {
 	margin-bottom: 0.5em;
 }
 
+.hp-green .books .gr_grid_container {
+	overflow: hidden;
+}
+
 .hp-green .books .gr_grid_book_container {
 	float: left; 
 	width: 98px; 
 	height: 160px;
-	margin-right: 10px;
+	margin: 0 10px 10px 0;
 	padding: 0px 0px;
 	overflow: hidden;
+}
+
+.hp-green .books .gr_grid_book_container img {
+	height: 148px;
+	width: auto;
 }
 
 .hp-green .photos .wrapper {
