@@ -799,8 +799,9 @@ ul.posts {
 
 .post pre {
 	overflow: auto;
-	line-height: 1.3em;
-	height: 100%;
+	line-height: 1.5em;
+	background-color: #f7f7f7;
+	padding: 2em;
 }
 
 .post .entry-summary,
