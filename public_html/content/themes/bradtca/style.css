@@ -802,6 +802,26 @@ ul.posts {
 	line-height: 1.5em;
 	background-color: #f7f7f7;
 	padding: 2em;
+	box-sizing: border-box;
+}
+
+.post pre.prettyprint {
+	border: 0;
+	padding: 1.5em 1em;
+	white-space: pre !important;
+}
+
+.post .prettyprint.theme-balupton {
+	font-size: 16px;
+	line-height: 22px;
+}
+
+.post .prettyprint li > * {
+	font-size: 16px;
+}
+
+.post .prettyprint ol.linenums {
+	font-size: 14px;
 }
 
 .post .entry-summary,

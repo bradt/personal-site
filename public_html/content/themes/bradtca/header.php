@@ -17,29 +17,12 @@
 	<?php endif; ?>
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 	<?php //if ( !is_naked_day(9) ) : ?>
-	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2012120901" media="screen" />
-	<!--[if lt IE 7]>
-	<link rel="stylesheet" type="text/css" href="<?php bloginfo('template_url'); ?>/style_ie6.css" />
-	<![endif]-->
-	<!--[if IE 7]>
-	<style type="text/css">
-	.post pre {
-		overflow:visible;
-		overflow-x:auto;
-		overflow-y:hidden;
-		padding-bottom: 15px;
-	}
-	.hp-green .photos .falbum-recent li a .desc {
-		display: none;
-	}
-	#folio div.scr {
-		width: 948px;
-	}
-	</style>
-	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2012120902" media="screen" />
 	<?php //endif; ?>
-	<script src="<?php bloginfo('template_url'); ?>/js/jquery.js" type="text/javascript"></script>
-	<script src="<?php bloginfo('template_url'); ?>/js/default.js?2012111601" type="text/javascript"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+	<script type="text/javascript" src="http://balupton.github.com/jquery-syntaxhighlighter/scripts/jquery.syntaxhighlighter.min.js"></script>
+	<script type="text/javascript">$.SyntaxHighlighter.init({'wrapLines':false,'stripInitialWhitespace': true});</script>
+	<script src="<?php bloginfo('template_url'); ?>/js/default.js?2012120901" type="text/javascript"></script>
 	<link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
 	<link rel='openid.delegate' href='http://bradt.wordpress.com/' />
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic|La+Belle+Aurore' rel='stylesheet' type='text/css'>
