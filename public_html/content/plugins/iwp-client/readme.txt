@@ -46,7 +46,17 @@ Credits: [Vladimir Prelovac](http://prelovac.com/vladimir) for his worker plugin
 4. One-click access to WordPress admin panels
 5. One-click updates
 
-== Changelog == 
+== Changelog ==
+
+= 1.1.4 =
+* Bug in command line backup fixed
+
+= 1.1.3 =
+* Backup improved and optimize table while backing up fixed
+* Excluding wp-content/cache & wp-content/w3tc/ by default
+* Amazon S3 backup improved
+* pclZip functions naming problem fixed
+* get_themes incompatibility fixed
 
 = 1.1.2 =
 * Respository issue when openSSL is not available, fixed

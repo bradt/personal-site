@@ -1460,34 +1460,34 @@
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
           }
 
           // ----- Get the value
-          $v_result_list[$p_options_list[$i]] = PclZipUtilTranslateWinPath($p_options_list[$i+1], FALSE);
+          $v_result_list[$p_options_list[$i]] = IWPPclZipUtilTranslateWinPath($p_options_list[$i+1], FALSE);
           $i++;
         break;
 
         case PCLZIP_OPT_TEMP_FILE_THRESHOLD :
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
             return IWPPclZip::errorCode();
           }
 
           // ----- Check for incompatible options
           if (isset($v_result_list[PCLZIP_OPT_TEMP_FILE_OFF])) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".PclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_OFF'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".IWPPclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_OFF'");
             return IWPPclZip::errorCode();
           }
 
           // ----- Check the value
           $v_value = $p_options_list[$i+1];
           if ((!is_integer($v_value)) || ($v_value<0)) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Integer expected for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Integer expected for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
             return IWPPclZip::errorCode();
           }
 
@@ -1499,7 +1499,7 @@
         case PCLZIP_OPT_TEMP_FILE_ON :
           // ----- Check for incompatible options
           if (isset($v_result_list[PCLZIP_OPT_TEMP_FILE_OFF])) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".PclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_OFF'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".IWPPclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_OFF'");
             return IWPPclZip::errorCode();
           }
 
@@ -1509,12 +1509,12 @@
         case PCLZIP_OPT_TEMP_FILE_OFF :
           // ----- Check for incompatible options
           if (isset($v_result_list[PCLZIP_OPT_TEMP_FILE_ON])) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".PclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_ON'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".IWPPclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_ON'");
             return IWPPclZip::errorCode();
           }
           // ----- Check for incompatible options
           if (isset($v_result_list[PCLZIP_OPT_TEMP_FILE_THRESHOLD])) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".PclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_THRESHOLD'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Option '".IWPPclZipUtilOptionText($p_options_list[$i])."' can not be used with option 'PCLZIP_OPT_TEMP_FILE_THRESHOLD'");
             return IWPPclZip::errorCode();
           }
 
@@ -1525,7 +1525,7 @@
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1534,7 +1534,7 @@
           // ----- Get the value
           if (   is_string($p_options_list[$i+1])
               && ($p_options_list[$i+1] != '')) {
-            $v_result_list[$p_options_list[$i]] = PclZipUtilTranslateWinPath($p_options_list[$i+1], FALSE);
+            $v_result_list[$p_options_list[$i]] = IWPPclZipUtilTranslateWinPath($p_options_list[$i+1], FALSE);
             $i++;
           }
           else {
@@ -1546,7 +1546,7 @@
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1561,7 +1561,7 @@
           }
           else {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Wrong parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Wrong parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1579,7 +1579,7 @@
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1591,7 +1591,7 @@
           }
           else {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Wrong parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Wrong parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1608,7 +1608,7 @@
             // ----- Error log
             IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE,
 			                     "Missing parameter value for option '"
-								 .PclZipUtilOptionText($p_options_list[$i])
+								 .IWPPclZipUtilOptionText($p_options_list[$i])
 								 ."'");
 
             // ----- Return
@@ -1623,7 +1623,7 @@
             // ----- Error log
             IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE,
 			                     "Wrong parameter value for option '"
-								 .PclZipUtilOptionText($p_options_list[$i])
+								 .IWPPclZipUtilOptionText($p_options_list[$i])
 								 ."'");
 
             // ----- Return
@@ -1637,7 +1637,7 @@
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1661,7 +1661,7 @@
           }
           else {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Value must be integer, string or array for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Value must be integer, string or array for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1694,7 +1694,7 @@
               }
               else {
                   // ----- Error log
-                  IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Too many values in index range for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+                  IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Too many values in index range for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
                   // ----- Return
                   return IWPPclZip::errorCode();
@@ -1707,7 +1707,7 @@
 
                   // ----- TBC : An automatic sort should be writen ...
                   // ----- Error log
-                  IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Invalid order of index range for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+                  IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Invalid order of index range for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
                   // ----- Return
                   return IWPPclZip::errorCode();
@@ -1739,7 +1739,7 @@
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1764,7 +1764,7 @@
           // ----- Check the number of parameters
           if (($i+1) >= $p_size) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_MISSING_OPTION_VALUE, "Missing parameter value for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1776,7 +1776,7 @@
           // ----- Check that the value is a valid existing function
           if (!function_exists($v_function_name)) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Function '".$v_function_name."()' is not an existing function for option '".PclZipUtilOptionText($p_options_list[$i])."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_OPTION_VALUE, "Function '".$v_function_name."()' is not an existing function for option '".IWPPclZipUtilOptionText($p_options_list[$i])."'");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1809,7 +1809,7 @@
           // ----- Look if present
           if (!isset($v_result_list[$key])) {
             // ----- Error log
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Missing mandatory parameter ".PclZipUtilOptionText($key)."(".$key.")");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Missing mandatory parameter ".IWPPclZipUtilOptionText($key)."(".$key.")");
 
             // ----- Return
             return IWPPclZip::errorCode();
@@ -1898,14 +1898,14 @@
       switch ($v_key) {
         case PCLZIP_ATT_FILE_NAME :
           if (!is_string($v_value)) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
 
-          $p_filedescr['filename'] = PclZipUtilPathReduction($v_value);
+          $p_filedescr['filename'] = IWPPclZipUtilPathReduction($v_value);
 
           if ($p_filedescr['filename'] == '') {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty filename for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty filename for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
 
@@ -1913,28 +1913,28 @@
 
         case PCLZIP_ATT_FILE_NEW_SHORT_NAME :
           if (!is_string($v_value)) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
 
-          $p_filedescr['new_short_name'] = PclZipUtilPathReduction($v_value);
+          $p_filedescr['new_short_name'] = IWPPclZipUtilPathReduction($v_value);
 
           if ($p_filedescr['new_short_name'] == '') {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty short filename for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty short filename for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
         break;
 
         case PCLZIP_ATT_FILE_NEW_FULL_NAME :
           if (!is_string($v_value)) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
 
-          $p_filedescr['new_full_name'] = PclZipUtilPathReduction($v_value);
+          $p_filedescr['new_full_name'] = IWPPclZipUtilPathReduction($v_value);
 
           if ($p_filedescr['new_full_name'] == '') {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty full filename for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid empty full filename for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
         break;
@@ -1942,7 +1942,7 @@
         // ----- Look for options that takes a string
         case PCLZIP_ATT_FILE_COMMENT :
           if (!is_string($v_value)) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". String expected for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
 
@@ -1951,7 +1951,7 @@
 
         case PCLZIP_ATT_FILE_MTIME :
           if (!is_integer($v_value)) {
-            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". Integer expected for attribute '".PclZipUtilOptionText($v_key)."'");
+            IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_ATTRIBUTE_VALUE, "Invalid type ".gettype($v_value).". Integer expected for attribute '".IWPPclZipUtilOptionText($v_key)."'");
             return IWPPclZip::errorCode();
           }
 
@@ -1978,7 +1978,7 @@
           if ($v_requested_options[$key] == 'mandatory') {
             // ----- Look if present
             if (!isset($p_file_list[$key])) {
-              IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Missing mandatory parameter ".PclZipUtilOptionText($key)."(".$key.")");
+              IWPPclZip::privErrorLog(PCLZIP_ERR_INVALID_PARAMETER, "Missing mandatory parameter ".IWPPclZipUtilOptionText($key)."(".$key.")");
               return IWPPclZip::errorCode();
             }
           }
@@ -2021,8 +2021,8 @@
       $v_descr = $p_filedescr_list[$i];
 
       // ----- Reduce the filename
-      $v_descr['filename'] = PclZipUtilTranslateWinPath($v_descr['filename'], false);
-      $v_descr['filename'] = PclZipUtilPathReduction($v_descr['filename']);
+      $v_descr['filename'] = IWPPclZipUtilTranslateWinPath($v_descr['filename'], false);
+      $v_descr['filename'] = IWPPclZipUtilPathReduction($v_descr['filename']);
 
       // ----- Look for real file or folder
       if (file_exists($v_descr['filename'])) {
@@ -2351,7 +2351,7 @@
     // ----- Rename the temporary file
     // TBC : I should test the result ...
     //@rename($v_zip_temp_name, $this->zipname);
-    PclZipUtilRename($v_zip_temp_name, $this->zipname);
+    IWPPclZipUtilRename($v_zip_temp_name, $this->zipname);
 
     // ----- Return
     return $v_result;
@@ -2500,7 +2500,7 @@
     for ($j=0; ($j<sizeof($p_filedescr_list)) && ($v_result==1); $j++) {
       // ----- Format the filename
       $p_filedescr_list[$j]['filename']
-      = PclZipUtilTranslateWinPath($p_filedescr_list[$j]['filename'], false);
+      = IWPPclZipUtilTranslateWinPath($p_filedescr_list[$j]['filename'], false);
 
 
       // ----- Skip empty file names
@@ -2657,7 +2657,7 @@
       // ----- Update the informations
       // Only some fields can be modified
       if ($p_header['stored_filename'] != $v_local_header['stored_filename']) {
-        $p_header['stored_filename'] = PclZipUtilPathReduction($v_local_header['stored_filename']);
+        $p_header['stored_filename'] = IWPPclZipUtilPathReduction($v_local_header['stored_filename']);
       }
     }
 
@@ -2963,7 +2963,7 @@
     // ----- Look for full name change
     if (isset($p_filedescr['new_full_name'])) {
       // ----- Remove drive letter if any
-      $v_stored_filename = PclZipUtilTranslateWinPath($p_filedescr['new_full_name']);
+      $v_stored_filename = IWPPclZipUtilTranslateWinPath($p_filedescr['new_full_name']);
     }
 
     // ----- Look for path and/or short name change
@@ -3006,7 +3006,7 @@
           }
         }
 
-        $v_compare = PclZipUtilPathInclusion($p_remove_dir,
+        $v_compare = IWPPclZipUtilPathInclusion($p_remove_dir,
                                              $v_stored_filename);
         if ($v_compare > 0) {
           if ($v_compare == 2) {
@@ -3020,7 +3020,7 @@
       }
 
       // ----- Remove drive letter if any
-      $v_stored_filename = PclZipUtilTranslateWinPath($v_stored_filename);
+      $v_stored_filename = IWPPclZipUtilTranslateWinPath($v_stored_filename);
 
       // ----- Look for path to add
       if ($p_add_dir != "") {
@@ -3032,7 +3032,7 @@
     }
 
     // ----- Filename (reduce the path of stored name)
-    $v_stored_filename = PclZipUtilPathReduction($v_stored_filename);
+    $v_stored_filename = IWPPclZipUtilPathReduction($v_stored_filename);
     $p_filedescr['stored_filename'] = $v_stored_filename;
 
     // ----- Return
@@ -3265,9 +3265,9 @@
     $v_result=1;
 
     // ----- Get the interesting attributes
-    $v_temp_path = PclZipUtilPathReduction($p_header['filename']);
+    $v_temp_path = IWPPclZipUtilPathReduction($p_header['filename']);
     $p_info['filename'] = $v_temp_path;
-    $v_temp_path = PclZipUtilPathReduction($p_header['stored_filename']);
+    $v_temp_path = IWPPclZipUtilPathReduction($p_header['stored_filename']);
     $p_info['stored_filename'] = $v_temp_path;
     $p_info['size'] = $p_header['size'];
     $p_info['compressed_size'] = $p_header['compressed_size'];
@@ -3673,7 +3673,7 @@
     // ----- Look for path to remove
     else if ($p_remove_path != "")
     {
-      if (PclZipUtilPathInclusion($p_remove_path, $p_entry['filename']) == 2)
+      if (IWPPclZipUtilPathInclusion($p_remove_path, $p_entry['filename']) == 2)
       {
 
         // ----- Change the file status
@@ -3701,7 +3701,7 @@
     // ----- Check a base_dir_restriction
     if (isset($p_options[PCLZIP_OPT_EXTRACT_DIR_RESTRICTION])) {
       $v_inclusion
-      = PclZipUtilPathInclusion($p_options[PCLZIP_OPT_EXTRACT_DIR_RESTRICTION],
+      = IWPPclZipUtilPathInclusion($p_options[PCLZIP_OPT_EXTRACT_DIR_RESTRICTION],
                                 $p_entry['filename']);
       if ($v_inclusion == 0) {
 
@@ -4911,7 +4911,7 @@
             }
 
             // ----- Read/write the data block
-            if (($v_result = PclZipUtilCopyBlock($this->zip_fd, $v_temp_zip->zip_fd, $v_header_list[$i]['compressed_size'])) != 1) {
+            if (($v_result = IWPPclZipUtilCopyBlock($this->zip_fd, $v_temp_zip->zip_fd, $v_header_list[$i]['compressed_size'])) != 1) {
                 // ----- Close the zip file
                 $this->privCloseFd();
                 $v_temp_zip->privCloseFd();
@@ -4974,7 +4974,7 @@
         // ----- Rename the temporary file
         // TBC : I should test the result ...
         //@rename($v_zip_temp_name, $this->zipname);
-        PclZipUtilRename($v_zip_temp_name, $this->zipname);
+        IWPPclZipUtilRename($v_zip_temp_name, $this->zipname);
 
         // ----- Destroy the temporary archive
         unset($v_temp_zip);
@@ -5238,7 +5238,7 @@
     // ----- Rename the temporary file
     // TBC : I should test the result ...
     //@rename($v_zip_temp_name, $this->zipname);
-    PclZipUtilRename($v_zip_temp_name, $this->zipname);
+    IWPPclZipUtilRename($v_zip_temp_name, $this->zipname);
 
     // ----- Return
     return $v_result;
@@ -5410,12 +5410,12 @@
   // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
-  // Function : PclZipUtilPathReduction()
+  // Function : IWPPclZipUtilPathReduction()
   // Description :
   // Parameters :
   // Return Values :
   // --------------------------------------------------------------------------------
-  function PclZipUtilPathReduction($p_dir)
+  function IWPPclZipUtilPathReduction($p_dir)
   {
     $v_result = "";
 
@@ -5482,7 +5482,7 @@
   // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
-  // Function : PclZipUtilPathInclusion()
+  // Function : IWPPclZipUtilPathInclusion()
   // Description :
   //   This function indicates if the path $p_path is under the $p_dir tree. Or,
   //   said in an other way, if the file or sub-dir $p_path is inside the dir
@@ -5496,18 +5496,18 @@
   //   1 if $p_path is inside directory $p_dir
   //   2 if $p_path is exactly the same as $p_dir
   // --------------------------------------------------------------------------------
-  function PclZipUtilPathInclusion($p_dir, $p_path)
+  function IWPPclZipUtilPathInclusion($p_dir, $p_path)
   {
     $v_result = 1;
 
     // ----- Look for path beginning by ./
     if (   ($p_dir == '.')
         || ((strlen($p_dir) >=2) && (substr($p_dir, 0, 2) == './'))) {
-      $p_dir = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_dir, 1);
+      $p_dir = IWPPclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_dir, 1);
     }
     if (   ($p_path == '.')
         || ((strlen($p_path) >=2) && (substr($p_path, 0, 2) == './'))) {
-      $p_path = PclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_path, 1);
+      $p_path = IWPPclZipUtilTranslateWinPath(getcwd(), FALSE).'/'.substr($p_path, 1);
     }
 
     // ----- Explode dir and path by directory separator
@@ -5563,7 +5563,7 @@
   // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
-  // Function : PclZipUtilCopyBlock()
+  // Function : IWPPclZipUtilCopyBlock()
   // Description :
   // Parameters :
   //   $p_mode : read/write compression mode
@@ -5573,7 +5573,7 @@
   //             3 : src & dest gzip
   // Return Values :
   // --------------------------------------------------------------------------------
-  function PclZipUtilCopyBlock($p_src, $p_dest, $p_size, $p_mode=0)
+  function IWPPclZipUtilCopyBlock($p_src, $p_dest, $p_size, $p_mode=0)
   {
     $v_result = 1;
 
@@ -5624,7 +5624,7 @@
   // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
-  // Function : PclZipUtilRename()
+  // Function : IWPPclZipUtilRename()
   // Description :
   //   This function tries to do a simple rename() function. If it fails, it
   //   tries to copy the $p_src file in a new $p_dest file and then unlink the
@@ -5635,7 +5635,7 @@
   // Return Values :
   //   1 on success, 0 on failure.
   // --------------------------------------------------------------------------------
-  function PclZipUtilRename($p_src, $p_dest)
+  function IWPPclZipUtilRename($p_src, $p_dest)
   {
     $v_result = 1;
 
@@ -5657,7 +5657,7 @@
   // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
-  // Function : PclZipUtilOptionText()
+  // Function : IWPPclZipUtilOptionText()
   // Description :
   //   Translate option value in text. Mainly for debug purpose.
   // Parameters :
@@ -5665,7 +5665,7 @@
   // Return Values :
   //   The option text value.
   // --------------------------------------------------------------------------------
-  function PclZipUtilOptionText($p_option)
+  function IWPPclZipUtilOptionText($p_option)
   {
 
     $v_list = get_defined_constants();
@@ -5686,7 +5686,7 @@
   // --------------------------------------------------------------------------------
 
   // --------------------------------------------------------------------------------
-  // Function : PclZipUtilTranslateWinPath()
+  // Function : IWPPclZipUtilTranslateWinPath()
   // Description :
   //   Translate windows path by replacing '\' by '/' and optionally removing
   //   drive letter.
@@ -5696,7 +5696,7 @@
   // Return Values :
   //   The path translated.
   // --------------------------------------------------------------------------------
-  function PclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter=true)
+  function IWPPclZipUtilTranslateWinPath($p_path, $p_remove_disk_letter=true)
   {
     if (stristr(php_uname(), 'windows')) {
       // ----- Look for potential disk letter

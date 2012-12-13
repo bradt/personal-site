@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.1.2
+Version: 1.1.4
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -26,7 +26,7 @@ Author URI: http://www.revmakx.com
  **************************************************************/
 
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.1.2');
+	define('IWP_MMB_CLIENT_VERSION', '1.1.4');
 
 
 if ( !defined('IWP_MMB_XFRAME_COOKIE')){
@@ -74,6 +74,9 @@ if( !function_exists ( 'iwp_mmb_filter_params' )) {
 	}
 }
 
+
+
+
 if( !function_exists ('iwp_mmb_parse_request')) {
 	function iwp_mmb_parse_request()
 	{
@@ -99,6 +102,7 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 		}
 		
 		if (isset($iwp_action)) {
+			if(!defined('IWP_AUTHORISED_CALL')) define('IWP_AUTHORISED_CALL', 1);
 			$action = $iwp_action;
 			$_wp_using_ext_object_cache = false;
 			@set_time_limit(600);
@@ -794,6 +798,7 @@ if(!function_exists('checkOpenSSL')){
 }
 
 $iwp_mmb_core = new IWP_MMB_Core();
+$mmb_core = 1;
 
 if(isset($_GET['auto_login']))
 	$iwp_mmb_core->automatic_login();	

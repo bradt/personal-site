@@ -111,7 +111,19 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                 
                 $wp_themes = null;
                 unset($wp_themes); //prevent theme data caching				
+                if(function_exists('wp_get_themes')){
+	                $all_themes = wp_get_themes();
+	                foreach ($all_themes as $theme_name => $theme_data) {
+	                    foreach ($install_info as $key => $install) {
+	                        if (!$install || is_wp_error($install))
+	                            continue;
                 
+	                        if ($theme_data->Template == $install['destination_name']) {
+	                            $install_info[$key]['activated'] = switch_theme($theme_data->Template, $theme_data->Stylesheet);
+	                        }
+	                    }
+	                }
+                }else{
                 $all_themes = get_themes();
                 foreach ($all_themes as $theme_name => $theme_data) {
                     foreach ($install_info as $key => $install) {
@@ -124,6 +136,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                     }
                 }
             }
+        }
         }
         ob_clean();
         $this->iwp_mmb_maintenance_mode(false);
@@ -632,7 +645,34 @@ class IWP_MMB_Installer extends IWP_MMB_Core
     
     function get_upgradable_themes( $filter = array() )
     {
+        if(function_exists('wp_get_themes')){
+        	$all_themes     = wp_get_themes();
+        	$upgrade_themes = array();
+        
+	        $current = $this->iwp_mmb_get_transient('update_themes');
+	        if (!empty($current->response)) {
+				foreach ((array) $all_themes as $theme_template => $theme_data) {
+					if(isset($theme_data->{'Parent Theme'}) && !empty($theme_data->{'Parent Theme'}))
+						continue;
+					
+					if(isset($theme_data->Name) && in_array($theme_data->Name, $filter))
+						continue;
+						
+					foreach ($current->response as $current_themes => $theme) {
+	                    if ($theme_data->Template == $current_themes) {
+	                        if (strlen($theme_data->Name) > 0 && strlen($theme_data->Version) > 0) {
+	                            $current->response[$current_themes]['name']        = $theme_data->Name;
+	                            $current->response[$current_themes]['old_version'] = $theme_data->Version;
+	                            $current->response[$current_themes]['theme_tmp']   = $theme_data->Template;
+	                            $upgrade_themes[] = $current->response[$current_themes];
+	                        }
+	                    }
+	                }
+	            }
+	        }
+        }else{
         $all_themes     = get_themes();
+	        
         $upgrade_themes = array();
         
         $current = $this->iwp_mmb_get_transient('update_themes');
@@ -656,6 +696,8 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                 }
             }
         }
+        }
+        
         
         return $upgrade_themes;
     }
@@ -744,9 +786,55 @@ class IWP_MMB_Installer extends IWP_MMB_Core
         
         extract($args);
         
-        if (!function_exists('get_themes')) {
+        if (!function_exists('wp_get_themes')) {
             include_once(ABSPATH . WPINC . '/theme.php');
         }
+        if(function_exists('wp_get_themes')){
+	        $all_themes = wp_get_themes();
+	        $themes     = array(
+	            'active' => array(),
+	            'inactive' => array()
+	        );
+	        
+	        if (is_array($all_themes) && !empty($all_themes)) {
+	            $current_theme = get_current_theme();
+	            
+	            $br_a = 0;
+	            $br_i = 0;
+	            foreach ($all_themes as $theme_name => $theme) {
+	                if ($current_theme == strip_tags($theme->Name)) {
+	                    $themes['active'][$br_a]['path']       = $theme->Template;
+	                    $themes['active'][$br_a]['name']       = strip_tags($theme->Name);
+						$themes['active'][$br_a]['version']    = $theme->Version;
+	                    $themes['active'][$br_a]['stylesheet'] = $theme->Stylesheet;
+	                    $br_a++;
+	                }
+	                
+	                if ($current_theme != strip_tags($theme->Name)) {
+	                    $themes['inactive'][$br_i]['path']       = $theme->Template;
+	                    $themes['inactive'][$br_i]['name']       = strip_tags($theme->Name);
+						$themes['inactive'][$br_i]['version']    = $theme->Version;
+	                    $themes['inactive'][$br_i]['stylesheet'] = $theme->Stylesheet;
+	                    $br_i++;
+	                }
+	                
+	            }
+	            
+	            if ($search) {
+	                foreach ($themes['active'] as $k => $theme) {
+	                    if (!stristr($theme['name'], $search)) {
+	                        unset($themes['active'][$k]);
+	                    }
+	                }
+	                
+	                foreach ($themes['inactive'] as $k => $theme) {
+	                    if (!stristr($theme['name'], $search)) {
+	                        unset($themes['inactive'][$k]);
+	                    }
+	                }
+	            }
+	        }
+	    }else{
         $all_themes = get_themes();
         $themes     = array(
             'active' => array(),
@@ -791,6 +879,8 @@ class IWP_MMB_Installer extends IWP_MMB_Core
                 }
             }
         }
+        
+	    }
         
         return $themes;
     }

@@ -36,9 +36,9 @@ class IWP_MMB_Helper
             $mixed = ob_get_clean();
         }
         
-        $handle = fopen(dirname(__FILE__) . '/log', 'a');
-        fwrite($handle, $mixed . PHP_EOL);
-        fclose($handle);
+        //$handle = fopen(dirname(__FILE__) . '/log', 'a');
+        //fwrite($handle, $mixed . PHP_EOL);
+        //fclose($handle);
     }
 	
     function _escape(&$array)

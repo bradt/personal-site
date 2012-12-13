@@ -70,14 +70,7 @@ class IWP_MMB_Backup_Repository extends IWP_MMB_Backup
             if (isset($account_info['iwp_dropbox']) && !empty($account_info['iwp_dropbox'])) {
                 $account_info['iwp_dropbox']['backup_file'] = $backup_file;
                 $return                                     = $this->dropbox_backup($account_info['iwp_dropbox']);
-            }
-            
-            if (isset($account_info['iwp_email']) && !empty($account_info['iwp_email'])) {
-                $account_info['iwp_email']['file_path'] = $backup_file;
-                $account_info['iwp_email']['task_name'] = 'Backup Now';
-                $return                                 = $this->email_backup($account_info['iwp_email']);
-            }
-            
+            }          
             
             if ($return == true && $del_host_file) {
                 @unlink($backup_file);
@@ -96,7 +89,5 @@ class IWP_MMB_Backup_Repository extends IWP_MMB_Backup
         return $return;
         
 	}
-	
-	
 }
 ?>
