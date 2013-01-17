@@ -82,7 +82,7 @@ function iwp_mmb_num_revisions()
 {
     global $wpdb;
     $sql           = "SELECT COUNT(*) FROM $wpdb->posts WHERE post_type = 'revision'";
-    $num_revisions = $wpdb->get_var($wpdb->prepare($sql));
+    $num_revisions = $wpdb->get_var($sql);
     return $num_revisions;
 }
 
@@ -90,7 +90,7 @@ function iwp_mmb_select_all_revisions()
 {
     global $wpdb;
     $sql       = "SELECT * FROM $wpdb->posts WHERE post_type = 'revision'";
-    $revisions = $wpdb->get_results($wpdb->prepare($sql));
+    $revisions = $wpdb->get_results($sql);
     return $revisions;
 }
 
@@ -98,7 +98,7 @@ function iwp_mmb_delete_all_revisions()
 {
     global $wpdb;
     $sql       = "DELETE a,b,c FROM $wpdb->posts a LEFT JOIN $wpdb->term_relationships b ON (a.ID = b.object_id) LEFT JOIN $wpdb->postmeta c ON (a.ID = c.post_id) WHERE a.post_type = 'revision'";
-    $revisions = $wpdb->query($wpdb->prepare($sql));
+    $revisions = $wpdb->query($sql);
     
     return $revisions;
 }
@@ -115,8 +115,8 @@ function iwp_mmb_handle_overhead($clear = false)
     $tot_data   = 0;
     $tot_idx    = 0;
     $tot_all    = 0;
-    $query      = 'SHOW TABLE STATUS FROM ' . DB_NAME;
-    $tables     = $wpdb->get_results($wpdb->prepare($query), ARRAY_A);
+    $query      = 'SHOW TABLES';
+    $tables     = $wpdb->get_results($query, ARRAY_A);
     $total_gain = 0;
 	$table_string = '';
     foreach ($tables as $table) {
@@ -170,7 +170,7 @@ function iwp_mmb_num_spam_comments()
 {
     global $wpdb;
     $sql       = "SELECT COUNT(*) FROM $wpdb->comments WHERE comment_approved = 'spam'";
-    $num_spams = $wpdb->get_var($wpdb->prepare($sql));
+    $num_spams = $wpdb->get_var($sql);
     return $num_spams;
 }
 
@@ -181,7 +181,7 @@ function iwp_mmb_delete_spam_comments()
     $total = 0;
     while ($spams) {
         $sql   = "DELETE FROM $wpdb->comments WHERE comment_approved = 'spam' LIMIT 200";
-        $spams = $wpdb->query($wpdb->prepare($sql));
+        $spams = $wpdb->query($sql);
         $total += $spams;
         if ($spams)
             usleep(100000);
@@ -194,7 +194,7 @@ function iwp_mmb_get_spam_comments()
 {
     global $wpdb;
     $sql   = "SELECT * FROM $wpdb->comments as a LEFT JOIN $wpdb->commentmeta as b WHERE a.comment_ID = b.comment_id AND a.comment_approved = 'spam'";
-    $spams = $wpdb->get_results($wpdb->prepare($sql));
+    $spams = $wpdb->get_results($sql);
     return $spams;
 }
 

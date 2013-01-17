@@ -217,7 +217,7 @@ class WPSEO_Metabox {
 		foreach ( get_post_types( array( 'public'=> true ) ) as $posttype ) {
 			if ( isset( $options['hideeditbox-' . $posttype] ) && $options['hideeditbox-' . $posttype] )
 				continue;
-			add_meta_box( 'wpseo_meta', __( 'WordPress SEO by Yoast', 'wordpress-seo' ), array( $this, 'meta_box' ), $posttype, 'normal', 'high' );
+			add_meta_box( 'wpseo_meta', __( 'WordPress SEO by Yoast', 'wordpress-seo' ), array( $this, 'meta_box' ), $posttype, 'normal', apply_filters( 'wpseo_metabox_prio', 'high' ) );
 		}
 	}
 
@@ -467,11 +467,16 @@ class WPSEO_Metabox {
 	 */
 	function do_meta_box( $meta_box ) {
 		$content = '';
+		$meta_box_value = '';
 
 		if ( !isset( $meta_box['name'] ) ) {
 			$meta_box['name'] = '';
 		} else {
-			$meta_box_value = wpseo_get_value( $meta_box['name'] );
+			if ( wpseo_get_value( $meta_box['name'] ) !== false ) {
+				$meta_box_value = wpseo_get_value( $meta_box['name'] );
+			} else if ( isset( $meta_box['std'] ) ) {
+				$meta_box_value = $meta_box['std'];
+			}
 			$meta_box['name'] = esc_attr( $meta_box['name'] );
 		}
 
@@ -482,9 +487,6 @@ class WPSEO_Metabox {
 		$placeholder = '';
 		if ( isset( $meta_box['placeholder'] ) && !empty( $meta_box['placeholder'] ) )
 			$placeholder = $meta_box['placeholder'];
-
-		if ( ( !isset( $meta_box_value ) || empty( $meta_box_value ) ) && isset( $meta_box['std'] ) )
-			$meta_box_value = $meta_box['std'];
 
 		$content .= '<tr>';
 		$content .= '<th scope="row"><label for="yoast_wpseo_' . $meta_box['name'] . '">' . $meta_box['title'] . ':</label></th>';
@@ -527,7 +529,7 @@ class WPSEO_Metabox {
 				break;
 			case "checkbox":
 				$checked = '';
-				if ( $meta_box_value != 'off' )
+				if ( $meta_box_value == 'on' || $meta_box_value == true )
 					$checked = 'checked="checked"';
 				$expl = ( isset( $meta_box['expl'] ) ) ? esc_html( $meta_box['expl'] ) : '';
 				$content .= '<input type="checkbox" id="yoast_wpseo_' . $meta_box['name'] . '" name="yoast_wpseo_' . $meta_box['name'] . '" ' . $checked . ' class="yoast' . $class . '"/> ' . $expl . '<br />';
@@ -1102,7 +1104,7 @@ class WPSEO_Metabox {
 
 		// Images
 		$imgs          = array();
-		$imgs['count'] = $this->get_image_count( $xpath );
+		$imgs['count'] = substr_count( $post->post_content, '<img' );
 		$imgs          = $this->get_images_alt_text( $post, $imgs );
 		$this->score_images_alt_text( $job, $results, $imgs );
 		unset( $imgs );
@@ -1430,8 +1432,8 @@ class WPSEO_Metabox {
 		preg_match_all( '/<img[^>]+>/im', $post->post_content, $matches );
 		$imgs['alts'] = array();
 		foreach ( $matches[0] as $img ) {
-			preg_match( '|alt=(["\'])([^"\']+)["\']|', $img, $alt );
-			$imgs['alts'][] = $this->strtolower_utf8( $alt[2] );
+			if ( preg_match( '/alt=("|\')(.*?)\1/', $img, $alt ) )
+				$imgs['alts'][] = $this->strtolower_utf8( $alt[2] );
 		}
 		if ( preg_match_all( '/\[gallery/', $post->post_content, $matches ) ) {
 			$attachments = get_children( array( 'post_parent' => $post->ID, 'post_status' => 'inherit', 'post_type' => 'attachment', 'post_mime_type' => 'image', 'fields' => 'ids' ) );
@@ -1443,18 +1445,6 @@ class WPSEO_Metabox {
 			}
 		}
 		return $imgs;
-	}
-
-	/**
-	 * Use XPATH to count the number of images.
-	 *
-	 * @param object $xpath An XPATH object of the document
-	 * @return int Image count
-	 */
-	function get_image_count( &$xpath ) {
-		$query       = "//img|//IMG";
-		$dom_objects = $xpath->query( $query );
-		return count( $dom_objects );
 	}
 
 	/**

@@ -230,13 +230,13 @@ class WPSEO_Pointers {
 				<?php if ( $button2 ) { ?>
 					jQuery('#pointer-close').after('<a id="pointer-primary" class="button-primary">' + '<?php echo $button2; ?>' + '</a>');
 					jQuery('#pointer-primary').click(function () {
-						<?php echo esc_js( $button2_function ); ?>
+						<?php echo $button2_function; ?>
 					});
 					jQuery('#pointer-close').click(function () {
 						<?php if ( $button1_function == '' ) { ?>
 							wpseo_setIgnore("tour", "wp-pointer-0", "<?php echo wp_create_nonce( 'wpseo-ignore' ); ?>");
 							<?php } else { ?>
-							<?php echo esc_js( $button1_function ); ?>
+							<?php echo $button1_function; ?>
 							<?php } ?>
 					});
 					<?php } ?>

@@ -227,7 +227,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		echo '<div class="updated" style="text-align: center;"><p style="color: green; font-size: 14px; font-weight: bold;">Add this site to IWP Admin panel</p><p>
 		<table border="0" align="center">';
 		if(!empty($iwp_client_activate_key)){
-			echo '<tr><td align="right">WEBSITE URL:</td><td align="left"><strong>'.get_option('home').'/</strong></td></tr>
+			echo '<tr><td align="right">WP-ADMIN URL:</td><td align="left"><strong>'.admin_url().'</strong></td></tr>
 			<tr><td align="right">ADMIN USERNAME:</td><td align="left"><strong>'.$username.'</strong> (or any admin id)</td></tr>
 			<tr><td align="right">ACTIVATION KEY:</td><td align="left"><strong>'.$iwp_client_activate_key.'</strong></td></tr>';
 		}
@@ -259,7 +259,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
     private function get_parent_blog_option( $option_name = '' )
     {
 		global $wpdb;
-		$option = $wpdb->get_var( $wpdb->prepare( "SELECT `option_value` FROM {$wpdb->base_prefix}options WHERE option_name = '{$option_name}' LIMIT 1" ) );
+		$option = $wpdb->get_var( $wpdb->prepare( "SELECT `option_value` FROM {$wpdb->base_prefix}options WHERE option_name = %s LIMIT 1", $option_name ) );
         return $option;
     }
     
@@ -434,7 +434,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 
         //delete plugin options, just in case
         if ($this->iwp_mmb_multisite != false) {
-			$network_blogs = $wpdb->get_results($wpdb->prepare("select `blog_id`, `site_id` from `{$wpdb->blogs}`"));
+			$network_blogs = $wpdb->get_results("select `blog_id`, `site_id` from `{$wpdb->blogs}`");
 			if(!empty($network_blogs)){
 				if( is_network_admin() ){
 					update_option('iwp_client_network_admin_install', 1);
@@ -493,7 +493,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		$_wp_using_ext_object_cache = false;
         
         if ($this->iwp_mmb_multisite != false) {
-			$network_blogs = $wpdb->get_col($wpdb->prepare("select `blog_id` from `{$wpdb->blogs}`"));
+			$network_blogs = $wpdb->get_col("select `blog_id` from `{$wpdb->blogs}`");
 			if(!empty($network_blogs)){
 				if( is_network_admin() ){
 					if( $deactivate ) {

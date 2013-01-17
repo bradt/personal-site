@@ -114,10 +114,10 @@ class WPSEO_Sitemaps {
 			return;
 		}
 
-		$wphost = parse_url( get_site_url(), PHP_URL_HOST );
-		if ( isset( $_SERVER['SERVER_NAME'] ) && $_SERVER['SERVER_NAME'] != $wphost ) {
-			wp_redirect( rtrim( get_site_url(), '/' ) . $_SERVER['REQUEST_URI'], 301 );
-		}
+//		$wphost = parse_url( get_site_url(), PHP_URL_HOST );
+//		if ( isset( $_SERVER['SERVER_NAME'] ) && $_SERVER['SERVER_NAME'] != $wphost ) {
+//			wp_redirect( rtrim( get_site_url(), '/' ) . $_SERVER['REQUEST_URI'], 301 );
+//		}
 		$this->output();
 		die();
 	}
@@ -299,10 +299,12 @@ class WPSEO_Sitemaps {
 			// Optimized query per this thread: http://wordpress.org/support/topic/plugin-wordpress-seo-by-yoast-performance-suggestion
 			// Also see http://explainextended.com/2009/10/23/mysql-order-by-limit-performance-late-row-lookups/
 
+			$status = ( $post_type == 'attachment' ) ? 'inherit' : 'publish';
+
 			$query = $wpdb->prepare( "SELECT l.ID, post_content, post_name, post_author, post_parent, post_modified_gmt, post_date, post_date_gmt
 				FROM (
 					SELECT ID FROM $wpdb->posts {$join_filter}
-						WHERE post_status IN ('publish','inherit')
+						WHERE post_status = '%s'
 						AND	post_password = ''
 						AND post_type = '%s'
 						{$where_filter}
@@ -310,7 +312,7 @@ class WPSEO_Sitemaps {
 						LIMIT %d OFFSET %d ) o
 					JOIN $wpdb->posts l
 					ON l.ID = o.ID
-					ORDER BY l.ID", $post_type, $steps, $offset );
+					ORDER BY l.ID", $status, $post_type, $steps, $offset );
 
 			$posts = $wpdb->get_results( $query );
 

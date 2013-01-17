@@ -41,6 +41,8 @@ class WPSEO_Admin_Pages {
 			wp_redirect( admin_url( 'admin.php?page=wpseo_dashboard' ) );
 		}
 
+		$this->adminpages = apply_filters( 'wpseo_admin_pages', $this->adminpages );
+
 		global $wpseo_admin;
 
 		if ( $wpseo_admin->grant_access() ) {

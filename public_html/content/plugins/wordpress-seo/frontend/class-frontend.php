@@ -733,12 +733,16 @@ class WPSEO_Frontend {
 
 		$gplus = apply_filters( 'wpseo_author_link', $gplus );
 
-		if ( $gplus )
+		if ( is_front_page() ) {
+			if ( isset( $options['plus-publisher'] ) && !empty( $options['plus-publisher'] ) ) {
+				echo '<link rel="publisher" href="' . esc_attr( $options['plus-publisher'] ) . '"/>' . "\n";
+			} else if ( $gplus ) {
+				echo '<link rel="author" href="' . $gplus . '"/>' . "\n";
+			}
+		} else if ( $gplus ) {
 			echo '<link rel="author" href="' . $gplus . '"/>' . "\n";
-
-		if ( is_front_page() && isset( $options['plus-publisher'] ) && !empty( $options['plus-publisher'] ) ) {
-			echo '<link rel="publisher" href="' . esc_attr( $options['plus-publisher'] ) . '"/>' . "\n";
 		}
+
 	}
 
 	/**
@@ -841,7 +845,7 @@ class WPSEO_Frontend {
 			} else if ( function_exists( 'is_post_type_archive' ) && is_post_type_archive() ) {
 				$post_type = get_post_type();
 				if ( isset( $options['metadesc-ptarchive-' . $post_type] ) && '' != $options['metadesc-ptarchive-' . $post_type] ) {
-					$metadesc = $options['metadesc-ptarchive-' . $post_type];
+					$metadesc = wpseo_replace_vars( $options['metadesc-ptarchive-' . $post_type], (array) $wp_query->get_queried_object() );
 				}
 			}
 		}
