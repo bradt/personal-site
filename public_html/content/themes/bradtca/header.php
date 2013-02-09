@@ -22,7 +22,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://balupton.github.com/jquery-syntaxhighlighter/scripts/jquery.syntaxhighlighter.min.js"></script>
 	<script type="text/javascript">$.SyntaxHighlighter.init({'wrapLines':false,'stripInitialWhitespace': true});</script>
-	<script src="<?php bloginfo('template_url'); ?>/js/default.js?2012120901" type="text/javascript"></script>
+	<script src="<?php bloginfo('template_url'); ?>/js/default.js?2013020901" type="text/javascript"></script>
 	<link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
 	<link rel='openid.delegate' href='http://bradt.wordpress.com/' />
 	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic|La+Belle+Aurore' rel='stylesheet' type='text/css'>
