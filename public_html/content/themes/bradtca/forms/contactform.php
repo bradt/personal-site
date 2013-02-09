@@ -32,7 +32,7 @@ class ContactForm extends PHPFormWork {
                 'wpappstore' => 'WP App Store',
                 'plugin' => 'WordPress plugin support',
                 'work' => 'Work, job, or contract',
-                'general' => 'Other',
+                'general' => 'Something else',
                 'bot' => 'I am a SPAM bot'
             ),
             'value' => 'bot',
@@ -48,7 +48,6 @@ class ContactForm extends PHPFormWork {
             )
         ));
 
-        /*
         $fields[] = new PFW_Optionlist('budget', array(
             'lbl' => 'What is your budget? <small>(Not sure? <a target="_blank" href="/archives/what-does-it-cost-to-build-a-web-site/">Read this</a>.)</small>',
             'options' => $this->budget_options,
@@ -72,13 +71,13 @@ class ContactForm extends PHPFormWork {
                     'func' => array($this, 'validate_work_required'),
                     'msg' => 'Please choose one of the options above.'
                 ),
+                /*
                 array(
                     'func' => array($this, 'validate_schedule'),
                     'msg' => 'Sorry, I don\'t take on projects with such a tight schedule.'
-                )
+                )*/
             )
         ));
-        */
         
         $fieldsets[] = new PFW_Fieldset('question', $fields);
         
@@ -181,7 +180,7 @@ class ContactForm extends PHPFormWork {
     }
 
     function validate_what($str) {
-        return ( !in_array( $str, array('plugin','personal','work') ) );
+        return ( !in_array( $str, array('plugin','personal') ) );
     }
 
     function validate_budget($str) {

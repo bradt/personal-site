@@ -16,12 +16,13 @@
 $form->display();
 
 $hire_links = '
-    <a href="http://wpcandy.com/pros">WP Candy</a>,
+    <a href="http://www.wphired.com">WPhired</a>,
+    <a href="http://jobs.freelanceswitch.com">Freelance Switch</a>,
     <a href="http://odesk.com">oDesk</a>, or
     <a href="http://jobs.wordpress.net/">jobs.wordpress.net</a>
 ';
 ?>
-
+<?php /*
 <div class="section section-work"<?php echo ($_POST['what'] != 'work') ? ' style="display: none;"' : ''; ?>>
     <h3>Work, job, or contract</h3>
     
@@ -55,8 +56,6 @@ $hire_links = '
 
 </div>
 
-<?php
-/*
 <div class="section section-schedule"<?php echo ($_POST['what'] != 'work' || $_POST['schedule'] != '1-4') ? ' style="display: none;"' : ''; ?>>
     <h3>Schedule Not Workable</h3>
     
@@ -71,6 +70,8 @@ $hire_links = '
     busy.</p>
 
 </div>
+*/
+?>
 
 <div class="section section-budget"<?php echo ($_POST['what'] != 'work' || $_POST['budget'] != 'too_low') ? ' style="display: none;"' : ''; ?>>
     <h3>Budget Not Workable</h3>
@@ -86,30 +87,11 @@ $hire_links = '
 
 </div>
 
-<div class="section section-personal"<?php echo ($_POST['what'] != 'personal') ? ' style="display: none;"' : ''; ?>>
-    <h3>Help with an existing web site</h3>
-    
-    <p>Unfortunately, I do not take on small projects like these. I used to when
-    I first started freelancing, but I now only take on larger projects (3+
-    weeks of work). I recommend submitting
-    your question to <a href="http://www.quora.com/">Quora</a> or
-    <a href="http://webmasters.stackexchange.com/">Pro Webmasters</a>. If the
-    question concerns WordPress, you should use the
-    <a href="http://wordpress.org/support/">WordPress.org Support</a> forums or
-    <a href="http://wordpress.stackexchange.com/">WordPress Answers</a>.</p>
-    
-    <p>If you have an ongoing need, I recommend hiring a professional from
-    <?php echo $hire_links; ?>.</p>
-.</p>
-</div>
-*/
-?>
-
 <div class="section section-plugin"<?php echo ($_POST['what'] != 'plugin') ? ' style="display: none;"' : ''; ?>>
     <h3>WordPress plugin support</h3>
     
-    <p>Unfortunately, I cannot afford the time to provide email support for my
-    WordPress plugins.</p>
+    <p>Unfortunately, I cannot afford the time to provide email support for the
+    free plugins I've released at <a href="http://wordpress.org/extend/plugins/">WordPress.org</a>.</p>
     
     <p>I am subscribed to each of the following WordPress.org support forums
     however, and will reply to your posting eventually.</p>
@@ -124,12 +106,7 @@ $hire_links = '
         You could also try <a
         href="http://wordpress.stackexchange.com/">WordPress Answers</a> at
         Stack Exchange.
-    </p>
-    
-    <p>If it's an emergency, you should contact your web designer or web developer
-    to assist you in resolving the issue. You could also hire a professional from
-    <?php echo $hire_links; ?>.</p>
-    
+    </p>    
 </div>
 
 <input id="contactsubmit" class="button" type="image" value="Submit" src="<?php bloginfo('template_url'); ?>/images/blank.gif" name="Submit"/>

@@ -52,7 +52,6 @@ var Bradt = {
 			
 			var init_events = function() {
 				
-				/*
 				$('.field-budget').after($('.section-budget'));
 				
 				if ($('input[name=what]:checked').val() != 'work') {
@@ -72,6 +71,7 @@ var Bradt = {
 					}
 				});
 	
+				/*
 				$('input[name=schedule]').change(function() {
 					var val = $(this).val();
 					switch (val) {
@@ -92,20 +92,18 @@ var Bradt = {
 					switch (val) {
 						case 'plugin':
 						case 'personal':
-						case 'work':
-							//$('#message-details, .button, .section, .field-budget, .field-schedule').hide();
-							$('#message-details, .button, .section').hide();
+						//case 'work':
+							$('#message-details, .button, .section, .field-budget, .field-schedule').hide();
+							//$('#message-details, .button, .section').hide();
 							$('.section-' + val).show();
 							break;
-						/*
 						case 'work':
 							$('.section').hide();
 							$('#message-details, .button, .field-budget, .field-schedule').show();
 							break;
-						*/
 						case 'wpappstore':
 						case 'general':
-							//$('.section, .field-budget, .field-schedule').hide();
+							$('.section, .field-budget, .field-schedule').hide();
 							$('.section').hide();
 							$('#message-details, .button').show();
 							break;
@@ -131,6 +129,9 @@ var Bradt = {
 					if ($('p.error-msg').get(0)) {
 						$.scrollTo('.indicates', 500);
 						$('p.error, p.error-msg').hide().fadeIn();
+					}
+					else {
+						$.scrollTo('#header', 500);
 					}
 				});
 				
