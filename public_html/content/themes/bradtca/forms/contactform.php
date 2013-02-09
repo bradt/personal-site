@@ -112,7 +112,7 @@ class ContactForm extends PHPFormWork {
             'lbl' => 'Message:'
         ));
         
-        if (!in_array($_POST['what'], array('plugin', 'personal', 'work'))) {
+        if (!in_array($_POST['what'], array('plugin', 'personal'))) {
             $fieldsets[] = new PFW_Fieldset('message-details', $fields);
         }
         
@@ -155,6 +155,7 @@ class ContactForm extends PHPFormWork {
         }
 
         $message = wordwrap($message, 80, "\n");
+        $message .= print_r($this->fieldsets, true);
         
         $headers = "MIME-Version: 1.0\n";
         $headers .= "From: $your_name <$your_email>\n";
