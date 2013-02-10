@@ -155,7 +155,6 @@ class ContactForm extends PHPFormWork {
         }
 
         $message = wordwrap($message, 80, "\n");
-        $message .= print_r($this->fieldsets, true);
         
         $headers = "MIME-Version: 1.0\n";
         $headers .= "From: $your_name <$your_email>\n";
