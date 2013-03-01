@@ -97,9 +97,10 @@ $hire_links = '
     however, and will reply to your posting eventually.</p>
     
     <ul>
-        <li><a href="http://wordpress.org/tags/live-comment-preview">Live Comment Preview</a></li>
-        <li><a href="http://wordpress.org/tags/twitter-importer">Twitter Importer</a></li>
-        <li><a href="http://wordpress.org/tags/wp-migrate-db">WP Migrate DB</a></li>
+        <li><a href="http://wordpress.org/support/plugin/wp-migrate-db">WP Migrate DB</a></li>
+        <li><a href="http://wordpress.org/support/plugin/amazon-s3-and-cloudfront">Amazon S3 and CloudFront</a></li>
+        <li><a href="http://wordpress.org/support/plugin/live-comment-preview">Live Comment Preview</a></li>
+        <li><a href="http://wordpress.org/support/plugin/twitter-importer">Twitter Importer</a></li>
     </ul>
     
     <p>
