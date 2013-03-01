@@ -242,7 +242,7 @@ class IWP_MMB_Installer extends IWP_MMB_Core
             
             if ($updated->response == "development" && $current->response == "upgrade") {
                 return array(
-                    'upgraded' => '<font color="#900">Unexpected error. Please upgrade manually.</font>'
+                    'error' => '<font color="#900">Unexpected error. Please upgrade manually.</font>'
                 );
             } else if ($updated->response == $current->response || ($updated->response == "upgrade" && $current->response == "development")) {
                 if ($updated->locale != $current->locale) {

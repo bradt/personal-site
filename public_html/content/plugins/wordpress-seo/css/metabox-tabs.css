@@ -301,3 +301,7 @@ table.wpseoanalysis td.score {
 .wpseo_score_img.noindex {
 	background-position: -146px -2px;
 }
+
+img.yoast_help {
+    cursor: pointer;
+}

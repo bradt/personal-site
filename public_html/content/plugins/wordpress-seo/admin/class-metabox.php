@@ -5,8 +5,8 @@
  * This code generates the metabox on the edit post / page as well as contains all page analysis functionality.
  */
 
-if ( !defined('WPSEO_VERSION') ) {
-	header('HTTP/1.0 403 Forbidden');
+if ( !defined( 'WPSEO_VERSION' ) ) {
+	header( 'HTTP/1.0 403 Forbidden' );
 	die;
 }
 
@@ -197,14 +197,14 @@ class WPSEO_Metabox {
 		$sample_permalink = get_sample_permalink( $post->ID );
 		$sample_permalink = str_replace( '%page', '%post', $sample_permalink[0] );
 		?>
-	<script type="text/javascript">
-		var wpseo_lang = '<?php echo substr( get_locale(), 0, 2 ); ?>';
-		var wpseo_meta_desc_length = '<?php echo $this->meta_length; ?>';
-		var wpseo_title_template = '<?php echo esc_attr( $title_template ); ?>';
-		var wpseo_metadesc_template = '<?php echo esc_attr( $metadesc_template ); ?>';
-		var wpseo_permalink_template = '<?php echo esc_url( $sample_permalink ); ?>';
-		var wpseo_keyword_suggest_nonce = '<?php echo wp_create_nonce( 'wpseo-get-suggest' ); ?>';
-	</script>
+    <script type="text/javascript">
+        var wpseo_lang = '<?php echo substr( get_locale(), 0, 2 ); ?>';
+        var wpseo_meta_desc_length = '<?php echo $this->meta_length; ?>';
+        var wpseo_title_template = '<?php echo esc_attr( $title_template ); ?>';
+        var wpseo_metadesc_template = '<?php echo esc_attr( $metadesc_template ); ?>';
+        var wpseo_permalink_template = '<?php echo esc_url( $sample_permalink ); ?>';
+        var wpseo_keyword_suggest_nonce = '<?php echo wp_create_nonce( 'wpseo-get-suggest' ); ?>';
+    </script>
 	<?php
 	}
 
@@ -214,7 +214,7 @@ class WPSEO_Metabox {
 	public function add_meta_box() {
 		$options = get_wpseo_options();
 
-		foreach ( get_post_types( array( 'public'=> true ) ) as $posttype ) {
+		foreach ( get_post_types( array( 'public' => true ) ) as $posttype ) {
 			if ( isset( $options['hideeditbox-' . $posttype] ) && $options['hideeditbox-' . $posttype] )
 				continue;
 			add_meta_box( 'wpseo_meta', __( 'WordPress SEO by Yoast', 'wordpress-seo' ), array( $this, 'meta_box' ), $posttype, 'normal', apply_filters( 'wpseo_metabox_prio', 'high' ) );
@@ -230,12 +230,12 @@ class WPSEO_Metabox {
 	 */
 	public function do_tab( $id, $heading, $content ) {
 		?>
-	<div class="wpseotab <?php echo esc_attr( $id ) ?>">
-		<h4 class="wpseo-heading"><?php echo esc_html( $heading ); ?></h4>
-		<table class="form-table">
+    <div class="wpseotab <?php echo esc_attr( $id ) ?>">
+        <h4 class="wpseo-heading"><?php echo esc_html( $heading ); ?></h4>
+        <table class="form-table">
 			<?php echo $content ?>
-		</table>
-	</div>
+        </table>
+    </div>
 	<?php
 	}
 
@@ -258,20 +258,18 @@ class WPSEO_Metabox {
 			"name"         => "focuskw",
 			"std"          => "",
 			"type"         => "text",
-			"title"        => __( "Focus Keyword", 'wordpress-seo' ),
-			"description"  => "<div class='alignright' style='width: 300px;'>"
-				. "<a class='preview button' id='wpseo_relatedkeywords' href='#wpseo_tag_suggestions'>" . __( 'Find related keywords', 'wordpress-seo' ) . "</a> "
-				. "<p id='related_keywords_heading'>" . __( 'Related keywords:', 'wordpress-seo' ) . "</p><div id='wpseo_tag_suggestions'></div></div><div id='focuskwresults'><p>" . __( "What is the main keyword or key phrase this page should be found for?", 'wordpress-seo' ) . "</p></div>",
+			"title"        => __( 'Focus Keyword', 'wordpress-seo' ),
 			"autocomplete" => "off",
+			"help"         => sprintf( "Pick the main keyword or keyphrase that this post/page is about.<br/><br/>Read %sthis post%s for more info.", "<a href='http://yoast.com/focus-keyword/'>", '</a>' ),
+			"description"  => "<div id='focuskwresults'></div>",
 		);
 		$mbs['title']          = array(
 			"name"        => "title",
 			"std"         => "",
 			"type"        => "text",
 			"title"       => __( "SEO Title", 'wordpress-seo' ),
-			"description" => '<div class="alignright" style="padding:5px;"><a class="button" href="#snippetpreview" id="wpseo_regen_title">' . __( 'Generate SEO title', 'wordpress-seo' ) . '</a></div><p>'
-				. sprintf( __( "Title display in search engines is limited to 70 chars, %s chars left.", 'wordpress-seo' ), "<span id='yoast_wpseo_title-length'></span>" ) . "<br/>"
-				. sprintf( __( "If the SEO Title is empty, the preview shows what the plugin generates based on your %stitle template%s.", 'wordpress-seo' ), "<a target='_blank' href='" . admin_url( 'admin.php?page=wpseo_titles#' . esc_url( $post_type ) ) . "'>", "</a>" ) . '</p>',
+			"description" => sprintf( __( "Title display in search engines is limited to 70 chars, %s chars left.", 'wordpress-seo' ), "<span id='yoast_wpseo_title-length'></span>" ),
+			"help"		  => __( "The SEO Title defaults to what is generated based on this sites title template for this posttype.", 'wordpress-seo' )
 		);
 		$mbs['metadesc']       = array(
 			"name"        => "metadesc",
@@ -281,7 +279,8 @@ class WPSEO_Metabox {
 			"title"       => __( "Meta Description", 'wordpress-seo' ),
 			"rows"        => 2,
 			"richedit"    => false,
-			"description" => sprintf( __( "The <code>meta</code> description will be limited to %s chars%s, %s chars left.", 'wordpress-seo' ), $this->meta_length, $this->meta_length_reason, "<span id='yoast_wpseo_metadesc-length'></span>" ) . " <div id='yoast_wpseo_metadesc_notice'></div><p>" . sprintf( __( "If the meta description is empty, the preview shows what the plugin generates based on your %smeta description template%s.", 'wordpress-seo' ), "<a target='_blank' href='" . admin_url( 'admin.php?page=wpseo_titles#' . esc_url( $post_type ) ) . "'>", "</a>" ) . "</p>"
+			"description" => sprintf( __( "The <code>meta</code> description will be limited to %s chars%s, %s chars left.", 'wordpress-seo' ), $this->meta_length, $this->meta_length_reason, "<span id='yoast_wpseo_metadesc-length'></span>" ) . " <div id='yoast_wpseo_metadesc_notice'></div>",
+			"help"		  => __( "If the meta description is empty, the snippet preview above shows what is generated based on this sites meta description template.", 'wordpress-seo' ),
 		);
 		if ( isset( $options['usemetakeywords'] ) && $options['usemetakeywords'] ) {
 			$mbs['metakeywords'] = array(
@@ -431,12 +430,16 @@ class WPSEO_Metabox {
 
 		?>
 	<div class="wpseo-metabox-tabs-div">
-		<ul class="wpseo-metabox-tabs" id="wpseo-metabox-tabs">
-			<li class="general"><a class="wpseo_tablink" href="#wpseo_general"><?php _e( "General", 'wordpress-seo' ); ?></a></li>
-			<li id="linkdex" class="linkdex"><a class="wpseo_tablink" href="#wpseo_linkdex"><?php _e( "Page Analysis", 'wordpress-seo' ); ?></a></li>
-			<li class="advanced"><a class="wpseo_tablink" href="#wpseo_advanced"><?php _e( "Advanced", 'wordpress-seo' ); ?></a></li>
+        <ul class="wpseo-metabox-tabs" id="wpseo-metabox-tabs">
+            <li class="general"><a class="wpseo_tablink"
+                                   href="#wpseo_general"><?php _e( "General", 'wordpress-seo' ); ?></a></li>
+            <li id="linkdex" class="linkdex"><a class="wpseo_tablink"
+                                                href="#wpseo_linkdex"><?php _e( "Page Analysis", 'wordpress-seo' ); ?></a>
+            </li>
+            <li class="advanced"><a class="wpseo_tablink"
+                                    href="#wpseo_advanced"><?php _e( "Advanced", 'wordpress-seo' ); ?></a></li>
 			<?php do_action( 'wpseo_tab_header' ); ?>
-		</ul>
+        </ul>
 <?php		
 		$content = '';
 		foreach ( $this->get_meta_boxes( $post->post_type ) as $meta_box ) {
@@ -466,7 +469,7 @@ class WPSEO_Metabox {
 	 * @return string
 	 */
 	function do_meta_box( $meta_box ) {
-		$content = '';
+		$content        = '';
 		$meta_box_value = '';
 
 		if ( !isset( $meta_box['name'] ) ) {
@@ -488,8 +491,12 @@ class WPSEO_Metabox {
 		if ( isset( $meta_box['placeholder'] ) && !empty( $meta_box['placeholder'] ) )
 			$placeholder = $meta_box['placeholder'];
 
+		$help = '';
+		if ( isset( $meta_box['help'] ) && $meta_box['help'] )
+			$help = '<img src="'.WPSEO_URL.'images/question-mark.png" class="alignright yoast_help" id="' . $meta_box['name'] . 'help" alt="' . esc_attr( $meta_box['help'] ) . '" />';
+
 		$content .= '<tr>';
-		$content .= '<th scope="row"><label for="yoast_wpseo_' . $meta_box['name'] . '">' . $meta_box['title'] . ':</label></th>';
+		$content .= '<th scope="row"><label for="yoast_wpseo_' . $meta_box['name'] . '">' . $meta_box['title'] . ':</label>' . $help . '</th>';
 		$content .= '<td>';
 
 		switch ( $meta_box['type'] ) {
@@ -608,7 +615,7 @@ class WPSEO_Metabox {
 //			require_once WPSEO_PATH . '/frontend/class-breadcrumbs.php';
 //			$content .= '<span href="#" style="font-size: 13px; color: #282; line-height: 15px;" class="breadcrumb">' . yoast_breadcrumb('','',false) . '</span>';
 //		} else {
-			$content .= '<a href="#" style="font-size: 13px; color: #282; line-height: 15px;" class="url">' . str_replace( 'http://', '', get_bloginfo( 'url' ) ) . '/' . esc_html( $slug ) . '/</a>';
+		$content .= '<a href="#" style="font-size: 13px; color: #282; line-height: 15px;" class="url">' . str_replace( 'http://', '', get_bloginfo( 'url' ) ) . '/' . esc_html( $slug ) . '/</a>';
 //		}
 //		if ( $gplus = $this->get_gplus_data( $post->post_author ) ) {
 //			//		$content .= '<a href="https://profiles.google.com/' . $gplus->id . '" style="text-decoration:none;line-height:15px;font-size:13px;font-family:arial,sans-serif">';
@@ -623,7 +630,7 @@ class WPSEO_Metabox {
 ////		echo '<pre>'.print_r($gplus,1).'</pre>';
 //
 //		} else {
-			$content .= '<p class="desc" style="font-size: 13px; color: #000; line-height: 15px;">' . $datestr . '<span class="content">' . esc_html( $desc ) . '</span></p>';
+		$content .= '<p class="desc" style="font-size: 13px; color: #000; line-height: 15px;">' . $datestr . '<span class="content">' . esc_html( $desc ) . '</span></p>';
 //		}
 		$content .= '</div>';
 
@@ -689,7 +696,7 @@ class WPSEO_Metabox {
 			return false;
 
 		if ( wp_is_post_revision( $post_id ) )
-			return false;
+			$post_id = wp_is_post_revision( $post_id );
 
 		clean_post_cache( $post_id );
 		$post = get_post( $post_id );
@@ -747,6 +754,7 @@ class WPSEO_Metabox {
 			wp_enqueue_style( "metabox-$color", WPSEO_URL . 'css/metabox-' . esc_attr( $color ) . '.css', WPSEO_VERSION );
 
 			wp_enqueue_script( 'jquery-ui-autocomplete', WPSEO_URL . 'js/jquery-ui-autocomplete.min.js', array( 'jquery', 'jquery-ui-core' ), WPSEO_VERSION, true );
+			wp_enqueue_script( 'jquery-qtip', WPSEO_URL . 'js/jquery.qtip.min.js', array( 'jquery' ), '1.0.0-RC3', true );
 			wp_enqueue_script( 'wp-seo-metabox', WPSEO_URL . 'js/wp-seo-metabox.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-autocomplete' ), WPSEO_VERSION, true );
 		}
 	}
@@ -1006,8 +1014,6 @@ class WPSEO_Metabox {
 			$output .= '<tr><td class="score"><div class="wpseo_score_img ' . esc_attr( $score ) . '"></div></td><td>' . $result['msg'] . '</td></tr>';
 		}
 		$output .= '</table>';
-		$output .= '<hr/>';
-		$output .= '<p style="font-size: 13px;"><a href="http://yoast.com/out/linkdex/"><img class="alignleft" style="margin: 0 10px 5px 0;" src="' . WPSEO_URL . 'images/linkdex-logo.png" alt="Linkdex"/></a>' . sprintf( __( 'This page analysis brought to you by the collaboration of Yoast and %sLinkdex%s. Linkdex is an SEO suite that helps you optimize your site and offers you all the SEO tools you\'ll need. Yoast uses %sLinkdex%s and highly recommends you do too!', 'wordpress-seo' ), '<a href="http://yoast.com/out/linkdex/">', '</a>', '<a href="http://yoast.com/out/linkdex/">', '</a>' ) . '</p>';
 
 		if ( WP_DEBUG )
 			$output .= '<p><small>(' . $perc_score . '%)</small></p>';
@@ -1146,12 +1152,12 @@ class WPSEO_Metabox {
 	 * @param string $rawScore     The raw score, to be used by other filters.
 	 */
 	function save_score_result( &$results, $scoreValue, $scoreMessage, $scoreLabel, $rawScore = null ) {
-		$score     = array(
+		$score                = array(
 			'val' => $scoreValue,
 			'msg' => $scoreMessage,
 			'raw' => $rawScore
 		);
-		$results[ $scoreLabel ] = $score;
+		$results[$scoreLabel] = $score;
 	}
 
 	/**

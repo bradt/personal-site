@@ -69,7 +69,7 @@ class IWP_MMB_Stats extends IWP_MMB_Core
         $nposts  = isset($options['numberposts']) ? (int) $options['numberposts'] : 20;
         $trimlen = isset($options['trimcontent']) ? (int) $options['trimcontent'] : 200;
         
-        if ($nposts) {
+       // if ($nposts) {
             $comments = get_comments('status=hold&number=' . $nposts);
             if (!empty($comments)) {
                 foreach ($comments as &$comment) {
@@ -89,7 +89,7 @@ class IWP_MMB_Stats extends IWP_MMB_Core
                 $stats['comments']['pending'] = $comments;
             }
             
-            $comments = get_comments('status=approve&number=' . $nposts);
+           /* $comments = get_comments('status=approve&number=' . $nposts);
             if (!empty($comments)) {
                 foreach ($comments as &$comment) {
                     $commented_post           = get_post($comment->comment_post_ID);
@@ -106,8 +106,8 @@ class IWP_MMB_Stats extends IWP_MMB_Core
                     unset($comment->user_id);
                 }
                 $stats['comments']['approved'] = $comments;
-            }
-        }
+            }*/
+       //}
         return $stats;
     }
     
@@ -379,6 +379,11 @@ class IWP_MMB_Stats extends IWP_MMB_Core
 		$current = get_site_transient( 'update_plugins' );
 		$r = $current->response['iwp-client/init.php'];
 		
+		//For WPE
+		$use_cookie = 0;
+		if(@getenv('IS_WPE'))
+		$use_cookie=1;		
+		
         $stats['client_version']        = IWP_MMB_CLIENT_VERSION;
 		$stats['client_new_version']    = $r->new_version;
 		$stats['client_new_package']   	= $r->package;
@@ -388,6 +393,7 @@ class IWP_MMB_Stats extends IWP_MMB_Core
         $stats['mysql_version']         = $wpdb->db_version();
         $stats['wp_multisite']          = $this->iwp_mmb_multisite;
         $stats['network_install']       = $this->network_admin_install;
+		$stats['use_cookie'] 			= $use_cookie;
         
         if ( !function_exists('get_filesystem_method') )
             include_once(ABSPATH . 'wp-admin/includes/file.php');
@@ -492,7 +498,22 @@ class IWP_MMB_Stats extends IWP_MMB_Core
         
 		$current = get_site_transient( 'update_plugins' );
 		$r = $current->response['iwp-client/init.php'];
+		//For BWP
+		$bwp = get_option("bit51_bwps");
+		$wp_admin_URL=admin_url();
+		if(!empty($bwp))
+		{
+			if($bwp['hb_enabled']==1)
+			$wp_admin_URL = admin_url()."?".$bwp['hb_key'];
 		
+			
+		}
+		
+		//For WPE
+		$use_cookie = 0;
+		if(@getenv('IS_WPE'))
+		$use_cookie=1;
+	 
         $stats['email']           			= get_option('admin_email');
         $stats['no_openssl']      			= $this->get_random_signature();
         $stats['content_path']    			= WP_CONTENT_DIR;
@@ -503,9 +524,11 @@ class IWP_MMB_Stats extends IWP_MMB_Core
         $stats['site_title']      			= get_bloginfo('name');
         $stats['site_tagline']    			= get_bloginfo('description');
         $stats['site_home']       			= get_option('home');
-        $stats['admin_url']      			= admin_url();
+        $stats['admin_url']      			= $wp_admin_URL;
         $stats['wp_multisite']    			= $this->iwp_mmb_multisite;
         $stats['network_install'] 			= $this->network_admin_install;
+		$stats['use_cookie'] 				= $use_cookie;
+	
         
         if ($this->iwp_mmb_multisite) {
             $details = get_blog_details($this->iwp_mmb_multisite);

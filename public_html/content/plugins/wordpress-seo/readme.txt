@@ -4,9 +4,9 @@ Donate link: http://yoast.com/
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
-Requires at least: 3.1
+Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 1.3.4.4
+Stable tag: 1.4.1
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -43,7 +43,7 @@ Because of using [XSL stylesheets for these XML Sitemaps](http://yoast.com/xsl-s
 Are you being outranked by scrapers? Instead of cursing at them, use them to your advantage! By automatically adding a link to your RSS feed pointing back to the original article, you're telling the search engine where they should be looking for the original. This way, the WordPress SEO plugin increases your own chance of ranking for your chosen keywords and gets rid of scrapers in one go!
 
 = Breadcrumbs =
-If your theme is compatible, like most [Genesis](http://yoast.com/wp-theme/genesis/ "Genesis Theme Review by Yoast") and [WooThemes](http://yoast.com/out/woothemes) themes are for instance, you can use the built-in Breadcrumbs functionality. This allows you to create an easy navigation that is great for both users and search engines and will support the search engines in understanding the structure of your site.
+If your theme is compatible, and themes based on Genesis or by WooThemes for instance often are, you can use the built-in Breadcrumbs functionality. This allows you to create an easy navigation that is great for both users and search engines and will support the search engines in understanding the structure of your site.
 
 Making your theme compatible isn't hard either, check [these instructions](http://yoast.com/wordpress/breadcrumbs/).
 
@@ -140,6 +140,37 @@ rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 las
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.4.1 =
+
+* i18n:
+    * Updated .pot file
+    * Updated bg_BG, bs_BA, cs_CZ, fa_IR, hu_HU, pl_PL & ru_RU
+* Bugfixes:
+    * Focus keyword check now works again in all cases.
+    * Fix typo in Video SEO banner.
+* Enhancements:
+    * Don't show banners for plugins you already have.
+
+= 1.4 =
+
+* i18n & documentation:
+    * Updated Hebrew (he_IL)
+    * Updated Italian (it_IT)
+    * Updated Dutch (nl_NL)
+    * Updated Swedish (sv_SE)
+    * Updated some strings to fix typos.
+    * Removed affiliate links from readme.txt.
+* Bugfixes:
+    * Fixed a bug in saving post meta details for revisions.
+    * Prevent an error when there are no posts for post type.
+    * Fix the privacy warning to point to the right place.
+* Enhancements:
+    * Slight performance improvement in <head> functionality by not resetting query when its not needed (kudos to @Rarst).
+    * Slight performance improvement in options call by adding some caching (kudos to @Rarst as well).
+    * Changed inner workings of search engine ping, adding YOAST_SEO_PING_IMMEDIATELY constant to allow immediate ping on publish.
+    * Changed design of meta box, moving much of the help text out in favor of clicking on a help icon.
+    * Removed Linkdex box.
 
 = 1.3.4.4 =
 
