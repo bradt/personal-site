@@ -221,7 +221,7 @@ class WPSEO_Pointers {
 					nonce: nonce
 				}
 				jQuery.post( ajaxurl, wpseo_tracking_data, function() {
-                    jQuery('#pointer-close').click();
+                    jQuery('#wp-pointer-0').remove();
 				} );
 			}
 

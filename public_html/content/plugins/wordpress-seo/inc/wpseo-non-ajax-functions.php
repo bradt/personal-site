@@ -224,7 +224,7 @@ function wpseo_admin_bar_menu() {
 		$focuskw    = wpseo_get_value( 'focuskw', $post->ID );
 		$perc_score = wpseo_get_value( 'linkdex', $post->ID );
 		$txtscore   = wpseo_translate_score( round( $perc_score / 10 ) );
-		$score      = '<div alt="' . ucfirst( $txtscore ) . '" title="' . ucfirst( $txtscore ) . '" class="wpseo_score_img ' . $txtscore . ' ' . $perc_score . '"></div>';
+		$score      = '<div title="' . ucfirst( $txtscore ) . '" class="wpseo_score_img ' . $txtscore . ' ' . $perc_score . '"></div>';
 		$seo_url    = get_edit_post_link( $post->ID );
 		if ( $txtscore != 'na' )
 			$seo_url .= '#wpseo_linkdex';

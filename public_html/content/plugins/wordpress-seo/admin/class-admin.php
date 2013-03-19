@@ -29,7 +29,8 @@ class WPSEO_Admin {
 
 		if ( $this->grant_access() ) {
 			add_action( 'admin_init', array( $this, 'options_init' ) );
-			add_action( 'admin_menu', array( $this, 'register_settings_page' ) );
+			// Needs the lower than default priority so other plugins can hook underneath it without issue.
+			add_action( 'admin_menu', array( $this, 'register_settings_page' ), 5 );
 			add_action( 'network_admin_menu', array( $this, 'register_network_settings_page' ) );
 
 			add_filter( 'plugin_action_links', array( $this, 'add_action_link' ), 10, 2 );

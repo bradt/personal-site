@@ -3,13 +3,13 @@
  * @package Admin
  */
 
-if ( !defined( 'WPSEO_VERSION' ) ) {
+if ( !defined( 'GAWP_VERSION' ) ) {
 	header( 'HTTP/1.0 403 Forbidden' );
 	die;
 }
 
 /**
- * Class that creates the tracking functionality for WP SEO, as the core class might be used in more plugins, it's checked for existence first.
+ * Class that creates the tracking functionality for Yoast Plugins, as the core class might be used in more plugins, it's checked for existence first.
  */
 if ( !class_exists( 'Yoast_Tracking' ) ) {
 	class Yoast_Tracking {
@@ -61,7 +61,8 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 						'author'     => $theme_data->display( 'Author', false, false ),
 						'author_uri' => $theme_data->display( 'AuthorURI', false, false ),
 					);
-					if ( isset( $theme_data->template ) && !empty( $theme_data->template ) && $theme_data->parent() ) {
+					$parent_theme = $theme_data->__get('parent_theme');
+					if ( isset( $parent_theme ) && !empty( $parent_theme ) && $theme_data->parent() ) {
 						$theme['template'] = array(
 							'version'    => $theme_data->parent()->display( 'Version', false, false ),
 							'name'       => $theme_data->parent()->display( 'Name', false, false ),
@@ -133,23 +134,18 @@ if ( !class_exists( 'Yoast_Tracking' ) ) {
 }
 
 /**
- * Adds tracking parameters for WP SEO settings. Outside of the main class as the class could also be in use in other plugins.
+ * Adds tracking parameters for Google Analytics settings. Outside of the main class as the class could also be in use in other plugins.
  *
  * @param array $options
  * @return array
  */
-function wpseo_tracking_additions( $options ) {
-	$opt = get_wpseo_options();
+function ystga_tracking_additions( $options ) {
+	$opt = get_option('Yoast_Google_Analytics');
 
-	$options['wpseo'] = array(
-		'xml_sitemaps'        => isset( $opt['enablexmlsitemap'] ) ? 1 : 0,
-		'force_rewrite'       => isset( $opt['forcerewritetitle'] ) ? 1 : 0,
-		'opengraph'           => isset( $opt['opengraph'] ) ? 1 : 0,
-		'twitter'             => isset( $opt['twitter'] ) ? 1 : 0,
-		'strip_category_base' => isset( $opt['stripcategorybase'] ) ? 1 : 0,
-		'on_front'            => get_option( 'show_on_front' ),
+	$options['gawp'] = array(
+		'advanced_settigns' => isset( $opt['advancedsettings'] ) ? 1 : 0,
 	);
 	return $options;
 }
 
-add_filter( 'yoast_tracking_filters', 'wpseo_tracking_additions' );
+add_filter( 'yoast_tracking_filters', 'ystga_tracking_additions' );
