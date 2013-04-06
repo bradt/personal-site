@@ -49,7 +49,7 @@ class Dropbox {
             $url = self::API_CONTENT_URL.self::API_VERSION_URL.'files_put/'.$this->root.'/'.trim($path, '/');
             $output = $this->request($url, array('overwrite' => ($overwrite)? 'true' : 'false'), 'PUT', $filehandle, $filesize);
             fclose($filehandle);
-        } else {
+        } else {//chunk transfer on bigger uploads >50MB
             $output = $this->chunked_upload($file, $path,$overwrite);
         }
         return $output;
@@ -63,7 +63,8 @@ class Dropbox {
         $uploadid=null;
         $offset=0;
         $ProgressFunction=null;
-        while ($data=fread($file_handle,4194304)) {  //4194304 = 4MB
+        while ($data=fread($file_handle, (1024*1024*30))) {  //1024*1024*30 = 30MB
+			iwp_mmb_auto_print('dropbox_chucked_upload');
             $chunkHandle = fopen('php://memory', 'rw');
             fwrite($chunkHandle,$data);
             rewind($chunkHandle);
@@ -215,6 +216,7 @@ class Dropbox {
 			$args = (is_array($args)) ? '?'.http_build_query($args, '', '&') : $args;
 			curl_setopt($ch, CURLOPT_URL, $url.$args);
 		}
+		
 		curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

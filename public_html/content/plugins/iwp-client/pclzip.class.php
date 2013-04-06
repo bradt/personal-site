@@ -2552,6 +2552,8 @@
   // --------------------------------------------------------------------------------
   function privAddFile($p_filedescr, &$p_header, &$p_options)
   {
+    iwp_mmb_auto_print('pcl_zipping');
+	
     $v_result=1;
 
     // ----- Working variable
@@ -3641,6 +3643,7 @@
   // --------------------------------------------------------------------------------
   function privExtractFile(&$p_entry, $p_path, $p_remove_path, $p_remove_all_path, &$p_options)
   {
+    iwp_mmb_auto_print('pcl_extracting');
     $v_result=1;
 
     // ----- Read the file header

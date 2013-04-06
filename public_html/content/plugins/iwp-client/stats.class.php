@@ -66,7 +66,7 @@ class IWP_MMB_Stats extends IWP_MMB_Core
     
     function get_comments($stats, $options = array())
     {
-        $nposts  = isset($options['numberposts']) ? (int) $options['numberposts'] : 20;
+        $nposts  = ($options['numberposts'] > 0) ? (int) $options['numberposts'] : 100;
         $trimlen = isset($options['trimcontent']) ? (int) $options['trimcontent'] : 200;
         
        // if ($nposts) {
@@ -513,7 +513,7 @@ class IWP_MMB_Stats extends IWP_MMB_Core
 		$use_cookie = 0;
 		if(@getenv('IS_WPE'))
 		$use_cookie=1;
-	 
+		
         $stats['email']           			= get_option('admin_email');
         $stats['no_openssl']      			= $this->get_random_signature();
         $stats['content_path']    			= WP_CONTENT_DIR;

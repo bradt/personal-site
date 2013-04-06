@@ -59,17 +59,23 @@ class IWP_MMB_Backup_Repository extends IWP_MMB_Backup
             //FTP, Amazon S3 or Dropbox
             if (isset($account_info['iwp_ftp']) && !empty($account_info)) {
                 $account_info['iwp_ftp']['backup_file'] = $backup_file;
+				iwp_mmb_print_flush('FTP upload: Start');
                 $return                                 = $this->ftp_backup($account_info['iwp_ftp']);
+				iwp_mmb_print_flush('FTP upload: End');
             }
             
             if (isset($account_info['iwp_amazon_s3']) && !empty($account_info['iwp_amazon_s3'])) {
                 $account_info['iwp_amazon_s3']['backup_file'] = $backup_file;
+				iwp_mmb_print_flush('Amazon S3 upload: Start');
                 $return                                       = $this->amazons3_backup($account_info['iwp_amazon_s3']);
+				iwp_mmb_print_flush('Amazon S3 upload: End');
             }
             
             if (isset($account_info['iwp_dropbox']) && !empty($account_info['iwp_dropbox'])) {
                 $account_info['iwp_dropbox']['backup_file'] = $backup_file;
+				iwp_mmb_print_flush('Dropbox upload: Start');
                 $return                                     = $this->dropbox_backup($account_info['iwp_dropbox']);
+				iwp_mmb_print_flush('Dropbox upload: End');
             }          
             
             if ($return == true && $del_host_file) {

@@ -144,7 +144,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 			'run_task' => 'iwp_mmb_run_task_now',
 			'delete_schedule_task' => 'iwp_mmb_delete_task_now',
 			'execute_php_code' => 'iwp_mmb_execute_php_code',
-			'delete_backup' => 'mmm_delete_backup',
+			'delete_backup' => 'iwp_mmb_delete_backup',
 			'remote_backup_now' => 'iwp_mmb_remote_backup_now',
 			'set_notifications' => 'iwp_mmb_set_notifications',
 			'clean_orphan_backups' => 'iwp_mmb_clean_orphan_backups',
@@ -159,7 +159,9 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 			'client_brand' => 'iwp_mmb_client_brand',
 			'set_alerts' => 'iwp_mmb_set_alerts',
 			'maintenance' => 'iwp_mmb_maintenance_mode',
-						
+			
+			'wp_optimize' => 'iwp_mmb_wp_optimize',
+			
 			'backup_repository' => 'iwp_mmb_backup_repository'
 		);
 		
@@ -244,7 +246,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		}	
 		
 		$iwp_client_activate_key = get_option('iwp_client_activate_key');
-
+		
 		//check BWP 
 		$bwp = get_option("bit51_bwps");
 		$notice_display_URL=admin_url();
@@ -296,7 +298,21 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		$option = $wpdb->get_var( $wpdb->prepare( "SELECT `option_value` FROM {$wpdb->base_prefix}options WHERE option_name = %s LIMIT 1", $option_name ) );
         return $option;
     }
+    
+	
+	/**
+     * Gets an instance of the WP_Optimize class
+     * 
+     */
+    function wp_optimize_instance()
+    {
+        if (!isset($this->optimize_instance)) {
+            $this->optimize_instance = new IWP_MMB_Optimize();
+        }
         
+        return $this->optimize_instance;
+    }
+    
     /**
      * Gets an instance of the Comment class
      * 

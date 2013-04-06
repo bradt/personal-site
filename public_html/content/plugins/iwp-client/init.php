@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.1.8
+Version: 1.1.10
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -14,7 +14,7 @@ Author URI: http://www.revmakx.com
  *															*
  ************************************************************/
 
-/************************************************************
+/*************************************************************
  * 
  * init.php
  * 
@@ -23,10 +23,10 @@ Author URI: http://www.revmakx.com
  * 
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
- *************************************************************/
+ **************************************************************/
 
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.1.8');
+	define('IWP_MMB_CLIENT_VERSION', '1.1.10');
 
 
 if ( !defined('IWP_MMB_XFRAME_COOKIE')){
@@ -54,6 +54,8 @@ require_once("$iwp_mmb_plugin_dir/addons/comments/comments.class.php");
 
 require_once("$iwp_mmb_plugin_dir/addons/post_links/link.class.php");
 require_once("$iwp_mmb_plugin_dir/addons/post_links/post.class.php");
+
+require_once("$iwp_mmb_plugin_dir/addons/wp_optimize/optimize.class.php");
 
 require_once("$iwp_mmb_plugin_dir/api.php");
 require_once("$iwp_mmb_plugin_dir/plugins/search/search.php");
@@ -87,8 +89,6 @@ if( !function_exists ( 'iwp_mmb_filter_params' )) {
 if( !function_exists ('iwp_mmb_parse_request')) {
 	function iwp_mmb_parse_request()
 	{
-		
-	
 		if (!isset($HTTP_RAW_POST_DATA)) {
 			$HTTP_RAW_POST_DATA = file_get_contents('php://input');
 		}
@@ -111,8 +111,11 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 		}
 		
 		if (isset($iwp_action)) {
-			if(!defined('IWP_AUTHORISED_CALL')) define('IWP_AUTHORISED_CALL', 1);
 			
+			if(!defined('IWP_AUTHORISED_CALL')) define('IWP_AUTHORISED_CALL', 1);
+			if(function_exists('register_shutdown_function')){ register_shutdown_function("iwp_mmb_shutdown"); }
+			$GLOBALS['IWP_MMB_PROFILING']['ACTION_START'] = microtime(1);
+		
 			error_reporting(E_ALL ^ E_NOTICE);
 			@ini_set("display_errors", 1);
 			
@@ -206,6 +209,7 @@ if( !function_exists ( 'iwp_mmb_response' )) {
 			header('HTTP/1.0 200 OK');
 			header('Content-Type: text/plain');
 		}
+		$GLOBALS['IWP_RESPONSE_SENT'] = true;
 		exit("<IWPHEADER>" . base64_encode(serialize($return))."<ENDIWPHEADER>");
 	}
 }
@@ -425,8 +429,8 @@ if( !function_exists ( 'iwp_mmb_scheduled_backup' )) {
 }
 
 
-if( !function_exists ( 'mmm_delete_backup' )) {
-	function mmm_delete_backup($params)
+if( !function_exists ( 'iwp_mmb_delete_backup' )) {
+	function iwp_mmb_delete_backup($params)
 	{
 		global $iwp_mmb_core;
 		$iwp_mmb_core->get_backup_instance();
@@ -985,7 +989,23 @@ if( !function_exists ('iwp_mmb_reply_comment')) {
 
 //Comments-End-
 
+//WP-Optimize
 
+if( !function_exists('iwp_mmb_wp_optimize')){
+	function iwp_mmb_wp_optimize($params){
+		global $iwp_mmb_core;
+		$iwp_mmb_core->wp_optimize_instance();
+		
+		$return = $iwp_mmb_core->optimize_instance->cleanup_system($params);
+		if (is_array($return) && array_key_exists('error', $return))
+			iwp_mmb_response($return['error'], false);
+		else {
+			iwp_mmb_response($return, true);
+		}
+	}
+}
+
+//WP-Optimize_end
 if( !function_exists('iwp_mmb_maintenance_mode')){
  	function iwp_mmb_maintenance_mode( $params ) {
 		global $wp_object_cache;
@@ -1089,6 +1109,66 @@ if(!function_exists('checkOpenSSL')){
 	}
 	return true;
   }
+}
+
+
+if(!function_exists('iwp_mmb_shutdown')){
+	function iwp_mmb_shutdown(){
+		$isError = false;
+	
+		if ($error = error_get_last()){
+		switch($error['type']){
+			/*case E_PARSE:*/
+			case E_ERROR:
+			case E_CORE_ERROR:
+			case E_COMPILE_ERROR:
+			case E_USER_ERROR:
+				$isError = true;
+				break;
+			}
+		}
+		if ($isError){
+			
+			$response = '<span style="font-weight:700;">PHP Fatal error occured:</span> '.$error['message'].' in '.$error['file'].' on line '.$error['line'].'.';
+			if(stripos($error['message'], 'allowed memory size') !== false){
+				$response .= '<br>Try <a href="http://infinitewp.com/knowledge-base/increase-memory-limit/?utm_source=application&utm_medium=userapp&utm_campaign=kb" target="_blank">increasing the PHP memory limit</a> for this WP site.';
+			}
+			if(!$GLOBALS['IWP_RESPONSE_SENT']){
+				iwp_mmb_response($response, false);
+			}
+			
+		}
+	}
+}
+
+
+if(!function_exists('iwp_mmb_print_flush')){
+	function iwp_mmb_print_flush($print_string){// this will help responding web server, will keep alive the script execution
+		
+		echo $print_string." ||| ";
+		echo "TT:".(microtime(1) - $GLOBALS['IWP_MMB_PROFILING']['ACTION_START'])."\n";
+		ob_flush();
+		flush();
+	}
+}
+
+if(!function_exists('iwp_mmb_auto_print')){
+	function iwp_mmb_auto_print($unique_task){// this will help responding web server, will keep alive the script execution
+		$print_every_x_secs = 20;
+		
+		$current_time = microtime(1);
+		if(!$GLOBALS['IWP_MMB_PROFILING']['TASKS'][$unique_task]['START']){
+			$GLOBALS['IWP_MMB_PROFILING']['TASKS'][$unique_task]['START'] = $current_time;	
+		}
+		
+		if(!$GLOBALS['IWP_MMB_PROFILING']['LAST_PRINT'] || ($current_time - $GLOBALS['IWP_MMB_PROFILING']['LAST_PRINT']) > $print_every_x_secs){
+			
+			//$print_string = "TT:".($current_time - $GLOBALS['IWP_MMB_PROFILING']['ACTION_START'])."\n";
+			$print_string = $unique_task." TT:".($current_time - $GLOBALS['IWP_MMB_PROFILING']['TASKS'][$unique_task]['START']);
+			iwp_mmb_print_flush($print_string);
+			$GLOBALS['IWP_MMB_PROFILING']['LAST_PRINT'] = $current_time;		
+		}
+	}
 }
 
 $iwp_mmb_core = new IWP_MMB_Core();

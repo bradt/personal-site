@@ -51,8 +51,10 @@ class WPSEO_Frontend {
 		remove_action( 'wp_head', 'start_post_rel_link' );
 		remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head' );
 
-		if ( isset( $options['hide-shortlink'] ) && $options['hide-shortlink'] )
+		if ( isset( $options['hide-shortlink'] ) && $options['hide-shortlink'] ) {
 			remove_action( 'wp_head', 'wp_shortlink_wp_head' );
+			remove_action( 'template_redirect', 'wp_shortlink_header' );
+		}
 		if ( isset( $options['hide-feedlinks'] ) && $options['hide-feedlinks'] ) {
 			// @todo: add option to display just normal feed and hide comment feed.
 			remove_action( 'wp_head', 'feed_links', 2 );

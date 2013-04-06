@@ -98,6 +98,7 @@ ul.wpseo-metabox-tabs li {
 	font-size: 13px !important;
 	font-style: normal;
 	width: auto;
+    max-width: 520px;
 }
 
 #wpseosnippet td {

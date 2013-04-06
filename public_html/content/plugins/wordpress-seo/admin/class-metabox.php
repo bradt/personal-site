@@ -41,6 +41,8 @@ class WPSEO_Metabox {
 		add_action( 'admin_head', array( $this, 'script' ) );
 		add_action( 'add_meta_boxes', array( $this, 'add_custom_box' ) );
 		add_action( 'wp_insert_post', array( $this, 'save_postdata' ) );
+		add_action( 'edit_attachment', array( $this, 'save_postdata' ) );
+		add_action( 'add_attachment', array( $this, 'save_postdata' ) );
 		add_action( 'admin_init', array( $this, 'setup_page_analysis' ) );
 	}
 
@@ -197,14 +199,14 @@ class WPSEO_Metabox {
 		$sample_permalink = get_sample_permalink( $post->ID );
 		$sample_permalink = str_replace( '%page', '%post', $sample_permalink[0] );
 		?>
-    <script type="text/javascript">
-        var wpseo_lang = '<?php echo substr( get_locale(), 0, 2 ); ?>';
-        var wpseo_meta_desc_length = '<?php echo $this->meta_length; ?>';
-        var wpseo_title_template = '<?php echo esc_attr( $title_template ); ?>';
-        var wpseo_metadesc_template = '<?php echo esc_attr( $metadesc_template ); ?>';
-        var wpseo_permalink_template = '<?php echo esc_url( $sample_permalink ); ?>';
-        var wpseo_keyword_suggest_nonce = '<?php echo wp_create_nonce( 'wpseo-get-suggest' ); ?>';
-    </script>
+		<script type="text/javascript">
+			var wpseo_lang = '<?php echo substr( get_locale(), 0, 2 ); ?>';
+			var wpseo_meta_desc_length = '<?php echo $this->meta_length; ?>';
+			var wpseo_title_template = '<?php echo esc_attr( $title_template ); ?>';
+			var wpseo_metadesc_template = '<?php echo esc_attr( $metadesc_template ); ?>';
+			var wpseo_permalink_template = '<?php echo esc_url( $sample_permalink ); ?>';
+			var wpseo_keyword_suggest_nonce = '<?php echo wp_create_nonce( 'wpseo-get-suggest' ); ?>';
+		</script>
 	<?php
 	}
 
@@ -230,12 +232,12 @@ class WPSEO_Metabox {
 	 */
 	public function do_tab( $id, $heading, $content ) {
 		?>
-    <div class="wpseotab <?php echo esc_attr( $id ) ?>">
-        <h4 class="wpseo-heading"><?php echo esc_html( $heading ); ?></h4>
-        <table class="form-table">
-			<?php echo $content ?>
-        </table>
-    </div>
+		<div class="wpseotab <?php echo esc_attr( $id ) ?>">
+			<h4 class="wpseo-heading"><?php echo esc_html( $heading ); ?></h4>
+			<table class="form-table">
+				<?php echo $content ?>
+			</table>
+		</div>
 	<?php
 	}
 
@@ -260,7 +262,7 @@ class WPSEO_Metabox {
 			"type"         => "text",
 			"title"        => __( 'Focus Keyword', 'wordpress-seo' ),
 			"autocomplete" => "off",
-			"help"         => sprintf( "Pick the main keyword or keyphrase that this post/page is about.<br/><br/>Read %sthis post%s for more info.", "<a href='http://yoast.com/focus-keyword/'>", '</a>' ),
+			"help"         => sprintf( "Pick the main keyword or keyphrase that this post/page is about.<br/><br/>Read %sthis post%s for more info.", "<a href='http://yoast.com/focus-keyword/#utm_source=wordpress-seo-metabox&utm_medium=inline-help&utm_campaign=focus-keyword'>", '</a>' ),
 			"description"  => "<div id='focuskwresults'></div>",
 		);
 		$mbs['title']          = array(
@@ -269,7 +271,7 @@ class WPSEO_Metabox {
 			"type"        => "text",
 			"title"       => __( "SEO Title", 'wordpress-seo' ),
 			"description" => sprintf( __( "Title display in search engines is limited to 70 chars, %s chars left.", 'wordpress-seo' ), "<span id='yoast_wpseo_title-length'></span>" ),
-			"help"		  => __( "The SEO Title defaults to what is generated based on this sites title template for this posttype.", 'wordpress-seo' )
+			"help"        => __( "The SEO Title defaults to what is generated based on this sites title template for this posttype.", 'wordpress-seo' )
 		);
 		$mbs['metadesc']       = array(
 			"name"        => "metadesc",
@@ -280,7 +282,7 @@ class WPSEO_Metabox {
 			"rows"        => 2,
 			"richedit"    => false,
 			"description" => sprintf( __( "The <code>meta</code> description will be limited to %s chars%s, %s chars left.", 'wordpress-seo' ), $this->meta_length, $this->meta_length_reason, "<span id='yoast_wpseo_metadesc-length'></span>" ) . " <div id='yoast_wpseo_metadesc_notice'></div>",
-			"help"		  => __( "If the meta description is empty, the snippet preview above shows what is generated based on this sites meta description template.", 'wordpress-seo' ),
+			"help"        => __( "If the meta description is empty, the snippet preview above shows what is generated based on this sites meta description template.", 'wordpress-seo' ),
 		);
 		if ( isset( $options['usemetakeywords'] ) && $options['usemetakeywords'] ) {
 			$mbs['metakeywords'] = array(
@@ -429,18 +431,18 @@ class WPSEO_Metabox {
 		$options = get_wpseo_options();
 
 		?>
-	<div class="wpseo-metabox-tabs-div">
-        <ul class="wpseo-metabox-tabs" id="wpseo-metabox-tabs">
-            <li class="general"><a class="wpseo_tablink"
-                                   href="#wpseo_general"><?php _e( "General", 'wordpress-seo' ); ?></a></li>
-            <li id="linkdex" class="linkdex"><a class="wpseo_tablink"
-                                                href="#wpseo_linkdex"><?php _e( "Page Analysis", 'wordpress-seo' ); ?></a>
-            </li>
-            <li class="advanced"><a class="wpseo_tablink"
-                                    href="#wpseo_advanced"><?php _e( "Advanced", 'wordpress-seo' ); ?></a></li>
+		<div class="wpseo-metabox-tabs-div">
+		<ul class="wpseo-metabox-tabs" id="wpseo-metabox-tabs">
+			<li class="general"><a class="wpseo_tablink"
+								   href="#wpseo_general"><?php _e( "General", 'wordpress-seo' ); ?></a></li>
+			<li id="linkdex" class="linkdex"><a class="wpseo_tablink"
+												href="#wpseo_linkdex"><?php _e( "Page Analysis", 'wordpress-seo' ); ?></a>
+			</li>
+			<li class="advanced"><a class="wpseo_tablink"
+									href="#wpseo_advanced"><?php _e( "Advanced", 'wordpress-seo' ); ?></a></li>
 			<?php do_action( 'wpseo_tab_header' ); ?>
-        </ul>
-<?php		
+		</ul>
+		<?php
 		$content = '';
 		foreach ( $this->get_meta_boxes( $post->post_type ) as $meta_box ) {
 			$content .= $this->do_meta_box( $meta_box );
@@ -448,7 +450,7 @@ class WPSEO_Metabox {
 		$this->do_tab( 'general', __( 'General', 'wordpress-seo' ), $content );
 
 		$this->do_tab( 'linkdex', __( 'Page Analysis', 'wordpress-seo' ), $this->linkdex_output( $post ) );
-		
+
 		if ( current_user_can( 'edit_users' ) || !isset( $options['disableadvanced_meta'] ) || !$options['disableadvanced_meta'] ) {
 			$content = '';
 			foreach ( $this->get_advanced_meta_boxes() as $meta_box ) {
@@ -456,9 +458,9 @@ class WPSEO_Metabox {
 			}
 			$this->do_tab( 'advanced', __( 'Advanced', 'wordpress-seo' ), $content );
 		}
-		
+
 		do_action( 'wpseo_tab_content' );
-		
+
 		echo '</div>';
 	}
 
@@ -493,7 +495,7 @@ class WPSEO_Metabox {
 
 		$help = '';
 		if ( isset( $meta_box['help'] ) && $meta_box['help'] )
-			$help = '<img src="'.WPSEO_URL.'images/question-mark.png" class="alignright yoast_help" id="' . $meta_box['name'] . 'help" alt="' . esc_attr( $meta_box['help'] ) . '" />';
+			$help = '<img src="' . WPSEO_URL . 'images/question-mark.png" class="alignright yoast_help" id="' . $meta_box['name'] . 'help" alt="' . esc_attr( $meta_box['help'] ) . '" />';
 
 		$content .= '<tr>';
 		$content .= '<th scope="row"><label for="yoast_wpseo_' . $meta_box['name'] . '">' . $meta_box['title'] . ':</label>' . $help . '</th>';
@@ -929,6 +931,13 @@ class WPSEO_Metabox {
 				);
 			}
 		}
+		if ( isset( $_GET['seo_kw_filter'] ) ) {
+			$vars = array_merge( $vars, array(
+				'post_type'  => 'any',
+				'meta_key'   => '_yoast_wpseo_focuskw',
+				'meta_value' => $_GET['seo_kw_filter'],
+			) );
+		}
 		if ( isset( $vars['orderby'] ) && 'wpseo-score' == $vars['orderby'] ) {
 			$vars = array_merge( $vars, array(
 				'meta_key' => '_yoast_wpseo_linkdex',
@@ -1055,6 +1064,7 @@ class WPSEO_Metabox {
 		$job["pageSlug"]       = urldecode( $post->post_name );
 		$job["keyword"]        = trim( wpseo_get_value( 'focuskw' ) );
 		$job["keyword_folded"] = $this->strip_separators_and_fold( $job["keyword"] );
+		$job["post_id"]        = $post->ID;
 
 		$dom                      = new domDocument;
 		$dom->strictErrorChecking = false;
@@ -1063,6 +1073,9 @@ class WPSEO_Metabox {
 		$xpath = new DOMXPath( $dom );
 
 		$statistics = new Yoast_TextStatistics;
+
+		// Check if this focus keyword has been used already.
+		$this->check_double_focus_keyword( $job, $results );
 
 		// Keyword
 		$this->score_keyword( $job['keyword'], $results );
@@ -1198,6 +1211,32 @@ class WPSEO_Metabox {
 	}
 
 	/**
+	 * Check whether this focus keyword has been used for other posts before.
+	 *
+	 * @param array $job
+	 * @param array $results
+	 */
+	function check_double_focus_keyword( $job, &$results ) {
+		$posts = get_posts(
+			array(
+				'meta_key'    => '_yoast_wpseo_focuskw',
+				'meta_value'  => $job['keyword'],
+				'exclude'     => $job['post_id'],
+				'fields'      => 'ids',
+				'post_type'   => 'any',
+				'numberposts' => -1
+			)
+		);
+
+		if ( count( $posts ) == 0 )
+			$this->save_score_result( $results, 9, __( "You've never used this focus keyword before, very good." ), 'keyword_overused' );
+		else if ( count( $posts ) == 1 )
+			$this->save_score_result( $results, 6, sprintf( __( 'You\'ve used this focus keyword %1$sonce before%2$s, be sure to make very clear which URL on your site is the most important for this keyword.' ), '<a href="' . admin_url( 'post.php?post=' . $posts[0] . '&action=edit' ) . '">', '</a>' ), 'keyword_overused' );
+		else
+			$this->save_score_result( $results, 1, sprintf( __( 'You\'ve used this focus keyword %3$s%4$d times before%2$s, it\'s probably a good idea to read %1$sthis post on cornerstone content%2$s and improve your keyword strategy.' ), '<a href="http://yoast.com/cornerstone-content-rank/">', '</a>', '<a href="' . admin_url( 'edit.php?seo_kw_filter=' . urlencode( $job['keyword'] ) ) . '">', count( $posts ) ), 'keyword_overused' );
+	}
+
+	/**
 	 * Check whether the keyword contains stopwords.
 	 *
 	 * @param string $keyword The keyword to check for stopwords.
@@ -1295,10 +1334,10 @@ class WPSEO_Metabox {
 	/**
 	 * Check whether the document contains outbound links and whether it's anchor text matches the keyword.
 	 *
-	 * @param array  $job          The job array holding both the keyword versions.
-	 * @param array  $results      The results array.
-	 * @param array  $anchor_texts The array holding all anchors in the document.
-	 * @param array  $count        The number of anchors in the document, grouped by type.
+	 * @param array $job          The job array holding both the keyword versions.
+	 * @param array $results      The results array.
+	 * @param array $anchor_texts The array holding all anchors in the document.
+	 * @param array $count        The number of anchors in the document, grouped by type.
 	 */
 	function score_anchor_texts( $job, &$results, $anchor_texts, $count ) {
 		$scoreNoLinks               = __( "No outbound links appear in this page, consider adding some as appropriate.", 'wordpress-seo' );
