@@ -79,7 +79,7 @@ if (!class_exists( 'bwpv_admin' ) ) {
 
 				} else {
 
-					$bit51bwpv->purgePost( filter_var( $_GET['ID'], FILTER_SANITIZE_STRING ) );					
+					$bit51bwpv->purgePost( filter_var( $_GET['id'], FILTER_SANITIZE_STRING ) );					
 
 				}
 
