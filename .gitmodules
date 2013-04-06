@@ -7,3 +7,6 @@
 [submodule "public_html/content/plugins/wp-migrate-db-pro"]
 	path = public_html/content/plugins/wp-migrate-db-pro
 	url = git@github.com:wpappstore/wp-migrate-db-pro.git
+[submodule "public_html/content/plugins/wp-app-store"]
+	path = public_html/content/plugins/wp-app-store
+	url = git@github.com:wpappstore/wp-app-store.git
