@@ -314,7 +314,7 @@ ul {
 
 #content.single div.post {
 	padding-bottom: 40px;
-	margin-bottom: 0;
+	margin-bottom: 2em;
 }
 
 #content .intro {
@@ -956,6 +956,10 @@ ul.posts {
 
 #content.page .post h2 {
 	margin: 1em 0 0 0;
+}
+
+#disqus_thread {
+	margin-bottom: 100px;
 }
 
 #comments {
