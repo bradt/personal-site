@@ -4,3 +4,6 @@
 [submodule "public_html/content/plugins/amazon-s3-and-cloudfront"]
 	path = public_html/content/plugins/amazon-s3-and-cloudfront
 	url = git@github.com:bradt/wp-tantan-s3.git
+[submodule "public_html/content/plugins/wp-migrate-db-pro"]
+	path = public_html/content/plugins/wp-migrate-db-pro
+	url = git@github.com:wpappstore/wp-migrate-db-pro.git
