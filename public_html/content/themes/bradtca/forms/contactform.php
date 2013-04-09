@@ -154,10 +154,11 @@ class ContactForm extends PHPFormWork {
             $message = $top . $message;
         }
 
+        $message = "From: $your_name &lt;$your_email&gt;\n\n" . $message;
+
         $message = wordwrap($message, 80, "\n");
         
         $headers = "MIME-Version: 1.0\n";
-        $headers .= "From: $your_name <$your_email>\n";
         $headers .= "List-ID: <contact-form.bradt.ca>\n";
         $headers .= "Content-Type: text/plain; charset=\"" . get_settings('blog_charset') . "\"\n";
         
