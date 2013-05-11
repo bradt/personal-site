@@ -27,6 +27,17 @@
 				<?php wp23_related_posts(); ?>
 			</div>
 
+			<div class="author">
+				<img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=200" alt="">
+				<h3>About the Author</h3>
+				<p>
+					Brad is founder of <a href="http://deliciousbrains.com/?utm_source=bradt.ca&utm_medium=web&utm_content=homelink&utm_campaign=author-bio">Delicious Brains</a>, a 
+					company building super awesome products for WordPress, including 
+					<a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_content=wpmdblink&utm_campaign=author-bio">WP Migrate DB Pro</a>, 
+					a huge time saving tool for WordPress developers.
+				</p>
+			</div>
+
 		</div>
 
 		<?php comments_template(); // Get comments.php template ?>

@@ -939,6 +939,8 @@ ul.posts {
 
 .post .related {
 	margin-bottom: 2em;
+	padding-bottom: 2em;
+	background: transparent url(images/hr.gif) no-repeat bottom left;	
 }
 
 .post .related ul {
@@ -948,6 +950,29 @@ ul.posts {
 
 .post .related ul li {
 	margin-bottom: 0.45em;
+}
+
+.post .author {
+	margin-bottom: 1em;
+	max-width: 698px;
+}
+
+.post .author img {
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	float: left;
+	margin-right: 1em;
+}
+
+.post .author h3 {
+	margin: 0;
+}
+
+.post .author p {
+	margin: 0;
+	line-height: 1.4em;
+	font-size: 1em;
 }
 
 #content.page .post {
