@@ -17,7 +17,7 @@
 	<?php endif; ?>
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 	<?php //if ( !is_naked_day(9) ) : ?>
-	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2013040601" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2013051101" media="screen" />
 	<?php //endif; ?>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://balupton.github.com/jquery-syntaxhighlighter/scripts/jquery.syntaxhighlighter.min.js"></script>
@@ -62,9 +62,10 @@ Annual CSS Naked Day</a> website for more information.</p>
 			<span class="fname">Brad</span> <span class="lname">Touesnard</span>
 		</h1>
 		<p>
-			Founder of <a href="http://wpappstore.com">WP App Store</a>.
-			<span>Co-founder</span> of <a href="http://www.zenutech.ca/?ref=bradt.ca">Zenutech web hosting</a>.
-			Creative coder living in Halifax,&nbsp;Canada.&nbsp;<a href="/about/" class="more">more &raquo;</a>
+			Creative coder living in Halifax,&nbsp;Canada.
+			Founder of <a href="http://deliciousbrains.com">Delicious Brains</a>, a company building
+			super awesome products for WordPress.
+			&nbsp;<a href="/about/" class="more">more &raquo;</a>
 		</p>
 	</div>
 	<?php endif; ?>
