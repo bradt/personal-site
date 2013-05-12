@@ -17,7 +17,7 @@
 	<?php endif; ?>
 	<link rel="pingback" href="<?php bloginfo('pingback_url'); ?>" />
 	<?php //if ( !is_naked_day(9) ) : ?>
-	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2013051101" media="screen" />
+	<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/style.css?2013051201" media="screen" />
 	<?php //endif; ?>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 	<script type="text/javascript" src="http://balupton.github.com/jquery-syntaxhighlighter/scripts/jquery.syntaxhighlighter.min.js"></script>
