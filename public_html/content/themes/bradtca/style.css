@@ -975,6 +975,36 @@ ul.posts {
 	font-size: 1em;
 }
 
+.post .wpmdb-promo {
+	border: 4px dashed #ccc;
+	border-radius: 20px;
+	padding: 1em 1.5em;
+	max-width: 698px;
+}
+
+.post .wpmdb-promo h3 {
+	margin: 0;
+	font-size: 1.4em;
+	color: #666;
+}
+
+.post .wpmdb-promo p {
+	margin: 0;
+	line-height: 1.4em;
+	font-size: 1em;
+}
+
+.post .wpmdb-promo strong {
+	font-size: 1.1em;
+	font-style: italic;
+}
+
+.post .wpmdb-promo span {
+	font-size: 0.9em;
+}
+
+
+
 #content.page .post {
 	background: none;
 }

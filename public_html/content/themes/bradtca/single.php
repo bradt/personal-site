@@ -17,6 +17,14 @@
 			<div class="entry-content">
 				<?php the_content("more..."); ?>
 			</div>
+
+			<div class="wpmdb-promo">
+				<h3>Do you hate developing with WordPress?</h3>
+				<p>
+					Make WordPress development more bareable with WP Migrate DB Pro. <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_campaign=bradtcapromo">Learn more &raquo;</a>
+					<br /><strong>Get 20% off</strong> <span>&mdash; Coupon code: <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_campaign=bradtcapromo">BRADTCA20</a>.</span>
+				</p>
+			</div>
 			
 			<!--
 			<?php trackback_rdf(); ?>
