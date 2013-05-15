@@ -18,13 +18,21 @@
 				<?php the_content("more..."); ?>
 			</div>
 
+			<?php if ( has_tag( array( 'wordpress', 'web-development' ) ) ) : ?>
 			<div class="wpmdb-promo">
-				<h3>Do you hate developing with WordPress?</h3>
+				<h3>WP Migrate DB Pro - <em>Get 20% Off!</em></h3>
 				<p>
-					Make WordPress development more bareable with WP Migrate DB Pro. <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_campaign=bradtcapromo">Learn more &raquo;</a>
+					Way back in 2009, I released a free plugin called
+					<a href="http://wordpress.org/extend/plugins/wp-migrate-db/">WP&nbsp;Migrate&nbsp;DB</a>
+					which became pretty popular in recent years. So, I decided to develop a Pro version of this
+					plugin which eliminates the manual work of migrating a WP database.
+					It allows you to copy your db from one WP install to another with a single-click in your dashboard.
+					Especially handy for syncing a local development database with a live site.
+					<a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_campaign=bradtcapromo">Learn more &raquo;</a>
 					<br /><strong>Get 20% off</strong> <span>&mdash; Coupon code: <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_campaign=bradtcapromo">BRADTCA20</a>.</span>
 				</p>
 			</div>
+			<?php endif; ?>
 			
 			<!--
 			<?php trackback_rdf(); ?>
