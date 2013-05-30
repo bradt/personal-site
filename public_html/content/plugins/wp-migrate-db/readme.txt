@@ -2,27 +2,56 @@
 Contributors: bradt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=5VPMGLLK94XJC
 Tags: database, migrate, backup, mysql
-Requires at least: 2.0.3
-Tested up to: 3.5
-Stable tag: 0.4.3
+Requires at least: 3.0
+Tested up to: 3.6
+Stable tag: 0.4.4
 License: GPLv2
 
 Exports your database, does a find and replace on URLs and file paths, then allows you to save it to your computer.
 
 == Description ==
 
-WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer. It is perfect for developers who develop locally and need to move their Wordpress site to a staging or production server.
+WP Migrate DB exports your database as a MySQL data dump (much like phpMyAdmin), does a find and replace on URLs and file paths, then allows you to save it to your computer. It is perfect for developers who need to update their local install with fresh data from the production site, or copy their locally developed site to a staging or production server.
 
-It even takes into account serialized data and updates the string length values.
+It even takes into account serialized data (both arrays and objects) and updates the string length values.
 
 Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 
-[**Contribute on Github**](https://github.com/bradt/wp-migrate-db)
+Looking to contribute some code? The project is [on Github](https://github.com/bradt/wp-migrate-db) and I'm more than happy to accept pull requests.
+
+**\*NEW\* Pro Version with Email Support and More Features**
+
+* Select the tables you want to migrate
+* Pull production db down and replace local db
+* Push local db up and replace production/staging db
+* Unlimited find & replaces (free is limited to 2)
+* Multisite support
+* Video walkthroughs and howtos
+* More frequent bug fixes and improvements
+* And more features on the way!
+
+See the video below or [visit the web site](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) to learn more about the pro version.
+
+http://www.youtube.com/watch?v=IFdHIpf6jjc
 
 == Installation ==
 
 1. Use WordPress' built-in installer
-2. Access the WP Migrate DB menu option under Tools
+2. Access the "Migrate DB" menu option under Tools
+
+== Frequently Asked Questions ==
+
+= Does this plugin support multisite? =
+
+Not at this time. The Developer license of the [pro version](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=faq&utm_campaign=freeplugin) does support multisite.
+
+= Does the plugin migrate files as well? =
+
+No, it only operates on the database.
+
+= Why do I end up with a wp-login.php download instead of the exported SQL file? =
+
+It is likely you have a download manager plugin or extension installed in your web browser. You will need to disable it for the SQL download to work properly.
 
 == Screenshots ==
 
@@ -30,6 +59,14 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 2. Saving the exported database
 
 == Changelog ==
+
+= 0.4.4 - 2013-05-19 =
+* [Pro version has arrived!](http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=wordpressorg&utm_medium=web&utm_content=changelog&utm_campaign=freeplugin) Added some info to the sidebar.
+* Updated required version to WordPress 3.0+
+* Bug fix: [Does not handle serialized objects](https://github.com/bradt/wp-migrate-db/issues/11)
+* Bug fix: [Admin menu disappears when DISALLOW_FILE_MODS is true](https://github.com/bradt/wp-migrate-db/issues/8)
+* Bug fix: [Duplicate records on export](https://github.com/bradt/wp-migrate-db/issues/5)
+* Bug fix: Updated spinner image for HiDPI displays
 
 = 0.4.3 - 2012-12-18 =
 * Fixed deprecated error notices when debug mode is on
@@ -62,7 +99,7 @@ Example: <code>s:5:"hello"</code> becomes <code>s:11:"hello world"</code>
 * Bug fix: [Breaks Export](http://wordpress.org/support/topic/plugin-wp-migrate-db-breaks-export?replies=1)
 
 = 0.2.1 - 2009-12-13 =
-* Moved to Wordpress.org hosting
+* Moved to WordPress.org hosting
 
 = 0.2 - 2009-04-03 =
 * Moved menu link from "Settings" to "Tools"
