@@ -3,3 +3,8 @@ tmp
 public_html/content/uploads
 public_html/content/object-cache.php
 public_html/content/plugins/last.fm/cache
+public_html/content/plugins/debug-bar/
+public_html/content/plugins/debug-bar-cron/
+public_html/content/plugins/developer/
+public_html/content/plugins/log-deprecated-notices/
+public_html/content/plugins/rewrite-rules-inspector/
