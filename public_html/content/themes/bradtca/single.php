@@ -1,60 +1,61 @@
-<?php get_header(); ?>
+<?php get_header( 'blog' ); ?>
 
-<div id="content" class="single">
+<section class="single-post">
 
-	<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
+	<header>
+		<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
+	</header>
 
 	<?php $i = 0; if (have_posts()) : while (have_posts()) : the_post();
 		$timezone = get_the_time('O');
 		$timezone = substr($timezone, 0, 3) . ':' . substr($timezone, 3);
 		?>
 		
-		<div class="post hentry">
-				
-			<h2><a id="post-<?php the_ID(); ?>" href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title(); ?>" class="entry-title"><?php the_title(); ?></a></h2>
-			<div class="date"><span class="published" title="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>"><?php the_time('F jS, Y \a\t g:ia') ?></span><span class="comments"> | <a href="<?php comments_link(); ?>"><?php comments_number('No Comments', '1&nbsp;Comment', '%&nbsp;Comments'); ?></a></span><!-- by <?php the_author() ?> --><?php edit_post_link('Edit', ' (', ')'); ?></div>
-
-			<div class="entry-content">
-				<?php the_content("more..."); ?>
-			</div>
-
-			<?php if ( has_tag( array( 'wordpress', 'web-development' ) ) ) : ?>
-			<div class="wpmdb-promo">
-				<h3>WP Migrate DB Pro - <em>Get 20% Off!</em></h3>
-				<p>
-					Way back in 2009, I released a free plugin called
-					<a href="http://wordpress.org/extend/plugins/wp-migrate-db/">WP&nbsp;Migrate&nbsp;DB</a>
-					which became pretty popular in recent years. So, I decided to develop a Pro version of this
-					plugin which eliminates the manual work of migrating a WP database.
-					It allows you to copy your db from one WP install to another with a single-click in your dashboard.
-					Especially handy for syncing a local development database with a live site.
-					<a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_campaign=bradtcapromo">Learn more &raquo;</a>
-					<br /><strong>Get 20% off</strong> <span>&mdash; Coupon code: <a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_campaign=bradtcapromo">BRADTCA20</a>.</span>
-				</p>
-			</div>
-			<?php endif; ?>
+		<article <?php post_class(); ?>>
 			
-			<!--
-			<?php trackback_rdf(); ?>
-			-->
+			<header>
+				<h1 class="entry-title"><a id="post-<?php the_ID(); ?>" href="<?php the_permalink() ?>"><?php the_title(); ?></a></h1>
 
-			<div class="related">
-				<h3>Related Posts</h3>
-				<?php wp23_related_posts(); ?>
-			</div>
+				<div class="entry-meta">
+					<time datetime="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>" pubdate="pubdate"><?php the_time('F j, Y') ?></time>
+					<span class="meta-sep">&bullet;</span>
+					<span class="comments"><a href="<?php the_permalink(); ?>#disqus_thread"><?php comments_number('No Comments', '1&nbsp;Comment', '%&nbsp;Comments'); ?></a></span>
+				</div>
+			</header>
 
-			<div class="author">
-				<img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=200" alt="">
-				<h3>About the Author</h3>
-				<p>
-					Brad is founder of <a href="http://deliciousbrains.com/?utm_source=bradt.ca&utm_medium=web&utm_content=homelink&utm_campaign=author-bio">Delicious Brains</a>, a 
-					company building super awesome products for WordPress, including 
-					<a href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_content=wpmdblink&utm_campaign=author-bio">WP Migrate DB Pro</a>, 
-					a huge time saving tool for WordPress developers.
-				</p>
-			</div>
+			<section class="entry-content">
+				<?php the_content(); ?>
 
-		</div>
+				<?php if ( 'journal_entry' != get_post_type() ) : ?>
+
+				<?php bt_related_posts(); ?>
+
+				<section class="subscribe">
+					<h1>Get my blog posts in your inbox!</h1>
+					<form action="http://bradt.createsend.com/t/r/s/jkfdth/" method="post">				
+						<div class="field">
+							<label for="post-subscribe-name">Your Name</label>
+							<input type="text" name="cm-name" id="post-subscribe-name" placeholder="John Doe" />
+						</div>
+						<div class="field email">
+							<label for="post-subscribe-email">Your Email</label>
+							<input type="email" name="cm-jkfdth-jkfdth" id="jkfdth-jkfdth" placeholder="john.doe@gmail.com" />
+						</div>
+						<button type="submit">Subscribe</button>
+					</form>
+
+					<p class="rss">Prefer RSS? <a href="<?php bloginfo('rss2_url'); ?>" rel="alternate" type="application/rss+xml">Subscribe to my news feed</a></p>
+				</section>
+
+				<?php endif; ?>
+
+			</section>
+
+		</article>
+				
+		<!--
+		<?php trackback_rdf(); ?>
+		-->
 
 		<?php comments_template(); // Get comments.php template ?>
 
@@ -73,6 +74,4 @@
 
 </div>
 
-<?php get_sidebar(); ?>
-
-<?php get_footer(); ?>
+<?php get_footer( 'blog' ); ?>

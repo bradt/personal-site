@@ -125,26 +125,28 @@ get_header();
 			<h4>(In the past 3 months)</h4>
 			<ol class="albums">
 			<?php
-			$lfm = new LastFmRecords();
-			$albums = $lfm->getalbums();
-			for ($i = 0; $i < 4; $i++) {
-				$album = $albums[$i];
-				if ($album['coverimage']['large']) {
-					$coverimage = $album['coverimage']['large'];
+			if ( class_exists( 'LastFmRecords' ) ) {
+				$lfm = new LastFmRecords();
+				$albums = $lfm->getalbums();
+				for ($i = 0; $i < 4; $i++) {
+					$album = $albums[$i];
+					if ($album['coverimage']['large']) {
+						$coverimage = $album['coverimage']['large'];
+					}
+					elseif ($album['coverimage']['medium']) {
+						$coverimage = $album['coverimage']['medium'];
+					}
+					elseif ($album['coverimage']['small']) {
+						$coverimage = $album['coverimage']['small'];
+					}
+					?>
+					<li>
+						<div class="cdcover"><?php if (isset($coverimage)) : ?><img src="<?php echo $coverimage; ?>" alt="" width="152" height="152" /><?php endif; ?></div>
+						<h6><?php echo $album['artist']; ?></h6>
+						<h5><?php echo $album['title']; ?></h5>
+					</li>
+					<?php
 				}
-				elseif ($album['coverimage']['medium']) {
-					$coverimage = $album['coverimage']['medium'];
-				}
-				elseif ($album['coverimage']['small']) {
-					$coverimage = $album['coverimage']['small'];
-				}
-				?>
-				<li>
-					<div class="cdcover"><?php if (isset($coverimage)) : ?><img src="<?php echo $coverimage; ?>" alt="" width="152" height="152" /><?php endif; ?></div>
-					<h6><?php echo $album['artist']; ?></h6>
-					<h5><?php echo $album['title']; ?></h5>
-				</li>
-				<?php
 			}
 			?>
 			</ol>

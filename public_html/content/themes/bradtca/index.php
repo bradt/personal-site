@@ -1,35 +1,33 @@
-<?php get_header(); ?>
+<?php get_header( 'blog' ); ?>
 
-<div id="content" class="blog">
+<section class="post-archive">
 
-	<?php if ( 'journal_entry' == get_post_type() ) : ?>
-	<h1>Travel Journal</h1>
-	<?php else: ?>
-	<h1>Blog</h1>
-	<?php endif; ?>
+	<header>
+		<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
+
+		<?php if ( is_tag() ) : ?>
+		<h2>Posts tagged &#8220;<?php echo single_tag_title( '', false ); ?>&#8221;</h2>
+		<?php elseif ( is_year() ) : ?>
+		<h2>Posts published in <?php echo get_the_date( 'Y' ); ?></h2>
+		<?php endif ?>
+	</header>
 	
-	<ul class="posts">
 	<?php $i = 0; if (have_posts()) : while (have_posts()) : the_post();
 		$timezone = get_the_time('O');
 		$timezone = substr($timezone, 0, 3) . ':' . substr($timezone, 3);
 		?>
 
-		<li class="post hentry">
+		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
-			<h2><a id="post-<?php the_ID(); ?>" href="<?php the_permalink() ?>" rel="bookmark" title="Permanent Link to <?php the_title(); ?>" class="entry-title"><?php the_title(); ?></a></h2>
-			<div class="date"><span class="published" title="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>"><?php the_time('F jS, Y \a\t g:ia') ?></span><span class="comments"> | <a href="<?php comments_link(); ?>"><?php comments_number('No Comments', '1&nbsp;Comment', '%&nbsp;Comments'); ?></a></span><!-- by <?php the_author() ?> --><?php edit_post_link('Edit', ' (', ')'); ?></div>
+			<header>
+				<h1 class="entry-title"><a href="<?php the_permalink() ?>" rel="bookmark"><?php the_title(); ?></a></h1><time datetime="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>" pubdate="pubdate"><?php the_time('Y.m.d') ?></time>
+			</header>
 
 			<div class="entry-summary">
-				<p><?php my_excerpt(); ?>
-				<span class="read-more"><a href="<?php the_permalink() ?>">read more &raquo;</a></span></p>
+				<p><?php bt_the_excerpt( 160 ); ?>
 			</div>
 
-			<div class="tags"><?php the_tags('<b>Tags:</b> ', ' &bull; '); ?></div>
-
-			<!--
-			<?php trackback_rdf(); ?>
-			-->
-		</li>
+		</article>
 
 		<?php comments_template(); // Get comments.php template ?>
 
@@ -41,13 +39,23 @@
 	<?php endif; ?>
 	</ul>
 
-	<div id="controls">
-		<div class="older"><? next_posts_link('&laquo; Older Posts'); ?></div>
-		<div class="newer"><? previous_posts_link('Newer Posts &raquo;'); ?></div>
-	</div>
+	<nav class="paging">
+		<div class="older"><? next_posts_link('&larr; Older'); ?></div>
+		<div class="newer"><? previous_posts_link('Newer &rarr;'); ?></div>
+	</nav>
 
-</div>
+	<section class="tag-cloud">
+		<h1>Browse by Tag</h1>
+		<?php wp_tag_cloud( 'number=10&smallest=16&largest=26&orderby=count&order=DESC' ) ?>
+	</section>
 
-<?php get_sidebar(); ?>
+	<section class="yearly-archive">
+		<h1>Browse by Year</h1>
+		<ul>
+			<?php wp_get_archives( 'type=yearly&show_post_count=1' ); ?>
+		</ul>
+	</section>
 
-<?php get_footer(); ?>
+</section>
+
+<?php get_footer( 'blog' ); ?>
