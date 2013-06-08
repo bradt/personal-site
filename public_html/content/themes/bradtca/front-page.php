@@ -1,4 +1,4 @@
-<?php get_header( 'blog' ); ?>
+<?php get_header(); ?>
 
 <section class="front-page">
 
@@ -211,4 +211,4 @@
 
 </section>
 
-<?php get_footer( 'blog' ); ?>
+<?php get_footer(); ?>
