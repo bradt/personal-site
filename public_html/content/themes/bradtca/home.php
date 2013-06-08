@@ -1,8 +1,4 @@
-<?php
-/* Template Name: Home */
-
-get_header(); 
-?>
+<?php get_header(); ?>
 
 <div class="homepage hp-white">
 
@@ -30,7 +26,7 @@ get_header();
 			<h3>Recent Blog Posts</h3>
 			<ul class="posts">
 			<?php
-			$recent_posts = get_posts('numberposts=5&offset=1' . $exclude_cats);
+			$recent_posts = get_posts('numberposts=5&offset=1');
 			foreach ($recent_posts as $post) :
 				setup_postdata($post);
 				$timezone = my_timezone();
@@ -79,10 +75,13 @@ get_header();
 			</ul>
 		</div>
 		<?php endif; ?>
+
+		<?php if ( function_exists( 'tla_ads' ) ) : ?>
 		<div class="sponsors">
 			<h3>Sponsors</h3>
-			<?php tla_ads(); ?>
+			<?php  tla_ads(); ?>
 		</div>
+		<?php endif; ?>
 	</div>
 
 </div>
