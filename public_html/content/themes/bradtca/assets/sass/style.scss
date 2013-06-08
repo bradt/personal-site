@@ -327,18 +327,6 @@ footer.site {
 	font-style: normal;
 }
 
-/* Use the following CSS code if you want to use data attributes for inserting your icons */
-[data-icon]:before {
-	font-family: 'icomoon';
-	content: attr(data-icon);
-	speak: none;
-	font-weight: normal;
-	font-variant: normal;
-	text-transform: none;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-}
-
 /* Use the following CSS code if you want to have a class per icon */
 /*
 Instead of a list of all class selectors,
@@ -371,6 +359,23 @@ you can use the generic selector below, but it's slower:
 	content: "\28";
 }
 
+.entry-meta {
+	color: #999;
+	font-size: 18px;
+
+	a {
+		color: #999;
+
+		&:hover {
+			color: #666;
+		}
+	}
+}
+
+.meta-sep {
+	margin: 0 8px;
+}
+
 section.single-post {
 
 	> header {
@@ -393,44 +398,18 @@ section.single-post {
 		font-family: $Lora;
 		position: relative;
 
-		p {
-			line-height: 1.7em;
-		}
-
 		@media screen and (max-width: 880px) {
 			width: auto;
 		}
-
-		dd, p {
-			margin-bottom: 1.2em;
+		
+		.entry-meta {
+			margin-bottom: 30px;
 		}
 
-		h1, h2, h3, h4, h5, h6 {
-			margin-bottom: 1em;
-		}
-
-		.meta-sep {
-			margin: 0 8px;
-		}
-
-		> header h1 {
+		.entry-title {
 			font-size: 40px;
 			margin-bottom: 10px;
 			margin-top: -15px;
-		}
-
-		.entry-meta {
-			margin-bottom: 30px;
-			color: #999;
-			font-size: 18px;
-
-			a {
-				color: #999;
-
-				&:hover {
-					color: #666;
-				}
-			}
 		}
 
 		.related {
@@ -524,6 +503,18 @@ section.single-post {
 }
 
 .entry-content {
+	p {
+		line-height: 1.7em;
+	}
+
+	dd, p {
+		margin-bottom: 1.2em;
+	}
+
+	h1, h2, h3, h4, h5, h6 {
+		margin-bottom: 1em;
+	}
+
 	img {
 		float: right;
 		margin: 0 -42% 30px 25px;
@@ -786,6 +777,236 @@ section.single-post {
 
 		a {
 			
+		}
+	}
+}
+
+.front-page {
+
+	.section-title {
+		color: #bbb;
+		margin-top: -15px;
+		text-transform: uppercase;
+		font-weight: 800;
+		font-family: $SourceSansPro;
+		font-size: 30px;
+		padding-bottom: 5px;
+		margin-bottom: 15px;
+		border-bottom: 1px solid #ddd;
+	}
+
+	.more {
+		font-size: 18px;
+		margin-top: 15px;
+		font-family: $SourceSansPro;
+		font-weight: 800;
+		text-transform: uppercase;
+
+		a {
+			color: #bbb;
+
+			&:hover {
+				color: #aaa;
+			}
+		}
+	}
+
+	.icon-default:before {
+		content: "\2739\0000a0";
+	}
+
+	> section {
+		font-family: $Lora;
+		width: 72%;
+
+		@media screen and (max-width: 880px) {
+			width: auto;
+		}
+	}
+
+	.latest-post {
+		margin-bottom: 75px;
+
+		.section-title {
+			font-size: 18px;
+		}
+
+		.entry-title {
+			font-size: 40px;
+			margin-bottom: 10px;
+		}
+
+		.entry-meta {
+			margin-bottom: 10px;
+		}
+	}
+
+	.recent-posts {
+		font-family: $Lora;
+		margin-bottom: 100px;
+
+		article {
+			overflow: hidden;
+			margin-bottom: 10px;
+			white-space: nowrap;
+			position: relative;
+		}
+
+		time {
+			position: absolute;
+			font-family: monospace;
+			font-size: 18px;
+			line-height: 27px;
+			color: #666;
+		}
+
+		.entry-title {
+			padding-left: 90px;
+			width: 100%;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+	}
+
+	.tweets {
+		font-family: $SourceSansPro;
+		margin-bottom: 100px;
+
+		.icon-twitter {
+			float: left;
+			line-height: 40px;
+			margin-right: 5px;
+		}
+
+		li {
+			position: relative;
+			margin-bottom: 15px;
+			font-size: 18px;
+			border-bottom: 1px solid #ddd;
+			padding-bottom: 15px;
+			min-height: 70px;
+
+			a {
+				color: #006699;
+
+				&:hover {
+					color: #0099bb;
+				}
+			}
+		}
+
+		.name {
+			overflow: hidden;
+			line-height: 18px;
+
+			a {
+				color: #000;
+			}
+
+			.real {
+				font-weight: bold;
+				font-size: 16px;
+				float: left;
+			}
+
+			.username {
+				color: #777;
+				font-size: 14px;
+				float: left;
+				margin-left: 5px;
+			}
+		}
+
+		.avatar {
+			position: absolute;
+			top: 3px;
+
+			img {
+				width: 50px;
+				height: 50px;
+				border-radius: 5px;
+			}
+		}
+
+		.desc {
+			padding-left: 60px;
+		}
+
+		.aktt_tweet_time {
+			white-space: nowrap;
+		}
+	}
+
+	.photos {
+		font-family: $SourceSansPro;
+
+		figure {
+			position: relative;
+			margin-bottom: 15px;
+
+			> a {
+				overflow: hidden;
+				display: block;
+				padding-bottom: 55%;
+				background-size: 100%;
+				background-repeat: no-repeat;
+				background-position: center center;
+
+				&:hover {
+					+ figcaption {
+						display: none;
+					}
+				}
+			}
+
+			img {
+				display: none;
+			}
+		}
+
+		figcaption {
+			position: absolute;
+			right: 0;
+			top: 12%;
+			background-color: #fafafa;
+			width: 50%;
+			margin-right: -43%;
+			padding: 20px;
+
+			a {
+				color: #000;
+
+				&:hover {
+					color: #666;
+				}
+			}
+
+			h1 {
+				font-size: 21px;
+				line-height: 1.2em;
+				font-weight: 400;
+			}
+
+			.date {
+				font-size: 18px;
+				color: #999;
+			}
+
+			@media screen and (max-width: 880px) {
+				top: auto;
+				bottom: 0;
+				width: auto;
+				margin: 0;
+				padding: 15px;
+
+				h1 {
+					font-size: 18px;
+				}
+
+				.date {
+					font-size: 14px;
+				}
+			}
 		}
 	}
 }

@@ -90,3 +90,10 @@ function bt_the_excerpt($maxlength = 0) {
 	}
 	echo $excerpt;
 }
+
+function bt_the_datetime() {
+	$timezone = get_the_time( 'O' );
+	$timezone = substr( $timezone, 0, 3 ) . ':' . substr( $timezone, 3 );
+	
+	the_time('Y-m-d\TH:i:s'); echo $timezone;
+}

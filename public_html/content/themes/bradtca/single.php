@@ -17,7 +17,7 @@
 				<h1 class="entry-title"><a id="post-<?php the_ID(); ?>" href="<?php the_permalink() ?>"><?php the_title(); ?></a></h1>
 
 				<div class="entry-meta">
-					<time datetime="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>" pubdate="pubdate"><?php the_time('F j, Y') ?></time>
+					<time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate"><?php the_time('F j, Y') ?></time>
 					<span class="meta-sep">&bullet;</span>
 					<span class="comments"><a href="<?php the_permalink(); ?>#disqus_thread"><?php comments_number('No Comments', '1&nbsp;Comment', '%&nbsp;Comments'); ?></a></span>
 				</div>

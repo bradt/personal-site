@@ -13,14 +13,12 @@
 	</header>
 	
 	<?php $i = 0; if (have_posts()) : while (have_posts()) : the_post();
-		$timezone = get_the_time('O');
-		$timezone = substr($timezone, 0, 3) . ':' . substr($timezone, 3);
 		?>
 
 		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 			<header>
-				<h1 class="entry-title"><a href="<?php the_permalink() ?>" rel="bookmark"><?php the_title(); ?></a></h1><time datetime="<?php the_time('Y-m-d\TH:i:s'); echo $timezone; ?>" pubdate="pubdate"><?php the_time('Y.m.d') ?></time>
+				<h1 class="entry-title"><a href="<?php the_permalink() ?>" rel="bookmark"><?php the_title(); ?></a></h1><time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate"><?php the_time('Y.m.d') ?></time>
 			</header>
 
 			<div class="entry-summary">

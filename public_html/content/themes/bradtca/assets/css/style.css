@@ -311,18 +311,6 @@ footer.site .nav-meta .copyright {
   font-style: normal;
 }
 
-/* Use the following CSS code if you want to use data attributes for inserting your icons */
-[data-icon]:before {
-  font-family: 'icomoon';
-  content: attr(data-icon);
-  speak: none;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-}
-
 /* Use the following CSS code if you want to have a class per icon */
 /*
 Instead of a list of all class selectors,
@@ -360,6 +348,21 @@ you can use the generic selector below, but it's slower:
   content: "\28";
 }
 
+.entry-meta {
+  color: #999;
+  font-size: 18px;
+}
+.entry-meta a {
+  color: #999;
+}
+.entry-meta a:hover {
+  color: #666;
+}
+
+.meta-sep {
+  margin: 0 8px;
+}
+
 section.single-post > header {
   display: none;
   position: absolute;
@@ -378,38 +381,18 @@ section.single-post > article {
   font-family: Lora, Arial, Helvetica, sans-serif;
   position: relative;
 }
-section.single-post > article p {
-  line-height: 1.7em;
-}
 @media screen and (max-width: 880px) {
   section.single-post > article {
     width: auto;
   }
 }
-section.single-post > article dd, section.single-post > article p {
-  margin-bottom: 1.2em;
+section.single-post > article .entry-meta {
+  margin-bottom: 30px;
 }
-section.single-post > article h1, section.single-post > article h2, section.single-post > article h3, section.single-post > article h4, section.single-post > article h5, section.single-post > article h6 {
-  margin-bottom: 1em;
-}
-section.single-post > article .meta-sep {
-  margin: 0 8px;
-}
-section.single-post > article > header h1 {
+section.single-post > article .entry-title {
   font-size: 40px;
   margin-bottom: 10px;
   margin-top: -15px;
-}
-section.single-post > article .entry-meta {
-  margin-bottom: 30px;
-  color: #999;
-  font-size: 18px;
-}
-section.single-post > article .entry-meta a {
-  color: #999;
-}
-section.single-post > article .entry-meta a:hover {
-  color: #666;
 }
 section.single-post > article .related li {
   line-height: 1.4em;
@@ -536,6 +519,15 @@ section.single-post > article .subscribe .rss {
   }
 }
 
+.entry-content p {
+  line-height: 1.7em;
+}
+.entry-content dd, .entry-content p {
+  margin-bottom: 1.2em;
+}
+.entry-content h1, .entry-content h2, .entry-content h3, .entry-content h4, .entry-content h5, .entry-content h6 {
+  margin-bottom: 1em;
+}
 .entry-content img {
   float: right;
   margin: 0 -42% 30px 25px;
@@ -792,4 +784,193 @@ section.single-post > article .subscribe .rss {
   float: left;
   color: #999;
   font-size: 26px;
+}
+
+.front-page .section-title {
+  color: #bbb;
+  margin-top: -15px;
+  text-transform: uppercase;
+  font-weight: 800;
+  font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+  font-size: 30px;
+  padding-bottom: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+}
+.front-page .more {
+  font-size: 18px;
+  margin-top: 15px;
+  font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.front-page .more a {
+  color: #bbb;
+}
+.front-page .more a:hover {
+  color: #aaa;
+}
+.front-page .icon-default:before {
+  content: "\2739\0000a0";
+}
+.front-page > section {
+  font-family: Lora, Arial, Helvetica, sans-serif;
+  width: 72%;
+}
+@media screen and (max-width: 880px) {
+  .front-page > section {
+    width: auto;
+  }
+}
+.front-page .latest-post {
+  margin-bottom: 75px;
+}
+.front-page .latest-post .section-title {
+  font-size: 18px;
+}
+.front-page .latest-post .entry-title {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+.front-page .latest-post .entry-meta {
+  margin-bottom: 10px;
+}
+.front-page .recent-posts {
+  font-family: Lora, Arial, Helvetica, sans-serif;
+  margin-bottom: 100px;
+}
+.front-page .recent-posts article {
+  overflow: hidden;
+  margin-bottom: 10px;
+  white-space: nowrap;
+  position: relative;
+}
+.front-page .recent-posts time {
+  position: absolute;
+  font-family: monospace;
+  font-size: 18px;
+  line-height: 27px;
+  color: #666;
+}
+.front-page .recent-posts .entry-title {
+  padding-left: 90px;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.front-page .tweets {
+  font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+  margin-bottom: 100px;
+}
+.front-page .tweets .icon-twitter {
+  float: left;
+  line-height: 40px;
+  margin-right: 5px;
+}
+.front-page .tweets li {
+  position: relative;
+  margin-bottom: 15px;
+  font-size: 18px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+  min-height: 70px;
+}
+.front-page .tweets li a {
+  color: #006699;
+}
+.front-page .tweets li a:hover {
+  color: #0099bb;
+}
+.front-page .tweets .name {
+  overflow: hidden;
+  line-height: 18px;
+}
+.front-page .tweets .name a {
+  color: #000;
+}
+.front-page .tweets .name .real {
+  font-weight: bold;
+  font-size: 16px;
+  float: left;
+}
+.front-page .tweets .name .username {
+  color: #777;
+  font-size: 14px;
+  float: left;
+  margin-left: 5px;
+}
+.front-page .tweets .avatar {
+  position: absolute;
+  top: 3px;
+}
+.front-page .tweets .avatar img {
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+}
+.front-page .tweets .desc {
+  padding-left: 60px;
+}
+.front-page .tweets .aktt_tweet_time {
+  white-space: nowrap;
+}
+.front-page .photos {
+  font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
+}
+.front-page .photos figure {
+  position: relative;
+  margin-bottom: 15px;
+}
+.front-page .photos figure > a {
+  overflow: hidden;
+  display: block;
+  padding-bottom: 55%;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+.front-page .photos figure > a:hover + figcaption {
+  display: none;
+}
+.front-page .photos figure img {
+  display: none;
+}
+.front-page .photos figcaption {
+  position: absolute;
+  right: 0;
+  top: 12%;
+  background-color: #fafafa;
+  width: 50%;
+  margin-right: -43%;
+  padding: 20px;
+}
+.front-page .photos figcaption a {
+  color: #000;
+}
+.front-page .photos figcaption a:hover {
+  color: #666;
+}
+.front-page .photos figcaption h1 {
+  font-size: 21px;
+  line-height: 1.2em;
+  font-weight: 400;
+}
+.front-page .photos figcaption .date {
+  font-size: 18px;
+  color: #999;
+}
+@media screen and (max-width: 880px) {
+  .front-page .photos figcaption {
+    top: auto;
+    bottom: 0;
+    width: auto;
+    margin: 0;
+    padding: 15px;
+  }
+  .front-page .photos figcaption h1 {
+    font-size: 18px;
+  }
+  .front-page .photos figcaption .date {
+    font-size: 14px;
+  }
 }
