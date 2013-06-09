@@ -1254,6 +1254,15 @@ div.portfolio-item div.photos a img {
 			color: #333;
 			text-decoration: none;
 		}
+
+		@media screen and (max-width: 880px) {
+			border: 0;
+
+			a.current {
+				border: 1px solid #ddd;
+				border-radius: 4px;
+			}
+		}
 	}
 
 	div.tab-content {

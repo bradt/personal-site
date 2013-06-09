@@ -25,7 +25,7 @@
 		<li class="featured"><a href="#featured" class="current">Featured</a></li>
 		<li class="html"><a href="#html">Frontend Dev</a></li>
 		<li class="wordpress-theme"><a href="#wordpress-theme">Wordpress</a></li>
-		<li class="php-mysql"><a href="#php-mysql">PHP Dev</a></li>
+		<li class="php-mysql"><a href="#php-mysql">PHP</a></li>
 		<li class="design"><a href="#design">Design</a></li>
 		<li class="all"><a href="#all">All</a></li>
 	</ul>

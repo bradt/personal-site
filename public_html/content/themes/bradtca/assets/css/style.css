@@ -1180,6 +1180,15 @@ div.portfolio-item div.photos a img {
   color: #333;
   text-decoration: none;
 }
+@media screen and (max-width: 880px) {
+  .page-portfolio-list ul.tabs {
+    border: 0;
+  }
+  .page-portfolio-list ul.tabs a.current {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+}
 .page-portfolio-list div.tab-content {
   position: relative;
   overflow: hidden;
