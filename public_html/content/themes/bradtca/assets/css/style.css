@@ -699,6 +699,13 @@ section.single-post > article .subscribe .rss {
   padding: 6px 10px 6px 0;
 }
 
+.page-title {
+  font-size: 60px;
+  line-height: 1.2em;
+  font-weight: 800;
+  margin-top: -20px;
+}
+
 .post-archive {
   width: 78%;
 }
@@ -713,10 +720,8 @@ section.single-post > article .subscribe .rss {
   min-height: 80px;
 }
 .post-archive > header h1 {
-  font-size: 60px;
-  line-height: 1.2em;
   float: left;
-  font-weight: 800;
+  margin: 0;
 }
 .post-archive > header h2 {
   font-size: 21px;
@@ -749,17 +754,7 @@ section.single-post > article .subscribe .rss {
   margin-left: 10px;
 }
 .post-archive .paging {
-  overflow: hidden;
   margin-bottom: 80px;
-  font-weight: 800;
-  font-size: 30px;
-  text-transform: uppercase;
-}
-.post-archive .paging .older {
-  float: left;
-}
-.post-archive .paging .newer {
-  float: right;
 }
 .post-archive .tag-cloud {
   margin-bottom: 30px;
@@ -784,6 +779,20 @@ section.single-post > article .subscribe .rss {
   float: left;
   color: #999;
   font-size: 26px;
+}
+
+.paging {
+  overflow: hidden;
+  margin-bottom: 80px;
+  font-weight: 800;
+  font-size: 30px;
+  text-transform: uppercase;
+}
+.paging .older {
+  float: left;
+}
+.paging .newer {
+  float: right;
 }
 
 .front-page .section-title {
@@ -930,7 +939,19 @@ section.single-post > article .subscribe .rss {
   background-position: center center;
 }
 .front-page .photos figure > a:hover + figcaption {
-  display: none;
+  margin-right: -50%;
+  transition: margin 0.2s ease-in;
+  -webkit-transition: margin 0.2s ease-in;
+  -moz-transition: margin 0.2s ease-in;
+}
+@media screen and (max-width: 880px) {
+  .front-page .photos figure > a:hover + figcaption {
+    margin: 0;
+    opacity: 0.1;
+    transition: opacity 0.2s ease-in;
+    -webkit-transition: opacity 0.2s ease-in;
+    -moz-transition: opacity 0.2s ease-in;
+  }
 }
 .front-page .photos figure img {
   display: none;
@@ -943,6 +964,7 @@ section.single-post > article .subscribe .rss {
   width: 50%;
   margin-right: -43%;
   padding: 20px;
+  z-index: 10;
 }
 .front-page .photos figcaption a {
   color: #000;
@@ -973,4 +995,105 @@ section.single-post > article .subscribe .rss {
   .front-page .photos figcaption .date {
     font-size: 14px;
   }
+}
+
+.about-page {
+  width: 72%;
+}
+.about-page .page-title {
+  margin-bottom: 20px;
+}
+@media screen and (max-width: 880px) {
+  .about-page {
+    width: auto;
+  }
+}
+.about-page .entry-content a {
+  white-space: nowrap;
+}
+
+.photo-nav {
+  margin-bottom: 20px;
+}
+
+section.photo-set .desc {
+  margin-bottom: 20px;
+}
+section.photo-set .photo-list img {
+  margin: 0 10px 10px 0;
+}
+
+section.photo-sets .subtitle {
+  margin-bottom: 20px;
+}
+section.photo-sets ul.photo-sets {
+  overflow: hidden;
+}
+section.photo-sets .photo-set {
+  float: left;
+  width: 150px;
+  padding: 0 10px 15px 0;
+  font-size: 16px;
+  box-sizing: content-box;
+}
+section.photo-sets .photo-set a {
+  display: block;
+  color: #333;
+}
+section.photo-sets .photo-set a:hover {
+  color: #666;
+}
+section.photo-sets .photo-set img {
+  display: block;
+  margin-bottom: 5px;
+}
+section.photo-sets .photo-set .title {
+  display: block;
+}
+
+.photo-collections .collection {
+  margin-bottom: 1.5em;
+}
+.photo-collections .collection a {
+  display: block;
+  color: #333;
+}
+.photo-collections .collection .thumbs {
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+}
+.photo-collections .collection img {
+  width: 120px;
+  height: 120px;
+  margin-right: 5px;
+}
+.photo-collections .collection .title {
+  display: block;
+  margin-top: 5px;
+}
+
+.single-photo .date {
+  margin-bottom: 20px;
+}
+.single-photo .attachment-large {
+  width: 100%;
+  height: auto;
+}
+.single-photo .meta {
+  color: #666;
+  margin-top: 1em;
+  background-color: #eee;
+  padding: 0.6em;
+  font-size: 14px;
+}
+.single-photo .meta th {
+  width: 39%;
+  font-weight: normal;
+  text-align: left;
+  vertical-align: top;
+}
+.single-photo .meta td {
+  width: 59%;
+  vertical-align: top;
 }

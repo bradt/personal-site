@@ -1,22 +1,28 @@
 <?php get_header(); ?>
 
-<div id="content" class="page photos single-photo">
+<section class="page photos single-photo">
 
 	<?php bt_photos_top(); ?>
+
+	<h2 class="subtitle"><?php the_title(); ?></h2>
 
 	<?php
 	the_post();
 	
 	$views = get_post_meta(get_the_ID(), 'views', true);
 	update_post_meta(get_the_ID(), 'views', $views+1);
-	
-	echo wp_get_attachment_link(get_the_ID(), 'large');
 
 	$meta = wp_get_attachment_metadata(get_the_ID());
 	?>
-	<div class="details"<?php echo 'style="max-width: ' . $meta['sizes']['large']['width'] . 'px;"'; ?>>
+
+	<p class="date">
+		<?php echo gmdate( 'Y-m-d H:i:s', ( $meta['image_meta']['created_timestamp'] + ( get_option( 'gmt_offset' ) * 3600 ) ) ); ?> EST
+	</p>
+	
+	<?php echo wp_get_attachment_link(get_the_ID(), 'large'); ?>
+
+	<div class="details">
 		<div class="desc">
-			<h2 class="subtitle"><?php the_title(); ?></h2>
 			<div class="copy">
 				<?php the_content(); ?>
 			</div>
@@ -25,10 +31,6 @@
 			</div>
 		</div>
 		<table class="meta">
-			<tr>
-				<th>Date Taken:</th>
-				<td><?php echo gmdate( 'Y-m-d H:i:s', ( $meta['image_meta']['created_timestamp'] + ( get_option( 'gmt_offset' ) * 3600 ) ) ); ?></td>
-			</tr>
 			<?php
 			$display = array(
 				'camera' => 'Camera',

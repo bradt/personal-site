@@ -1,16 +1,19 @@
 <?php get_header(); ?>
 
-<div id="content" class="page photos photo-sets">
+<section class="page photos photo-sets">
 
 	<?php bt_photos_top(); ?>
 	
-	<?php if (is_tax('photo_collection')) : ?>
+	<?php if ( is_tax( 'photo_collection' ) ) : ?>
 	<h2 class="subtitle">Collection: <?php echo single_term_title( '', false ); ?></h2>
 	<?php endif; ?>
 	
 	<ul class="photo-sets">
 	
-	<?php while (have_posts()) :
+	<?php 
+	global $bt_widont_off;
+	$bt_widont_off = true;
+	while (have_posts()) :
 		the_post();
 		?>
 
@@ -27,11 +30,11 @@
 
 	</ul>
 
-	<div id="controls">
-		<div class="prev"><? previous_posts_link('&laquo; Previous'); ?></div>
-		<div class="next"><? next_posts_link('Next &raquo;'); ?></div>
-	</div>
+	<nav class="paging">
+		<div class="older"><? next_posts_link('&#9668; Older'); ?></div>
+		<div class="newer"><? previous_posts_link('Newer &#9658;'); ?></div>
+	</nav>
 
-</div>
+</section>
 
 <?php get_footer(); ?>

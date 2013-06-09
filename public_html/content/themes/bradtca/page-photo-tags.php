@@ -8,7 +8,11 @@
 
 	<?php
 	wp_tag_cloud(array(
-		'taxonomy' => 'photo_tag'
+		'taxonomy' => 'photo_tag',
+		'smallest' => 12,
+		'largest' => 26,
+		'orderby' => 'count',
+		'order' => 'DESC'
 	));
 	?>
 

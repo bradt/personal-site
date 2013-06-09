@@ -1,6 +1,6 @@
 <?php get_header(); the_post(); ?>
 
-<div id="content" class="page photos photo-set">
+<section class="page photos photo-set">
 
 	<?php bt_photos_top(); ?>
 	
@@ -31,6 +31,6 @@
 	?>
 	</div>
 
-</div>
+</section>
 
 <?php get_footer(); ?>

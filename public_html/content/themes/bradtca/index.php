@@ -3,7 +3,7 @@
 <section class="post-archive">
 
 	<header>
-		<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
+		<h1 class="page-title"><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
 
 		<?php if ( is_tag() ) : ?>
 		<h2>Posts tagged &#8220;<?php echo single_tag_title( '', false ); ?>&#8221;</h2>
@@ -38,8 +38,8 @@
 	</ul>
 
 	<nav class="paging">
-		<div class="older"><? next_posts_link('&larr; Older'); ?></div>
-		<div class="newer"><? previous_posts_link('Newer &rarr;'); ?></div>
+		<div class="older"><? next_posts_link('&#9668; Older'); ?></div>
+		<div class="newer"><? previous_posts_link('Newer &#9658;'); ?></div>
 	</nav>
 
 	<section class="tag-cloud">
