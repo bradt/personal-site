@@ -1,6 +1,6 @@
 <?php get_header(); ?>
 
-<div id="content" class="page photos photo-tag">
+<section class="page photos photo-tag">
 
 	<?php bt_photos_top(); ?>
 
@@ -15,12 +15,12 @@
 	?>
 	</div>
 
-	<div id="controls">
-		<div class="prev"><? previous_posts_link('&laquo; Previous'); ?></div>
-		<div class="next"><? next_posts_link('Next &raquo;'); ?></div>
-	</div>
+	<nav class="paging">
+		<div class="older"><? next_posts_link('&#9668; Older'); ?></div>
+		<div class="newer"><? previous_posts_link('Newer &#9658;'); ?></div>
+	</nav>
 
-</div>
+</section>
 
 <?php get_footer(); ?>
 

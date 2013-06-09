@@ -1053,13 +1053,19 @@ section.single-post {
 	margin-bottom: 20px;
 }
 
+.photo-list img {
+	margin: 0 10px 10px 0;
+}
+
+section.photo-tag {
+	.subtitle {
+		margin-bottom: 20px;
+	}
+}
+
 section.photo-set {
 	.desc {
 		margin-bottom: 20px;
-	}
-
-	.photo-list img {
-		margin: 0 10px 10px 0;
 	}
 }
 
