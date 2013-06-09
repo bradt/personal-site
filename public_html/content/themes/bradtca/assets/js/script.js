@@ -1,7 +1,6 @@
 $(document).ready(function() {
 	bradt_load_js_vars();
 	Bradt.init();
-	on_resize(Bradt.photos.gridify);
 });
 
 var Bradt = {
@@ -38,9 +37,10 @@ var Bradt = {
 	photos: {
 		init: function() {
 			Bradt.photos.gridify();
+			on_resize(Bradt.photos.gridify);
 		},
 		gridify: function() {
-			$('.photo-set').gridify();
+			$('.photo-set').css('height', 'auto').gridify();
 		}
 	},
 	
@@ -168,29 +168,11 @@ var Bradt = {
 			Bradt.portfolio.roles.init();
 			
 			$('.project').gridify();
-
-			setTimeout(Bradt.portfolio_list.resize, 1000);
-			
-			$(window).resize(function() {
-				Bradt.portfolio_list.resizing = 1;
-			});
-			
-			$('.project').each(function() {
-				$(this).hover(function() {
-					$(this).stop().animate({"opacity": "0.7"}, 200);
-				},
-				function() {
-					$(this).stop().animate({"opacity": "1"}, 200);
-				});
-			});
+			on_resize(Bradt.portfolio_list.resize);
 		},
 		
 		resize: function() {
-			if (Bradt.portfolio_list.resizing) {
-				$('.project').css('height', 'auto').gridify();
-				Bradt.portfolio_list.resizing = 0;
-			}
-			setTimeout(Bradt.portfolio_list.resize, 1000);
+			$('.project').css('height', 'auto').gridify();
 		}
 		
 	},
@@ -203,52 +185,29 @@ var Bradt = {
 			
 			$.localScroll.hash();
 			
-			var img = new Image();
-			img.src = Bradt.template_url + '/images/indicator.gif';
-
-			var scr = $('.scr > a');
+			var scr = $('.scr');
 		
-			$('ul.screenshots li a').click(function() {
-				var anchor = $(this);
+			$('ul.screenshots li').click(function() {
+				var anchor = $('a',this);
 				
-				$('ul.screenshots li a').removeClass('current');
-				anchor.addClass('current');
+				$('ul.screenshots li').removeClass('current');
+				$(this).addClass('current');
 
-				if (!$('.loading', scr).get(0)) {
-					scr.append('<div class="loading"></div><img src="' + Bradt.template_url + '/images/indicator.gif" width="16" height="16" alt="Loading..." class="loading" />');
+				if (!$('.bubblingG', scr).get(0)) {
+					scr.append('<div class="bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>');
 				}
 				else {
-					$('.loading', scr).show();
+					$('.bubblingG', scr).show();
 				}
-				
-				$('.loading', scr).each(function() {
-					var ld = $(this);
-					var top = (scr.height()/2) - (ld.height()/2);
-					var left = scr.width()/2 - (ld.width()/2);
-					ld.css('top', top + 'px');
-					ld.css('left', left + 'px');
-				});
 				
 				var img = new Image();
 				$(img).load(function() {
-					$('.loading', scr).hide();
-					
-					if (img.height > scr.height()) {
-						scr.css('background-image', 'url(' + anchor.attr('href') + ')');
-						scr.animate({ height: img.height });
-						$('.project').css('max-width', img.width + 'px');
-					}
-					else {
-						scr.animate({ height: img.height }, function() {
-							scr.css('background-image', 'url(' + anchor.attr('href') + ')');
-							$('.project').css('max-width', img.width + 'px');
-						});
-					}
+					$('.bubblingG', scr).hide();
+
+					$('img', scr).prop('src', anchor.attr('href'));
 
 					var url = anchor.attr('href').replace(/\-[0-9]+x[0-9]+\.jpg/, '.jpg');
 					scr.attr('href', url);
-					
-					$.scrollTo('.scr', 500, {'offset' : {'top' : -20}});
 			   });
 			   img.src = anchor.attr('href');
 	

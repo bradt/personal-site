@@ -1,30 +1,19 @@
 <?php get_header(); the_post(); ?>
 
-<div id="content" class="page page-portfolio">
+<section class="page page-portfolio">
 
 	<div class="top">
 		
-		<h1>Portfolio</h1>
+		<h1 class="page-title">Portfolio</h1>
 		
 		<div class="intro">
 			<a href="/portfolio/">&laquo; Back to portfolio listing</a>
 		</div>
 	</div>
 	
-	<?php
-	$attachments = my_get_attachments();
-	$attach_count = count($attachments);
-
-	foreach ($attachments as $attachment) {
-		list($src, $width, $height) = wp_get_attachment_image_src($attachment->ID, 'fullsize');
-		break;
-	}
-	$max_width = 'max-width: ' . $width . 'px;';
-	?>
-
 	<a name="<?php echo $post->post_name; ?>"></a>
 	
-	<div class="project" style="<?php echo $max_width; ?>">
+	<div class="project">
 	
 		<div class="details">
 			<div class="desc">
@@ -42,7 +31,7 @@
 					$i = 1;
 					foreach ($tags as $tag) {
 						$css = ($i % 2 == 0) ? ' class="even"' : '';
-						printf('<li%s><span>%s</span></li>', $css, $tag->name);
+						printf('<li%s>%s</li>', $css, $tag->name);
 						$i++;
 					}
 				}
@@ -51,20 +40,10 @@
 			</div>
 		</div>
 	
-		<div class="scr">
-			<a href="<?php echo $src; ?>" style="background-image: url(<?php echo $src; ?>); height: <?php echo $height; ?>px;"><?php the_title(); ?></a>
-		</div>
-	
-		<?php
-		$credit = get_post_meta($post->ID, 'credit', true);
-		if ($credit) :
-		?>
-		<p class="credit">
-			Design by <?php echo $credit; ?>
-		</p>
-		<?php endif; ?>
-	
-		<?php if (count($attachments) > 1) : ?>
+		<?php 
+		$attachments = my_get_attachments();
+
+		if (count($attachments) > 1) : ?>
 		
 		<ul class="screenshots">
 		
@@ -76,12 +55,14 @@
 			
 			if ($i == 0) {
 				$current = ' class="current"';
+				$full_src = $link;
+				$current_id = $attachment->ID;
 			}
 			else {
 				$current = '';
 			}
 			
-			printf('<li><a href="%s"%s style="background-image: url(%s);" title="%s">%s</a></li>', $link, $current, $src, attribute_escape($attachment->post_title), $attachment->post_title);
+			printf('<li%s><a href="%s" style="background-image: url(%s);" title="%s">%s</a></li>', $current, $link, $src, attribute_escape($attachment->post_title), $attachment->post_title);
 			
 			$i++;
 		}
@@ -90,6 +71,19 @@
 		</ul>
 		
 		<?php endif; ?>
+	
+		<?php
+		$credit = get_post_meta($post->ID, 'credit', true);
+		if ($credit) :
+		?>
+		<p class="credit">
+			Design by <?php echo $credit; ?>
+		</p>
+		<?php endif; ?>
+	
+		<a class="scr" href="<?php echo $full_src; ?>">
+			<?php echo wp_get_attachment_image($current_id, 'fullsize'); ?>
+		</a>
 		
 	</div>
 
@@ -97,6 +91,6 @@
 		<a href="/portfolio/">&laquo; Back to portfolio listing</a>
 	</p>
 
-</div>
+</section>
 
 <?php get_footer(); ?>

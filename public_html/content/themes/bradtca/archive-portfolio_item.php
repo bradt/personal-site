@@ -1,35 +1,33 @@
 <?php get_header(); ?>
 
-<div id="content" class="page page-portfolio-list">
+<section class="page page-portfolio-list">
 
-	<div class="top">
-		<?php
-		$r = new WP_Query(array(
-			'post_type' => 'page',
-			'pagename' => 'portfolio'
-		));
+	<?php
+	$r = new WP_Query(array(
+		'post_type' => 'page',
+		'pagename' => 'portfolio'
+	));
 
-		$r->the_post();
-		?>		
+	$r->the_post();
+	?>		
 
-		<h1><?php the_title(); ?></h1>
-		
-		<div class="intro">
-			<?php the_content(); ?>
-		</div>
-
-		<?php
-		wp_reset_postdata();
-		?>
+	<h1 class="page-title"><?php the_title(); ?></h1>
+	
+	<div class="intro">
+		<?php the_content(); ?>
 	</div>
+
+	<?php
+	wp_reset_postdata();
+	?>
 
 	<ul class="tabs">
 		<li class="featured"><a href="#featured" class="current">Featured</a></li>
-		<li class="all"><a href="#all">All</a></li>
-		<li class="html"><a href="#html">Frontend Development</a></li>
-		<li class="wordpress-theme"><a href="#wordpress-theme">Wordpress Development</a></li>
-		<li class="php-mysql"><a href="#php-mysql">PHP Development</a></li>
+		<li class="html"><a href="#html">Frontend Dev</a></li>
+		<li class="wordpress-theme"><a href="#wordpress-theme">Wordpress</a></li>
+		<li class="php-mysql"><a href="#php-mysql">PHP Dev</a></li>
 		<li class="design"><a href="#design">Design</a></li>
+		<li class="all"><a href="#all">All</a></li>
 	</ul>
 
 	<div class="tab-content">
