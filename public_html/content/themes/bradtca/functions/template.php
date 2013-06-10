@@ -96,3 +96,12 @@ function bt_the_datetime() {
 	
 	the_time('Y-m-d\TH:i:s'); echo $timezone;
 }
+
+function my_excerpt($maxlength = 0) {
+	$excerpt = get_the_excerpt();
+	$excerpt = str_replace('[...]', '...', $excerpt);
+	if ($maxlength && strlen($excerpt) > $maxlength) {
+		$excerpt = substr($excerpt, 0, $maxlength-3) . '...';
+	}
+	echo $excerpt;
+}

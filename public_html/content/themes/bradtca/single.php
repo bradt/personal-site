@@ -6,9 +6,9 @@
 		<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
 	</header>
 
-	<?php $i = 0; if (have_posts()) : while (have_posts()) : the_post();
-		$timezone = get_the_time('O');
-		$timezone = substr($timezone, 0, 3) . ':' . substr($timezone, 3);
+	<?php 
+	$i = 0; 
+	if (have_posts()) : while (have_posts()) : the_post();
 		?>
 		
 		<article <?php post_class(); ?>>
