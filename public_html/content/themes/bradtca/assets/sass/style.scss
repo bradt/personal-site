@@ -753,15 +753,23 @@ section.single-post {
 		h1 {
 			float: left;
 			margin: 0;
+			margin-right: 60px;
 		}
 
 		h2 {
 			font-size: 21px;
 			color: #999;
 			float: left;
-			margin-left: 60px;
 			font-weight: 400;
 			line-height: 80px;
+		}
+		
+		@media screen and (max-width: 480px) {
+			margin: -5px 0 30px 0;
+
+			h2 {
+				line-height: 1.2em;
+			}
 		}
 	}
 
@@ -777,6 +785,7 @@ section.single-post {
 		font-size: 30px;
 		font-family: $Lora;
 		display: inline;
+		margin-right: 10px;
 	}
 
 	.entry-summary {
@@ -790,7 +799,6 @@ section.single-post {
 	time {
 		color: #666;
 		font-size: 18px;
-		margin-left: 10px;
 	}
 
 	.paging {

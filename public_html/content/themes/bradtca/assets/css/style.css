@@ -771,14 +771,22 @@ section.single-post > article .subscribe .rss {
 .post-archive > header h1 {
   float: left;
   margin: 0;
+  margin-right: 60px;
 }
 .post-archive > header h2 {
   font-size: 21px;
   color: #999;
   float: left;
-  margin-left: 60px;
   font-weight: 400;
   line-height: 80px;
+}
+@media screen and (max-width: 480px) {
+  .post-archive > header {
+    margin: -5px 0 30px 0;
+  }
+  .post-archive > header h2 {
+    line-height: 1.2em;
+  }
 }
 .post-archive > article {
   margin-bottom: 50px;
@@ -790,6 +798,7 @@ section.single-post > article .subscribe .rss {
   font-size: 30px;
   font-family: Lora, Arial, Helvetica, sans-serif;
   display: inline;
+  margin-right: 10px;
 }
 .post-archive .entry-summary {
   font-family: Lora, Arial, Helvetica, sans-serif;
@@ -800,7 +809,6 @@ section.single-post > article .subscribe .rss {
 .post-archive time {
   color: #666;
   font-size: 18px;
-  margin-left: 10px;
 }
 .post-archive .paging {
   margin-bottom: 80px;
