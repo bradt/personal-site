@@ -13,7 +13,8 @@ get_header();
 		<p>I was born an entrepreneur. From lemonade stands and mowing lawns, to
 		making my first dollars online, I've always been motivated by
 		entrepreneurship. In June 2002, I cofounded <a title="Zenutech"
-		href="http://www.zenutech.ca/">a web hosting company</a> that's still
+		href="http://www.zenutech.ca/">a web hosting company</a> 
+		that's still
 		going strong today. I currently work full time on a new venture
 		started in October 2011 called <a 
 		href="http://deliciousbrains.com">Delicious Brains</a>.</p>

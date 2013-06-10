@@ -168,7 +168,9 @@ var Bradt = {
 			Bradt.portfolio.roles.init();
 			
 			$('.project').gridify();
-			on_resize(Bradt.portfolio_list.resize);
+			if ($('body').width() > 640) {
+				on_resize(Bradt.portfolio_list.resize);
+			}
 		},
 		
 		resize: function() {

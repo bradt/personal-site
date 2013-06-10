@@ -55,8 +55,6 @@
 			
 			if ($i == 0) {
 				$current = ' class="current"';
-				$full_src = $link;
-				$current_id = $attachment->ID;
 			}
 			else {
 				$current = '';
@@ -80,9 +78,13 @@
 			Design by <?php echo $credit; ?>
 		</p>
 		<?php endif; ?>
+
+		<?php
+		list($link, $x, $y) = wp_get_attachment_image_src($attachments[0]->ID, 'fullsize');
+		?>
 	
-		<a class="scr" href="<?php echo $full_src; ?>">
-			<?php echo wp_get_attachment_image($current_id, 'fullsize'); ?>
+		<a class="scr" href="<?php echo $link; ?>">
+			<?php echo wp_get_attachment_image($attachments[0]->ID, 'fullsize'); ?>
 		</a>
 		
 	</div>

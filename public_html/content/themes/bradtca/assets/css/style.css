@@ -38,7 +38,6 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
-  min-width: 640px;
   font-size: 21px;
 }
 @media (min--moz-device-pixel-ratio: 1.3), (-o-min-device-pixel-ratio: 2.6 / 2), (-webkit-min-device-pixel-ratio: 1.3), (min-device-pixel-ratio: 1.3), (min-resolution: 1.3dppx) {
@@ -163,6 +162,9 @@ header.site nav.site li {
   font-weight: 200;
   list-style-type: none;
 }
+header.site nav.site li:last-child {
+  margin-right: 0;
+}
 header.site nav.site .active {
   color: #ffffdf;
 }
@@ -201,8 +203,9 @@ header.site nav.social li {
     left: auto;
     top: auto;
     margin: 0 auto 30px auto;
-    width: 150px;
-    height: 150px;
+  }
+  header.site .bio {
+    font-size: 30px;
   }
   header.site .col-2 {
     padding: 0;
@@ -212,23 +215,27 @@ header.site nav.social li {
     float: none;
     padding-top: 30px;
   }
-  header.site nav.site li {
-    font-size: 35px;
-  }
   header.site nav.social {
     float: none;
     padding-top: 35px;
   }
-  header.site nav.social li {
-    font-size: 70px;
-    line-height: 70px;
-    margin-right: 15px;
+}
+@media screen and (max-width: 480px) {
+  header.site {
+    padding: 0 20px;
+  }
+  header.site .bio {
+    font-size: 21px;
+  }
+  header.site nav.site li {
+    font-size: 18px;
+    margin-right: 12px;
   }
 }
 
 footer.site {
   height: 300px;
-  background: no-repeat top right;
+  background: no-repeat bottom right;
   background-image: url("../img/footer-speaker.png");
   width: 100%;
   margin: 50px auto 0 auto;
@@ -283,6 +290,9 @@ footer.site .nav-meta nav.site li {
   font-weight: 200;
   list-style-type: none;
 }
+footer.site .nav-meta nav.site li:last-child {
+  margin-right: 0;
+}
 footer.site .nav-meta nav.site .active {
   color: #ffffdf;
 }
@@ -299,6 +309,29 @@ footer.site .nav-meta .copyright {
     bottom: auto;
     top: 0;
     padding-left: 50px;
+  }
+}
+@media screen and (max-width: 480px) {
+  footer.site {
+    background-size: 50%;
+    margin-top: 20px;
+  }
+  footer.site h1 a {
+    width: 140px;
+    height: 25px;
+    background-size: 140px 25px;
+    margin-bottom: 5px;
+  }
+  footer.site .nav-meta {
+    padding-left: 20px;
+  }
+  footer.site .nav-meta nav.site li {
+    font-size: 16px;
+    margin-right: 12px;
+  }
+  footer.site .nav-meta .copyright {
+    font-size: 12px;
+    width: 70%;
   }
 }
 
@@ -393,6 +426,12 @@ section.single-post > article .entry-title {
   font-size: 40px;
   margin-bottom: 10px;
   margin-top: -15px;
+}
+@media screen and (max-width: 480px) {
+  section.single-post > article .entry-title {
+    font-size: 30px;
+    margin-top: -5px;
+  }
 }
 section.single-post > article .related li {
   line-height: 1.4em;
@@ -500,13 +539,23 @@ section.single-post > article .subscribe button::-moz-focus-inner {
 }
 section.single-post > article .subscribe input {
   float: left;
-  width: 300px;
+  width: 100%;
+  max-width: 300px;
 }
 section.single-post > article .subscribe .rss {
   max-height: 1em;
   /* Stop auto text sizing on mobile */
   font-size: 14px;
   margin: 20px 0 0 0;
+}
+@media screen and (max-width: 480px) {
+  section.single-post > article .subscribe {
+    padding: 60px 30px 20px 30px;
+  }
+  section.single-post > article .subscribe h1 {
+    font-size: 26px;
+    margin-bottom: 20px;
+  }
 }
 
 #disqus_thread {
@@ -806,6 +855,12 @@ section.single-post > article .subscribe .rss {
   margin-bottom: 15px;
   border-bottom: 1px solid #ddd;
 }
+@media screen and (max-width: 480px) {
+  .front-page .section-title {
+    margin-top: -5px;
+    font-size: 18px;
+  }
+}
 .front-page .more {
   font-size: 18px;
   margin-top: 15px;
@@ -841,6 +896,11 @@ section.single-post > article .subscribe .rss {
   font-size: 40px;
   margin-bottom: 10px;
 }
+@media screen and (max-width: 480px) {
+  .front-page .latest-post .entry-title {
+    font-size: 30px;
+  }
+}
 .front-page .latest-post .entry-meta {
   margin-bottom: 10px;
 }
@@ -851,7 +911,6 @@ section.single-post > article .subscribe .rss {
 .front-page .recent-posts article {
   overflow: hidden;
   margin-bottom: 10px;
-  white-space: nowrap;
   position: relative;
 }
 .front-page .recent-posts time {
@@ -866,6 +925,16 @@ section.single-post > article .subscribe .rss {
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media screen and (max-width: 480px) {
+  .front-page .recent-posts time {
+    position: relative;
+  }
+  .front-page .recent-posts .entry-title {
+    padding: 0;
+    white-space: normal;
+  }
 }
 .front-page .tweets {
   font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
@@ -875,6 +944,11 @@ section.single-post > article .subscribe .rss {
   float: left;
   line-height: 40px;
   margin-right: 5px;
+}
+@media screen and (max-width: 480px) {
+  .front-page .tweets .icon-twitter {
+    line-height: 24px;
+  }
 }
 .front-page .tweets li {
   position: relative;
@@ -996,6 +1070,11 @@ section.single-post > article .subscribe .rss {
     font-size: 14px;
   }
 }
+@media screen and (max-width: 480px) {
+  .front-page .photos figcaption {
+    display: none;
+  }
+}
 
 .about-page {
   width: 72%;
@@ -1007,9 +1086,6 @@ section.single-post > article .subscribe .rss {
   .about-page {
     width: auto;
   }
-}
-.about-page .entry-content a {
-  white-space: nowrap;
 }
 
 .photo-nav {
@@ -1142,6 +1218,11 @@ div.portfolio-item div.photos a img {
   width: 72%;
   margin-bottom: 50px;
 }
+@media screen and (max-width: 880px) {
+  .page-portfolio-list .intro {
+    width: auto;
+  }
+}
 .page-portfolio-list ul.tabs {
   border-bottom: 1px solid #ddd;
 }
@@ -1160,7 +1241,7 @@ div.portfolio-item div.photos a img {
 .page-portfolio-list ul.tabs a {
   color: #999;
   padding: 0.3em 0.8em;
-  line-height: 42px;
+  line-height: 2em;
   border: 1px solid transparent;
   border-radius: 4px 4px 0 0;
 }
@@ -1203,7 +1284,7 @@ div.portfolio-item div.photos a img {
 .page-portfolio-list .project {
   float: left;
   padding: 30px 8px 15px 8px;
-  border-bottom: 1px solid #999;
+  border-bottom: 1px solid #ddd;
 }
 .page-portfolio-list .project .scr img {
   border: 0;
@@ -1211,19 +1292,34 @@ div.portfolio-item div.photos a img {
 }
 .page-portfolio-list .project .scr {
   display: block;
-  border: 1px solid #999;
+  border: 1px solid #ddd;
   margin-bottom: 10px;
   width: 300px;
   box-sizing: content-box;
 }
-.page-portfolio-list h2 {
+.page-portfolio-list .project h2 {
   font-size: 1em;
   margin: 0;
   font-weight: normal;
   width: 300px;
 }
-.page-portfolio-list h2 a {
+.page-portfolio-list .project h2 a {
   color: #333;
+}
+@media screen and (max-width: 640px) {
+  .page-portfolio-list .project {
+    float: none;
+  }
+  .page-portfolio-list .project .scr {
+    width: 100%;
+  }
+  .page-portfolio-list .project .scr img {
+    width: 100%;
+    height: auto;
+  }
+  .page-portfolio-list .project h2 {
+    width: auto;
+  }
 }
 .page-portfolio-list .post-edit-link {
   font-size: 0.7em;
@@ -1489,5 +1585,16 @@ div.portfolio-item div.photos a img {
     height: 45px;
     background-color: #FFFFFF;
     transform: translateY(-39px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .content {
+    padding: 20px;
+  }
+
+  .page-title {
+    font-size: 40px;
+    margin-top: -5px;
   }
 }
