@@ -112,7 +112,6 @@ var Bradt = {
 							$('.section').hide();
 							$('#message-details, .button, .field-budget, .field-schedule').show();
 							break;
-						case 'wpappstore':
 						case 'general':
 							$('.section, .field-budget, .field-schedule').hide();
 							$('.section').hide();

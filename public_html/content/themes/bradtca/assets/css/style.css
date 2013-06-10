@@ -63,7 +63,7 @@ pre {
   overflow: hidden;
 }
 
-input[type=email], input[type=text], input[type=password] {
+input[type=email], input[type=text], input[type=password], textarea {
   border: 2px solid #ccc;
   border-radius: 5px;
   padding: 0.5em 0.8em;
@@ -1082,6 +1082,146 @@ section.single-post > article .subscribe .rss {
   .front-page .photos figcaption {
     display: none;
   }
+}
+
+.page .intro {
+  margin-bottom: 20px;
+  width: 72%;
+}
+@media screen and (max-width: 880px) {
+  .page .intro {
+    width: auto;
+  }
+}
+
+.page-contact .req {
+  display: none;
+}
+.page-contact .error {
+  color: orange;
+  font-size: 16px;
+}
+.page-contact .section {
+  width: 72%;
+}
+@media screen and (max-width: 880px) {
+  .page-contact .section {
+    width: auto;
+  }
+}
+.page-contact .field {
+  margin-bottom: 30px;
+}
+.page-contact .field-text, .page-contact .field-textarea {
+  margin-bottom: 10px;
+}
+.page-contact .field-text label, .page-contact .field-textarea label {
+  width: 140px;
+  float: left;
+  color: #666;
+  display: block;
+}
+.page-contact .field-text .error, .page-contact .field-textarea .error {
+  margin-left: 140px;
+}
+.page-contact .field-text input, .page-contact .field-textarea textarea {
+  max-width: 500px;
+  width: 100%;
+}
+.page-contact .field-your_name input, .page-contact .field-your_email input {
+  max-width: 300px;
+}
+.page-contact .field-what {
+  margin-bottom: 30px;
+}
+.page-contact .field-what > label {
+  font-size: 30px;
+  margin-bottom: 20px;
+  display: block;
+}
+.page-contact button {
+  margin-left: 140px;
+  font-size: 16px;
+  padding: 0.5em 1.5em;
+  display: inline-block;
+  cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  *zoom: 1;
+  filter: progid:DXImageTransform.Microsoft.gradient(gradientType=0, startColorstr='#FF0088CC', endColorstr='#FF004466');
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0088cc), color-stop(100%, #006699));
+  background: -webkit-linear-gradient(#0088cc, #006699);
+  background: -moz-linear-gradient(#0088cc, #006699);
+  background: -o-linear-gradient(#0088cc, #006699);
+  background: linear-gradient(#0088cc, #006699);
+  -webkit-box-shadow: #1ab2ff 0 1px 0 inset;
+  -moz-box-shadow: #1ab2ff 0 1px 0 inset;
+  box-shadow: #1ab2ff 0 1px 0 inset;
+  border: 1px solid #005580;
+  color: white;
+  text-shadow: #003047 0 -1px 0;
+}
+.page-contact button:hover {
+  text-decoration: none;
+}
+.page-contact button:hover {
+  background-color: #005580;
+  background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #0077b3), color-stop(100%, #005580));
+  background: -webkit-linear-gradient(#0077b3, #005580);
+  background: -moz-linear-gradient(#0077b3, #005580);
+  background: -o-linear-gradient(#0077b3, #005580);
+  background: linear-gradient(#0077b3, #005580);
+}
+.page-contact button:active {
+  -webkit-box-shadow: #004b70 0 1px 2px inset;
+  -moz-box-shadow: #004b70 0 1px 2px inset;
+  box-shadow: #004b70 0 1px 2px inset;
+}
+.page-contact button.disabled, .page-contact button[disabled] {
+  opacity: 0.6;
+  background: #006699;
+  cursor: default;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+.page-contact button::-moz-focus-inner {
+  padding: 0 !important;
+  margin: -1px !important;
+}
+@media screen and (max-width: 880px) {
+  .page-contact .field-text label, .page-contact .field-textarea label {
+    width: auto;
+    float: none;
+  }
+  .page-contact .field-text .error, .page-contact .field-textarea .error {
+    margin-left: 0;
+  }
+  .page-contact button {
+    margin-left: 0;
+  }
+}
+
+.field-optionlist > label {
+  display: block;
+  margin-bottom: 5px;
+}
+.field-optionlist li {
+  margin-bottom: 5px;
+}
+.field-optionlist li::after {
+  display: table;
+  line-height: 0;
+  content: "";
+  clear: both;
+}
+.field-optionlist input {
+  float: left;
+  margin-top: 8px;
+  margin-right: 10px;
 }
 
 .about-page {

@@ -59,7 +59,7 @@ pre {
 	overflow: hidden;
 }
 
-input[type=email], input[type=text], input[type=password] {
+input[type=email], input[type=text], input[type=password], textarea {
 	border: 2px solid #ccc;
 	border-radius: 5px;
 	padding: 0.5em 0.8em;
@@ -1123,6 +1123,122 @@ section.single-post {
 				display: none;
 			}
 		}
+	}
+}
+
+.page {
+	.intro {
+		margin-bottom: 20px;
+		width: 72%;
+
+		@media screen and (max-width: 880px) {
+			width: auto;
+		}
+	}
+}
+
+.page-contact {
+	.req {
+		display: none;
+	}
+
+	.error {
+		color: orange;
+		font-size: 16px;
+	}
+
+	.section {
+		width: 72%;
+
+		@media screen and (max-width: 880px) {
+			width: auto;
+		}
+	}
+
+	.field {
+		margin-bottom: 30px;
+	}
+
+	.field-text, .field-textarea {
+		margin-bottom: 10px;
+
+		label {
+			width: 140px;
+			float: left;
+			color: #666;
+			display: block;
+		}
+
+		.error {
+			margin-left: 140px;
+		}
+	}
+
+	.field-text input, .field-textarea textarea {
+		max-width: 500px;
+		width: 100%;
+	}
+
+	.field-your_name, .field-your_email {
+		input {
+			max-width: 300px;
+		}
+	}
+
+	.field-what {
+		margin-bottom: 30px;
+
+		> label {
+			font-size: 30px;
+			margin-bottom: 20px;
+			display: block;
+		}
+	}
+
+	button {
+		margin-left: 140px;
+		@include sassy-button("simple", 5px, 16px, lighten(#006699,10%));
+	}
+
+	@media screen and (max-width: 880px) {
+		.field-text, .field-textarea {
+			label {
+				width: auto;
+				float: none;
+			}
+
+			.error {
+				margin-left: 0;
+			}
+		}
+
+		button {
+			margin-left: 0;
+		}
+	}
+}
+
+.field-optionlist {
+	> label {
+		display: block;
+		margin-bottom: 5px;
+	}
+
+	li {
+		margin-bottom: 5px;
+
+		&::after {
+			display: table;
+			line-height: 0;
+			content: "";
+			clear: both;
+		}
+	}
+
+	input {
+		float: left;
+		margin-top: 8px;
+		margin-right: 10px;
 	}
 }
 

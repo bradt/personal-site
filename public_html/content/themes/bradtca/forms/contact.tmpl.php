@@ -6,8 +6,6 @@
 
 <?php else : ?>
 
-<p class="indicates"><span class="req">*</span> Indicates required fields</p>
-
 <?php if (!empty($form->errors)) : ?>
 <p class="error-msg">Please correct the errors below.</p>
 <?php endif; ?>
@@ -73,7 +71,7 @@ $hire_links = '
 */
 ?>
 
-<div class="section section-budget"<?php echo ($_POST['what'] != 'work' || $_POST['budget'] != 'too_low') ? ' style="display: none;"' : ''; ?>>
+<section class="section section-budget entry-content"<?php echo (!isset( $_POST['what'] ) || $_POST['what'] != 'work' || !isset( $_POST['budget'] ) || $_POST['budget'] != 'too_low') ? ' style="display: none;"' : ''; ?>>
     <h3>Budget Not Workable</h3>
     
     <p>I do not take on projects in this budget range. If you'd like me to take
@@ -85,9 +83,9 @@ $hire_links = '
     <?php echo $hire_links; ?>. At that budget though, don't expect good
     communication skills or quality work.</p>
 
-</div>
+</section>
 
-<div class="section section-plugin"<?php echo ($_POST['what'] != 'plugin') ? ' style="display: none;"' : ''; ?>>
+<section class="section section-plugin entry-content"<?php echo (!isset( $_POST['what'] ) || $_POST['what'] != 'plugin') ? ' style="display: none;"' : ''; ?>>
     <h3>WordPress plugin support</h3>
     
     <p>Unfortunately, I cannot afford the time to provide email support for the
@@ -108,8 +106,8 @@ $hire_links = '
         href="http://wordpress.stackexchange.com/">WordPress Answers</a> at
         Stack Exchange.
     </p>    
-</div>
+</section>
 
-<input id="contactsubmit" class="button" type="image" value="Submit" src="<?php bloginfo('template_url'); ?>/images/blank.gif" name="Submit"/>
+<button class="button">Send Email</button>
 
 <?php endif; ?>

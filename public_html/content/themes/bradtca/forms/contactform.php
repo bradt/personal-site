@@ -29,7 +29,6 @@ class ContactForm extends PHPFormWork {
             'req' => 'Please choose one of the options above.',
             'lbl' => 'What would you like to contact me about?',
             'options' => array(
-                'wpappstore' => 'WP App Store',
                 'plugin' => 'WordPress plugin support',
                 'work' => 'Work, job, or contract',
                 'general' => 'Something else',
@@ -112,7 +111,7 @@ class ContactForm extends PHPFormWork {
             'lbl' => 'Message:'
         ));
         
-        if (!in_array($_POST['what'], array('plugin', 'personal'))) {
+        if (!isset( $_POST['what'] ) || !in_array($_POST['what'], array('plugin', 'personal'))) {
             $fieldsets[] = new PFW_Fieldset('message-details', $fields);
         }
         
@@ -136,12 +135,7 @@ class ContactForm extends PHPFormWork {
             }
         }
         
-        if ( 'wpappstore' == $what ) {
-            $to = 'brad@wpappstore.com';
-        }
-        else {
-            $to = get_settings('admin_email');
-        }
+        $to = get_settings('admin_email');
 
         if ('work' == $what) {
             $top = '';

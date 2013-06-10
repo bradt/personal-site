@@ -15,9 +15,9 @@ else :
 get_header();
 ?>
 
-<div id="content" class="page page-contact">
+<section class="page page-contact">
 
-	<h1><?php the_title(); ?></h1>
+	<h1 class="page-title"><?php the_title(); ?></h1>
 
 	<div class="intro">
 		<?php the_content("more..."); ?>
@@ -30,12 +30,10 @@ get_header();
 			<?php include(BT_FORMS . '/contact.tmpl.php'); ?>
 			
 		</form>
-		
-		<?php edit_post_link('Edit'); ?>
 
 	</div>
 
-</div>
+</section>
 
 <?php
 get_footer();
