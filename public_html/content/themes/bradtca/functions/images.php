@@ -220,7 +220,7 @@ function bt_image_resize( $file, $max_w, $max_h, $crop = false, $suffix = null, 
 	return $destfilename;
 }
 
-function my_get_attachments() {
+function bt_get_attachments() {
 	global $post, $attachments;
 
 	$args = array(

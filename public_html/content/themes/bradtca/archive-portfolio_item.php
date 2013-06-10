@@ -37,7 +37,7 @@
 			if (have_posts()) : while (have_posts()) :
 				the_post();
 	
-				$attachs = my_get_attachments();
+				$attachs = bt_get_attachments();
 				list($src, $width, $height) = wp_get_attachment_image_src($attachs[0]->ID, 'medium');
 				?>
 				<li class="project<?php echo (get_post_meta($post->ID, 'featured', true)) ? ' featured' : ''; ?>">

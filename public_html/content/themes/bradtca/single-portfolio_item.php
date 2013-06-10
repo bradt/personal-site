@@ -41,7 +41,7 @@
 		</div>
 	
 		<?php 
-		$attachments = my_get_attachments();
+		$attachments = bt_get_attachments();
 
 		if (count($attachments) > 1) : ?>
 		
