@@ -55,6 +55,29 @@ function bt_theme_setup() {
 	));
 
 	$labels = array(
+		'name' => _x( 'Tags', 'taxonomy general name' ),
+		'singular_name' => _x( 'Tag', 'taxonomy singular name' ),
+		'search_items' =>  __( 'Search Tags' ),
+		'popular_items' => __( 'Popular Tags' ),
+		'all_items' => __( 'All Tags' ),
+		'parent_item' => null,
+		'parent_item_colon' => null,
+		'edit_item' => __( 'Edit Tag' ), 
+		'update_item' => __( 'Update Tag' ),
+		'add_new_item' => __( 'Add tags to all set photos' ),
+		'new_item_name' => __( 'New Tag Name' ),
+		'separate_items_with_commas' => __( 'Separate tags with commas' ),
+		'add_or_remove_items' => __( 'Add or remove tags' ),
+		'choose_from_most_used' => __( 'Choose from the most used tags' ),
+		'menu_name' => __( 'Tags' ),
+	);
+	register_taxonomy('portfolio_tag', array('portfolio_item'), array(
+		'labels' => $labels,
+		'public' => false,
+		'show_ui' => true
+	));
+
+	$labels = array(
 		'name' => _x('Journal', 'bradt.ca'),
 		'singular_name' => _x('Journal Entry', 'bradt.ca'),
 		'add_new' => _x('Add New', 'bradt.ca'),
@@ -151,7 +174,41 @@ function bt_theme_setup() {
 			'with_front' => false
 		)
 	));
+
+	if ( isset( $_GET['run-tag-update'] ) ) {
+		global $wpdb;
+
+		$sql = "SELECT ID FROM wp_posts WHERE post_type = 'portfolio_item'";
+		$post_ids = $wpdb->get_col( $sql );
+
+		//print_r($post_ids);
+
+		$new_terms = array();
+		foreach ( $post_ids as $post_id ) {
+			$terms = wp_get_object_terms( $post_id, 'post_tag' );
+			foreach ( $terms as $term ) {
+				if ( !isset( $new_terms[$term->slug] ) ) {
+					$new_term = wp_insert_term( $term->name, 'portfolio_tag', array( 'slug' => $term->slug ) );
 	
+					if ( is_wp_error( $new_term ) ) {
+						print_r( $new_term );
+					}
+					else {
+						$new_terms[$term->slug] = (int)$new_term['term_id'];
+					}
+				}
+
+				if ( isset( $new_terms[$term->slug] ) ) {
+					wp_set_object_terms( $post_id, $new_terms[$term->slug], 'portfolio_tag', true );
+				}
+			}
+			
+			wp_delete_object_term_relationships( $post_id, 'post_tag' );
+		}
+
+		echo "Done.";
+		exit;
+	}	
 }
 add_action( 'init', 'bt_theme_setup' );
 

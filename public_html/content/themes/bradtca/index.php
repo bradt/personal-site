@@ -6,7 +6,7 @@
 		<h1 class="page-title"><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
 
 		<?php if ( is_tag() ) : ?>
-		<h2>Posts tagged &#8220;<?php echo single_tag_title( '', false ); ?>&#8221;</h2>
+		<h2>Posts tagged &#8220;<?php echo strtolower( single_tag_title( '', false ) ); ?>&#8221;</h2>
 		<?php elseif ( is_year() ) : ?>
 		<h2>Posts published in <?php echo get_the_date( 'Y' ); ?></h2>
 		<?php endif ?>
