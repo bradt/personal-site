@@ -50,7 +50,7 @@
 						<h4>My Roles</h4>
 						<ul>
 						<?php
-						$tags = get_the_terms($post->ID, 'post_tag');
+						$tags = get_the_terms($post->ID, 'portfolio_tag');
 						if ($tags) {
 							$i = 1;
 							foreach ($tags as $tag) {
