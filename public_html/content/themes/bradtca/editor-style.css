@@ -2,3 +2,8 @@ body {
 	font-size: 18px;
 	line-height: 26px;
 }
+
+img {
+	width: 100%;
+	height: auto;
+}
