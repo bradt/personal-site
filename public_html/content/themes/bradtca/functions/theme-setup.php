@@ -46,7 +46,6 @@ function bt_theme_setup() {
 		'labels' => $labels,
 		'public' => true,
 		'has_archive' => 'portfolio',
-		'taxonomies' => array( 'post_tag' ),
 		'rewrite' => array(
 			'slug' => 'portfolio',
 			'with_front' => false
