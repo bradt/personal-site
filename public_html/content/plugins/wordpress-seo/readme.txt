@@ -6,7 +6,7 @@ License URI: http://www.gnu.org/licenses/gpl.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
 Requires at least: 3.3
 Tested up to: 3.5
-Stable tag: 1.4.6
+Stable tag: 1.4.7
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -140,6 +140,14 @@ rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 las
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.4.7 =
+
+* Properly fix security bug that should've been fixed in 1.4.5.
+* Move from using several $options arrays in the frontend to 1 class wide option.
+* Instead of firing all plugin options as function within head function, attach them to `wpseo_head` action, allowing easier filtering and changing.
+* Where possible, use larger images for Facebook Opengraph.
+* Add several filters and actions around social settings.
 
 = 1.4.6 =
 

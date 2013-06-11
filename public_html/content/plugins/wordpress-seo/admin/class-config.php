@@ -36,7 +36,7 @@ class WPSEO_Admin_Pages {
 	 * Make sure the needed scripts are loaded for admin pages
 	 */
 	function init() {
-		if ( isset( $_GET['wpseo_reset_defaults'] ) ) {
+		if ( isset( $_GET['wpseo_reset_defaults'] ) && wp_verify_nonce( $_GET['nonce'], 'wpseo_reset_defaults' ) && current_user_can( 'manage_options' ) ) {
 			$this->reset_defaults();
 			wp_redirect( admin_url( 'admin.php?page=wpseo_dashboard' ) );
 		}

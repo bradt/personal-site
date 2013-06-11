@@ -24,7 +24,7 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 	public function __construct() {
 		$this->options = get_option( 'wpseo_social' );
 
-		add_action( 'wpseo_head', array( $this, 'twitter' ) );
+		add_action( 'wpseo_head', array( $this, 'twitter' ), 40 );
 	}
 
 	/**
