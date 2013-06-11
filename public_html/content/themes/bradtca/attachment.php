@@ -65,6 +65,6 @@
 
 	<?php comments_template(); ?>
 	
-</div>
+</section>
 
 <?php get_footer(); ?>

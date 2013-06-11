@@ -70,6 +70,6 @@
 
 	<p class="old-portfolio" style="display: none;"><a href="/portfolio/archive/">Check out some of my older work &raquo;</a></p>
 
-</div>
+</section>
 
 <?php get_footer(); ?>

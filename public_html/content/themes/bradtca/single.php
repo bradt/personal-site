@@ -66,12 +66,6 @@
 
 	<?php endif; ?>
 
-	<div id="next_prev_nav">
-
-		<?php posts_nav_link('<span id="previous_nav">&lt;&lt; Previous</span>&nbsp;&nbsp;', '', '<span id="next_nav">Next &gt;&gt;</span>'); ?>
-	
-	</div>
-
-</div>
+</section>
 
 <?php get_footer(); ?>
