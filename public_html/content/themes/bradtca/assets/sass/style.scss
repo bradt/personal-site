@@ -66,6 +66,10 @@ input[type=email], input[type=text], input[type=password], textarea {
 	font-size: 16px;
 }
 
+button {
+	@include sassy-button("simple", 5px, 16px, lighten(#006699,10%));
+}
+
 @mixin placeholder() {
 	font-style: italic;
 }
@@ -94,6 +98,7 @@ input[type=email], input[type=text], input[type=password], textarea {
 	width: 100%;
 	margin: 0 auto;
 	max-width: 1070px;
+	min-height: 500px;
 	background-color: #fafafa;
 	position: relative;
 	padding: 60px;
@@ -522,10 +527,6 @@ section.single-post {
 				line-height: 44px;
 				color: #666;
 				font-family: $SourceSansPro;
-			}
-
-			button {
-				@include sassy-button("simple", 5px, 16px, lighten(#006699,10%));
 			}
 
 			input {
@@ -1199,7 +1200,6 @@ section.single-post {
 
 	button {
 		margin-left: 140px;
-		@include sassy-button("simple", 5px, 16px, lighten(#006699,10%));
 	}
 
 	@media screen and (max-width: 880px) {
@@ -1850,4 +1850,40 @@ transform: translateY(-39px);
 		margin-top: -5px;
 	}
 
+}
+
+.search-note {
+	font-size: 14px;
+	color: #666;
+}
+
+.page-404 {
+	.page-title {
+		margin-bottom: 10px;
+	}
+
+	.entry-content {
+		width: 72%;
+
+		figure {
+			position: relative;
+			padding-bottom: 56.25%;
+			padding-top: 30px;
+			height: 0;
+			overflow: hidden;
+			margin-bottom: 30px;
+
+			iframe {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+			}
+		}
+
+		@media screen and (max-width: 880px) {
+			width: auto;
+		}
+	}
 }

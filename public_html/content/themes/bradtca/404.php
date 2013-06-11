@@ -1,23 +1,31 @@
-<?php ob_start(); ?>
 <?php header("HTTP/1.1 404 Not Found"); ?>
 <?php header("Status: 404 Not Found"); ?>
 
 <?php get_header(); ?>
 
-<div id="content">
+<section class="page page-404">
 
-		<div class="post" style="height: 14em;">
+	<h1 class="page-title">Page Not Found</h1>
 
-			<h1>404 File Not Found</h1>
-								
-			<p>
-				Sorry, the requested file could not be found.
-			</p>
-			
-			<h2>Try searching what you're looking for...</h2>
-			
-			<?php include (TEMPLATEPATH . '/searchform.php'); ?>
-		</div>
-</div>
+	<div class="entry-content">
+
+		<p>
+			Sorry, the requested page could not be found.
+			But to quickly restore your faith in the internet,
+			I've queued up this rare footage of a
+			baby panda and his mother, enjoy...
+		</p>
+
+		<figure>
+			<iframe width="420" height="315" src="http://www.youtube.com/embed/EAcdvmnZ_GM" frameborder="0" allowfullscreen></iframe>
+		</figure>
+		
+		<h2>Try a quick search...</h2>
+		
+		<?php get_search_form(); ?>
+
+	</div>
+
+</section>
 
 <?php get_footer(); ?>
