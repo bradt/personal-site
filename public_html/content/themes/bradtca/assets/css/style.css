@@ -863,16 +863,10 @@ section.single-post > article .subscribe .rss {
   text-transform: uppercase;
   font-weight: 800;
   font-family: "Source Sans Pro", Arial, Helvetica, sans-serif;
-  font-size: 30px;
+  font-size: 18px;
   padding-bottom: 5px;
   margin-bottom: 15px;
   border-bottom: 1px solid #ddd;
-}
-@media screen and (max-width: 480px) {
-  .front-page .section-title {
-    margin-top: -5px;
-    font-size: 18px;
-  }
 }
 .front-page .more {
   font-size: 18px;
@@ -955,13 +949,8 @@ section.single-post > article .subscribe .rss {
 }
 .front-page .tweets .icon-twitter {
   float: left;
-  line-height: 40px;
+  line-height: 24px;
   margin-right: 5px;
-}
-@media screen and (max-width: 480px) {
-  .front-page .tweets .icon-twitter {
-    line-height: 24px;
-  }
 }
 .front-page .tweets li {
   position: relative;

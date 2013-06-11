@@ -867,15 +867,10 @@ section.single-post {
 		text-transform: uppercase;
 		font-weight: 800;
 		font-family: $SourceSansPro;
-		font-size: 30px;
+		font-size: 18px;
 		padding-bottom: 5px;
 		margin-bottom: 15px;
 		border-bottom: 1px solid #ddd;
-		
-		@media screen and (max-width: 480px) {
-			margin-top: -5px;
-			font-size: 18px;
-		}
 	}
 
 	.more {
@@ -972,12 +967,8 @@ section.single-post {
 
 		.icon-twitter {
 			float: left;
-			line-height: 40px;
+			line-height: 24px;
 			margin-right: 5px;
-
-			@media screen and (max-width: 480px) {
-				line-height: 24px;
-			}
 		}
 
 		li {
