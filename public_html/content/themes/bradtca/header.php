@@ -16,7 +16,7 @@
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 
-<?php if ( false || WP_DEBUG ) : ?>
+<?php if ( WP_DEBUG ) : ?>
 <script src="<?php bloginfo('template_url'); ?>/assets/js/script.js" type="text/javascript"></script>
 <?php else : ?>
 <script src="<?php bloginfo('template_url'); ?>/assets/js/script.min.js?2013020901" type="text/javascript"></script>
