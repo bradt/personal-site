@@ -175,40 +175,6 @@ function bt_theme_setup() {
 		)
 	));
 
-	if ( isset( $_GET['run-tag-update'] ) ) {
-		global $wpdb;
-
-		$sql = "SELECT ID FROM wp_posts WHERE post_type = 'portfolio_item'";
-		$post_ids = $wpdb->get_col( $sql );
-
-		//print_r($post_ids);
-
-		$new_terms = array();
-		foreach ( $post_ids as $post_id ) {
-			$terms = wp_get_object_terms( $post_id, 'post_tag' );
-			foreach ( $terms as $term ) {
-				if ( !isset( $new_terms[$term->slug] ) ) {
-					$new_term = wp_insert_term( $term->name, 'portfolio_tag', array( 'slug' => $term->slug ) );
-	
-					if ( is_wp_error( $new_term ) ) {
-						print_r( $new_term );
-					}
-					else {
-						$new_terms[$term->slug] = (int)$new_term['term_id'];
-					}
-				}
-
-				if ( isset( $new_terms[$term->slug] ) ) {
-					wp_set_object_terms( $post_id, $new_terms[$term->slug], 'portfolio_tag', true );
-				}
-			}
-			
-			wp_delete_object_term_relationships( $post_id, 'post_tag' );
-		}
-
-		echo "Done.";
-		exit;
-	}	
 }
 add_action( 'init', 'bt_theme_setup' );
 
