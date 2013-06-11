@@ -1,19 +1,17 @@
 <?php get_header(); the_post(); ?>
 
-<div id="content" class="page">
+<section class="page">
 
-	<h1><?php the_title(); ?></h1>
+	<h1 class="page-title"><?php the_title(); ?></h1>
 
-	<div class="post">
+	<div class="entry-content">
 
 		<?php the_content("more..."); ?>
 		
 		<?php link_pages('<p><strong>Pages:</strong> ', '</p>', 'number'); ?>
 
-		<?php edit_post_link('Edit'); ?>
-
 	</div>
 
-</div>
+</section>
 
 <?php get_footer(); ?>

@@ -568,6 +568,9 @@ section.single-post > article .subscribe .rss {
   }
 }
 
+.entry-content {
+  font-family: Lora, Arial, Helvetica, sans-serif;
+}
 .entry-content p {
   line-height: 1.7em;
 }
