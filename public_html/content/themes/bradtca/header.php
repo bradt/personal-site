@@ -3,16 +3,28 @@
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
 <meta name="viewport" content="width=device-width" />
+
 <title><?php wp_title( '' ); ?></title>
+
 <link rel="profile" href="http://gmpg.org/xfn/11" />
 <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
+
 <meta name="google-site-verification" content="-HPbjD9Y0jlfGiwCKijuBuQ3P6hyDw1LyXyY9T6ytjg" />
+
 <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/images/favicon-32.png" />
 <link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/style.css?2013060601" media="screen" />
+
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-<script src="<?php bloginfo('template_url'); ?>/assets/js/script.js?2013020901" type="text/javascript"></script>
+
+<?php if ( false || WP_DEBUG ) : ?>
+<script src="<?php bloginfo('template_url'); ?>/assets/js/script.js" type="text/javascript"></script>
+<?php else : ?>
+<script src="<?php bloginfo('template_url'); ?>/assets/js/script.min.js?2013020901" type="text/javascript"></script>
+<?php endif; ?>
+
 <link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
 <link rel='openid.delegate' href='http://bradt.wordpress.com/' />
+
 <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 
 <?php wp_head(); ?>
