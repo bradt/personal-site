@@ -2,7 +2,7 @@
 
 <?php get_header(); ?>
 
-<div id="content" class="page photos photo-collections">
+<section class="page photos photo-collections">
 
 	<?php bt_photos_top(); ?>
 
@@ -43,6 +43,6 @@
 	?>
 	</ul>
 
-</div>
+</section>
 
 <?php get_footer(); ?>
