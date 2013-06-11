@@ -66,6 +66,18 @@
 		<p class="more"><a href="/blog/">More Posts &#9658;</a></p>
 	</section>
 
+	<?php if ( function_exists( 'tla_ads' ) ) : ?>
+	
+	<section class="sponsors">
+
+		<h1 class="section-title icon-default">Sponsors</h1>
+		
+		<?php tla_ads(); ?>
+
+	</section>
+
+	<?php endif; ?>
+
 	<?php 
 	$tweets = array();
 	$twitter_url = 'https://twitter.com/bradt';
@@ -141,18 +153,6 @@
 		</ul>
 
 		<p class="more"><a href="<?php echo $twitter_url; ?>">More Tweets &#9658;</a></p>
-
-	</section>
-
-	<?php endif; ?>
-
-	<?php if ( function_exists( 'tla_ads' ) ) : ?>
-	
-	<section class="sponsors">
-
-		<h1 class="section-title icon-default">Sponsors</h1>
-		
-		<?php tla_ads(); ?>
 
 	</section>
 
