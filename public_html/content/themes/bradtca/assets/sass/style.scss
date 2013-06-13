@@ -672,6 +672,13 @@ section.single-post {
 	padding: 24px;
 	padding: 1.714285714rem;
 }
+.entry-content pre {
+	width: 142%;
+	
+	@media screen and (max-width: 880px) {
+		width: auto;
+	}
+}
 .entry-content pre code,
 .comment-content pre code {
 	display: block;
