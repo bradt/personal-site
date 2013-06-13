@@ -19,7 +19,7 @@
 <?php if ( WP_DEBUG ) : ?>
 <script src="<?php bloginfo('template_url'); ?>/assets/js/script.js" type="text/javascript"></script>
 <?php else : ?>
-<script src="<?php bloginfo('template_url'); ?>/assets/js/script.min.js?2013020901" type="text/javascript"></script>
+<script src="<?php bloginfo('template_url'); ?>/assets/js/script.min.js?2013061301" type="text/javascript"></script>
 <?php endif; ?>
 
 <link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
