@@ -39,6 +39,8 @@
 
 		</article>
 
+		<p class="more"><a href="<?php the_permalink() ?>">Read More &#9658;</a></p>
+
 	</section>
 
 	<section class="recent-posts">
