@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: WordPress SEO
-Version: 1.4.7
+Version: 1.4.10
 Plugin URI: http://yoast.com/wordpress/seo/#utm_source=wpadmin&utm_medium=plugin&utm_campaign=wpseoplugin
 Description: The first true all-in-one SEO solution for WordPress, including on-page content analysis, XML sitemaps and much more.
 Author: Joost de Valk
@@ -34,7 +34,7 @@ if ( !defined( 'DB_NAME' ) ) {
 }
 
 if ( !defined( 'WPSEO_URL' ) )
-	define( 'WPSEO_URL', plugin_dir_url( __FILE__ ) );
+	define( 'WPSEO_URL', plugins_url() . '/' . basename( dirname(__FILE__) ) . '/' );
 if ( !defined( 'WPSEO_PATH' ) )
 	define( 'WPSEO_PATH', plugin_dir_path( __FILE__ ) );
 if ( !defined( 'WPSEO_BASENAME' ) )
@@ -42,7 +42,10 @@ if ( !defined( 'WPSEO_BASENAME' ) )
 
 define( 'WPSEO_FILE', __FILE__ );
 
-load_plugin_textdomain( 'wordpress-seo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+function wpseo_load_textdomain() {
+	load_plugin_textdomain( 'wordpress-seo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+}
+add_filter( 'wp_loaded', 'wpseo_load_textdomain' );
 
 if ( version_compare( PHP_VERSION, '5.2', '<' ) ) {
 	if ( is_admin() && ( !defined( 'DOING_AJAX' ) || !DOING_AJAX ) ) {
@@ -54,7 +57,7 @@ if ( version_compare( PHP_VERSION, '5.2', '<' ) ) {
 	}
 }
 
-define( 'WPSEO_VERSION', '1.4.7' );
+define( 'WPSEO_VERSION', '1.4.10' );
 
 $pluginurl = plugin_dir_url( __FILE__ );
 if ( preg_match( '/^https/', $pluginurl ) && !preg_match( '/^https/', get_bloginfo( 'url' ) ) )

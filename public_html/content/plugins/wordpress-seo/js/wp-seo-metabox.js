@@ -87,14 +87,18 @@ function testFocusKw() {
     var focuskwNoDiacritics = removeLowerCaseDiacritics( focuskw );
     p2 = new RegExp(focuskwNoDiacritics.replace(/\s+/g,"[-_\\\//]"),'gim');
 
+    var metadesc = jQuery('#yoast_wpseo_metadesc').val();
+    if ( metadesc == '' )
+        metadesc = jQuery('#wpseosnippet .desc').text();
+    
     if (focuskw != '') {
-        var html = '<p>Your focus keyword was found in:<br/>';
-        html += 'Article Heading: ' + ptest( jQuery('#title').val(), p ) + '<br/>';
-        html += 'Page title: ' + ptest( jQuery('#wpseosnippet .title').text(), p ) + '<br/>';
-        html += 'Page URL: ' + ptest( url, p2 ) + '<br/>';
-        html += 'Content: ' + ptest( jQuery('#content').val(), p ) + '<br/>';
-        html += 'Meta description: ' + ptest( jQuery('#yoast_wpseo_metadesc').val(), p );
-        html += '</p>';
+		var html = '<p>' + objectL10n.keyword_header + '<br />';
+		html += objectL10n.article_header_text + ptest( jQuery('#title').val(), p ) + '<br/>';
+		html += objectL10n.page_title_text + ptest( jQuery('#wpseosnippet .title').text(), p ) + '<br/>';
+		html += objectL10n.page_url_text + ptest( url, p2 ) + '<br/>';
+		html += objectL10n.content_text + ptest( jQuery('#content').val(), p ) + '<br/>';
+		html += objectL10n.meta_description_text + ptest( metadesc, p );
+		html += '</p>';
         jQuery('#focuskwresults').html(html);
     } else {
         jQuery('#focuskwresults').html('');
@@ -112,8 +116,8 @@ function updateTitle( force ) {
         jQuery('#yoast_wpseo_title-length').html( '' );
         return;
     }
-
-    title = jQuery('<div />').html(title).text();
+	
+    title = jQuery('<div />').text(title).html();
 
     if ( force )
         jQuery('#yoast_wpseo_title').val( title );
@@ -173,6 +177,9 @@ function updateDesc( desc ) {
             autogen = true;
         }
     }
+    
+    desc = jQuery('<div />').text( desc ).html();
+    desc = yst_clean( desc );
 
     if ( !autogen )
         var len = wpseo_meta_desc_length - desc.length;
@@ -247,6 +254,9 @@ jQuery(document).ready(function(){
 
     jQuery('.'+active_tab).addClass('active');
 
+    var desc = jQuery.trim( yst_clean( jQuery("#yoast_wpseo_metadesc").val() ) );
+    desc = jQuery('<div />').html( desc ).text();
+    jQuery("#yoast_wpseo_metadesc").val( desc );
 
     jQuery('a.wpseo_tablink').click( function($) {
         jQuery('.wpseo-metabox-tabs li').removeClass('active');

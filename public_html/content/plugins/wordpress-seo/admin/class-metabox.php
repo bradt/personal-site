@@ -101,7 +101,6 @@ class WPSEO_Metabox {
 	 * Outputs the page analysis score in the Publish Box.
 	 */
 	public function publish_box() {
-		echo '<div class="misc-pub-section curtime misc-pub-section-last" style="height:0; padding:0; margin:0; border-top: 1px solid #DFDFDF"></div>';
 		echo '<div class="misc-pub-section misc-yoast misc-pub-section-last">';
 
 		if ( wpseo_get_value( 'meta-robots-noindex' ) == 1 ) {
@@ -131,10 +130,11 @@ class WPSEO_Metabox {
 			}
 		}
 		if ( !isset( $title ) )
-			$title = ucfirst( $score );
+			$title = wpseo_translate_score( $score, $css = false );
+
 		$result = '<div title="' . esc_attr( $title ) . '" alt="' . esc_attr( $title ) . '" class="wpseo_score_img ' . $score . '"></div>';
 
-		echo 'SEO: ' . $result . ' <a class="wpseo_tablink scroll" href="#wpseo_linkdex">Check</a>';
+		echo __( 'SEO: ', 'wordpress-seo' ) . $result . ' <a class="wpseo_tablink scroll" href="#wpseo_linkdex">' . __( 'Check', 'wordpress-seo' ) . '</a>';
 
 		echo '</div>';
 	}
@@ -262,7 +262,7 @@ class WPSEO_Metabox {
 			"type"         => "text",
 			"title"        => __( 'Focus Keyword', 'wordpress-seo' ),
 			"autocomplete" => "off",
-			"help"         => sprintf( "Pick the main keyword or keyphrase that this post/page is about.<br/><br/>Read %sthis post%s for more info.", "<a href='http://yoast.com/focus-keyword/#utm_source=wordpress-seo-metabox&utm_medium=inline-help&utm_campaign=focus-keyword'>", '</a>' ),
+			"help"         => sprintf( __( "Pick the main keyword or keyphrase that this post/page is about.<br/><br/>Read %sthis post%s for more info.", 'wordpress-seo' ), "<a href='http://yoast.com/focus-keyword/#utm_source=wordpress-seo-metabox&utm_medium=inline-help&utm_campaign=focus-keyword'>", '</a>' ),
 			"description"  => "<div id='focuskwresults'></div>",
 		);
 		$mbs['title']          = array(
@@ -326,8 +326,8 @@ class WPSEO_Metabox {
 			"type"    => "select",
 			"options" => array(
 				"0" => sprintf( __( "Default for post type, currently: %s", 'wordpress-seo' ), ( isset( $options['noindex-' . $post_type] ) && $options['noindex-' . $post_type] ) ? 'noindex' : 'index' ),
-				"2" => "index",
-				"1" => "noindex",
+				"2" => __( "index", 'wordpress-seo' ),
+				"1" => __( "noindex", 'wordpress-seo' ),
 			),
 		);
 		$mbs['meta-robots-nofollow'] = array(
@@ -396,14 +396,26 @@ class WPSEO_Metabox {
 				),
 			);
 		}
-		$mbs['canonical'] = array(
+		$mbs['sitemap-html-include'] = array(
+			"name"        => "sitemap-html-include",
+			"std"         => "-",
+			"type"        => "select",
+			"title"       => __( "Include in HTML Sitemap", 'wordpress-seo' ),
+			"description" => __( "Should this page be in the HTML Sitemap at all times, regardless of Robots Meta settings?", 'wordpress-seo' ),
+			"options"     => array(
+				"-"      => __( "Auto detect", 'wordpress-seo' ),
+				"always" => __( "Always include", 'wordpress-seo' ),
+				"never"  => __( "Never include", 'wordpress-seo' ),
+			),
+		);
+		$mbs['canonical']            = array(
 			"name"        => "canonical",
 			"std"         => "",
 			"type"        => "text",
 			"title"       => __( "Canonical URL", 'wordpress-seo' ),
 			"description" => sprintf( __( "The canonical URL that this page should point to, leave empty to default to permalink. %sCross domain canonical%s supported too.", 'wordpress-seo' ), "<a target='_blank' href='http://googlewebmastercentral.blogspot.com/2009/12/handling-legitimate-cross-domain.html'>", "</a>" )
 		);
-		$mbs['redirect']  = array(
+		$mbs['redirect']             = array(
 			"name"        => "redirect",
 			"std"         => "",
 			"type"        => "text",
@@ -451,7 +463,7 @@ class WPSEO_Metabox {
 
 		$this->do_tab( 'linkdex', __( 'Page Analysis', 'wordpress-seo' ), $this->linkdex_output( $post ) );
 
-		if ( current_user_can( 'edit_users' ) || !isset( $options['disableadvanced_meta'] ) || !$options['disableadvanced_meta'] ) {
+		if ( current_user_can( 'manage_options' ) || !isset( $options['disableadvanced_meta'] ) || !$options['disableadvanced_meta'] ) {
 			$content = '';
 			foreach ( $this->get_advanced_meta_boxes() as $meta_box ) {
 				$content .= $this->do_meta_box( $meta_box );
@@ -758,6 +770,16 @@ class WPSEO_Metabox {
 			wp_enqueue_script( 'jquery-ui-autocomplete', WPSEO_URL . 'js/jquery-ui-autocomplete.min.js', array( 'jquery', 'jquery-ui-core' ), WPSEO_VERSION, true );
 			wp_enqueue_script( 'jquery-qtip', WPSEO_URL . 'js/jquery.qtip.min.js', array( 'jquery' ), '1.0.0-RC3', true );
 			wp_enqueue_script( 'wp-seo-metabox', WPSEO_URL . 'js/wp-seo-metabox.js', array( 'jquery', 'jquery-ui-core', 'jquery-ui-autocomplete' ), WPSEO_VERSION, true );
+			
+			// Text strings to pass to metabox for keyword analysis
+			wp_localize_script( 'wp-seo-metabox', 'objectL10n', array(
+				'keyword_header'        => __( 'Your focus keyword was found in:', 'wordpress-seo' ),
+				'article_header_text'   => __( 'Article Heading: ', 'wordpress-seo' ),
+				'page_title_text'       => __( 'Page title: ', 'wordpress-seo' ),
+				'page_url_text'         => __( 'Page URL: ', 'wordpress-seo' ),
+				'content_text'          => __( 'Content: ', 'wordpress-seo' ),
+				'meta_description_text' => __( 'Meta description: ', 'wordpress-seo' ),
+			) );
 		}
 	}
 
@@ -772,7 +794,7 @@ class WPSEO_Metabox {
 			return false;
 
 		echo '<select name="seo_filter">';
-		echo '<option value="">All SEO Scores</option>';
+		echo '<option value="">' . __( "All SEO Scores", 'wordpress-seo' ) . '</option>';
 		foreach ( array(
 					  'na'      => __( 'SEO: No Focus Keyword', 'wordpress-seo' ),
 					  'bad'     => __( 'SEO: Bad', 'wordpress-seo' ),
@@ -814,7 +836,7 @@ class WPSEO_Metabox {
 					wpseo_set_value( 'linkdex', 0, $post_id );
 			} else if ( $score = wpseo_get_value( 'linkdex', $post_id ) ) {
 				$score = wpseo_translate_score( round( $score / 10 ) );
-				$title = $score;
+				$title = wpseo_translate_score( round( $score / 10 ), $css = false );
 			} else {
 				$this->calculate_results( get_post( $post_id ) );
 				$score = wpseo_get_value( 'linkdex', $post_id );
@@ -823,11 +845,11 @@ class WPSEO_Metabox {
 					$title = __( 'Focus keyword not set.', 'wordpress-seo' );
 				} else {
 					$score = wpseo_translate_score( $score );
-					$title = $score;
+					$title = wpseo_translate_score( $score, $css = false );
 				}
 			}
 
-			echo '<div title="' . $title . '" alt="' . $title . '" class="wpseo_score_img ' . esc_attr( $score ) . '"></div>';
+			echo '<div title="' . esc_attr( $title ) . '" alt="' . esc_attr( $title ) . '" class="wpseo_score_img ' . esc_attr( $score ) . '"></div>';
 		}
 		if ( $column_name == 'wpseo-title' ) {
 			echo esc_html( apply_filters( 'wpseo_title', $this->page_title( $post_id ) ) );
@@ -973,10 +995,13 @@ class WPSEO_Metabox {
 		} else {
 			$post    = get_post( $post_id );
 			$options = get_wpseo_options();
-			if ( isset( $options['title-' . $post->post_type] ) && !empty( $options['title-' . $post->post_type] ) )
-				return wpseo_replace_vars( $options['title-' . $post->post_type], (array) $post );
-			else
+			if ( isset( $options['title-' . $post->post_type] ) && !empty( $options['title-' . $post->post_type] ) ) {
+				$title_template = $options['title-' . $post->post_type];
+				$title_template = str_replace( ' %%page%% ', ' ', $title_template);
+				return wpseo_replace_vars( $title_template, (array) $post );
+			} else {
 				return wpseo_replace_vars( '%%title%%', (array) $post );
+			}
 		}
 	}
 
@@ -1054,7 +1079,12 @@ class WPSEO_Metabox {
 			wpseo_set_value( 'linkdex', 0, $post->ID );
 
 			return $result;
-		}
+
+		} elseif ( apply_filters( 'wpseo_use_page_analysis', true ) !== true ) {
+			$result = new WP_Error( 'page-analysis-disabled', sprintf( __( 'Page Analysis has been disabled.', 'wordpress-seo' ), $post->post_type ) );
+
+   			return $result;
+  		}
 
 		$results = array();
 		$job     = array();
@@ -1227,13 +1257,13 @@ class WPSEO_Metabox {
 				'numberposts' => -1
 			)
 		);
-
+		
 		if ( count( $posts ) == 0 )
-			$this->save_score_result( $results, 9, __( "You've never used this focus keyword before, very good." ), 'keyword_overused' );
+			$this->save_score_result( $results, 9, __( "You've never used this focus keyword before, very good.", 'wordpress-seo' ), 'keyword_overused' );
 		else if ( count( $posts ) == 1 )
-			$this->save_score_result( $results, 6, sprintf( __( 'You\'ve used this focus keyword %1$sonce before%2$s, be sure to make very clear which URL on your site is the most important for this keyword.' ), '<a href="' . admin_url( 'post.php?post=' . $posts[0] . '&action=edit' ) . '">', '</a>' ), 'keyword_overused' );
+			$this->save_score_result( $results, 6, sprintf( __( 'You\'ve used this focus keyword %1$sonce before%2$s, be sure to make very clear which URL on your site is the most important for this keyword.', 'wordpress-seo' ), '<a href="' . admin_url( 'post.php?post=' . $posts[0] . '&action=edit' ) . '">', '</a>' ), 'keyword_overused' );
 		else
-			$this->save_score_result( $results, 1, sprintf( __( 'You\'ve used this focus keyword %3$s%4$d times before%2$s, it\'s probably a good idea to read %1$sthis post on cornerstone content%2$s and improve your keyword strategy.' ), '<a href="http://yoast.com/cornerstone-content-rank/">', '</a>', '<a href="' . admin_url( 'edit.php?seo_kw_filter=' . urlencode( $job['keyword'] ) ) . '">', count( $posts ) ), 'keyword_overused' );
+			$this->save_score_result( $results, 1, sprintf( __( 'You\'ve used this focus keyword %3$s%4$d times before%2$s, it\'s probably a good idea to read %1$sthis post on cornerstone content%2$s and improve your keyword strategy.', 'wordpress-seo' ), '<a href="http://yoast.com/cornerstone-content-rank/">', '</a>', '<a href="' . admin_url( 'edit.php?seo_kw_filter=' . urlencode( $job['keyword'] ) ) . '">', count( $posts ) ), 'keyword_overused' );
 	}
 
 	/**
@@ -1655,9 +1685,9 @@ class WPSEO_Metabox {
 		}
 
 		$firstp = $this->strtolower_utf8( $firstp );
-
+	
 		// First Paragraph Test
-		if ( stripos( $firstp, $job["keyword"] ) === false && stripos( $firstp, $job["keyword_folded"] ) === false ) {
+		if ( !preg_match('/\b'.$job["keyword"].'\b/', $firstp) && !preg_match('/\b'.$job["keyword_folded"].'\b/', $firstp) ) {
 			$this->save_score_result( $results, 3, $scoreFirstParagraphLow, 'keyword_first_paragraph' );
 		} else {
 			$this->save_score_result( $results, 9, $scoreFirstParagraphHigh, 'keyword_first_paragraph' );
@@ -1748,7 +1778,7 @@ class WPSEO_Metabox {
 	 */
 	function get_first_paragraph( $post ) {
 		// To determine the first paragraph we first need to autop the content, then match the first paragraph and return.
-		$res = preg_match( '/<p>(.*)<\/p>/', wpautop( $post->post_content ), $matches );
+		$res = preg_match( '/<p.*?>(.*)<\/p>/', wpautop( $post->post_content ), $matches );
 		if ( $res )
 			return $matches[1];
 		return false;

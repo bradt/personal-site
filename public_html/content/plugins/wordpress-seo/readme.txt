@@ -5,8 +5,8 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
 Requires at least: 3.3
-Tested up to: 3.5
-Stable tag: 1.4.7
+Tested up to: 3.6
+Stable tag: 1.4.10
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -89,45 +89,7 @@ For more info, check out the following articles:
 
 == Frequently Asked Questions ==
 
-= The SEO title output for the plugin doesn't work as expected =
-
-You've set up a template for your titles, but things get added to it when they're output? You can do two things: either enable "Force rewrite titles" on the SEO -> Titles settings page, or go into your header.php and change the title element to just this:
-
-`<title><?php wp_title(''); ?></title>`
-
-= I'm not seeing a meta description in my `<head>` section? =
-
-Check whether your theme's `header.php` file contains a call to [wp_head()](http://codex.wordpress.org/Function_Reference/wp_head).
-
-= My meta descriptions aren't showing up in the search result pages =
-
-There are two possible issues with a meta description:
-
-1. You're putting out more than one of them due to multiple plugins adding a description, for instance the WordBooker plugin adds a description too but has an option to disable it, other SEO plugins running might be another cause.
-1. You're not seeing your meta description show up in the search result pages. Google will not alway show your meta description, the likelihood of your meta description appearing in the search results increases incredibly when your meta description contains the sought for keyword though, which is why the focus keyword functionality checks for the appearance of the focus keyword in the description.
-
-= Page X, Y, Z for plugin X doesn't work with your plugin enabled =
-
-Disable the clean permalinks feature on the SEO -> Permalinks settings page.
-
-= Does your plugin allow for Google News Sitemaps too? =
-
-It does! You'll need an add-on module for that though, which you can download from the [News SEO](http://yoast.com/wordpress/seo/news-seo/) module homepage!
-
-= Why is WordPress SEO better than All In One SEO Pack? =
-
-It's not a secret that the author of this plugin, Joost de Valk, aka Yoast, doesn't really like All In One SEO Pack. The main reason is that All in One SEO pack has a default option for auto generating meta descriptions that is actually making it harder for people to rank well in a lot of cases, giving them a false sense of security.
-
-Once you'll start using this plugin, you won't ask that question anymore, you'll just ask yourself "why does anyone still use All In One SEO"? There's several things this plugin does better: it has a snippet preview in the write post screen that'll help you optimize your titles, meta descriptions and copy instantly while working on your posts and pages.
-
-Also, other than All In One SEO Pack, this plugin has a completely working canonical implementation for all pages within your site, whereas the one in All In One SEO pack is broken, it was originally written by the author of this plugin, so he knows. It comes with XML Sitemaps, an XML News sitemap module, loads and loads of robots meta options and other options to improve your SEO.
-
-= I want to use your XML Sitemaps with NGINX, is that possible? =
-
-Yes, of course! Here are the rewrite rules you'll need:
-
-`rewrite ^/sitemap_index\.xml$ /index.php?sitemap=1 last;
-rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 last;`
+You'll find the [FAQ on Yoast.com](http://yoast.com/wordpress/seo/faq/).
 
 == Screenshots ==
 
@@ -140,6 +102,44 @@ rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 las
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.4.10 =
+
+* Fixes
+    * Caching was disabled in certain cases, this update fixes that.
+* Enhancements
+    * Added option to disable author sitemap.
+    * If author pages are disabled, author sitemaps are now automatically disabled.
+
+= 1.4.9 =
+
+* i18n
+    * Updated .pot file
+    * Updated ar, da_DK, de_DE, el_GR, es_ES, fa_IR, fr_FR, he_IL, id_ID, nl_NL, ro_RO, sv_SE & tr_TK
+    * Added hr & sl_SI
+    * Many localization fixes
+* Bugfixes
+    * Fixed sitemap "loc" element to have encoded entities.
+    * Honor the language setting if other plugins set the language.
+    * sitemap.xml will now redirect to sitemap_index.xml if it doesn't exist statically.
+    * Added filters 'wpseo_sitemap_exclude_post_type' and 'wpseo_sitemap_exclude_taxonomy' to allow themes/plugins to exclude entries in the XML sitemap.
+    * Added RTL support, some CSS fixes.
+    * Focus word gets counted in meta description when defined by a template.
+    * Fixed some bugs with the focus keyword in the first paragraph test.
+    * Fixed display bug in SEO Title column when defined by a template ('Page # of #').
+    * Fixed a few strict notices that would pop up in WP 3.6.
+    * Prevent other plugins from overriding the WP SEO menu position.
+    * Enabled the advanced tab for site-admins on a multi-site install.
+	* Fixed post save error when page analysis is disabled.
+	* OpenGraph frontpage og:description and og:image tags now properly added to the frontpage.
+* Enhancements
+    * Added an HTML sitemap shortcode [wpseo_sitemap].
+    * Added an XML sitemap listing the author profile URLs.
+    * Added detection of Yoast's robots meta plugin and All In One SEO plugins, plugin now gives a notice to import settings and disable those plugins.
+    * Prevent empty image tags in Twitter Cards - props [Mike Bijon](https://github.com/mbijon).
+    * Add new `twitter:domain` tag  - props [Mike Bijon](https://github.com/mbijon).
+    * Add support for Facebooks new OG tags for media publishers.
+	* Allow authorship to be removed per post type.
 
 = 1.4.7 =
 

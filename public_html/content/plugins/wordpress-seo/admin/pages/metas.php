@@ -90,7 +90,7 @@ if ( ( isset( $_GET[ 'updated' ] ) && $_GET[ 'updated' ] == 'true' ) || ( isset(
 
 	echo '<h2>' . __( 'Author metadata', 'wordpress-seo' ) . '</h2>';
 	echo '<label class="select" for="">' . __( 'Author highlighting', 'wordpress-seo' ) . ':</label>';
-	wp_dropdown_users( array( 'show_option_none' => "Don't show", 'name' => 'wpseo_titles[plus-author]', 'class' => 'select', 'selected' => isset( $options[ 'plus-author' ] ) ? $options[ 'plus-author' ] : '' ) );
+	wp_dropdown_users( array( 'show_option_none' => __( "Don't show", 'wordpress-seo' ), 'name' => 'wpseo_titles[plus-author]', 'class' => 'select', 'selected' => isset( $options[ 'plus-author' ] ) ? $options[ 'plus-author' ] : '' ) );
 	echo '<p class="desc label">' . __( 'Choose the user that should be used for the <code>rel="author"</code> on the blog homepage. Make sure the user has filled out his/her Google+ profile link on their profile page.', 'wordpress-seo' ) . '</p>';
 	echo $wpseo_admin_pages->textinput( 'plus-publisher', __( 'Google Publisher Page', 'wordpress-seo' ) );
 	echo '<p class="desc label">' . __( 'If you have a Google+ page for your business, add that URL here and link it on your Google+ page\'s about page.', 'wordpress-seo' ) . '</p>';
@@ -108,6 +108,7 @@ if ( ( isset( $_GET[ 'updated' ] ) && $_GET[ 'updated' ] == 'true' ) || ( isset(
 		if ( isset( $options[ 'usemetakeywords' ] ) && $options[ 'usemetakeywords' ] )
 			echo $wpseo_admin_pages->textinput( 'metakey-' . $name, __( 'Meta keywords template', 'wordpress-seo' ) );
 		echo $wpseo_admin_pages->checkbox( 'noindex-' . $name, '<code>noindex, follow</code>', __( 'Meta Robots', 'wordpress-seo' ) );
+		echo $wpseo_admin_pages->checkbox( 'noauthorship-' . $name, __( 'Don\'t show <code>rel="author"</code>', 'wordpress-seo' ), __( 'Authorship', 'wordpress-seo' ) );
 		echo $wpseo_admin_pages->checkbox( 'showdate-' . $name, __( 'Show date in snippet preview?', 'wordpress-seo' ), __( 'Date in Snippet Preview', 'wordpress-seo' ) );
 		echo $wpseo_admin_pages->checkbox( 'hideeditbox-' . $name, __( 'Hide', 'wordpress-seo' ), __( 'WordPress SEO Meta Box', 'wordpress-seo' ) );
 		echo '<br/>';

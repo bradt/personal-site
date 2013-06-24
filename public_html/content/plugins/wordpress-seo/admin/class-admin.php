@@ -48,6 +48,9 @@ class WPSEO_Admin {
 		add_action( 'edit_user_profile', array( $this, 'user_profile' ) );
 		add_action( 'personal_options_update', array( $this, 'process_user_option_update' ) );
 		add_action( 'edit_user_profile_update', array( $this, 'process_user_option_update' ) );
+		add_action( 'personal_options_update', array( $this, 'update_user_profile' ) );
+		add_action( 'edit_user_profile_update', array( $this, 'update_user_profile' ) );
+
 		add_filter( 'user_contactmethods', array( $this, 'update_contactmethods' ), 10, 1 );
 
 		add_action( 'update_option_wpseo_titles', array( $this, 'clear_cache' ) );
@@ -55,6 +58,9 @@ class WPSEO_Admin {
 
 		add_action( 'update_option_wpseo_permalinks', array( $this, 'clear_rewrites' ) );
 		add_action( 'update_option_wpseo_xml', array( $this, 'clear_rewrites' ) );
+
+		add_action( 'after_switch_theme', array( $this, 'switch_theme' ) );
+		add_action( 'switch_theme', array( $this, 'switch_theme' ) );
 	}
 
 	/**
@@ -133,7 +139,7 @@ class WPSEO_Admin {
 	 * @global array $submenu used to change the label on the first item.
 	 */
 	function register_settings_page() {
-		add_menu_page( __( 'WordPress SEO Configuration', 'wordpress-seo' ), __( 'SEO', 'wordpress-seo' ), 'manage_options', 'wpseo_dashboard', array( $this, 'config_page' ), WPSEO_URL . 'images/yoast-icon.png' );
+		add_menu_page( __( 'WordPress SEO Configuration', 'wordpress-seo' ), __( 'SEO', 'wordpress-seo' ), 'manage_options', 'wpseo_dashboard', array( $this, 'config_page' ), WPSEO_URL . 'images/yoast-icon.png', '99.31337' );
 		add_submenu_page( 'wpseo_dashboard', __( 'Titles &amp; Metas', 'wordpress-seo' ), __( 'Titles &amp; Metas', 'wordpress-seo' ), 'manage_options', 'wpseo_titles', array( $this, 'titles_page' ) );
 		add_submenu_page( 'wpseo_dashboard', __( 'Social', 'wordpress-seo' ), __( 'Social', 'wordpress-seo' ), 'manage_options', 'wpseo_social', array( $this, 'social_page' ) );
 		add_submenu_page( 'wpseo_dashboard', __( 'XML Sitemaps', 'wordpress-seo' ), __( 'XML Sitemaps', 'wordpress-seo' ), 'manage_options', 'wpseo_xml', array( $this, 'xml_sitemaps_page' ) );
@@ -295,18 +301,20 @@ class WPSEO_Admin {
 	}
 
 	/**
-	 * Filter the $contactmethods array and add Google+ and Twitter.
+	 * Filter the $contactmethods array and add Facebook, Google+ and Twitter.
 	 *
-	 * These are used with the rel="author" and Twitter cards implementation.
+	 * These are used with the Facebook author, rel="author" and Twitter cards implementation.
 	 *
 	 * @param array $contactmethods currently set contactmethods.
 	 * @return array $contactmethods with added contactmethods.
 	 */
 	function update_contactmethods( $contactmethods ) {
 		// Add Google+
-		$contactmethods['googleplus'] = 'Google+';
+		$contactmethods['googleplus'] = __( "Google+", 'wordpress-seo' );
 		// Add Twitter
 		$contactmethods['twitter'] = __( 'Twitter username (without @)', 'wordpress-seo' );
+		// Add Facebook
+		$contactmethods['facebook'] = __( 'Facebook profile URL', 'wordpress-seo' );
 
 		return $contactmethods;
 	}
@@ -561,6 +569,25 @@ class WPSEO_Admin {
 
 		return false;
 	}
+
+	/**
+	 * Log the timestamp when a user profile has been updated
+	 */
+	function update_user_profile($user_id) {
+		if ( current_user_can( 'edit_user', $user_id ) ) {
+			update_user_meta( $user_id, '_yoast_wpseo_profile_updated', time() );
+		}
+	}
+
+	/**
+	 * Log the updated timestamp for user profiles when theme is changed
+	 */
+	function switch_theme() {
+		foreach ( get_users( array( 'who' => 'authors' ) ) as $user ) {
+			update_user_meta( $user->ID, '_yoast_wpseo_profile_updated', time() );
+		}
+	}
+
 }
 
 // Globalize the var first as it's needed globally.
