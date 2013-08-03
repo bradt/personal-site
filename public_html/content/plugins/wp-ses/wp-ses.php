@@ -2,14 +2,14 @@
 
 /*
   Plugin Name: WP SES
-  Version: 0.3.1
+  Version: 0.3.2
   Plugin URI: http://wp-ses.com
   Description: Uses Amazon Simple Email Service instead of local mail for all outgoing WP emails.
   Author: Sylvain Deaure
   Author URI: http://www.blog-expert.fr
  */
 
-define('WPSES_VERSION', 0.31);
+define('WPSES_VERSION', 0.32);
 
 // refs
 // http://aws.amazon.com/fr/
@@ -395,7 +395,7 @@ function wpses_mail($to, $subject, $message, $headers = '') {
         if ('headers' == strtolower($wpses_options['reply_to'])) {
             // extract replyto from headers
             $rto = array();
-            if (preg_match('/^Reply-To: ([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4})\b/i', $headers, $rto)) {
+            if (preg_match('/^Reply-To: ([a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4})\b/imsU', $headers, $rto)) {
                 // does only support one email for now.
                 $m->addReplyTo($rto[1]);
             }

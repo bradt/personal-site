@@ -29,7 +29,7 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 	 * Class constructor.
 	 */
 	public function __construct() {
-		$this->options = get_option( 'wpseo_social' );
+		$this->options = get_wpseo_options();
 
 		global $fb_ver;
 		if ( isset( $fb_ver ) || class_exists( 'Facebook_Loader' ) ) {
@@ -57,6 +57,7 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 	 * Main OpenGraph output.
 	 */
 	public function opengraph() {
+		wp_reset_query();
 		do_action( 'wpseo_opengraph' );
 	}
 
@@ -101,7 +102,7 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 			return;
 
 		global $post;
-		$facebook = get_the_author_meta( 'facebook', $post->post_author );
+		$facebook = apply_filters( 'wpseo_opengraph_author_facebook', get_the_author_meta( 'facebook', $post->post_author ) );
 
 		if ( $facebook && !empty( $facebook ) )
 			echo "<meta property='article:author' content='" . esc_attr( $facebook ) . "'/>\n";
@@ -113,7 +114,7 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 	 * @link https://developers.facebook.com/blog/post/2013/06/19/platform-updates--new-open-graph-tags-for-media-publishers-and-more/
 	 */
 	public function website_facebook() {
-		if ( isset( $this->options['facebook_site'] ) )
+		if ( isset( $this->options['facebook_site'] ) && $this->options['facebook_site'] )
 			echo "<meta property='article:publisher' content='" . esc_attr( $this->options['facebook_site'] ) . "'/>\n";
 	}
 
@@ -131,6 +132,7 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 				else
 					$adminstr = $admin_id;
 			}
+			$adminstr = apply_filters( 'wpseo_opengraph_admin', $adminstr );
 			echo "<meta property='fb:admins' content='" . esc_attr( $adminstr ) . "'/>\n";
 		}
 	}
@@ -142,7 +144,8 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 	 * @return string $title
 	 */
 	public function og_title( $echo = true ) {
-		$title = $this->title( '' );
+		$title = apply_filters( 'wpseo_opengraph_title', $this->title( '' ) );
+
 		if ( $echo !== false )
 			echo "<meta property='og:title' content='" . esc_attr( $title ) . "'/>\n";
 		else
@@ -153,7 +156,8 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 	 * Outputs the canonical URL as OpenGraph URL, which consolidates likes and shares.
 	 */
 	public function url() {
-		echo "<meta property='og:url' content='" . esc_attr( $this->canonical( false ) ) . "'/>\n";
+		$url = apply_filters( 'wpseo_opengraph_url', $this->canonical( false ) );
+		echo "<meta property='og:url' content='" . esc_attr( $url ) . "'/>\n";
 	}
 
 	/**
@@ -315,9 +319,12 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 
 		if ( is_singular() ) {
 			$ogdesc = wpseo_get_value( 'opengraph-description' );
-		
 			if ( !$ogdesc )
 				$ogdesc = $this->metadesc( false );
+
+			// og:description is still blank so grab it from get_the_excerpt()
+			if ( !$ogdesc )
+				$ogdesc = strip_tags( get_the_excerpt() );
 		}
 
 		$ogdesc = apply_filters( 'wpseo_opengraph_desc', $ogdesc );
@@ -335,7 +342,8 @@ class WPSEO_OpenGraph extends WPSEO_Frontend {
 	 * Output the site name straight from the blog info.
 	 */
 	public function site_name() {
-		echo "<meta property='og:site_name' content='" . esc_attr( get_bloginfo( 'name' ) ) . "'/>\n";
+		$name = apply_filters( 'wpseo_opengraph_site_name', get_bloginfo( 'name' ) );
+		echo "<meta property='og:site_name' content='" . esc_attr( $name ) . "'/>\n";
 	}
 }
 

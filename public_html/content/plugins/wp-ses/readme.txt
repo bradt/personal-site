@@ -3,7 +3,7 @@ Contributors: SylvainDeaure
 Donate link: http://wp-ses.com/donate.html
 Tags: email,ses,amazon,webservice,delivrability,newsletter,autoresponder,mail,wp_mail,smtp,service
 Requires at least: 3.0.0
-Tested up to: 3.5.1
+Tested up to: 3.5.2
 Stable tag: trunk
 
 WP-SES redirects all outgoing WordPress emails through Amazon Simple Email Service (SES) for maximum email delivrability.
@@ -68,7 +68,7 @@ Please use our main website http://wp-ses.com/faq.html for all support related q
 = What are the pre-requisites ? =
 
 *	A WP3+ Self hosted WordPress Blog
-*	PHP5
+*	PHP5 and Curl PHP extension
 *	An Amazon Web Service account
 *	Validate your SES service
 
@@ -88,6 +88,7 @@ Edit the wp-config.php file, and add what you want to define. Here is a complete
 
 // Amazon Access Key
 define('WP_SES_ACCESS_KEY','blablablakey');
+
 // Amazon Secret Key
 define('WP_SES_SECRET_KEY','blablablasecret');
 
@@ -117,6 +118,9 @@ define('WP_SES_HIDE_STATS',true);
 1. the settings screen of WP-SES plugin.
 
 == Changelog ==
+
+= 0.3.2 =
+* Tweaked header parsing thanks to bhansson
 
 = 0.3.1 =
 * Added Reply-To

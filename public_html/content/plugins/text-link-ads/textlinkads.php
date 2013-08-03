@@ -4,12 +4,13 @@ Plugin Name: Text Link Ads Advertiser Plugin
 Plugin URI: http://www.text-link-ads.com/?ref=267085
 Description: Allows many xml keys per plugin install. Text Link Ads sell ads on specific pages. Join the Text Link Ads marketplace.
 Author: Text Link Ads
-Version: 3.9.8
+Version: 3.9.10
 Author URI: http://www.text-link-ads.com/?ref=267085
 */
 if (!function_exists('add_action')) {
-    header('HTTP/1.0 404 Not Found');
-    header('Location: ../../../404');
+    header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
+    require '../../../wp-config.php';
+    require TEMPLATEPATH.'/404.php';
     exit;
 }
 global $wp_version;
@@ -59,11 +60,17 @@ function tla_settings_link($links)
 function tla_admin_notices()
 {
     global $textlinkads_object;
-    if ($textlinkads_object->websiteKeys) {
-        return;
+    $notice = false;
+    foreach ($textlinkads_object->siteKeys as $data){
+        if (!trim($data['url'])) {
+            $notice = true;
+            break;
+        }
     }
-    $pluginName = plugin_basename(__FILE__);
-    echo "<div class='updated' style='background-color:#f66;'><p>" . sprintf(__('<a href="%s">Text Link Ads Plugin</a> needs attention: please enter a site key or disable the plugin.'), "options-general.php?page=$pluginName") . "</p></div>";
+    if ($notice) {
+        $pluginName = plugin_basename(__FILE__);
+        echo '<div class="updated" style="background-color:#f66;"><p>' . sprintf(__('<a href="%s">Text Link Ads Plugin</a> needs attention: please enter a Site Key and Ad Target Url.'), "options-general.php?page=$pluginName") . '</p></div>';
+    }
 }
 
 function tla_disable_plugin()
@@ -156,12 +163,12 @@ function tla_options_page()
     ?>
     <div class="wrap">
         <h2>Text Link Ads</h2>
-        <form method="post" <?php echo $wp_version >= 2.7 ? 'action="options.php"' : ''?>>
+        <form method="post"<?php echo $wp_version >= 2.7 ? ' action="options.php"' : ''?>>
             <?php
             if (function_exists('settings_fields')) {
                 settings_fields('textlinkads');
             } else {
-                echo "<input type='hidden' name='option_page' value='textlinkads' />";
+                echo '<input type="hidden" name="option_page" value="textlinkads" />';
                 echo '<input type="hidden" name="action" value="update" />';
                 wp_nonce_field("textlinkads-options");
             }
@@ -178,85 +185,93 @@ function tla_options_page()
             </style>
             <table class="form-table tla_setting">
                 <tr valign="top">
-                    <td colspan=2>
-                    <table><tr><th width=5%></th><th>Site Key</th><th>Ad Target Url</th></tr>
-
-                <?php
-                $counter = 0;
-                foreach ($textlinkads_object->websiteKeys as $url => $key) {
-                ?>
-                <tr valign="top">
-                    <td width=10%><?php echo ($url == get_option('siteurl') || $counter == 0) ? 'Primary' : $counter;?></td>
-                    <td><input type="text" name="tla_site_keys[<?php echo $counter;?>][key]" value="<?php echo $key;?>" /></td>
-                    <td style="text-align:left;">
-                        <input type="text" size="50" name="tla_site_keys[<?php echo $counter;?>][url]" value="<?php echo $url;?>" />
-                        <?php if (!$counter):?>
-                            <br />
-                            <?php echo !$url ? '<font color="red">' :''; ?>
-                            <em>Leaving this blank will make your ads site wide. <br />Specify a URL to ensure the ads only display on one page which is preferred.</em>
-                            <?php echo !$url ? '</font>' :''; ?>
-                        <?php endif; ?>
+                    <td colspan="2">
+                        <table>
+                            <tr>
+                                <th></th>
+                                <th>Site Key</th>
+                                <th>Ad Target Url</th>
+                            </tr>
+                            <?php
+                            $counter = 0;
+                            foreach ($textlinkads_object->websiteKeys as $url => $key) {
+                            ?>
+                            <tr valign="top">
+                                <td width="10%"><?php echo ($url == get_option('siteurl') || $counter == 0) ? 'Primary' : $counter;?></td>
+                                <td><input type="text" name="tla_site_keys[<?php echo $counter;?>][key]" value="<?php echo $key;?>" /></td>
+                                <td style="text-align:left;">
+                                    <input type="text" size="50" name="tla_site_keys[<?php echo $counter;?>][url]" value="<?php echo $url;?>" />
+                                    <?php if (!$counter):?>
+                                        <br />
+                                        <em<?php if (!$url): ?> style="color:red"<?php endif ?>>Specify a URL</em>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <?php
+                                $counter++;
+                            }
+                            ?>
+                            <tr>
+                                <td colspan="2" valign="top">
+                                    This key can be obtained logging into <a href="http://www.text-link-ads.com/?ref=267085">Text Link Ads</a> and submitting your blog site. Delete a key by emptying the url and key fields.
+                                </td>
+                                <td valign="top">
+                                    The full url that your page was setup as. This is your default URI <br><em> <?php echo $home;?> </em>
+                                </td>
+                            </tr>
+                            <tr valign="top">
+                                <td width="10%">Add New</td>
+                                <td style="text-align:left;"><input type="text" name="tla_site_keys[<?php echo $counter;?>][key]" value="" /></td>
+                                <td><input type="text" name="tla_site_keys[<?php echo $counter;?>][url]" size="50" value="" /></td>
+                            </tr>
+                            <tr>
+                                <td valign="top">Or Bulk Add<br /></td>
+                                <td colspan="3">
+                                    <textarea wrap="off" rows="3" cols="77" name="tla_site_keys[0][mass]"></textarea><br />
+                                    <em>[site key] space or tab separated [url]</em>:<br/><br/>example:<br/>
+                                    <em>XXXXXXXXXXXXXXXXXXXX http://www.example.com</em>
+                                </td>
+                            </tr>
+                        </table>
                     </td>
-
                 </tr>
-                <?php
-                    $counter++;
-                }
-                ?>
-                 <tr>
-                    <td colspan=2 valign="top">
-                        This key can be obtained logging into <a href="http://www.text-link-ads.com/?ref=267085">Text Link Ads</a> and submitting your blog site. Delete a key by emptying the url and key fields.
-                    </td>
-                    <td valign="top">
-                        The full url that your page was setup as. This is your default URI <br><em> <?php echo $home;?> </em>
-                    </td>
-                </tr>
-                <tr valign="top">
-                    <td width=10%>Add New</td><td style="text-align:left;"><input type="text" name="tla_site_keys[<?php echo $counter;?>][key]" value="" /></td><td><input type="text" name="tla_site_keys[<?php echo $counter;?>][url]" size="50"  value="" /></td>
-                </tr>
-                <tr>
-                    <td valign=top> Or Bulk Add<br /></td><td colspan=3><textarea wrap=off rows=3 cols=77 name="tla_site_keys[0][mass]"></textarea><br />
-                    <em>[site key] space or tab separated [url]</em>:<br/><br/>example:<br/>
-                    <em>XXXXXXXXXXXXXXXXXXXX http://www.domain.com</em>
-                    </td>
-                </tr>
-
-                </table></td></tr>
-                <tr><td colspan=2>Adding multiple keys will remove the ability to do site wide via the widget or links between posts on the homepage</td></tr>
-
+                
                 <tr valign="top">
                     <th>Ad Display Method</th>
                     <td>
                         <?php if ($counter <= 1): ?>
-                            <input type="radio" id="tla_between_posts_y" name="tla_between_posts" value="1" <?php echo get_option('tla_between_posts') ? 'checked="checked"' : '' ?>" />
+                            <input type="radio" id="tla_between_posts_y" name="tla_between_posts" value="1"<?php echo get_option('tla_between_posts') ? ' checked="checked"' : '' ?> />
                             <label for="tla_between_posts_y">Between Posts on Homepage</label>
                             &nbsp;&nbsp;&nbsp;&nbsp;
-                            <input type="radio" id="tla_between_posts_n" name="tla_between_posts" value="0" <?php echo !get_option('tla_between_posts') ? 'checked="checked"' : '' ?>" />
-                            <label for="tla_between_posts_n">Widget or Template Based</label>
+                            <input type="radio" id="tla_between_posts_n" name="tla_between_posts" value="0"<?php echo !get_option('tla_between_posts') ? ' checked="checked"' : '' ?> />
+                            <label for="tla_between_posts_n">Widget or Template Based</label><br/>
+                            <small>If you previously selected Between Posts on Homepage option, the widget mode is disabled and your links will only appear on the homepage between posts.</small>
                         <?php else: ?>
-                            Ads will be displayed on the urls entered above. Make sure to activate the widget or add the <br /><?php echo '&lt;'.'?'.'php'.' tla_ads(); ?'.'&gt;';?> code to your template
+                            Ads will be displayed on the urls entered above. Make sure to activate the widget or add the <br />&lt;?php tla_ads(); ?&gt; code to your template
                             <input type="hidden" name="tla_between_posts" value="0" />
                         <?php endif ?>
                     </td>
                 </tr>
-                <?php if ($counter <= 1): ?>
-                <tr>
-                    <td colspan="2">If you previously select Between Posts on Homepage option, the widget mode is disabled and your links will only appear on the homepage between posts. </td>
-                </tr>
-                <?php endif ?>
                 <?php if (!function_exists('wp_remote_get')): ?>
                 <tr valign="top">
                     <th>Ad Retrieval Method</th>
                     <td>
-                        <?php if (function_exists('curl_init')): ?><input type=radio name="tla_fetch_method" value="curl" <?php echo get_option('tla_fetch_method') == 'curl' ? 'checked="checked"' : '' ?>" /> Curl <br /><?php endif; ?>
-                        <?php if (function_exists('file_get_contents')): ?><input type=radio name="tla_fetch_method" value="native" <?php echo get_option('tla_fetch_method') == 'native' ? 'checked="checked"' : '' ?>" /> Php (file_get_contents)<br /><?php endif; ?>
-                        <input type=radio name="tla_fetch_method" value="0" <?php echo !get_option('tla_fetch_method') ? 'checked="checked"' : '' ?>" /> Default (sockets)
+                        <?php if (function_exists('curl_init')): ?><input type="radio" name="tla_fetch_method" value="curl" <?php echo get_option('tla_fetch_method') == 'curl' ? 'checked="checked"' : '' ?> /> Curl <br /><?php endif; ?>
+                        <?php if (function_exists('file_get_contents')): ?><input type="radio" name="tla_fetch_method" value="native" <?php echo get_option('tla_fetch_method') == 'native' ? 'checked="checked"' : '' ?> /> Php (file_get_contents)<br /><?php endif; ?>
+                        <input type="radio" name="tla_fetch_method" value="0" <?php echo !get_option('tla_fetch_method') ? 'checked="checked"' : '' ?> /> Default (sockets)
                     </td>
                 </tr>
                 <?php endif; ?>
-                 <tr>
-                    <th>Allow Cached Pages</th>
-                    <td><input type="checkbox" name="tla_allow_caching" value='1' <?php echo get_option('tla_allow_caching') ? 'checked="checked"' :'' ?>' /></td>
+                <tr>
+                    <th>
+                        <label>
+                            <input type="checkbox" name="tla_allow_caching" value="1"<?php echo get_option('tla_allow_caching') ? ' checked="checked"' :'' ?> />
+                            Allow Cached Pages?
+                        </label>
+                    </th>
+                    <td>
+                        <small><em>If you are comfortable with Super Cache or WP Cache you can try to allow caching, however it is not suggested.</em></small>
+                    </td>
                 </tr>
                 <tr>
                     <th>Ad Refresh Interval</th>
@@ -269,13 +284,9 @@ function tla_options_page()
                             <option value="86400" <?php echo get_option('tla_refresh_interval') == 86400 ? 'selected="selected"' :'' ?>>1 Day</option>
                             <option value="172800" <?php echo get_option('tla_refresh_interval') == 172800 ? 'selected="selected"' :'' ?>>2 Days</option>
                         </select>
-                </tr>
-                <tr>
-                       <td colspan="2">
-                        <em>If you are comfortable with Super Cache or WP Cache you can try to allow caching, however it is not suggested.</em>
                     </td>
-                  </tr>
-                  <?php if (function_exists('iconv') && function_exists('mb_list_encodings')):?>
+                </tr>
+                <?php if (function_exists('iconv') && function_exists('mb_list_encodings')):?>
                 <tr>
                     <th>Output Encoding</th>
                     <td>
@@ -283,46 +294,41 @@ function tla_options_page()
                         <?php foreach (mb_list_encodings() as $enValue): ?>
                             <option value="<?php echo $enValue;?>" <?php echo $textlinkads_object->decoding == $enValue || ($textlinkads_object->decoding == '' && $enValue == 'UTF-8') ? 'selected="selected"' : '';?>><?php echo $enValue;?></option>
                         <?php endforeach; ?>
-                        </select>
-                     </td>
-                  </tr>
-                  <?php endif;?>
-                  <tr>
-                       <td colspan="2">
-                        <em>A output encoding that matches your theme. Use this option if you are having troubles displaying the text properly</em>
+                        </select><br/>
+                        <small><em>An output encoding that matches your theme. Use this option if you are having troubles displaying the text properly</em></small>
                     </td>
-                  </tr>
-                  <tr>
-                    <th>Styling Options</th><td><small><em>e.g. style="color:#CCC;" (use double quotes not single quotes)</em></small></em></td>
                 </tr>
-                 <tr valign="top">
+                <?php endif;?>
+                <tr>
+                    <td colspan="2">
+                        
+                    </td>
+                </tr>
+                <tr>
+                    <th>Styling Options</th>
+                    <td><small><em>e.g. style="color:#CCC;" (use double quotes not single quotes)</em></small></em></td>
+                </tr>
+                <tr valign="top">
                     <td scope="row">Style a</td>
-                    <td><input type="text" name="tla_style_a" value='<?php echo get_option('tla_style_a') ? get_option('tla_style_a') : '' ?>' /><em>&lt;a ...&gt;</em></td>
+                    <td><input type="text" name="tla_style_a" value="<?php echo get_option('tla_style_a') ? get_option('tla_style_a') : '' ?>" /><em>&lt;a ...&gt;</em></td>
                 </tr>
                 <tr valign="top">
                     <td scope="row">Style span</td>
-                    <td><input type="text" name="tla_style_span" value='<?php echo get_option('tla_style_span') ? get_option('tla_style_span') : '' ?>' /><em>&lt;span ...&gt; </em></td>
+                    <td><input type="text" name="tla_style_span" value="<?php echo get_option('tla_style_span') ? get_option('tla_style_span') : '' ?>" /><em>&lt;span ...&gt; </em></td>
                 </tr>
                 <tr valign="top">
                     <td scope="row">Style ul</td>
-                    <td><input type="text" name="tla_style_ul" value='<?php echo get_option('tla_style_ul') ? get_option('tla_style_ul') : '' ?>' /><em>&lt;ul ...&gt; For Widget Mode only</em></td>
+                    <td><input type="text" name="tla_style_ul" value="<?php echo get_option('tla_style_ul') ? get_option('tla_style_ul') : '' ?>" /><em>&lt;ul ...&gt; For Widget Mode only</em></td>
                 </tr>
                 <tr valign="top">
                     <td scope="row">Style li</td>
-                    <td><input type="text" name="tla_style_li" value='<?php echo get_option('tla_style_li') ? get_option('tla_style_li') : '' ?>' /><em>&lt;li ...&gt; For Widget Mode only</em></td>
+                    <td><input type="text" name="tla_style_li" value="<?php echo get_option('tla_style_li') ? get_option('tla_style_li') : '' ?>" /><em>&lt;li ...&gt; For Widget Mode only</em></td>
                 </tr>
                 <tr>
-                    <td colspan=2>
+                    <td colspan="2">
                         <p class="submit"><input type="submit" class="button-primary" value="<?php _e('Save Changes') ?>" /></p>
                     </td>
                 </tr>
-                <?php if (!is_file($textlinkads_object->htaccess_file)): ?>
-                <tr>
-                    <td valign="top"><p ><div class="warning">Optional Security Additions. We want to protect your privacy. Please make sure that your <strong>plugins directory is writable</strong> or add a file named <strong>.htaccess</strong> in your <strong>text-link-ads</strong> plugin directory with the code in the textbox to your right:</div> <strong><?php echo $textlinkads_object->htaccess_file; ?></strong></p></td>
-                    <td><br /><textarea cols="30" rows="10"><?php echo $textlinkads_object->htaccess(); ?></textarea>
-                </td>
-                </tr>
-                <?php endif; ?>
             </table>
         </form>
     </div>
@@ -372,7 +378,6 @@ function tla_initialize()
                     tla_refresh();
                     echo "refreshing complete";
                     break;
-
             }
         }
     }
@@ -386,7 +391,6 @@ function tla_refresh()
         $textlinkads_object->updateLocalAds();
     }
 }
-
 
 /** WP version less than 2.8 widget functions */
 if (!tla_between_posts()) {
@@ -407,6 +411,9 @@ if (!tla_between_posts()) {
             }
             $options = get_option('widget_textlinkads');
             $title = $options['title'];
+            if ($textlinkads_object->title_invalid($title)) {
+                $title = '';
+            }
             $before_widget = str_replace('textlinkads', '', $before_widget);
             echo $before_widget;
             echo $before_title . $title . $after_title;
@@ -427,7 +434,10 @@ if (!tla_between_posts()) {
                 $options = $newoptions;
                 update_option('widget_textlinkads', $options);
             }
-
+            if ($textlinkads_object->title_invalid($options['title'])) {
+                $options['title'] = '';
+                ?><font color="red">Your title was removed cause it isn't valid per the Text Link Ads user agreement</font><?php
+            }
             ?>
             <p><label for="textlinkads-title">Title: <input type="text" style="width: 250px;" id="textlinkads-title" name="textlinkads-title" value="<?php echo htmlspecialchars($options['title']); ?>" /></label></p>
             <input type="hidden" name="textlinkads-submit" id="textlinkads-submit" value="1" />
@@ -450,6 +460,9 @@ if (!tla_between_posts()) {
                 }
                 extract($args);
                 $title = apply_filters('widget_title', empty($instance['title']) ? __('Links of Interest') : $instance['title']);
+                if ($textlinkads_object->title_invalid($title)) {
+                    $title = '';
+                }
                 $before_widget = str_replace('textlinkads', '', $before_widget);
                 echo $before_widget;
                 echo $before_title . $title . $after_title;
@@ -461,6 +474,10 @@ if (!tla_between_posts()) {
             {
                 global $textlinkads_object;
                 $instance = wp_parse_args((array)$instance, array('title' => ''));
+                if ($textlinkads_object->title_invalid($instance['title'])) {
+                    $instance['title'] = '';
+                    ?><font color="red">Your title was removed cause it isn't valid per the Text Link Ads user agreement</font><?php
+                }
                 $title = esc_attr($instance['title']);
                 ?>
                 <p><label for="<?php echo $this->get_field_id('title'); ?>"><?php _e('Title:'); ?></label> <input class="widefat" id="<?php echo $this->get_field_id('title'); ?>" name="<?php echo $this->get_field_name('title'); ?>" type="text" value="<?php echo $title; ?>" /></p>
@@ -525,7 +542,7 @@ class textlinkadsObject
     var $refreshInterval = 3600;
     var $connectionTimeout = 10;
     var $DataTable = 'tla_data';
-    var $version = '3.9.8';
+    var $version = '3.9.10';
     var $ads;
 
     function textlinkadsObject()
@@ -629,29 +646,12 @@ class textlinkadsObject
         if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->DataTable . "'") != $this->DataTable) {
             $this->installDatabase();
         }
-
-        if (is_writable(dirname(__FILE__)) && !is_file($this->htaccess_file)) {
-            $fh = fopen($this->htaccess_file, 'w+');
-            fwrite($fh, $this->htaccess());
-            fclose($fh);
-        }
-
-    }
-
-
-    function htaccess()
-    {
-        return "<IfModule mod_rewrite.c>
-RewriteEngine On
-RewriteRule $ /index.php/404
-</IfModule>";
     }
 
     function initialize()
     {
         global $wpdb;
         $where = '';
-        $this->htaccess_file = dirname(__FILE__) . "/.htaccess";
         if ($this->version != get_option('tla_installed_version', '')) {
             $this->installDatabase();
         }
@@ -690,10 +690,12 @@ RewriteRule $ /index.php/404
                 $altBase2 = stripos($altBase, '://www.') !== false ? str_replace('://www.', '://', $altBase) : str_replace('://','://www.', $altBase);
                 $pageKey = isset($this->websiteKeys[$altBase2]) ? $this->websiteKeys[$altBase2] : '';
             }
+            if (!$pageKey) {
+                $altBase2 = stripos($altBase, '://www.') !== false ? str_replace('://www.', '://', $altBase) : str_replace('://','://www.', $altBase);
+                $pageKey = isset($this->websiteKeys[$altBase2]) ? $this->websiteKeys[$altBase2] : '';
+            }
             if ($pageKey) {
                 $this->ads = $wpdb->get_results("SELECT * FROM " . $this->DataTable . " WHERE xml_key='" . mysql_real_escape_string($pageKey) . "'");
-            } elseif (isset($this->websiteKeys[''])) {
-                $this->ads = $wpdb->get_results("SELECT * FROM " . $this->DataTable . " WHERE xml_key='" . mysql_real_escape_string($this->websiteKeys['']) . "'");
             }
         }
         if (!$this->ads) {
@@ -705,7 +707,7 @@ RewriteRule $ /index.php/404
         $this->adsCount = count($this->ads);
         $this->nextAd = 0;
         $this->posts_per_page = get_option('posts_per_page');
-        if ($this->adCount && $this->posts_per_page && $this->posts_per_page < $this->adsCount) {
+        if ($this->adsCount && $this->posts_per_page && $this->posts_per_page < $this->adsCount) {
             $this->num_ads_per_post = ceil($this->adsCount / $this->posts_per_page);
         } else {
             $this->num_ads_per_post = $this->adsCount;
@@ -714,11 +716,12 @@ RewriteRule $ /index.php/404
 
     function updateLocalAds()
     {
-        global $wpdb;
+        global $wpdb, $wp_version;
+        
         foreach ($this->websiteKeys as $url => $key) {
             $ads = 0;
             $query = '';
-            $url = 'http://www.text-link-ads.com/xml.php?k=' . $key . '&l=wordpress-tla-3.9.8';
+            $url = 'http://www.text-link-ads.com/xml.php?k=' . $key . '&l=wordpress-tla-3.9.10&v='.$wp_version;
 
             if (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) {
                 $url .= '&f=json';
@@ -750,7 +753,6 @@ RewriteRule $ /index.php/404
                         $wpdb->query("INSERT INTO `" . $this->DataTable . "` (`url`, `post_id`, `xml_key`, `text`, `before_text`, `after_text`) VALUES " . substr($query, 0, strlen($query) - 1));
                     }
                 }
-
             }
         }
     }
@@ -960,6 +962,20 @@ RewriteRule $ /index.php/404
                         wp_cache_post_change($post_id);
                     }
                 }
+            }
+        }
+    }
+
+    function title_invalid($title) {
+        if (!$title) {
+            return false;
+        }
+        $blocked =  array(
+                'paid links', 'sponsor', 'sponsored Links', 'advertisement', 'tla', 'text link ads', 'text-link-ads', 'text links', 'marketplace', 'money', 'link partners', 'promotional', 'tla', 'advertiser', 'partner'
+        );
+        foreach ($blocked as $block) {
+            if (stripos($title, $block) !== false) {
+                return true;
             }
         }
     }

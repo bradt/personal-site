@@ -47,9 +47,8 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 		$this->image();
 		$options = get_wpseo_options();
 
-		$this->twitter_description();
-
 		if ( !isset( $options['opengraph'] ) || !$options['opengraph'] ) {
+			$this->twitter_description();
 			$this->twitter_title();
 			$this->twitter_url();
 		}
@@ -78,7 +77,7 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 	 * Displays the domain tag for the site.
 	 */
 	public function site_domain() {
-		echo '<meta name="twitter:domain" content="' . apply_filters( 'wpseo_twitter_domain', preg_replace( '|^https?://|', '', site_url() ) ) . '"/>' . "\n";
+		echo '<meta name="twitter:domain" content="' . apply_filters( 'wpseo_twitter_domain', get_bloginfo( 'name' ) ) . '"/>' . "\n";
 	}
 
 	/**
@@ -88,10 +87,10 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 		$twitter = ltrim( trim( get_the_author_meta( 'twitter' ) ), '@' );
 
 		if ( $twitter && !empty( $twitter ) )
-			echo '<meta name="twitter:creator" content="@' . $twitter . '"/>' . "\n";
+			echo '<meta name="twitter:creator" content="@' . apply_filters( 'wpseo_twitter_creator_account', $twitter ) . '"/>' . "\n";
 			
 		else if ( isset( $this->options['twitter_site'] ) )
-			echo '<meta name="twitter:creator" content="@' . ltrim( trim( $this->options['twitter_site'] ), '@' ) . '"/>' . "\n";
+			echo '<meta name="twitter:creator" content="@' . apply_filters( 'wpseo_twitter_creator_account', ltrim( trim( $this->options['twitter_site'] ), '@' ) ) . '"/>' . "\n";
 	}
 
 	/**
@@ -100,7 +99,7 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 	 * Only used when OpenGraph is inactive.
 	 */
 	public function twitter_title() {
-		echo '<meta name="twitter:title" content="' . $this->title( '' ) . '"/>' . "\n";
+		echo '<meta name="twitter:title" content="' . apply_filters( 'wpseo_twitter_title', $this->title( '' ) ) . '"/>' . "\n";
 	}
 
 	/**
@@ -112,14 +111,14 @@ class WPSEO_Twitter extends WPSEO_Frontend {
 		$metadesc = trim( $this->metadesc( false ) );
 		if ( empty( $metadesc ) )
 			$metadesc = false;
-		if ( $metadesc && isset( $options['opengraph'] ) && $options['opengraph'] ) {
+		if ( $metadesc && isset( $this->options['opengraph'] ) && $this->options['opengraph'] ) {
 			// Already output the same description in opengraph, no need to repeat.
 			return;
 		} else if ( !$metadesc ) {
 			$metadesc = strip_tags( get_the_excerpt() );
 		}
 
-		echo '<meta name="twitter:description" content="' . esc_attr( $metadesc ) . '"/>' . "\n";
+		echo '<meta name="twitter:description" content="' . apply_filters( 'wpseo_twitter_description', esc_attr( $metadesc ) ) . '"/>' . "\n";
 	}
 
 	/**
