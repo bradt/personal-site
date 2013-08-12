@@ -51,6 +51,10 @@
 
 			</section>
 
+			<aside class="yahoo-ads">
+				<script id="mNCC" language="javascript">  medianet_width='600';  medianet_height= '250';  medianet_crid='411889324';  </script>  <script id="mNSC" src="http://contextual.media.net/nmedianet.js?cid=8CU84FE0I" language="javascript"></script>
+			</aside>
+
 		</article>
 				
 		<!--
