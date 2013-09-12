@@ -12,7 +12,7 @@
 <meta name="google-site-verification" content="-HPbjD9Y0jlfGiwCKijuBuQ3P6hyDw1LyXyY9T6ytjg" />
 
 <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/images/favicon-32.png" />
-<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/style.css?2013081201" media="screen" />
+<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/style.css?2013091201" media="screen" />
 
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
 
