@@ -4,7 +4,7 @@ Plugin Name: Text Link Ads Advertiser Plugin
 Plugin URI: http://www.text-link-ads.com/?ref=267085
 Description: Allows many xml keys per plugin install. Text Link Ads sell ads on specific pages. Join the Text Link Ads marketplace.
 Author: Text Link Ads
-Version: 3.9.10
+Version: 3.9.12
 Author URI: http://www.text-link-ads.com/?ref=267085
 */
 if (!function_exists('add_action')) {
@@ -542,7 +542,7 @@ class textlinkadsObject
     var $refreshInterval = 3600;
     var $connectionTimeout = 10;
     var $DataTable = 'tla_data';
-    var $version = '3.9.10';
+    var $version = '3.9.12';
     var $ads;
 
     function textlinkadsObject()
