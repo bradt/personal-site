@@ -13,3 +13,6 @@
 [submodule "public_html/content/plugins/better-wp-varnish"]
 	path = public_html/content/plugins/better-wp-varnish
 	url = git@github.com:bradt/Better-WP-Varnish.git
+[submodule "public_html/content/plugins/amazon-web-services"]
+	path = public_html/content/plugins/amazon-web-services
+	url = git@github.com:deliciousbrains/wp-amazon-web-services.git
