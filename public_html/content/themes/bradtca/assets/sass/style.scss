@@ -709,8 +709,10 @@ section.single-post {
 .entry-content iframe,
 .entry-content object,
 .entry-content video {
-	margin-bottom: 24px;
-	margin-bottom: 1.714285714rem;
+	display: block;
+}
+.entry-content .twitter-tweet-rendered {
+	width: 100% !important;
 }
 .entry-content dt,
 .comment-content dt {

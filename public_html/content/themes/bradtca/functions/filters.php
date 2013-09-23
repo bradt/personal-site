@@ -33,3 +33,8 @@ function bt_bloginfo( $output, $show ) {
 	return $output;
 }
 add_filter( 'bloginfo_url', 'bt_bloginfo', null, 2 );
+
+function bt_embed_oembed_html( $html ) {
+	return preg_replace( '@src="https?:@', 'class="oembed" src="', $html );
+}
+add_filter( 'embed_oembed_html', 'bt_embed_oembed_html' );

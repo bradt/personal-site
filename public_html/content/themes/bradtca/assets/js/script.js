@@ -24,6 +24,21 @@ var Bradt = {
 			$('.single-post .subscribe').each(function () {
 				$(this).prepend('<div class="striping"><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i></div>');
 			});
+
+			Bradt.single.video_resize();
+			on_resize(Bradt.single.video_resize);
+		},
+		video_resize: function() {
+			$('iframe.oembed').each(function() {
+				var src = $(this).prop('src')
+				if (src && src.match(/youtube\.com/)) {
+					var $content = $('.entry-content'),
+						w = $content.width(),
+						h = (w / $(this).width()) * $(this).height();
+
+					$(this).width(w).height(h);
+				}
+			});
 		}
 	},
 
