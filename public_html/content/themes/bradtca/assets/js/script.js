@@ -1,312 +1,312 @@
-$(document).ready(function() {
-	bradt_load_js_vars();
-	Bradt.init();
-});
+var Bradt;
 
-var Bradt = {
-	template_url : '',
+(function($){
 
-	init: function() {
-		Bradt.menu();
-		Bradt.portfolio.init();
-		Bradt.portfolio_list.init();
-		Bradt.contact.init();
-		Bradt.about.init();
-		Bradt.photos.init();
-		Bradt.home.init();
-		Bradt.single.init();
+	Bradt = {
+		template_url : '',
 
-		$('.active-plugins .plugin').gridify();
-	},
-
-	single: {
 		init: function() {
-			$('.single-post .subscribe').each(function () {
-				$(this).prepend('<div class="striping"><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i></div>');
-			});
+			Bradt.menu();
+			Bradt.portfolio.init();
+			Bradt.portfolio_list.init();
+			Bradt.contact.init();
+			Bradt.about.init();
+			Bradt.photos.init();
+			Bradt.home.init();
+			Bradt.single.init();
 
-			Bradt.single.video_resize();
-			on_resize(Bradt.single.video_resize);
+			$('.active-plugins .plugin').gridify();
 		},
-		video_resize: function() {
-			$('iframe.oembed').each(function() {
-				var src = $(this).prop('src')
-				if (src && src.match(/youtube\.com/)) {
-					var $content = $('.entry-content'),
-						w = $content.width(),
-						h = (w / $(this).width()) * $(this).height();
 
-					$(this).width(w).height(h);
-				}
-			});
-		}
-	},
+		single: {
+			init: function() {
+				$('.single-post .subscribe').each(function () {
+					$(this).prepend('<div class="striping"><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i></div>');
+				});
 
-	home: {
-		init: function() {
-			if (!$('.homepage').get(0)) return;
-			$('.albums li').gridify(2);
-		}
-	},
+				Bradt.single.video_resize();
+				on_resize(Bradt.single.video_resize);
+			},
+			video_resize: function() {
+				$('iframe.oembed').each(function() {
+					var src = $(this).prop('src')
+					if (src && src.match(/youtube\.com/)) {
+						var $content = $('.entry-content'),
+							w = $content.width(),
+							h = (w / $(this).width()) * $(this).height();
 
-	photos: {
-		init: function() {
-			Bradt.photos.gridify();
-			on_resize(Bradt.photos.gridify);
+						$(this).width(w).height(h);
+					}
+				});
+			}
 		},
-		gridify: function() {
-			$('.photo-set').css('height', 'auto').gridify();
-		}
-	},
-	
-	about: {
-		init: function() {
-			if (!$('.page-about').get(0)) return;
-		
-			$('.more-history').before('<a href="" class="more-history-btn">Show more work history...</a>');
-			$('.more-history-btn').click(function() {
-				$('.more-history').fadeIn();
-				$(this).remove();
-				return false;
-			});
-		}
-	},
-	
-	contact: {
-		init: function() {
-			if (!$('.page-contact').get(0)) return;
-			
-			var init_events = function() {
-				
-				$('.field-budget').after($('.section-budget'));
-				
-				if ($('input[name=what]:checked').val() != 'work') {
-					$('.field-budget, .field-schedule').hide();
-				}
 
-				$('input[name=budget]').change(function() {
-					var val = $(this).val();
-					switch (val) {
-						case 'too_low':
-							$('#message-details, .button, .section, .field-schedule').hide();
-							$('.section-budget').show();
-							break;
-						default:
-							$('.section').hide();
-							$('#message-details, .button, .field-schedule').show();
-					}
-				});
-	
-				/*
-				$('input[name=schedule]').change(function() {
-					var val = $(this).val();
-					switch (val) {
-						case '1-4':
-							$('#message-details, .button, .section').hide();
-							$('.section-schedule').show();
-							break;
-						default:
-							$('.section').hide();
-							$('#message-details, .button').show();
-					}
-				});
-				*/
-				
-				$('input[name=what]').change(function() {
-					$('.error').hide();
-					var val = $(this).val();
-					switch (val) {
-						case 'plugin':
-						case 'personal':
-						//case 'work':
-							$('#message-details, .button, .section, .field-budget, .field-schedule').hide();
-							//$('#message-details, .button, .section').hide();
-							$('.section-' + val).show();
-							break;
-						case 'work':
-							$('.section').hide();
-							$('#message-details, .button, .field-budget, .field-schedule').show();
-							break;
-						case 'general':
-							$('.section, .field-budget, .field-schedule').hide();
-							$('.section').hide();
-							$('#message-details, .button').show();
-							break;
-						default:
-							$('#message-details, .button').hide();
-					}
-				});
+		home: {
+			init: function() {
+				if (!$('.homepage').get(0)) return;
+				$('.albums li').gridify(2);
+			}
+		},
 
-				$('li.option-bot').hide();
-			};
-			
-			init_events();
-			
-			$('input[name=what]').trigger('change');
-			
-			$('form').submit(function() {
-				var form = $(this);
-				var data = form.serialize();
-				var url = form.attr('action') + '?ajax=1';
-				$.post(url, data, function(data) {
-					form.html(data);
-					init_events();
-					if ($('p.error-msg').get(0)) {
-						$.scrollTo('.indicates', 500);
-						$('p.error, p.error-msg').hide().fadeIn();
-					}
-					else {
-						$.scrollTo('#header', 500);
-					}
-				});
-				
-				return false;
-			});
-		}
-	},
-	
-	menu: function() {
-		$('#header ul.nav li a').click(function() {
-			$('#header ul.nav li a').removeClass('active');
-			$(this).addClass('active');
-		});
-	},
-
-	portfolio_list: {
-		resizing: 0,
-	
-		init: function() {
-			if (!$('.page-portfolio-list').get(0))
-				return;
-
-			Bradt.portfolio.roles.init();
-			
-			$('.project').gridify();
-			if ($('body').width() > 640) {
-				on_resize(Bradt.portfolio_list.resize);
+		photos: {
+			init: function() {
+				Bradt.photos.gridify();
+				on_resize(Bradt.photos.gridify);
+			},
+			gridify: function() {
+				$('.photo-set').css('height', 'auto').gridify();
 			}
 		},
 		
-		resize: function() {
-			$('.project').css('height', 'auto').gridify();
-		}
-		
-	},
-	
-	portfolio: {
-	
-		init: function() {
-			if (!$('.page-portfolio').get(0))
-				return;
+		about: {
+			init: function() {
+				if (!$('.page-about').get(0)) return;
 			
-			$.localScroll.hash();
-			
-			var scr = $('.scr');
-		
-			$('ul.screenshots li').click(function() {
-				var anchor = $('a',this);
-				
-				$('ul.screenshots li').removeClass('current');
-				$(this).addClass('current');
-
-				if (!$('.bubblingG', scr).get(0)) {
-					scr.append('<div class="bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>');
-				}
-				else {
-					$('.bubblingG', scr).show();
-				}
-				
-				var img = new Image();
-				$(img).load(function() {
-					$('.bubblingG', scr).hide();
-
-					$('img', scr).prop('src', anchor.attr('href'));
-
-					var url = anchor.attr('href').replace(/\-[0-9]+x[0-9]+\.jpg/, '.jpg');
-					scr.attr('href', url);
-			   });
-			   img.src = anchor.attr('href');
-	
-			   return false;
-			});
-		
-			// Preload screenshots
-			$('ul.screenshots li a').each(function() {
-				var img = new Image();
-				img.src = $(this).attr('href');
-			});
+				$('.more-history').before('<a href="" class="more-history-btn">Show more work history...</a>');
+				$('.more-history-btn').click(function() {
+					$('.more-history').fadeIn();
+					$(this).remove();
+					return false;
+				});
+			}
 		},
 		
-		roles: {
-			
+		contact: {
 			init: function() {
-				$('.tabs li').click(function() {
-					var selected = $(this).attr('class');
+				if (!$('.page-contact').get(0)) return;
+				
+				var init_events = function() {
 					
-					$('.tabs li a').removeClass('current');
-					$('a', this).addClass('current');
+					$('.field-budget').after($('.section-budget'));
 					
-					if (selected == 'all') {
-						$('.project')
-							.removeClass('hidden')
-							.show()
-							.css('height', 'auto')
-							.gridify();
-						$('.old-portfolio').show();
-						return;
+					if ($('input[name=what]:checked').val() != 'work') {
+						$('.field-budget, .field-schedule').hide();
 					}
-					else {
-						$('.old-portfolio').hide();
-					}
-					
-					$('.project').addClass('hidden').hide();
 
-					if (selected == 'featured') {
-						$('.project.featured')
-							.removeClass('hidden')
-							.show()
-							.css('height', 'auto')
-							.gridify();
-						return;
-					}
+					$('input[name=budget]').change(function() {
+						var val = $(this).val();
+						switch (val) {
+							case 'too_low':
+								$('#message-details, .button, .section, .field-schedule').hide();
+								$('.section-budget').show();
+								break;
+							default:
+								$('.section').hide();
+								$('#message-details, .button, .field-schedule').show();
+						}
+					});
+		
+					/*
+					$('input[name=schedule]').change(function() {
+						var val = $(this).val();
+						switch (val) {
+							case '1-4':
+								$('#message-details, .button, .section').hide();
+								$('.section-schedule').show();
+								break;
+							default:
+								$('.section').hide();
+								$('#message-details, .button').show();
+						}
+					});
+					*/
 					
-					$('.project').each(function() {
-						var found = 0;
-						$('.roles li span', this).each(function() {
-							var txt = $(this).text().toLowerCase();
-							txt = txt.replace(/[^a-z0-9]/, '-');
-							if (txt == selected) {
-								found = 1;
-							}
-						});
-						
-						if (found) {
-							$(this).removeClass('hidden').show();
+					$('input[name=what]').change(function() {
+						$('.error').hide();
+						var val = $(this).val();
+						switch (val) {
+							case 'plugin':
+							case 'personal':
+							//case 'work':
+								$('#message-details, .button, .section, .field-budget, .field-schedule').hide();
+								//$('#message-details, .button, .section').hide();
+								$('.section-' + val).show();
+								break;
+							case 'work':
+								$('.section').hide();
+								$('#message-details, .button, .field-budget, .field-schedule').show();
+								break;
+							case 'general':
+								$('.section, .field-budget, .field-schedule').hide();
+								$('.section').hide();
+								$('#message-details, .button').show();
+								break;
+							default:
+								$('#message-details, .button').hide();
+						}
+					});
+
+					$('li.option-bot').hide();
+				};
+				
+				init_events();
+				
+				$('input[name=what]').trigger('change');
+				
+				$('form').submit(function() {
+					var form = $(this);
+					var data = form.serialize();
+					var url = form.attr('action') + '?ajax=1';
+					$.post(url, data, function(data) {
+						form.html(data);
+						init_events();
+						if ($('p.error-msg').get(0)) {
+							$.scrollTo('.indicates', 500);
+							$('p.error, p.error-msg').hide().fadeIn();
+						}
+						else {
+							$.scrollTo('#header', 500);
 						}
 					});
 					
-					$('.project').css('height', 'auto').gridify();
+					return false;
 				});
+			}
+		},
+		
+		menu: function() {
+			$('#header ul.nav li a').click(function() {
+				$('#header ul.nav li a').removeClass('active');
+				$(this).addClass('active');
+			});
+		},
+
+		portfolio_list: {
+			resizing: 0,
+		
+			init: function() {
+				if (!$('.page-portfolio-list').get(0))
+					return;
+
+				Bradt.portfolio.roles.init();
 				
-				var hash = document.location.hash;
-				if (hash) {
-					hash = hash.replace('#', '');
-					var tab = $('.tabs li.' + hash).get(0);
-					if (tab) {
-						$(tab).trigger('click');
-					}
+				$('.project').gridify();
+				if ($('body').width() > 640) {
+					on_resize(Bradt.portfolio_list.resize);
 				}
-				else {
-					$('.tabs li:first').trigger('click');					
+			},
+			
+			resize: function() {
+				$('.project').css('height', 'auto').gridify();
+			}
+			
+		},
+		
+		portfolio: {
+		
+			init: function() {
+				if (!$('.page-portfolio').get(0))
+					return;
+				
+				$.localScroll.hash();
+				
+				var scr = $('.scr');
+			
+				$('ul.screenshots li').click(function() {
+					var anchor = $('a',this);
+					
+					$('ul.screenshots li').removeClass('current');
+					$(this).addClass('current');
+
+					if (!$('.bubblingG', scr).get(0)) {
+						scr.append('<div class="bubblingG"><span id="bubblingG_1"></span><span id="bubblingG_2"></span><span id="bubblingG_3"></span></div>');
+					}
+					else {
+						$('.bubblingG', scr).show();
+					}
+					
+					var img = new Image();
+					$(img).load(function() {
+						$('.bubblingG', scr).hide();
+
+						$('img', scr).prop('src', anchor.attr('href'));
+
+						var url = anchor.attr('href').replace(/\-[0-9]+x[0-9]+\.jpg/, '.jpg');
+						scr.attr('href', url);
+				   });
+				   img.src = anchor.attr('href');
+		
+				   return false;
+				});
+			
+				// Preload screenshots
+				$('ul.screenshots li a').each(function() {
+					var img = new Image();
+					img.src = $(this).attr('href');
+				});
+			},
+			
+			roles: {
+				
+				init: function() {
+					$('.tabs li').click(function() {
+						var selected = $(this).attr('class');
+						
+						$('.tabs li a').removeClass('current');
+						$('a', this).addClass('current');
+						
+						if (selected == 'all') {
+							$('.project')
+								.removeClass('hidden')
+								.show()
+								.css('height', 'auto')
+								.gridify();
+							$('.old-portfolio').show();
+							return;
+						}
+						else {
+							$('.old-portfolio').hide();
+						}
+						
+						$('.project').addClass('hidden').hide();
+
+						if (selected == 'featured') {
+							$('.project.featured')
+								.removeClass('hidden')
+								.show()
+								.css('height', 'auto')
+								.gridify();
+							return;
+						}
+						
+						$('.project').each(function() {
+							var found = 0;
+							$('.roles li span', this).each(function() {
+								var txt = $(this).text().toLowerCase();
+								txt = txt.replace(/[^a-z0-9]/, '-');
+								if (txt == selected) {
+									found = 1;
+								}
+							});
+							
+							if (found) {
+								$(this).removeClass('hidden').show();
+							}
+						});
+						
+						$('.project').css('height', 'auto').gridify();
+					});
+					
+					var hash = document.location.hash;
+					if (hash) {
+						hash = hash.replace('#', '');
+						var tab = $('.tabs li.' + hash).get(0);
+						if (tab) {
+							$(tab).trigger('click');
+						}
+					}
+					else {
+						$('.tabs li:first').trigger('click');					
+					}
 				}
 			}
 		}
-	}
-};
+	};
 
-
-
-(function($){
+	$(document).ready(function() {
+		bradt_load_js_vars();
+		Bradt.init();
+	});
 	
 	$.fn.gridify = function(per_row) {
 		var items = this.not('.hidden');

@@ -12,15 +12,6 @@
 <meta name="google-site-verification" content="-HPbjD9Y0jlfGiwCKijuBuQ3P6hyDw1LyXyY9T6ytjg" />
 
 <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/images/favicon-32.png" />
-<link type="text/css" rel="stylesheet" href="<?php bloginfo('template_url'); ?>/assets/css/style.css?2013092301" media="screen" />
-
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
-
-<?php if ( WP_DEBUG ) : ?>
-<script src="<?php bloginfo('template_url'); ?>/assets/js/script.js" type="text/javascript"></script>
-<?php else : ?>
-<script src="<?php bloginfo('template_url'); ?>/assets/js/script.min.js?2013092301" type="text/javascript"></script>
-<?php endif; ?>
 
 <link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
 <link rel='openid.delegate' href='http://bradt.wordpress.com/' />
