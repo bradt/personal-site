@@ -16,8 +16,8 @@
 	</div>
 
 	<nav class="paging">
-		<div class="older"><? next_posts_link('&#9668; Older'); ?></div>
-		<div class="newer"><? previous_posts_link('Newer &#9658;'); ?></div>
+		<div class="older"><?php next_posts_link('&#9668; Older'); ?></div>
+		<div class="newer"><?php previous_posts_link('Newer &#9658;'); ?></div>
 	</nav>
 
 </section>
