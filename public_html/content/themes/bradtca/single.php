@@ -31,7 +31,8 @@
 				<?php bt_related_posts(); ?>
 
 				<section class="subscribe">
-					<h1>Get my blog posts in your inbox!</h1>
+					<h1>Subscribe</h1>
+					<h2>Get an email notice when I publish a new blog post</h2>
 					<form action="http://bradt.createsend.com/t/r/s/jkfdth/" method="post">				
 						<div class="field">
 							<label for="post-subscribe-name">Your Name</label>
