@@ -5,8 +5,8 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: seo, SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
 Requires at least: 3.3
-Tested up to: 3.6
-Stable tag: 1.4.18
+Tested up to: 3.7
+Stable tag: 1.4.19
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using the WordPress SEO plugin by Yoast.
 
@@ -105,6 +105,30 @@ You'll find the [FAQ on Yoast.com](http://yoast.com/wordpress/seo/faq/).
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.4.19 =
+
+* Enhancements
+	* Added the option to upload a separate image for Facebook in the Social tab.
+	* Added published time, last modified time, tags and categories to OpenGraph output, to work with Pinterests new article pin.
+	* Added a filter for post length requirements in the Analysis tab.
+	* If there is a term description, use it in the OpenGraph description for a term archive page.
+	* Applied a number of settings form best practices - props [Jrf](http://profiles.wordpress.org/jrf).
+	* File inclusion best practices applied - props [Jrf](http://profiles.wordpress.org/jrf).
+    * Breadcrumbs for Custom Post Types now take the CPT->label instead of CPT->labels->menu_name as text parameter, as suggested by [katart17](http://wordpress.org/support/profile/katart17) and [Robbert V](http://wordpress.org/support/profile/robbert-v) - props [Jrf](http://profiles.wordpress.org/jrf).
+
+* Bugfixes
+	* Move all rewrite flushing to shutdown, so it doesn't break other plugins who add their rewrites late.
+	* Fixed the wrong naming of the L10n JS object, props [Otto](http://profiles.wordpress.org/otto42).
+	* Improved form support for UTF-8 - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Corrected faulty multisite option registration - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Fixed appropriate use of plugins_url() to avoid breaking hooked in filters - props [Jrf](http://profiles.wordpress.org/jrf).
+	* (Temporary) fix for metabox styling for users using the MP6 plugin - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Minor fix in localization loading - props [Jrf](http://profiles.wordpress.org/jrf).
+	* Fixed [Missing argument 3 for wpseo_upgrader_process_complete](https://github.com/Yoast/wordpress-seo/issues/327) notice for WP 3.7+, thanks [vickyindo](https://github.com/vickyindo), [Wendyhihi](https://github.com/Wendihihi) and [Theressa1](https://github.com/Theressa1) for reporting - props [Jrf](http://profiles.wordpress.org/jrf).
+
+* i18n
+    * Updated ru_RU, tr_TK and Hr
 
 = 1.4.18 =
 
