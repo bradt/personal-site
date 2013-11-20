@@ -17,7 +17,7 @@
 	
 		<div class="details">
 			<div class="desc">
-				<h2><?php the_title(); ?> <span class="date">// <?php the_time('F Y') ?></span></h2>
+				<h2><?php the_title(); ?></h2>
 				<div class="copy">
 					<?php the_content(); ?>
 				</div>
