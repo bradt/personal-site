@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Public Post Preview
- * Version: 2.2
+ * Version: 2.3
  * Description: Enables you to give a link to anonymous users for public preview of any post type before it is published.
  * Author: Dominik Schilling
  * Author URI: http://wphelper.de/
@@ -71,6 +71,9 @@ class DS_Public_Post_Preview {
 			add_filter( 'pre_get_posts', array( __CLASS__, 'show_public_preview' ) );
 
 			add_filter( 'query_vars', array( __CLASS__, 'add_query_var' ) );
+
+			// Add the query var to WordPress SEO by Yoast whitelist.
+			add_filter( 'wpseo_whitelist_permalink_vars', array( __CLASS__, 'add_query_var' ) );
 		} else {
 			add_action( 'post_submitbox_misc_actions', array( __CLASS__, 'post_submitbox_misc_actions' ) );
 
@@ -189,13 +192,15 @@ class DS_Public_Post_Preview {
 	 * @return string           The generated public preview link.
 	 */
 	private static function get_preview_link( $post_id ) {
-		return add_query_arg(
+		$link = add_query_arg(
 			array(
 				'preview' => true,
 				'_ppp'    => self::create_nonce( 'public_post_preview_' . $post_id ),
 			),
 			get_permalink( $post_id )
 		);
+
+		return apply_filters( 'ppp_preview_link', $link, $post_id );
 	}
 
 	/**
@@ -325,10 +330,10 @@ class DS_Public_Post_Preview {
 		if ( empty( $post_id ) )
 			return false;
 
-		if( ! self::verify_nonce( get_query_var( '_ppp' ), 'public_post_preview_' . $post_id ) )
+		if ( ! self::verify_nonce( get_query_var( '_ppp' ), 'public_post_preview_' . $post_id ) )
 			wp_die( __( 'The link has been expired!', 'ds-public-post-preview' ) );
 
-		if ( ! in_array( $post_id, get_option( 'public_post_preview', array() ) ) )
+		if ( ! in_array( $post_id, self::get_preview_post_ids() ) )
 			wp_die( __( 'No Public Preview available!', 'ds-public-post-preview' ) );
 
 		return true;
@@ -349,10 +354,32 @@ class DS_Public_Post_Preview {
 		if ( empty( $posts ) )
 			return;
 
-		if ( self::public_preview_available( $posts[0]->ID ) )
+		$post_id = $posts[0]->ID;
+
+		// If the post has gone live, redirect to it's proper permalink
+		self::maybe_redirect_to_published_post( $post_id );
+
+		if ( self::public_preview_available( $post_id ) )
 			$posts[0]->post_status = 'publish';
 
 		return $posts;
+	}
+
+	/**
+	 * Sets the post status of the first post to publish, so we don't have to do anything
+	 * *too* hacky to get it to load the preview.
+	 *
+	 * @since 2.0.0
+	 *
+	 * @param  int      $post_id The post id.
+	 * @return boolean           False, if post isn't published.
+	 */
+	private static function maybe_redirect_to_published_post( $post_id ) {
+		if ( 'publish' != get_post_status( $post_id ) )
+			return false;
+
+		wp_redirect( get_permalink( $post_id ), 301 );
+		exit;
 	}
 
 	/**

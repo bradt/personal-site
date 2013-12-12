@@ -3,7 +3,7 @@ Contributors: SylvainDeaure
 Donate link: http://wp-ses.com/donate.html
 Tags: email,ses,amazon,webservice,delivrability,newsletter,autoresponder,mail,wp_mail,smtp,service
 Requires at least: 3.0.0
-Tested up to: 3.5.2
+Tested up to: 3.7.1
 Stable tag: trunk
 
 WP-SES redirects all outgoing WordPress emails through Amazon Simple Email Service (SES) for maximum email delivrability.
@@ -13,7 +13,8 @@ WP-SES redirects all outgoing WordPress emails through Amazon Simple Email Servi
 WP-SES redirects All outgoing WordPress emails through Amazon Simple Email Service (SES) instead of local wp_mail function.
 This ensures high email delivrability, email trafic statistics and a powerful managed infrastructure.
 
-This plugin is in BETA state, just as the Amazon SES service. However, it is still functionnal and I use it on several websites.
+This plugin is functionnal and I use it on several websites.
+WPMU features are so far experimental.
 
 Current features are:
 
@@ -111,13 +112,20 @@ define('WP_SES_HIDE_VERIFIED',true);
 // Hide SES Stats panel (optionnal)
 define('WP_SES_HIDE_STATS',true);
 
-
+// Auto activate the plugin for all sites (optionnal)
+define('WP_SES_AUTOACTIVATE',true);
 
 == Screenshots ==
 
 1. the settings screen of WP-SES plugin.
 
 == Changelog ==
+
+= 0.3.42 =
+* Added Spanish translation, thanks to Andrew of webhostinghub.com
+
+= 0.3.4 =
+* Auto activation via WP_SES_AUTOACTIVATE define, see FAQ.
 
 = 0.3.2 =
 * Tweaked header parsing thanks to bhansson
