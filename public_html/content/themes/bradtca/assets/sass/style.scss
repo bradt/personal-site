@@ -593,11 +593,15 @@ section.single-post {
 		clear: right;
 	}
 
-	img.wp-smiley {
+	img.full-width, img.wp-smiley {
 		float: none;
 		margin: 0;
 		max-width: 100%;
 		min-width: auto;
+	}
+
+	img.full-width {
+		max-width: 142%;
 	}
 
 	@media screen and (max-width: 880px) {
@@ -606,6 +610,10 @@ section.single-post {
 			margin: 0;
 			max-width: 100%;
 			min-width: auto;
+		}
+
+		img.full-width {
+			max-width: 100%;
 		}
 	}
 }
