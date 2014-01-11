@@ -31,8 +31,9 @@
 	<div class="col-2">
 
 		<p class="bio">
-			I'm <a href="/about/">Brad Touesnard</a>, creative&nbsp;web&nbsp;developer
-			and founder&nbsp;of&nbsp;<a href="http://deliciousbrains.com/?utm_source=bradt.ca&utm_medium=web&utm_content=homelink&utm_campaign=author-bio" title="A company building super awesome products for WordPress">Delicious Brains</a>.
+			<a href="/about/">Brad Touesnard</a> is a WordPress&nbsp;developer, designer, <a href="http://applyfilters.com" title="Apply Filters &mdash; A podcast all about WordPress development">podcaster</a>,
+			and <a href="http://deliciousbrains.com/?utm_source=bradt.ca&utm_medium=web&utm_content=homelink&utm_campaign=author-bio" title="Delicious Brains Inc. &mdash; We build super awesome products for WordPress">founder</a>
+			living&nbsp;in&nbsp;Halifax,&nbsp;Canada.
 		</p>
 
 		<nav class="site">
@@ -43,7 +44,7 @@
 			<ul>
 				<li><a class="icon-twitter" href="http://twitter.com/bradt" title="Twitter"></a></li>
 				<li><a class="icon-gplus" href="https://plus.google.com/103798016457548612622" title="Google+"></a></li>
-				<li><a class="icon-github" href="https://github.com/bradt" title="Gihub"></a></li>
+				<li><a class="icon-github" href="https://github.com/bradt" title="GitHub"></a></li>
 				<li><a class="icon-wordpress" href="http://profiles.wordpress.org/bradt" title="WordPress.org"></a></li>
 				<li><a class="icon-email" href="/contact/" title="Email"></a></li>
 			</ul>
