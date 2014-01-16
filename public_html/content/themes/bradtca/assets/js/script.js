@@ -26,6 +26,66 @@ var Bradt;
 
 				Bradt.single.video_resize();
 				on_resize(Bradt.single.video_resize);
+
+				var unhidden = false;
+				$('input[type=email]').keyup(function() {
+					if (unhidden) return;
+
+					if ($(this).val().length > 3) {
+						$('.field.name').css('width', '0px').show().animate({'width': '100%'}, 1000);
+						unhidden = true;
+					}
+				});
+
+				if ($(document).width() > 480) {
+					Bradt.single.subscribe_popup();
+				}
+			},
+			subscribe_popup: function() {
+				// Determine 3rd last paragraph
+				var $paragraphs = $('.entry-content p'),
+					p_count = $paragraphs.size(),
+					target_p_index = p_count - 3;
+
+				if (target_p_index < 0) {
+					target_p_index = 0;
+				}
+
+				var $target_p = $paragraphs.eq(target_p_index),
+					offset = $target_p.offset(),
+					target_p_scrollTop = offset.top,
+					already_shown = false;
+
+				$(window).scroll(function() {
+					if (already_shown) return;
+
+					if ($(window).scrollTop() + $(window).height() > target_p_scrollTop) {
+						var $orig = $('.subscribe'),
+							$subscribe = $orig.clone();
+						
+						$orig.hide();
+						$subscribe.addClass('popover').hide();						
+						
+						$('body').append($subscribe);
+						
+						var $close = $('<a class="close" href="">&times;</a>');
+						$subscribe.append($close);
+						$close.click(function() {
+							$orig.show();
+							$subscribe.hide();
+							return false;
+						});
+						
+						$subscribe
+							.css({
+								'bottom': (-1 * $subscribe.outerHeight()) + 'px'
+							})
+							.show()
+							.animate({'bottom': '0px'}, 500);
+
+						already_shown = true;
+					}
+				});
 			},
 			video_resize: function() {
 				$('iframe.oembed').each(function() {

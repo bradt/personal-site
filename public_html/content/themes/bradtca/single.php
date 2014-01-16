@@ -31,18 +31,23 @@
 				<?php bt_related_posts(); ?>
 
 				<section class="subscribe">
-					<h1>Subscribe</h1>
-					<h2>Get an email notice when I publish a new blog post</h2>
-					<form action="http://bradt.createsend.com/t/r/s/jkfdth/" method="post">				
-						<div class="field">
-							<label for="post-subscribe-name">Your Name</label>
-							<input type="text" name="cm-name" id="post-subscribe-name" placeholder="John Doe" />
-						</div>
+					<h1>
+						Advanced WordPress Development<br />
+						(Free Pro Tips Delivered Via Email)
+					</h1>
+					<p class="desc">
+						Learn from my many years of 
+						experience (since 2004) working with WordPress, from hosting, to developing themes and plugins.
+						I'll share my best tips and techniques with you via email.
+					</p>
+					<form action="http://bradt.createsend.com/t/r/s/jkfdth/" method="post">
 						<div class="field email">
-							<label for="post-subscribe-email">Your Email</label>
-							<input type="email" name="cm-jkfdth-jkfdth" id="jkfdth-jkfdth" placeholder="john.doe@gmail.com" />
+							<input type="email" name="cm-jkfdth-jkfdth" id="jkfdth-jkfdth" placeholder="Email Address" />
 						</div>
-						<button type="submit">Subscribe</button>
+						<div class="field name" style="display: none;">
+							<input type="text" name="cm-name" id="post-subscribe-name" placeholder="Your Full Name" />
+						</div>
+						<button type="submit">Sign Up</button>
 					</form>
 
 					<p class="rss">Prefer RSS? <a href="<?php bloginfo('rss2_url'); ?>" rel="alternate" type="application/rss+xml">Subscribe to my news feed</a></p>

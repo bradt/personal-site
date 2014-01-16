@@ -474,88 +474,133 @@ section.single-post {
 		}
 
 		.subscribe {
-			clear: both;
 			margin: 50px 0 50px 0;
-			padding: 50px 40px 30px 40px;
-			box-shadow: 0 0 10px #ccc;
-			position: relative;
-			overflow: hidden;
 
 			h1 {
-				font-family: $SourceSansPro;
-				font-size: 35px;
-				font-weight: 800;
-				margin-bottom: 2px;
-			}
-
-			h2 {
-				font-family: $SourceSansPro;
-				font-size: 20px;
-				font-weight: normal;
-				margin-bottom: 30px;
-			}
-
-			.striping {
-				font-weight: bold;
-				font-family: Arial;
-				font-size: 180px;
-				position: absolute;
-				top: -150px;
-				left: 0;
-
-				> * {
-					margin-left:-8px;
-				}
-
-				b {
-					color: #f5290a;
-					font-style: italic;
-				}
-
-				i {
-					color: #006699;
-				}
-			}
-
-			.field {
-				overflow: hidden;
 				margin-bottom: 10px;
 			}
+		}
+	}
+}
 
-			.field.email {
-				margin-bottom: 30px;
-			}
+.subscribe {
+	clear: both;
+	padding: 50px 40px 30px 40px;
+	box-shadow: 0 0 10px #ccc;
+	overflow: hidden;
+	position: relative;
 
-			label {
-				display: block;
-				width: 140px;
-				float: left;
-				font-size: 21px;
-				line-height: 44px;
-				color: #666;
-				font-family: $SourceSansPro;
-			}
+	&.popover {
+		position: fixed;
+		bottom: 0;
+		right: 10px;
+		width: 450px;
+		background-color: #fff;
 
-			input {
-				float: left;
-				width: 100%;
-				max-width: 300px;
-			}
+		h1 {
+			font-size: 22px;
+			margin-bottom: 10px;
+		}
 
-			.rss {
-				max-height: 1em; /* Stop auto text sizing on mobile */
-				font-size: 14px;
-				margin: 20px 0 0 0;
-			}
+		.desc {
+			font-size: 16px;
+		}
 
-			@media screen and (max-width: 480px) {
-				padding: 60px 30px 20px 30px;
+		input {
+			font-size: 16px;
+		}
 
-				h1 {
-					font-size: 26px;
-					margin-bottom: 20px;
-				}
-			}
+		button {
+			font-size: 16px;
+		}
+
+		.rss {
+			display: none;
+		}
+
+		.close {
+			font-weight: bold;
+			color: #999;
+			position: absolute;
+			top: 20px;
+			right: 15px;
+			font-size: 30px;
+		}
+	}
+
+	h1 {
+		font-family: $SourceSansPro;
+		font-size: 26px;
+		font-weight: 800;
+	}
+
+	.desc {
+		font-family: $SourceSansPro;
+		font-size: 18px;
+		line-height: 1.4em;
+		font-weight: normal;
+		margin-bottom: 15px;
+	}
+
+	.striping {
+		font-weight: bold;
+		font-family: Arial;
+		font-size: 180px;
+		position: absolute;
+		top: -150px;
+		left: 0;
+
+		> * {
+			margin-left:-8px;
+		}
+
+		b {
+			color: #f5290a;
+			font-style: italic;
+		}
+
+		i {
+			color: #006699;
+		}
+	}
+
+	.field {
+		overflow: hidden;
+		margin-bottom: 15px;
+	}
+
+	label {
+		display: block;
+		width: 140px;
+		float: left;
+		font-size: 21px;
+		line-height: 44px;
+		color: #666;
+		font-family: $SourceSansPro;
+	}
+
+	input {
+		float: left;
+		width: 100%;
+		font-size: 21px;
+	}
+
+	button {
+		font-size: 21px;
+	}
+
+	.rss {
+		max-height: 1em; /* Stop auto text sizing on mobile */
+		font-size: 14px;
+		margin: 20px 0 0 0;
+	}
+
+	@media screen and (max-width: 480px) {
+		padding: 60px 30px 20px 30px;
+
+		h1 {
+			font-size: 26px;
+			margin-bottom: 20px;
 		}
 	}
 }
