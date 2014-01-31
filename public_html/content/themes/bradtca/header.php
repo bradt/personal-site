@@ -31,7 +31,7 @@
 	<div class="col-2">
 
 		<p class="bio">
-			<a href="/about/">Brad Touesnard</a> is a WordPress&nbsp;developer, designer, <a href="http://applyfilters.com" title="Apply Filters &mdash; A podcast all about WordPress development">podcaster</a>,
+			<a href="/about/">Brad Touesnard</a> is a WordPress&nbsp;developer, designer, <a href="http://applyfilters.fm" title="Apply Filters &mdash; A podcast all about WordPress development">podcaster</a>,
 			and <a href="http://deliciousbrains.com/?utm_source=bradt.ca&utm_medium=web&utm_content=homelink&utm_campaign=author-bio" title="Delicious Brains Inc. &mdash; We build super awesome products for WordPress">founder</a>
 			living&nbsp;in&nbsp;Halifax,&nbsp;Canada.
 		</p>
