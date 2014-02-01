@@ -25,7 +25,7 @@ class WPSEO_Sitemaps {
 	/**
 	 *     Flag to indicate if this is an invalid or empty sitemap.
 	 */
-	private $bad_sitemap = false;
+	public $bad_sitemap = false;
 
 	/**
 	 * The maximum number of entries per sitemap page
@@ -37,6 +37,14 @@ class WPSEO_Sitemaps {
 	 */
 	private $options = array();
 
+	/**
+	 * Holds the n variable
+	 */
+	private $n = 1;
+
+	/**
+	 * Class constructor
+	 */
 	function __construct() {
 		if ( ! defined( 'ENT_XML1' ) )
 			define( "ENT_XML1", 16 );
@@ -141,7 +149,6 @@ class WPSEO_Sitemaps {
 	 * Hijack requests for potential sitemaps and XSL files.
 	 */
 	function redirect() {
-
 		$xsl = get_query_var( 'xsl' );
 		if ( ! empty( $xsl ) ) {
 			$this->xsl_output( $xsl );
@@ -151,6 +158,11 @@ class WPSEO_Sitemaps {
 		$type = get_query_var( 'sitemap' );
 		if ( empty( $type ) )
 			return;
+			
+		$n = get_query_var( 'sitemap_n' );
+		if( is_scalar( $n ) && intval( $n ) > 0 ) {
+			$this->n = intval( $n );
+		}
 
 		$this->build_sitemap( $type );
 		// 404 for invalid or emtpy sitemaps
@@ -369,8 +381,8 @@ class WPSEO_Sitemaps {
 
 		$output = '';
 
-		$steps  = 25;
-		$n      = (int) get_query_var( 'sitemap_n' );
+		$steps  = ( 25 > $this->max_entries ) ? $this->max_entries : 25;
+		$n      = (int) $this->n;
 		$offset = ( $n > 1 ) ? ( $n - 1 ) * $this->max_entries : 0;
 		$total  = $offset + $this->max_entries;
 
@@ -380,6 +392,7 @@ class WPSEO_Sitemaps {
 		$where_filter = apply_filters( 'wpseo_typecount_where', $where_filter, $post_type );
 
 		$query     = $wpdb->prepare( "SELECT COUNT(ID) FROM $wpdb->posts {$join_filter} WHERE post_status IN ('publish','inherit') AND post_password = '' AND post_type = %s " . $where_filter, $post_type );
+
 		$typecount = $wpdb->get_var( $query );
 
 		if ( $total > $typecount )
@@ -425,18 +438,18 @@ class WPSEO_Sitemaps {
 
 		$stackedurls = array();
 
-		// We grab post_date, post_name, post_author and post_status too so we can throw these objects into get_permalink, which saves a get_post call for each permalink.
-		while ( $total > $offset ) {
+		// Make sure you're wpdb->preparing everything you throw into this!!
+		$join_filter  = apply_filters( 'wpseo_posts_join', false, $post_type );
+		$where_filter = apply_filters( 'wpseo_posts_where', false, $post_type );
 
-			// Make sure you're wpdb->preparing everything you throw into this!!
-			$join_filter  = apply_filters( 'wpseo_posts_join', false, $post_type );
-			$where_filter = apply_filters( 'wpseo_posts_where', false, $post_type );
+		$status = ( $post_type == 'attachment' ) ? 'inherit' : 'publish';
+
+		// We grab post_date, post_name, post_author and post_status too so we can throw these objects into get_permalink, which saves a get_post call for each permalink.
+		$i = 0;
+		while ( $total > $offset ) {
 
 			// Optimized query per this thread: http://wordpress.org/support/topic/plugin-wordpress-seo-by-yoast-performance-suggestion
 			// Also see http://explainextended.com/2009/10/23/mysql-order-by-limit-performance-late-row-lookups/
-
-			$status = ( $post_type == 'attachment' ) ? 'inherit' : 'publish';
-
 			$query = $wpdb->prepare( "SELECT l.ID, post_content, post_name, post_author, post_parent, post_modified_gmt, post_date, post_date_gmt
 				FROM (
 					SELECT ID FROM $wpdb->posts {$join_filter}
@@ -459,16 +472,19 @@ class WPSEO_Sitemaps {
 				$p->post_status = 'publish';
 				$p->filter      = 'sample';
 
-				if ( wpseo_get_value( 'meta-robots-noindex', $p->ID ) && wpseo_get_value( 'sitemap-include', $p->ID ) != 'always' )
+				if ( (int) wpseo_get_value( 'meta-robots-noindex', $p->ID ) === 1 && wpseo_get_value( 'sitemap-include', $p->ID ) != 'always' ) {
 					continue;
-				if ( wpseo_get_value( 'sitemap-include', $p->ID ) == 'never' )
+				}
+				if ( wpseo_get_value( 'sitemap-include', $p->ID ) == 'never' ) {
 					continue;
-				if ( wpseo_get_value( 'redirect', $p->ID ) && strlen( wpseo_get_value( 'redirect', $p->ID ) ) > 0 )
+				}
+				if ( wpseo_get_value( 'redirect', $p->ID ) && strlen( wpseo_get_value( 'redirect', $p->ID ) ) > 0 ) {
 					continue;
+				}
 
 				$url = array();
 
-				$url['mod'] = ( isset( $p->post_modified_gmt ) && $p->post_modified_gmt != '0000-00-00 00:00:00' ) ? $p->post_modified_gmt : $p->post_date_gmt;
+				$url['mod'] = ( isset( $p->post_modified_gmt ) && $p->post_modified_gmt != '0000-00-00 00:00:00' && $p->post_modified_gmt > $p->post_date_gmt ) ? $p->post_modified_gmt : $p->post_date_gmt;
 				$url['chf'] = 'weekly';
 				$url['loc'] = get_permalink( $p );
 
@@ -562,8 +578,12 @@ class WPSEO_Sitemaps {
 				$url['images'] = apply_filters( 'wpseo_sitemap_urlimages', $url['images'], $p->ID );
 
 				if ( ! in_array( $url['loc'], $stackedurls ) ) {
-					$output .= $this->sitemap_url( $url );
-					$stackedurls[] = $url['loc'];
+					// Use this filter to adjust the entry before it gets added to the sitemap
+					$url = apply_filters( 'wpseo_sitemap_entry', $url, 'post', $p );
+					if ( ! empty( $url ) ) {
+						$output .= $this->sitemap_url( $url );
+						$stackedurls[] = $url['loc'];
+					}
 				}
 
 				// Clear the post_meta and the term cache for the post, as we no longer need it now.
@@ -608,7 +628,7 @@ class WPSEO_Sitemaps {
 		$output = '';
 
 		$steps  = $this->max_entries;
-		$n      = (int) get_query_var( 'sitemap_n' );
+		$n      = (int) $this->n;
 		$offset = ( $n > 1 ) ? ( $n - 1 ) * $this->max_entries : 0;
 		$total  = $offset + $this->max_entries;
 
@@ -655,7 +675,12 @@ class WPSEO_Sitemaps {
 					AND		p.post_password = ''", $c->taxonomy, $c->term_id );
 			$url['mod'] = $wpdb->get_var( $sql );
 			$url['chf'] = 'weekly';
-			$output .= $this->sitemap_url( $url );
+
+			// Use this filter to adjust the entry before it gets added to the sitemap
+			$url = apply_filters( 'wpseo_sitemap_entry', $url, 'term', $c );
+
+			if ( ! empty( $url ) )
+				$output .= $this->sitemap_url( $url );
 		}
 
 		if ( empty( $output ) ) {
@@ -676,15 +701,14 @@ class WPSEO_Sitemaps {
 	 * @since 1.4.8
 	 */
 	function build_user_map() {
-		if ( isset( $this->options['disable-author'] ) || isset( $this->options['disable_author_sitemap'] ) ) {
-			$this->bad_sitemap = true;
+		if ( isset( $this->options['disable-author'] ) || isset( $this->options['disable_author_sitemap'] ) ) {			$this->bad_sitemap = true;
 			return;
 		}
 
 		$output = '';
 
 		$steps  = $this->max_entries;
-		$n      = (int) get_query_var( 'sitemap_n' );
+		$n      = (int) $this->n;
 		$offset = ( $n > 1 ) ? ( $n - 1 ) * $this->max_entries : 0;
 
 		// initial query to fill in missing usermeta with the current timestamp
@@ -720,12 +744,17 @@ class WPSEO_Sitemaps {
 
 		foreach ( $users as $user ) {
 			if ( $author_link = get_author_posts_url( $user->ID ) ) {
-				$output .= $this->sitemap_url( array(
+				$url = array(
 					'loc' => $author_link,
 					'pri' => 0.8,
 					'chf' => 'weekly',
-					'mod' => date( 'c', $user->_yoast_wpseo_profile_updated )
-				) );
+					'mod' => date( 'c', isset( $user->_yoast_wpseo_profile_updated ) ? $user->_yoast_wpseo_profile_updated : time() )
+				);
+				// Use this filter to adjust the entry before it gets added to the sitemap
+				$url = apply_filters( 'wpseo_sitemap_entry', $url, 'user', $user );
+
+				if ( ! empty( $url ) )
+					$output .= $this->sitemap_url( $url );
 			}
 		}
 
@@ -788,7 +817,7 @@ class WPSEO_Sitemaps {
 		echo "\n" . '<!-- XML Sitemap generated by Yoast WordPress SEO -->';
 
 		if ( WP_DEBUG )
-			echo "\n" . '<!-- Built in ' . timer_stop() . ' seconds | ' . memory_get_peak_usage() . ' | ' . count( $GLOBALS['wpdb']->queries ) . ' -->';
+			echo "\n" . '<!-- ' . memory_get_peak_usage() . ' | ' . count( $GLOBALS['wpdb']->queries ) . ' -->';
 	}
 
 	/**
@@ -893,8 +922,7 @@ class WPSEO_Sitemaps {
 	 *
 	 * @return string $user a WP_User object or false
 	 */
-	private
-	function is_user_sitemap( $type ) {
+	private function is_user_sitemap( $type ) {
 		$pieces = explode( '-', $type, 2 );
 		$user   = isset( $pieces[1] ) ? $pieces[1] : '';
 		return get_user_by( 'slug', $user );
@@ -913,6 +941,13 @@ class WPSEO_Sitemaps {
 	 */
 	private
 	function user_map_sorter( $a, $b ) {
+		if ( ! isset( $a->_yoast_wpseo_profile_updated ) ) {
+			$a->_yoast_wpseo_profile_updated = time();
+		}
+		if ( ! isset( $b->_yoast_wpseo_profile_updated ) ) {
+			$b->_yoast_wpseo_profile_updated = time();
+		}
+		
 		if ( $a->_yoast_wpseo_profile_updated == $b->_yoast_wpseo_profile_updated ) {
 			return 0;
 		}

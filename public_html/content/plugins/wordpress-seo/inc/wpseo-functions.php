@@ -418,7 +418,7 @@ function wpseo_store_tracking_response() {
 	$options['tracking_popup'] = 'done';
 
 	if ( $_POST['allow_tracking'] == 'yes' )
-		$options['yoast_tracking'] = true;
+		$options['yoast_tracking'] = 'on';
 
 	update_option( 'wpseo', $options );
 }
@@ -436,25 +436,302 @@ add_action('wp_ajax_wpseo_allow_tracking', 'wpseo_store_tracking_response');
 function wpseo_wpml_config( $config ) {
     global $sitepress;
 
-    $admin_texts = &$config['wpml-config']['admin-texts']['key'];
-    foreach( $admin_texts as $k => $val ){
-        if ( $val['attr']['name'] == 'wpseo_titles' ) {
-            $translate_cp = array_keys( $sitepress->get_translatable_documents() );
-            foreach( $translate_cp as $post_type ) {
-                $admin_texts[$k]['key'][]['attr']['name'] = 'title-'. $post_type;
-                $admin_texts[$k]['key'][]['attr']['name'] = 'metadesc-'. $post_type;
-                $admin_texts[$k]['key'][]['attr']['name'] = 'title-ptarchive-'. $post_type;
-                $admin_texts[$k]['key'][]['attr']['name'] = 'metadesc-ptarchive-'. $post_type;
-                $translate_tax = $sitepress->get_translatable_taxonomies(false, $post_type);
-                foreach( $translate_tax as $taxonomy ) {
-                    $admin_texts[$k]['key'][]['attr']['name'] = 'title-'. $taxonomy;
-                    $admin_texts[$k]['key'][]['attr']['name'] = 'metadesc-'. $taxonomy;
-                }
-            }
-            break;
-        }
-    }
+	if ( ( is_array( $config ) && isset( $config['wpml-config']['admin-texts']['key'] ) ) && ( is_array( $config['wpml-config']['admin-texts']['key'] ) && $config['wpml-config']['admin-texts']['key'] !== array() ) ) {
+	    $admin_texts = $config['wpml-config']['admin-texts']['key'];
+	    foreach ( $admin_texts as $k => $val ) {
+	        if ( $val['attr']['name'] === 'wpseo_titles' ) {
+	            $translate_cp = array_keys( $sitepress->get_translatable_documents() );
+	            if ( is_array( $translate_cp ) && $translate_cp !== array() ) {
+		            foreach ( $translate_cp as $post_type ) {
+		                $admin_texts[$k]['key'][]['attr']['name'] = 'title-'. $post_type;
+		                $admin_texts[$k]['key'][]['attr']['name'] = 'metadesc-'. $post_type;
+		                $admin_texts[$k]['key'][]['attr']['name'] = 'title-ptarchive-'. $post_type;
+		                $admin_texts[$k]['key'][]['attr']['name'] = 'metadesc-ptarchive-'. $post_type;
+
+		                $translate_tax = $sitepress->get_translatable_taxonomies(false, $post_type);
+		                if ( is_array( $translate_tax ) && $translate_tax !== array() ) {
+			                foreach ( $translate_tax as $taxonomy ) {
+			                    $admin_texts[$k]['key'][]['attr']['name'] = 'title-'. $taxonomy;
+			                    $admin_texts[$k]['key'][]['attr']['name'] = 'metadesc-'. $taxonomy;
+			                }
+						}
+		            }
+				}
+	            break;
+	        }
+	    }
+	    $config['wpml-config']['admin-texts']['key'] = $admin_texts;
+	}
 
     return $config;
 }
 add_filter( 'icl_wpml_config_array', 'wpseo_wpml_config' );
+
+
+/**
+ * (Un-)schedule the yoast tracking cronjob if the tracking option has changed
+ * 
+ * Needs to be done here, rather than in the Yoast_Tracking class as class-tracking.php may not be loaded
+ *
+ * @todo - check if this has any impact on other Yoast plugins which may use the same tracking schedule
+ * hook. If so, may be get any other yoast plugin options, check for the tracking status and
+ * unschedule based on the combined status
+ *
+ * @param	mixed	$disregard	Not needed - Option name if option was added, old value if option was updated
+ * @param	array	$value		The new value of the option after add/update
+ * @return	void
+ */
+function schedule_yoast_tracking( $disregard, $value ) {
+	$current_schedule = wp_next_scheduled( 'yoast_tracking' );
+	$tracking = ( isset( $value['yoast_tracking'] ) && $value['yoast_tracking'] ) ? true : false;
+
+	if( $tracking === true && $current_schedule === false ) {
+		// The tracking checks daily, but only sends new data every 7 days.
+		wp_schedule_event( time(), 'daily', 'yoast_tracking' );
+	}
+	else if( $tracking === false && $current_schedule !== false ){
+		wp_clear_scheduled_hook( 'yoast_tracking' );
+	}
+}
+add_action( 'add_option_wpseo', 'schedule_yoast_tracking', 10, 2 );
+add_action( 'update_option_wpseo', 'schedule_yoast_tracking', 10, 2 );
+
+/**
+ * Generate an HTML sitemap
+ *
+ * @param array $atts The attributes passed to the shortcode.
+ *
+ * @return string
+ */
+function wpseo_sitemap_handler( $atts ) {
+	global $wpdb;
+
+	$atts = shortcode_atts( array(
+		'authors'  => true,
+		'pages'    => true,
+		'posts'    => true,
+		'archives' => true
+	), $atts );
+
+	$display_authors  = ( $atts['authors'] === 'no' ) ? false : true;
+	$display_pages    = ( $atts['pages'] === 'no' ) ? false : true;
+	$display_posts    = ( $atts['posts'] === 'no' ) ? false : true;
+	$display_archives = ( $atts['archives'] === 'no' ) ? false : true;
+
+	$options = get_wpseo_options();
+
+	// Delete the transient if any of these are no
+	if ( $display_authors === 'no' || $display_pages === 'no' || $display_posts === 'no' ) {
+		delete_transient( 'html-sitemap' );
+	}
+
+	// Get any existing copy of our transient data
+	if ( false !== ( $output = get_transient( 'html-sitemap' ) ) ) {
+		// $output .= 'CACHE'; // debug
+		// return $output;
+	}
+
+	$output = '';
+
+	// create author list
+	if ( $display_authors ) {
+		$output .= '<h2 id="authors">' . __( 'Authors', 'wordpress-seo' ) . '</h2><ul>';
+		// use echo => false b/c shortcode format screws up
+		$author_list = wp_list_authors(
+			array(
+				'exclude_admin' => false,
+				'echo'          => false,
+			)
+		);
+		$output .= $author_list;
+		$output .= '</ul>';
+	}
+
+	// create page list
+	if ( $display_pages ) {
+		$output .= '<h2 id="pages">' . __( 'Pages', 'wordpress-seo' ) . '</h2><ul>';
+
+		// Some query magic to retrieve all pages that should be excluded, while preventing noindex pages that are set to
+		// "always" include in HTML sitemap from being excluded.
+
+		$exclude_query  = "SELECT DISTINCT( post_id ) FROM $wpdb->postmeta
+												WHERE ( ( meta_key = '_yoast_wpseo_sitemap-html-include' AND meta_value = 'never' )
+												  OR ( meta_key = '_yoast_wpseo_meta-robots-noindex' AND meta_value = 1 ) )
+												AND post_id NOT IN
+													( SELECT pm2.post_id FROM $wpdb->postmeta pm2
+															WHERE pm2.meta_key = '_yoast_wpseo_sitemap-html-include' AND pm2.meta_value = 'always')
+												ORDER BY post_id ASC";
+		$excluded_pages = $wpdb->get_results( $exclude_query );
+
+		$exclude = array();
+		foreach ( $excluded_pages as $page ) {
+			$exclude[] = $page->post_id;
+		}
+		unset( $excluded_pages, $page );
+
+		/**
+		 * This filter allows excluding more pages should you wish to from the HTML sitemap.
+		 */
+		$exclude = implode( ',', apply_filters( 'wpseo_html_sitemap_page_exclude', $exclude ) );
+
+		$page_list = wp_list_pages(
+			array(
+				'exclude'  => $exclude,
+				'title_li' => '',
+				'echo'     => false,
+			)
+		);
+
+		$output .= $page_list;
+		$output .= '</ul>';
+	}
+
+	// create post list
+	if ( $display_posts ) {
+		$output .= '<h2 id="posts">' . __( 'Posts', 'wordpress-seo' ) . '</h2><ul>';
+		// Add categories you'd like to exclude in the exclude here
+		// possibly have this controlled by shortcode params
+		$cats = get_categories( 'exclude=' );
+		foreach ( $cats as $cat ) {
+			$output .= "<li><h3>" . $cat->cat_name . "</h3>";
+			$output .= "<ul>";
+
+			$args = array(
+				'post_type'      => 'post',
+				'post_status'    => 'publish',
+
+				'posts_per_page' => -1,
+				'cat'            => $cat->cat_ID,
+
+				'meta_query'     => array(
+					'relation' => 'OR',
+					// include if this key doesn't exists
+					array(
+						'key'     => '_yoast_wpseo_meta-robots-noindex',
+						'value'   => '', // This is ignored, but is necessary...
+						'compare' => 'NOT EXISTS'
+					),
+					// OR if key does exists include if it is not 1
+					array(
+						'key'     => '_yoast_wpseo_meta-robots-noindex',
+						'value'   => 1,
+						'compare' => '!='
+					),
+					// OR this key overrides it
+					array(
+						'key'     => '_yoast_wpseo_sitemap-html-include',
+						'value'   => 'always',
+						'compare' => '='
+					)
+				)
+			);
+
+			$posts = get_posts( $args );
+
+			foreach ( $posts as $post ) {
+				$category = get_the_category( $post->ID );
+
+				// Only display a post link once, even if it's in multiple categories
+				if ( $category[0]->cat_ID == $cat->cat_ID ) {
+					$output .= '<li><a href="' . get_permalink( $post->ID ) . '">' . get_the_title( $post->ID ) . '</a></li>';
+				}
+			}
+
+			$output .= "</ul>";
+			$output .= "</li>";
+		}
+	}
+	$output .= '</ul>';
+
+	// get all public non-builtin post types
+	$args       = array(
+		'public'   => true,
+		'_builtin' => false
+	);
+	$post_types = get_post_types( $args, 'object' );
+
+	// create an noindex array of post types and taxonomies
+	$noindex = array();
+	foreach ( $options as $key => $value ) {
+		if ( strpos( $key, 'noindex-' ) === 0 && $value == 'on' )
+			$noindex[] = $key;
+	}
+
+	// create custom post type list
+	foreach ( $post_types as $post_type ) {
+		if ( ! in_array( 'noindex-' . $post_type->name, $noindex ) ) {
+			$output .= '<h2 id="' . $post_type->name . '">' . __( $post_type->label, 'wordpress-seo' ) . '</h2><ul>';
+			$output .= create_type_sitemap_template( $post_type );
+			$output .= '</ul>';
+		}
+	}
+
+	// $output = '';
+	// create archives list
+	if ( $display_archives ) {
+		$output .= '<h2 id="archives">' . __( 'Archives', 'wordpress-seo' ) . '</h2><ul>';
+
+		foreach ( $post_types as $post_type ) {
+			if ( $post_type->has_archive && ! in_array( 'noindex-ptarchive-' . $post_type->name, $noindex ) ) {
+				$output .= '<a href="' . get_post_type_archive_link( $post_type->name ) . '">' . $post_type->labels->name . '</a>';
+
+				$output .= create_type_sitemap_template( $post_type );
+			}
+		}
+
+		$output .= '</ul>';
+	}
+
+	set_transient( 'html-sitemap', $output, 60 );
+	return $output;
+}
+
+add_shortcode( 'wpseo_sitemap', 'wpseo_sitemap_handler' );
+
+
+function create_type_sitemap_template( $post_type ) {
+	// $output = '<h2 id="' . $post_type->name . '">' . __( $post_type->label, 'wordpress-seo' ) . '</h2><ul>';
+
+	$output = '';
+	// Get all registered taxonomy of this post type
+	$taxs = get_object_taxonomies( $post_type->name, 'object' );
+
+	// Build the taxonomy tree
+	require_once( WPSEO_PATH . 'inc/class-sitemap-walker.php' );
+	$walker = new Sitemap_Walker();
+	foreach ( $taxs as $key => $tax ) {
+		if ( $tax->public !== 1 )
+			continue;
+
+		$args  = array(
+			'post_type' => $post_type->name,
+			'tax_query' => array(
+				array(
+					'taxonomy' => $key,
+					'field'    => 'id',
+					'terms'    => -1,
+					'operator' => 'NOT',
+				)
+			)
+		);
+		$query = new WP_Query( $args );
+
+		$title_li = $query->have_posts() ? $tax->labels->name : '';
+
+		$output .= wp_list_categories(
+			array(
+				'title_li'         => $title_li,
+				'echo'             => false,
+				'taxonomy'         => $key,
+				'show_option_none' => '',
+				// 'hierarchical' => 0, // uncomment this for a flat list
+
+				'walker'           => $walker,
+				'post_type'        => $post_type->name // arg used by the Walker class
+			)
+		);
+	}
+
+	$output .= '<br />';
+	return $output;
+}

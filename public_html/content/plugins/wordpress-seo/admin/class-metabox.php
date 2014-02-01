@@ -39,7 +39,6 @@ class WPSEO_Metabox {
 		add_action( 'admin_print_styles-post.php', array( $this, 'enqueue' ) );
 		add_action( 'admin_print_styles-edit.php', array( $this, 'enqueue' ) );
 		add_action( 'admin_head', array( $this, 'script' ) );
-		add_action( 'add_meta_boxes', array( $this, 'add_custom_box' ) );
 		add_action( 'wp_insert_post', array( $this, 'save_postdata' ) );
 		add_action( 'edit_attachment', array( $this, 'save_postdata' ) );
 		add_action( 'add_attachment', array( $this, 'save_postdata' ) );
@@ -104,7 +103,7 @@ class WPSEO_Metabox {
 	public function publish_box() {
 		echo '<div class="misc-pub-section misc-yoast misc-pub-section-last">';
 
-		if ( wpseo_get_value( 'meta-robots-noindex' ) == 1 ) {
+		if ( (int) wpseo_get_value( 'meta-robots-noindex' ) === 1 ) {
 			$score_label = 'noindex';
 			$title       = __( 'Post is set to noindex.', 'wordpress-seo' );
 		}
@@ -147,9 +146,9 @@ class WPSEO_Metabox {
 	}
 
 	/**
-	 * Adds the WordPress SEO box to the edit boxes in the edit post / page overview.
+	 * Adds the WordPress SEO meta box to the edit boxes in the post / page / cpt edit page.
 	 */
-	public function add_custom_box() {
+	public function add_meta_box() {
 		$options = get_wpseo_options();
 
 		foreach ( get_post_types( array( 'public' => true ) ) as $posttype ) {
@@ -159,6 +158,19 @@ class WPSEO_Metabox {
 		}
 	}
 
+	/**
+	 * Adds the WordPress SEO box
+	 *
+	 * @deprecated 1.4.23
+	 * @deprecated use WPSEO_Metabox::add_meta_box()
+	 * @see WPSEO_Metabox::add_meta_box()
+	 */
+	public function add_custom_box() {
+		_deprecated_function( __FUNCTION__, 'WPSEO 1.5.0', 'WPSEO_Metabox::add_meta_box()' );
+		$this->add_meta_box();
+	}
+	
+	
 	/**
 	 * Outputs the scripts needed for the edit / post page overview, snippet preview, etc.
 	 */
@@ -216,18 +228,6 @@ class WPSEO_Metabox {
 	<?php
 	}
 
-	/**
-	 * Add the meta box
-	 */
-	public function add_meta_box() {
-		$options = get_wpseo_options();
-
-		foreach ( get_post_types( array( 'public' => true ) ) as $posttype ) {
-			if ( isset( $options['hideeditbox-' . $posttype] ) && $options['hideeditbox-' . $posttype] )
-				continue;
-			add_meta_box( 'wpseo_meta', __( 'WordPress SEO by Yoast', 'wordpress-seo' ), array( $this, 'meta_box' ), $posttype, 'normal', apply_filters( 'wpseo_metabox_prio', 'high' ) );
-		}
-	}
 
 	/**
 	 * Output a tab in the WP SEO Metabox
@@ -772,7 +772,13 @@ class WPSEO_Metabox {
 					continue;
 			}
 
-			wpseo_set_value( $meta_box['name'], sanitize_text_field( $data ), $post_id );
+			// Prevent saving "empty" values.
+			if ( ! in_array( $data, array( '', '0', 'none', '-', 'index,follow' ) ) ) {
+				wpseo_set_value( $meta_box['name'], sanitize_text_field( $data ), $post_id );
+			} else if ( $data == '' ) {
+				// If we don't do this, we prevent people from reverting to the default title or description.
+				delete_post_meta( $post_id, '_yoast_wpseo_' . $meta_box['name'] );
+			}
 		}
 
 		$this->calculate_results( $post );
@@ -862,11 +868,10 @@ class WPSEO_Metabox {
 	 */
 	function column_content( $column_name, $post_id ) {
 		if ( $column_name == 'wpseo-score' ) {
-			if ( wpseo_get_value( 'meta-robots-noindex', $post_id ) == 1 ) {
+			if ( (int) wpseo_get_value( 'meta-robots-noindex', $post_id ) === 1 ) {
 				$score_label = 'noindex';
 				$title       = __( 'Post is set to noindex.', 'wordpress-seo' );
-				if ( wpseo_get_value( 'meta-robots-noindex', $post_id ) !== 0 )
-					wpseo_set_value( 'linkdex', 0, $post_id );
+				wpseo_set_value( 'linkdex', 0, $post_id );
 			}
 			else if ( $score = wpseo_get_value( 'linkdex', $post_id ) ) {
 				$score_label = wpseo_translate_score( round( $score / 10 ) );
@@ -1203,6 +1208,21 @@ class WPSEO_Metabox {
 		$imgs          = array();
 		$imgs['count'] = substr_count( $body, '<img' );
 		$imgs          = $this->get_images_alt_text( $post->ID, $body, $imgs );
+
+		// Check featured image
+		if ( has_post_thumbnail() ) {
+			$imgs['count'] += 1;
+
+			if ( empty( $imgs['alts'] ) ) {
+				$imgs['alts'] = array();
+			}
+
+			$feature_image = get_the_post_thumbnail( $post->ID );
+			if ( preg_match( '`alt=(["\'])(.*?)\1`', $feature_image, $alt ) && isset( $alt[2] ) ) {
+				$imgs['alts'][] = $this->strtolower_utf8( $alt[2] );
+			}
+		}
+		
 		$this->score_images_alt_text( $job, $results, $imgs );
 		unset( $imgs );
 		unset( $body );

@@ -78,8 +78,8 @@
             <tr><th scope="row"><?php _e('Sender Email', 'wpses') ?></th>
                 <td>
                     <?php if (!defined('WP_SES_FROM')) { ?>
-                    <input type="text" name="from_email" value="<?php echo $wpses_options['from_email']; ?>" />&nbsp;<?php _e('(Has to be a valid Email)', 'wpses') ?>
-                     <?php
+                        <input type="text" name="from_email" value="<?php echo $wpses_options['from_email']; ?>" />&nbsp;<?php _e('(Has to be a valid Email)', 'wpses') ?>
+                        <?php
                     } else {
                         echo('(' . WP_SES_FROM . ') ');
                         _e('From: Email was defined by your admin.', 'wp-ses');
@@ -92,7 +92,7 @@
                 <td>
                     <?php if (!defined('WP_SES_RETURNPATH')) { ?>
                         <input type="text" name="return_path" value="<?php echo $wpses_options['return_path']; ?>" />&nbsp;<?php _e('You can specify a return Email (not required).<br />Delivery Status notification messages will be sent to this address.', 'wpses') ?>
-                    <?php
+                        <?php
                     } else {
                         echo('(' . WP_SES_RETURNPATH . ') ');
                         _e('Return path was defined by your admin.', 'wp-ses');
@@ -103,7 +103,7 @@
                 <td>
                     <?php if (!defined('WP_SES_REPLYTO') or ('' == WP_SES_REPLYTO)) { ?>
                         <input type="text" name="reply_to" value="<?php echo $wpses_options['reply_to']; ?>" />&nbsp;<?php _e('You can specify a reply To Email (not required).<br />Replies to your messages will be sent to this address.<br />set to "headers" to extract Reply-to from email headers.', 'wpses') ?>
-                    <?php
+                        <?php
                     } else {
                         echo('(' . WP_SES_REPLYTO . ') ');
                         _e('Reply To was defined by your admin.', 'wp-ses');
@@ -118,14 +118,31 @@
                 If you already use an Amazon Webservice like S3,<br />
                 you can use the very same keys here.
             </div>
-    <?php _e('Please insert here your API keys given by the Amazon Web Services.', 'wpses') ?>
+            <?php _e('Please insert here your API keys given by the Amazon Web Services.', 'wpses') ?>
             <table class="form-table" style="width:450px; float:left;" width="450">
                 <tr><th scope="row"><?php _e('access_key', 'wpses') ?></th>
                     <td><input type="text" name="access_key" value="<?php echo $wpses_options['access_key']; ?>" /></td></tr>
                 <tr><th scope="row"><?php _e('secret_key', 'wpses') ?></th>
                     <td><input type="text" name="secret_key" value="<?php echo $wpses_options['secret_key']; ?>" /></td></tr>
+
+                <tr><th scope="row"><?php _e('SES Endpoint', 'wpses') ?></th>
+                    <td><select name="endpoint">
+                            <option value="email.us-east-1.amazonaws.com" <?php if ('email.us-east-1.amazonaws.com' == $wpses_options['endpoint']) {
+            echo 'selected';
+        } ?>>US East (N. Virginia) Region</option>
+                            <option value="email.us-west-2.amazonaws.com" <?php if ('email.us-west-2.amazonaws.com' == $wpses_options['endpoint']) {
+            echo 'selected';
+        } ?>>US West (Oregon) Region</option>
+                            <option value="email.eu-west-1.amazonaws.com" <?php if ('email.eu-west-1.amazonaws.com' == $wpses_options['endpoint']) {
+            echo 'selected';
+        } ?>>EU (Ireland) Region</option>
+                        </select>
+                      </td></tr>
+                <tr><th scope="row">&nbsp;</th>
+                    <td><?php _e('You\'ll need to validate sender emails for each Endpoint you want to use','wpses') ?></td></tr>
+
             </table>
-<?php } else { // restricted access  ?>
+<?php } else { // restricted access   ?>
     <?php _e('Amazon Web Services API info has already been filled in by your administrator.', 'wpses') ?>
 <?php } ?>
         <input type="hidden" name="action" value="update" />
@@ -138,12 +155,12 @@
     <?php if (!defined('WP_SES_HIDE_VERIFIED') or (false == WP_SES_HIDE_VERIFIED)) { ?>
         <h3><?php _e("Confirmed senders", 'wpses') ?></h3>
         <?php _e('Only confirmed senders are able to send an email via SES', 'wpses') ?><br />
-        <?php _e('The following senders are known:', 'wpses') ?>
+    <?php _e('The following senders are known:', 'wpses') ?>
         <br />
-    <?php
-    //print_r($autorized); 
-    //$senders
-    ?>
+                <?php
+                //print_r($autorized); 
+                //$senders
+                ?>
         <div style="width:70%">
             <table class="form-table">
                 <tr style="background-color:#ccc; font-weight:bold;"><td><?php _e('Email', 'wpses') ?></td><td><?php _e('Request Id', 'wpses') ?></td><td><?php _e('Confirmed', 'wpses') ?></td><td><?php _e('Action', 'wpses') ?></td></tr>
@@ -187,7 +204,7 @@
             </table>
         </div>
         <?php } ?>
-        <?php if (!WP_SES_RESTRICTED) { ?>
+<?php if (!WP_SES_RESTRICTED) { ?>
         <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
     <?php wp_nonce_field('wpses'); ?>
             <!-- todo : que si email defini, que si pas dans la liste  -->
@@ -205,7 +222,7 @@
         <br />
         <!-- todo: que si email expediteur valid� -->
         <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
-    <?php wp_nonce_field('wpses'); ?>
+        <?php wp_nonce_field('wpses'); ?>
             <p class="submit">
                 <input type="submit" name="testemail" value="<?php _e("Send Test Email", 'wpses') ?>" />
             </p>

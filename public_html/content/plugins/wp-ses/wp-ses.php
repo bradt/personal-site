@@ -2,14 +2,14 @@
 
 /*
   Plugin Name: WP SES
-  Version: 0.3.42
+  Version: 0.3.45
   Plugin URI: http://wp-ses.com
   Description: Uses Amazon Simple Email Service instead of local mail for all outgoing WP emails.
   Author: Sylvain Deaure
   Author URI: http://www.blog-expert.fr
  */
 
-define('WPSES_VERSION', 0.342);
+define('WPSES_VERSION', 0.345);
 
 // refs
 // http://aws.amazon.com/fr/
@@ -64,6 +64,7 @@ function wpses_install() {
             'from_name' => 'WordPress',
             'access_key' => '',
             'secret_key' => '',
+            'endpoint' => 'email.us-east-1.amazonaws.com',
             'credentials_ok' => 0,
             'sender_ok' => 0,
             'last_ses_check' => 0, // timestamp of last quota check
@@ -182,6 +183,7 @@ function wpses_options() {
             }
         }
         $wpses_options['from_name'] = trim($_POST['from_name']); //
+        $wpses_options['endpoint'] = trim($_POST['endpoint']); //
         // TODO si mail diff�re, relancer proc�dure check => resetter sender_ok si besoin
 
         if (($wpses_options['access_key'] != trim($_POST['access_key'])) or ($wpses_options['secret_key'] != trim($_POST['secret_key']))) {
@@ -294,7 +296,7 @@ function wpses_check_SES() {
     global $wpses_options;
     global $SES;
     if (!isset($SES)) {
-        $SES = new SimpleEmailService($wpses_options['access_key'], $wpses_options['secret_key']);
+        $SES = new SimpleEmailService($wpses_options['access_key'], $wpses_options['secret_key'], $wpses_options['endpoint']);
     }
 }
 
@@ -422,7 +424,15 @@ function wpses_mail($to, $subject, $message, $headers = '') {
 function wpses_getoptions() {
     global $wpses_options;
     $wpses_options = get_option('wpses_options');
-
+    if (!array_key_exists('reply_to', $wpses_options)) {
+        $wpses_options['reply_to'] = '';
+    }
+    if (defined('WP_SES_ENDPOINT')) {
+        $wpses_options['endpoint'] = WP_SES_ENDPOINT;
+    }
+    if ('' == $wpses_options['endpoint']) {
+        $wpses_options['endpoint'] = 'email.us-east-1.amazonaws.com';
+    }
     if (defined('WP_SES_ACCESS_KEY')) {
         $wpses_options['access_key'] = WP_SES_ACCESS_KEY;
     }
@@ -449,8 +459,6 @@ function wpses_getoptions() {
             $wpses_options['active'] = 1;
         }
     }
-    
-     
 }
 
 global $wpses_options;
@@ -484,7 +492,7 @@ if ($wpses_options['active'] == 1) {
             update_option('wpses_options', $wpses_options);
         }
     }
-    $SES = new SimpleEmailService($wpses_options['access_key'], $wpses_options['secret_key']);
+    $SES = new SimpleEmailService($wpses_options['access_key'], $wpses_options['secret_key'], $wpses_options['endpoint']);
 }
 
 $WPSESMSG = '';
