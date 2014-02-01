@@ -20,26 +20,30 @@ var Bradt;
 
 		single: {
 			init: function() {
-				$('.single-post .subscribe').each(function () {
+				var $subscribe = $('.single-post .subscribe');
+				$subscribe.each(function () {
 					$(this).prepend('<div class="striping"><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i><b>/</b><i>/</i></div>');
 				});
 
 				Bradt.single.video_resize();
 				on_resize(Bradt.single.video_resize);
 
-				var unhidden = false;
-				$('input[type=email]').keyup(function() {
-					if (unhidden) return;
-
-					if ($(this).val().length > 3) {
-						$('.field.name').css('width', '0px').show().animate({'width': '100%'}, 1000);
-						unhidden = true;
-					}
-				});
+				Bradt.single.reveal_name_field($subscribe);
 
 				if ($(document).width() > 480) {
 					Bradt.single.subscribe_popup();
 				}
+			},
+			reveal_name_field: function($container) {
+				var unhidden = false;
+				$('input[type=email]', $container).on('keyup', function() {
+					if (unhidden) return;
+
+					if ($(this).val().length > 3) {
+						$('.field.name', $container).css('width', '0px').show().animate({'width': '100%'}, 1000);
+						unhidden = true;
+					}
+				});
 			},
 			subscribe_popup: function() {
 				// Determine 3rd last paragraph
@@ -67,6 +71,8 @@ var Bradt;
 						$subscribe.addClass('popover').hide();						
 						
 						$('body').append($subscribe);
+
+						Bradt.single.reveal_name_field($subscribe);
 						
 						var $close = $('<a class="close" href="">&times;</a>');
 						$subscribe.append($close);

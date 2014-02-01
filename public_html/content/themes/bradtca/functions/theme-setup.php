@@ -190,7 +190,7 @@ function bt_enqueue_scripts() {
 		$suffix = '.min';
 	}
 
-	wp_enqueue_script( 'bradtca', get_template_directory_uri() . '/assets/js/script' . $suffix . '.js', array( 'jquery' ), '20140116', true );
+	wp_enqueue_script( 'bradtca', get_template_directory_uri() . '/assets/js/script' . $suffix . '.js', array( 'jquery' ), '20140201', true );
 }
 add_action( 'wp_enqueue_scripts', 'bt_enqueue_scripts', 100 );
 
