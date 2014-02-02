@@ -16,3 +16,6 @@
 [submodule "public_html/content/plugins/amazon-web-services"]
 	path = public_html/content/plugins/amazon-web-services
 	url = git@github.com:deliciousbrains/wp-amazon-web-services.git
+[submodule "public_html/content/plugins/twitter-tools"]
+	path = public_html/content/plugins/twitter-tools
+	url = git@github.com:bradt/wp-twitter-tools.git
