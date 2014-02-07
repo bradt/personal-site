@@ -469,7 +469,7 @@ section.single-post {
 		.related {
 			li {
 				line-height: 1.4em;
-				margin-bottom: 15px;
+				margin-bottom: 0.3em;
 			}
 		}
 
@@ -493,12 +493,14 @@ section.single-post {
 	&.popover {
 		position: fixed;
 		bottom: 0;
-		right: 10px;
-		width: 450px;
+		right: 0;
+		padding: 45px 35px 25px 35px;
+		width: 420px;
 		background-color: #fff;
+		box-shadow: 0 0 10px #ccc;
 
 		h1 {
-			font-size: 22px;
+			font-size: 21px;
 			margin-bottom: 10px;
 		}
 
@@ -508,6 +510,7 @@ section.single-post {
 
 		input {
 			font-size: 16px;
+			width: 80%;
 		}
 
 		button {
@@ -536,7 +539,7 @@ section.single-post {
 
 	.desc {
 		font-family: $SourceSansPro;
-		font-size: 18px;
+		font-size: 0.85em;
 		line-height: 1.4em;
 		font-weight: normal;
 		margin-bottom: 15px;
@@ -582,24 +585,30 @@ section.single-post {
 	input {
 		float: left;
 		width: 100%;
-		font-size: 21px;
+		font-size: 1em;
 	}
 
 	button {
-		font-size: 21px;
+		font-size: 1em;
 	}
 
 	.rss {
 		max-height: 1em; /* Stop auto text sizing on mobile */
-		font-size: 14px;
+		font-size: 0.85em;
 		margin: 20px 0 0 0;
 	}
 
 	@media screen and (max-width: 480px) {
-		padding: 60px 30px 20px 30px;
+		padding: 30px 20px 20px 20px;
+		width: 100%;
+		position: relative;
+		left: -20px;
+		box-sizing: content-box;
+		-moz-box-sizing: content-box;
+		-webkit-box-sizing: content-box; 
 
 		h1 {
-			font-size: 26px;
+			font-size: 20px;
 			margin-bottom: 20px;
 		}
 	}
@@ -1925,7 +1934,17 @@ transform: translateY(-39px);
 
 }
 
+@media screen and (max-width: 1080px) {
+	.content {
+		padding: 40px 30px 30px 30px;
+	}
+}
+
 @media screen and (max-width: 480px) {
+	body {
+		font-size: 16px;
+	}
+
 	.content {
 		padding: 20px;
 	}
@@ -1935,6 +1954,16 @@ transform: translateY(-39px);
 		margin-top: -5px;
 	}
 
+	.entry-meta {
+		font-size: 15px;
+	}
+
+	.entry-content {
+		li {
+			margin: 0 0 0 21px;
+			margin: 0 0 0 1.4rem;
+		}
+	}
 }
 
 .search-note {

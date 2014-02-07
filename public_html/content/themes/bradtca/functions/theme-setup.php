@@ -181,7 +181,7 @@ function bt_theme_setup() {
 add_action( 'init', 'bt_theme_setup' );
 
 function bt_enqueue_scripts() {
-	wp_enqueue_style( 'bradtca', get_template_directory_uri() . '/assets/css/style.css', array(), '20140116' );
+	wp_enqueue_style( 'bradtca', get_template_directory_uri() . '/assets/css/style.css', array(), '20140206' );
 
 	if ( WP_DEBUG ) {
 		$suffix = '';
