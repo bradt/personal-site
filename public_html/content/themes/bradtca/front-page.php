@@ -39,7 +39,7 @@
 
 		</article>
 
-		<p class="more"><a href="<?php the_permalink() ?>">Read More &#9658;</a></p>
+		<p class="more"><a href="<?php the_permalink() ?>#more-<?php the_ID(); ?>">Read More &#9658;</a></p>
 
 	</section>
 
