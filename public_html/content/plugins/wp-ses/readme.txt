@@ -122,6 +122,12 @@ define('WP_SES_AUTOACTIVATE',true);
 
 == Changelog ==
 
+= 0.3.48 =
+* Experimental "WP Better Email" Plugin compatibility
+
+= 0.3.46 =
+* Maintenance release - fixes some notices and old code.
+
 = 0.3.45 =
 * Maintenance release - fixes some notices.
 

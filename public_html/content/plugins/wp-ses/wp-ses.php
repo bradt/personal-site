@@ -2,18 +2,20 @@
 
 /*
   Plugin Name: WP SES
-  Version: 0.3.45
+  Version: 0.3.48
   Plugin URI: http://wp-ses.com
   Description: Uses Amazon Simple Email Service instead of local mail for all outgoing WP emails.
   Author: Sylvain Deaure
   Author URI: http://www.blog-expert.fr
  */
 
-define('WPSES_VERSION', 0.345);
+define('WPSES_VERSION', 0.348);
 
 // refs
 // http://aws.amazon.com/fr/
 //
+// 0.3.48 : Experimental WP Better Email compatibility
+// 0.3.46 : Remove notices, updated old code.
 // 0.3.42 : Spanish translation
 // 0.3.4 : auto activation via WP_SES_AUTOACTIVATE define
 // 0.3.1 : Reply_to and global WPMU setup
@@ -128,20 +130,25 @@ function wpses_options() {
         $wpses_options['active'] = 0;
         update_option('wpses_options', $wpses_options);
     }
-    if (($wpses_options['from_email'] != '') and ($senders[$wpses_options['from_email']][1] === TRUE)) {
-        // email exp enregistré non vide et listé, on peut donc supposer que credentials ok et exp ok.
-        if ($wpses_options['credentials_ok'] == 0) {
-            $wpses_options['credentials_ok'] = 1;
+    if (($wpses_options['from_email'] != '')) {
+        if (!isset($senders[$wpses_options['from_email']])) {
+            $senders[$wpses_options['from_email']] = array(-1, false);
+        }
+        if ($senders[$wpses_options['from_email']][1] === TRUE) { //
+            // email exp enregistré non vide et listé, on peut donc supposer que credentials ok et exp ok.
+            if ($wpses_options['credentials_ok'] == 0) {
+                $wpses_options['credentials_ok'] = 1;
+                update_option('wpses_options', $wpses_options);
+            }
+            if ($wpses_options['sender_ok'] == 0) {
+                $wpses_options['sender_ok'] = 1;
+                update_option('wpses_options', $wpses_options);
+            }
+        } else {
+            //if ($senders[$wpses_options['from_email']][1] !== TRUE) { //
+            $wpses_options['sender_ok'] = 0;
             update_option('wpses_options', $wpses_options);
         }
-        if ($wpses_options['sender_ok'] == 0) {
-            $wpses_options['sender_ok'] = 1;
-            update_option('wpses_options', $wpses_options);
-        }
-    }
-    if ($senders[$wpses_options['from_email']][1] !== TRUE) {
-        $wpses_options['sender_ok'] = 0;
-        update_option('wpses_options', $wpses_options);
     }
 
     if (!empty($_POST['activate'])) {
@@ -248,10 +255,10 @@ function wpses_admin_warnings() {
 }
 
 function wpses_admin_menu() {
-    add_options_page('wpses', __('WP SES', 'wpses'), 8, __FILE__, 'wpses_options');
+    add_options_page('wpses', __('WP SES', 'wpses'), 'manage_options', __FILE__, 'wpses_options');
     // Quota and Stats
     if (!defined('WP_SES_HIDE_STATS') or (false == WP_SES_HIDE_STATS)) {
-        add_submenu_page('index.php', 'SES Stats', 'SES Stats', 8, 'wp-ses/ses-stats.php');
+        add_submenu_page('index.php', 'SES Stats', 'SES Stats', 'manage_options', 'wp-ses/ses-stats.php');
     }
 }
 
@@ -380,16 +387,30 @@ function wpses_prod_email($mail, $subject, $content) {
 function wpses_mail($to, $subject, $message, $headers = '') {
     global $SES;
     global $wpses_options;
+    global $wp_better_emails;
     extract(apply_filters('wp_mail', compact('to', 'subject', 'message', 'headers')));
     wpses_check_SES();
-    $message = preg_replace('/<(http:.*)>/', '$1', $message);
-    $html = $message;
-    $txt = strip_tags($html);
-    if (strlen($html) == strlen($txt)) {
-        $html = ''; // que msg text
+    if (isset($wp_better_emails)) {
+        // From wpbe plugin, not efficient nor elegant - Will do better next time.
+        // Could just call the php filter on a adhoc object, to be less dependant on the implementation of wpbe code.
+        $txt = wp_specialchars_decode($message, ENT_QUOTES);
+        $txt = $wp_better_emails->set_email_template($txt, 'plaintext_template');
+        $txt = apply_filters('wpbe_plaintext_body', $wp_better_emails->template_vars_replacement($txt));
+        /** HTML ******************************************************* */
+        $html = $wp_better_emails->esc_textlinks($message);
+        $html = nl2br(make_clickable($html));
+        $html = $wp_better_emails->set_email_template($html);
+        $html = apply_filters('wpbe_html_body', $wp_better_emails->template_vars_replacement($html));
+    } else {
+        $message = preg_replace('/<(http:.*)>/', '$1', $message);
+        $html = $message;
+        $txt = strip_tags($html);
+        if (strlen($html) == strlen($txt)) {
+            $html = ''; // que msg text
+        }
+        // no html entity in txt.
+        $txt = html_entity_decode($txt, ENT_NOQUOTES, 'UTF-8');
     }
-    // no html entity in txt.
-    $txt = html_entity_decode($txt, ENT_NOQUOTES, 'UTF-8');
     // TODO: option pour que TXT si msg html, ou les deux comme ici par défaut.
     $m = new SimpleEmailServiceMessage();
     $m->addTo($to);
