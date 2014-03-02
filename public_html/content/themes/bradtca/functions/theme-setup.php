@@ -8,31 +8,6 @@ add_theme_support( 'post-thumbnails' );
 
 function bt_theme_setup() {
 	$labels = array(
-		'name' => _x( 'Tweets', 'bradt.ca' ),
-		'singular_name' => _x( 'Tweet', 'bradt.ca' ),
-		'add_new' => _x( 'Add New', 'bradt.ca' ),
-		'add_new_item' => __( 'Add New Tweet' ),
-		'edit_item' => __( 'Edit Tweet' ),
-		'new_item' => __( 'New Tweet' ),
-		'view_item' => __( 'View Tweet' ),
-		'search_items' => __( 'Search Tweet' ),
-		'not_found' =>  __( 'No tweets found' ),
-		'not_found_in_trash' => __( 'No tweets found in Trash' ),
-		'parent_item_colon' => '',
-		'menu_name' => 'Tweets'
-	);
-	register_post_type( 'tweet', array(
-			'labels' => $labels,
-			'public' => true,
-			'has_archive' => 'tweets',
-			'rewrite' => array(
-				'slug' => 'tweet',
-				'with_front' => false
-			),
-			'supports' => array( 'title', 'editor', 'author', 'custom-fields', 'revisions', 'thumbnail' )
-		) );
-
-	$labels = array(
 		'name' => _x( 'Portfolio', 'bradt.ca' ),
 		'singular_name' => _x( 'Portfolio Item', 'bradt.ca' ),
 		'add_new' => _x( 'Add New', 'bradt.ca' ),
