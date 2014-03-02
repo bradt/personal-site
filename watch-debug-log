@@ -1,0 +1,2 @@
+#!/bin/bash
+tail -f debug.log | grep -v -E "content/plugins/(twitter-tools|social)|AKTT::"
