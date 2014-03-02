@@ -8,18 +8,18 @@
 
 	<?php
 	the_post();
-	
-	$views = get_post_meta(get_the_ID(), 'views', true);
-	update_post_meta(get_the_ID(), 'views', $views+1);
 
-	$meta = wp_get_attachment_metadata(get_the_ID());
+	$views = get_post_meta( get_the_ID(), 'views', true );
+	update_post_meta( get_the_ID(), 'views', $views+1 );
+
+	$meta = wp_get_attachment_metadata( get_the_ID() );
 	?>
 
 	<p class="date">
 		<?php echo gmdate( 'Y-m-d H:i:s', ( $meta['image_meta']['created_timestamp'] + ( get_option( 'gmt_offset' ) * 3600 ) ) ); ?> EST
 	</p>
-	
-	<?php echo wp_get_attachment_link(get_the_ID(), 'large'); ?>
+
+	<?php echo wp_get_attachment_link( get_the_ID(), 'large' ); ?>
 
 	<div class="details">
 		<div class="desc">
@@ -27,7 +27,7 @@
 				<?php the_content(); ?>
 			</div>
 			<div class="tags">
-				<?php the_terms(0, 'photo_tag', '<strong>Tags: </strong>'); ?>
+				<?php the_terms( 0, 'photo_tag', '<strong>Tags: </strong>' ); ?>
 			</div>
 		</div>
 		<table class="meta">
@@ -39,12 +39,12 @@
 				'iso' => 'ISO',
 				'shutter_speed' => 'Shutter Speed'
 			);
-			
-			foreach ($display as $key => $lbl) :
-				if (isset($meta['image_meta'][$key]) && $meta['image_meta'][$key]) :
+
+			foreach ( $display as $key => $lbl ) :
+				if ( isset( $meta['image_meta'][$key] ) && $meta['image_meta'][$key] ) :
 					echo '<tr><th>', $lbl, ':</th>';
-					echo '<td>', $meta['image_meta'][$key], '</td></tr>';
-				endif;
+				echo '<td>', $meta['image_meta'][$key], '</td></tr>';
+			endif;
 			endforeach;
 			?>
 			<tr>
@@ -60,11 +60,11 @@
 		//print_r(get_post_custom());
 		?>
 		</pre>
-	
+
 	</div>
 
 	<?php comments_template(); ?>
-	
+
 </section>
 
 <?php get_footer(); ?>

@@ -3,16 +3,16 @@
 <section class="page page-portfolio-list">
 
 	<?php
-	$r = new WP_Query(array(
-		'post_type' => 'page',
-		'pagename' => 'portfolio'
-	));
+	$r = new WP_Query( array(
+			'post_type' => 'page',
+			'pagename' => 'portfolio'
+		) );
 
 	$r->the_post();
-	?>		
+	?>
 
 	<h1 class="page-title"><?php the_title(); ?></h1>
-	
+
 	<div class="intro">
 		<?php the_content(); ?>
 	</div>
@@ -31,31 +31,31 @@
 	</ul>
 
 	<div class="tab-content">
-	
+
 		<ul class="projects">
 			<?php
-			if (have_posts()) : while (have_posts()) :
-				the_post();
-	
+			if ( have_posts() ) : while ( have_posts() ) :
+					the_post();
+
 				$attachs = bt_get_attachments();
-				list($src, $width, $height) = wp_get_attachment_image_src($attachs[0]->ID, 'medium');
-				?>
-				<li class="project<?php echo (get_post_meta($post->ID, 'featured', true)) ? ' featured' : ''; ?>">
+			list( $src, $width, $height ) = wp_get_attachment_image_src( $attachs[0]->ID, 'medium' );
+			?>
+				<li class="project<?php echo ( get_post_meta( $post->ID, 'featured', true ) ) ? ' featured' : ''; ?>">
 					<a href="<?php the_permalink(); ?>" class="scr">
 						<img src="<?php echo $src; ?>" width="<?php echo $width; ?>" height="<?php echo $height; ?>" alt="" />
 					</a>
-					<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a> <?php edit_post_link('Edit'); ?></h2>
+					<h2><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a> <?php edit_post_link( 'Edit' ); ?></h2>
 
 					<div class="roles">
 						<h4>My Roles</h4>
 						<ul>
 						<?php
-						$tags = get_the_terms($post->ID, 'portfolio_tag');
-						if ($tags) {
+						$tags = get_the_terms( $post->ID, 'portfolio_tag' );
+						if ( $tags ) {
 							$i = 1;
-							foreach ($tags as $tag) {
-								$css = ($i % 2 == 0) ? ' class="even"' : '';
-								printf('<li%s><span>%s</span></li>', $css, $tag->name);
+							foreach ( $tags as $tag ) {
+								$css = ( $i % 2 == 0 ) ? ' class="even"' : '';
+								printf( '<li%s><span>%s</span></li>', $css, $tag->name );
 								$i++;
 							}
 						}
@@ -65,7 +65,7 @@
 				</li>
 			<?php endwhile; endif; ?>
 		</ul>
-		
+
 	</div>
 
 </section>

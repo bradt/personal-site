@@ -1,5 +1,5 @@
-<?php header("HTTP/1.1 404 Not Found"); ?>
-<?php header("Status: 404 Not Found"); ?>
+<?php header( "HTTP/1.1 404 Not Found" ); ?>
+<?php header( "Status: 404 Not Found" ); ?>
 
 <?php get_header(); ?>
 
@@ -19,9 +19,9 @@
 		<figure>
 			<iframe width="420" height="315" src="http://www.youtube.com/embed/EAcdvmnZ_GM" frameborder="0" allowfullscreen></iframe>
 		</figure>
-		
+
 		<h2>Try a quick search...</h2>
-		
+
 		<?php get_search_form(); ?>
 
 	</div>

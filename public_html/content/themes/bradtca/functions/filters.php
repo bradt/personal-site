@@ -11,10 +11,10 @@ function bt_widont( $str = '' ) {
 add_filter( 'the_title', 'bt_widont' );
 
 function bt_tiny_mce_before_init( $init ) {
-    // Command separated string of extended elements
+	// Command separated string of extended elements
 	$ext = 'iframe[*]';
 
-    // Add to extended_valid_elements if it alreay exists
+	// Add to extended_valid_elements if it alreay exists
 	if ( isset( $init['extended_valid_elements'] ) ) {
 		$init['extended_valid_elements'] .= ',' . $ext;
 	} else {
@@ -23,7 +23,7 @@ function bt_tiny_mce_before_init( $init ) {
 
 	return $init;
 }
-add_filter('tiny_mce_before_init', 'bt_tiny_mce_before_init');
+add_filter( 'tiny_mce_before_init', 'bt_tiny_mce_before_init' );
 
 function bt_bloginfo( $output, $show ) {
 	if ( 'template_url' == $show && !is_admin() && !defined( 'WP_LOCAL_DEV' ) ) {

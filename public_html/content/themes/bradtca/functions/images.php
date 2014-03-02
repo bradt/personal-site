@@ -9,8 +9,8 @@ function bt_get_attachments() {
 		'post_parent' => $post->ID,
 		'orderby' => 'menu_order',
 		'order' => 'ASC'
-		); 
-	$attachments = get_posts($args);
+	);
+	$attachments = get_posts( $args );
 
 	return $attachments;
 }
