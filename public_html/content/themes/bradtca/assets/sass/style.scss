@@ -101,7 +101,7 @@ button {
 	min-height: 500px;
 	background-color: #fafafa;
 	position: relative;
-	padding: 60px;
+	padding: 60px 60px 0 60px;
 }
 
 .content:after {
@@ -498,6 +498,7 @@ section.single-post {
 		width: 420px;
 		background-color: #fff;
 		box-shadow: 0 0 10px #ccc;
+		z-index: 10;
 
 		h1 {
 			font-size: 21px;
@@ -850,8 +851,13 @@ section.single-post {
 		@media screen and (max-width: 480px) {
 			margin: -5px 0 30px 0;
 
+			h1 {
+				margin-right: 40px;
+			}
+
 			h2 {
-				line-height: 1.2em;
+				font-size: 16px;
+				line-height: 50px;
 			}
 		}
 	}
@@ -936,6 +942,21 @@ section.single-post {
 
 	.newer {
 		float: right;
+	}
+}
+
+.search-paging {
+	font-weight: 800;
+	font-size: 40px;
+	padding: 40px 0;
+
+	ul.page-numbers {
+		display: inline;
+
+		li {
+			display: inline;
+			margin: 0 5px;
+		}
 	}
 }
 
@@ -1934,9 +1955,28 @@ transform: translateY(-39px);
 
 }
 
+input[type=text].search-field {
+	position: relative;
+	z-index: 1;
+	border: 0;
+	background-color: #eaeaea;
+	outline: none;
+	margin-left: -60px;
+	width: 140%;
+	font-size: 1.4em;
+	border-radius: 0;
+	margin-top: 60px;
+	padding: 1em 55px;
+}
+
 @media screen and (max-width: 1080px) {
 	.content {
-		padding: 40px 30px 30px 30px;
+		padding: 40px 30px 0 30px;
+	}
+
+	input[type=text].search-field {
+		margin-left: -30px;
+		padding-left: 25px;
 	}
 }
 
@@ -1946,7 +1986,7 @@ transform: translateY(-39px);
 	}
 
 	.content {
-		padding: 20px;
+		padding: 20px 20px 0 20px;
 	}
 
 	.page-title {

@@ -22,8 +22,6 @@
 
 		<h2>Try a quick search...</h2>
 
-		<?php get_search_form(); ?>
-
 	</div>
 
 </section>
