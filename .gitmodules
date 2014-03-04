@@ -19,3 +19,6 @@
 [submodule "public_html/content/plugins/twitter-tools"]
 	path = public_html/content/plugins/twitter-tools
 	url = git@github.com:bradt/wp-twitter-tools.git
+[submodule "public_html/content/plugins/wp-migrate-db-pro-media-files"]
+	path = public_html/content/plugins/wp-migrate-db-pro-media-files
+	url = git@github.com:deliciousbrains/wp-migrate-db-pro-media-files.git
