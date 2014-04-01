@@ -795,12 +795,13 @@ section.single-post {
 .comment-content table {
 	border-bottom: 1px solid #ededed;
 	color: #757575;
-	font-size: 12px;
-	font-size: 0.857142857rem;
+	font-size: 14px;
+	font-size: 1rem;
 	line-height: 2;
 	margin: 0 0 24px;
 	margin: 0 0 1.714285714rem;
 	width: 100%;
+	font-family: $SourceSansPro;
 }
 .entry-content table caption,
 .comment-content table caption {
@@ -1368,6 +1369,12 @@ section.single-post {
 
 	@media screen and (max-width: 880px) {
 		width: auto;
+	}
+
+	.entry-content {
+		h1 {
+			font-size: 1.2em;
+		}
 	}
 }
 
