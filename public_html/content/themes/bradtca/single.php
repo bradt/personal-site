@@ -40,9 +40,9 @@
 						experience (since 2004) working with WordPress, from hosting, to developing themes and plugins.
 						I'll share my best tips and techniques with you via email.
 					</p>
-					<form action="http://bradt.createsend.com/t/r/s/jkfdth/" method="post">
+					<form action="http://bradt.createsend.com/t/r/s/tdthod/" method="post">
 						<div class="field email">
-							<input type="email" name="cm-jkfdth-jkfdth" id="jkfdth-jkfdth" placeholder="Email Address" />
+							<input type="email" name="cm-tdthod-tdthod" id="cm-tdthod-tdthod" placeholder="Email Address" />
 						</div>
 						<div class="field name" style="display: none;">
 							<input type="text" name="cm-name" id="post-subscribe-name" placeholder="Your Full Name" />
