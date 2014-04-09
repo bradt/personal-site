@@ -9,8 +9,7 @@ if( !defined( 'ABSPATH' ) ) die();
  * @param null $engineLabel The engine label
  * @since 1.0
  */
-function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engineLabel = null )
-{
+function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engineLabel = null ) {
 	global $searchwp;
 
 	?>

@@ -91,7 +91,9 @@ class EDD_SL_Plugin_Updater {
 	 * @return object $_data
 	 */
 	function plugins_api_filter( $_data, $_action = '', $_args = null ) {
-		if ( ( $_action != 'plugin_information' ) || !isset( $_args->slug ) || ( $_args->slug != $this->slug ) ) return $_data;
+		if ( ( $_action != 'plugin_information' ) || !isset( $_args->slug ) || ( $_args->slug != $this->slug ) ) {
+			return $_data;
+		}
 
 		$to_send = array( 'slug' => $this->slug );
 

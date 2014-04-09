@@ -8,16 +8,16 @@ jQuery(document).ready(function($){
 
 	function getProgress() {
 		$.post(ajax_object.ajax_url, data, function(response) {
-			progress.push(response);
-			// check to see if the last 12 progress updates were the same (i.e. no progress in 60 seconds)
-			if(progress.length>12) {
-				var recentProgressUpdates = progress.slice(progress.length - 30);
+			progress.push(parseFloat(response));
+			// check to see if the last 10 progress updates were the same
+			if(progress.length>10) {
+				var recentProgressUpdates = progress.slice(progress.length-10);
 				var uniqueProgressPoints = _.uniq(recentProgressUpdates, false);
-				if(uniqueProgressPoints.length==1) {
-					$.get('options-general.php?page=searchwp', function(data){});
+				if(uniqueProgressPoints.length==1&&uniqueProgressPoints[0]!==100) {
+					$.get('options-general.php?page=searchwp&swpjumpstart', function(data){});
 				}
 			}
-			if(response==-1) {
+			if(response==100) {
 				setTimeout(function(){
 					$('.swp-in-progress').addClass('swp-in-progress-done');
 				},1000);
@@ -26,10 +26,10 @@ jQuery(document).ready(function($){
 				$('.swp-in-progress').removeClass('swp-in-progress-done');
 				$('.swp-label > span').text(response+'%');
 				$('.swp-progress-bar').css('width',response+'%');
-				setTimeout(function(){
-					getProgress();
-				},5000);
 			}
+			setTimeout(function(){
+				getProgress();
+			},5000);
 		});
 	}
 	getProgress();

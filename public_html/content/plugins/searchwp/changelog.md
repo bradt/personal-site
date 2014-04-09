@@ -1,3 +1,113 @@
+### 2.0.3
+- **[New]** New Filter: `searchwp_get_custom_fields` allowing developers to pre-fetch (and set) post metadata just before indexing takes place (props Stefan Hans Schonert)
+- **[New]** New Filter: `searchwp_term_in` allowing you to modify each term (per term) used in the main search algorithm
+- **[Improvement]** Better handling of filtered terms, allowing extensions more control over the actual search query
+- **[Improvement]** `searchwp_indexer_loopback_args` is now applied to every HTTP call SearchWP makes
+
+
+### 2.0.2
+- **[New]** New Filter: `searchwp_statistics_cap` allows you to filter which capability is required to view and interact with stats
+- **[Improvement]** Ignored queries in search statistics are now stored per user, not globally
+
+
+### 2.0.1
+- **[Fix]** Fixed an issue introduced in 2.0 that prevented the uninstallation routine from properly executing when not using multisite
+- **[Improvement]** Resolved an issue in certain hosting environments that may have prevented the indexer from running
+
+
+### 2.0
+- **[New]** Shortcode processing: SearchWP can now process your Shortcodes in a number of ways
+- **[New]** New Filter: `searchwp_do_shortcode` allows you to conditionally tell SearchWP to process all Shortcodes
+- **[New]** New Filter: `searchwp_set_post` allows you to modify each post object prior to indexing, allowing for conditional processing of Shortcodes and more
+- **[New]** New Filter: `searchwp_nuke_on_delete` to trigger Nuke on Delete (*overrides setting!*)
+- **[New]** New Filter: `searchwp_exclusive_regex_matches` to force the indexer to prevent indexing exploded regex matches
+- **[New]** New Filter: `searchwp_omit_meta_key_{custom_field_key}` allowing for per-key conditional exclusion of post meta when indexing
+- **[Improvement]** Refined regex whitelist pattern for matching hyphen-separated-strings
+- **[Improvement]** The indexer no longer strips regex matches but instead retains them to better facilitate partial matches
+- **[Improvement]** Better language for action/conflict notices
+- **[Improvement]** You can now restore dismissed action/conflict notices in case you want to view them again
+- **[Improvement]** Slight update to the settings UI (better active tab contrast, lessened border radii)
+- **[Improvement]** Better exposure of Statistics feature
+- **[Improvement]** Uninstallation routine now better respects multisite environment
+- **[Improvement]** You can now exclude by terms that have not been used yet
+- **[Improvement]** Better default exclusion of internal metadata when indexing
+- **[Fix]** Fixed an issue where regex whitelist matches were not extracted from supplemental search queries during sanitization
+- **[Fix]** Fixed an issue that might result in duplication of terms that are integers in the index
+- **[Fix]** Fixed a potential issue (during updates) where Supplemental search engine labels would inadvertently have their first letter converted to an 'A'
+- **[Fix]** Redundant preparation of search terms when checking for exclusions by weight of -1
+- **[Fix]** PHP Warning cleanup
+
+
+### 1.9.11
+- **[Improvement]** Added a regex whitelist pattern for hyphen-separated strings often used for serial numbers
+- **[Improvement]** Reduced the overhead of term extraction when processing the regex whitelist which might cause long posts with many regex matches to stall the indexer
+
+
+### 1.9.10
+- **[Fix]** Fixed a regression in version 1.9.8 that prevented the installation of new plugins from .org
+
+
+### 1.9.9
+- **[Fix]** Fixed an issue where extended term-chunking of long posts may not have completed properly
+
+
+### 1.9.8
+- **[Fix]** Fixed an issue where the changelog would not be visible when clicking 'view version details' links
+- **[Change]** Automatic load monitoring is again enabled by default
+- **[Improvement]** The notice that outputs an indication of posts that failed to index now respects purposefully excluded post IDs via `searchwp_prevent_indexing` filter
+
+
+### 1.9.7
+- **[New]** New Filter: `searchwp_index_comments` allows you to prevent comments from being indexed
+- **[Improvement]** Prevented potential edge case where the indexer may stall after completing a delta update
+- **[Improvement]** More aggressive implementation of term regex whitelist (matches are now indexed fully in tact and not broken apart)
+- **[Fix]** Fixed an issue where problematic posts that failed to index were not properly called out in the WordPress admin
+- **[Fix]** Fixed an issue where 'Any' Custom Field may not have applied correctly
+
+
+### 1.9.5
+- **[Fix]** Fixed an issue where `searchwp_in_admin` may not properly hijack search results in the WordPress admin as desired
+- **[Improvement]** Only return results from the post type being viewed when `searchwp_in_admin` is enabled and performing a search
+- **[Improvement]** Additional optimization and segmentation of settings where appropriate to prevent potential collision
+- **[Improvement]** Use the Heartbeat API to dynamically update the Last Indexed time when on post edit screens
+
+
+### 1.9.4
+- **[Fix]** Fixed a CSS rendering issue in Firefox on the Search Stats page
+- **[Improvement]** Hardened settings getting and setting mechanism
+- **[New]** New Filter: `searchwp_show_conflict_notices` allows you to force-hide any conflict warnings generated by SearchWP
+
+
+### 1.9.2
+- **[New]** Added a number of actions to allow developers to react to various phases of indexing
+- **[Fix]** Fixed an issue where setting -1 posts per page was incorrectly utilized when performing searches
+- **[Fix]** Fixed an issue that prevented SearchWPSearch instantiation when AJAX calls were made
+- **[Improvement]** Modified default term whitelist rules to be more targeted
+- **[Improvement]** Reduced the number of notifications displayed upon activation
+- **[Improvement]** Reduced the number of queries necessary to store/retrieve various settings
+- **[Improvement]** Better data storage so as to work alongside various object caching plugins without stalling the indexer
+
+
+### 1.9
+- **[New]** You can now ignore queries from Search Stats (to help avoid spam getting in the way)
+- **[New]** Term Whitelisting: you can now define regex patterns and in doing so better retain specially formatted terms (e.g. dates, phone numbers, function names) in the index that otherwise would have been stripped of punctuation
+- **[New]** New Filter: `searchwp_query_orderby` allows open-ended customization of the `ORDER BY` clause of the main search query
+- **[New]** New Filter: `searchwp_force_run` allows developers the ability to force SearchWP to run no matter what
+- **[New]** New Filter: `searchwp_leinant_accents` allowing for 'lazy' quotes (e.g. searches without quotes will find terms with quotes)
+- **[Improvement]** PHP Error cleanup
+- **[Improvement]** Revisited index table indices, they're now better optimized which should result in noticeable performance improvements
+- **[Improvement]** Load monitoring has been removed as it proved to be holding back the indexer resulting in delayed index times
+- **[Improvement]** Attachment indexing has been disabled by default to save the (significant) overhead, but it will enable itself if any of your search engine settings incorporate Media
+- **[Improvement]** Refined the number of posts indexed per indexer passed, as always this can be filtered
+- **[Improvement]** Reduced the information overload present in the debug log, allowing for easier scanning for issues
+- **[Improvement]** Offloaded AJAX handlers to minimize footprint and impact on the indexer
+- **[Improvement]** Fixed overflow issues on the Search Stats page
+- **[Improvement]** Informational notice linking directly to more information on Filters having everything to do with indexer configuration
+- **[Improvement]** Better detection of parallel indexer processes running that could have resulted in duplicate indexing
+- **[Improvement]** Indexer pause/unpause has been re-named enable/disable to reduce confusion
+- **[Fix]** Fixed an issue where update notifications wouldn't show up in the Network Administration on Multisite
+
+
 ### 1.8.4
 - **[Improvement]** Better handling of serialized objects which resulted in __PHP_Incomplete_Class errors
 - **[Improvement]** Better enforcement of maximum term length when indexing as defined by the database schema

@@ -168,7 +168,7 @@
 
 }(window.jQuery);
 
-jQuery(document).ready(function($){
+(function($){
 
     var uniqid = function (prefix, more_entropy) {
         // +   original by: Kevin van Zonneveld (http://kevin.vanzonneveld.net)
@@ -219,45 +219,24 @@ jQuery(document).ready(function($){
 
     var updateTabContentHeights = function( $parent ){
         // first check to make sure the tabs don't exceed the height
-				if($parent.find('.swp-nav').height()>$parent.find('.swp-tab-content .swp-tab-pane:first').height()){
-					$parent.find('.swp-tab-content .swp-tab-pane:first').height($parent.find('.swp-nav').height());
-				}
+		var $parent_tab_content = $parent.find('.swp-tab-content');
+		var $parent_tab_pane = $parent_tab_content.find('.swp-tab-pane');
+		var $first_tab_pane = $parent_tab_pane.first();
+		var $parent_nav = $parent.find('.swp-nav');
+		if($parent_nav.height()>$first_tab_pane.height()){
+			$first_tab_pane.height($parent_nav.height());
+		}
 
         // make sure our tab content is at least the proper height
         // while doing that, hide each tab pane
         var tallest = 0;
-        $parent.find('.swp-tab-content .swp-tab-pane').each(function(){
+		$parent_tab_pane.each(function(){
             if($(this).height()>tallest){
                 tallest = $(this).height();
             }
         });
-        $parent.find('.swp-tab-content').height(tallest+20);
+		$parent_tab_content.height(tallest+50);
     };
-
-    $(document).tooltip({
-        items: ".swp-tooltip",
-        content: function(){
-            return $($(this).attr('href')).html();
-        }
-    });
-
-    var excludeSelects = function() {
-        $('select.swp-exclude-select').each(function(){
-            $(this).select2({
-                placeholder: $(this).data('placeholder')
-            });
-        });
-    };
-
-    excludeSelects();
-
-	var customFieldSelects = function() {
-		$('.swp-custom-field-select select').each(function(){
-			$(this).select2({});
-		});
-	};
-
-	customFieldSelects();
 
     var initTabs = function( $grandparent ){
         $grandparent .find('.swp-tabbable').each(function(){
@@ -293,8 +272,10 @@ jQuery(document).ready(function($){
         initTabs( $(this) );
     });
 
+	var $body = $('body');
+
     // allow addition of custom fields
-    $('body').on('click','a.swp-add-custom-field', function(){
+	$body.on('click','a.swp-add-custom-field', function(){
         _.templateSettings = {
             variable : 'swp',
             interpolate : /\{\{(.+?)\}\}/g
@@ -317,8 +298,6 @@ jQuery(document).ready(function($){
 
         return false;
     });
-
-    var $body = $('body');
 
     $body.on('click','.swp-delete',function(){
         $(this).parents('tr').remove();
@@ -361,6 +340,35 @@ jQuery(document).ready(function($){
         return false;
     });
 
-		$('.swp-dropdown-toggle').dropdown();
+	$('.swp-dropdown-toggle').dropdown();
+
+})(jQuery);
+
+jQuery(document).ready(function($){
+
+	$(document).tooltip({
+		items: ".swp-tooltip",
+		content: function(){
+			return $($(this).attr('href')).html();
+		}
+	});
+
+	var excludeSelects = function() {
+		$('select.swp-exclude-select').each(function(){
+			$(this).select2({
+				placeholder: $(this).data('placeholder')
+			});
+		});
+	};
+
+	excludeSelects();
+
+	var customFieldSelects = function() {
+		$('.swp-custom-field-select select').each(function(){
+			$(this).select2({});
+		});
+	};
+
+	customFieldSelects();
 
 });

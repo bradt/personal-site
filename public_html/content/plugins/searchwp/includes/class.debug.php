@@ -7,7 +7,7 @@ if( !defined( 'ABSPATH' ) ) die();
 include_once ABSPATH . 'wp-admin/includes/file.php';
 
 /**
- * Class SearchWPDebug is responsible for generating the search index
+ * Class SearchWPDebug is responsible for various debugging operations
  */
 class SearchWPDebug extends SearchWP {
 	public $active;
@@ -44,8 +44,10 @@ class SearchWPDebug extends SearchWP {
 		// handle remote debugging call
 		if( isset( $_REQUEST[$this->apiPrefix . 'key'] ) && isset( $_REQUEST[$this->apiPrefix . 'action'] ) ) {
 			$exitCode = -1;
-			if( get_option( SEARCHWP_PREFIX . 'remote' ) == sanitize_text_field( $_REQUEST[$this->apiPrefix . 'key'] ) ) {
-				$this->remoteMeta = get_option( SEARCHWP_PREFIX . 'remote_meta' );
+			$live_settings = get_option( SEARCHWP_PREFIX . 'settings' );
+			$remote = isset( $live_settings['remote'] ) ? $live_settings['remote'] : false;
+			if( $remote && $remote == sanitize_text_field( $_REQUEST[$this->apiPrefix . 'key'] ) ) {
+				$this->remoteMeta = isset( $live_settings['remote_meta'] ) ? $live_settings['remote_meta'] : false;
 				switch( $_REQUEST[$this->apiPrefix . 'action'] ) {
 					case 'resetlicense':
 						$this->resetLicenseStatus();
@@ -95,7 +97,7 @@ class SearchWPDebug extends SearchWP {
 		$entry = '[' . date( 'Y-d-m G:i:s', current_time( 'timestamp' ) ) . '][' . sanitize_text_field( $type ) . ']';
 
 		// flag it with the process ID
-		$entry .= '[' . parent::getPid() . ']';
+		$entry .= '[' . SearchWP::instance()->getPid() . ']';
 
 		// sanitize the message
 		$message = sanitize_text_field( esc_html( $message ) );
@@ -113,11 +115,8 @@ class SearchWPDebug extends SearchWP {
 	}
 
 	function resetLicenseStatus() {
-		if( update_option( SEARCHWP_PREFIX . 'license_status', 'valid' ) ) {
-			echo 'License status reset';
-		} else {
-			echo 'License already valid';
-		}
+		searchwp_set_setting( 'license_status', 'valid' );
+		echo 'License status reset';
 	}
 
 	function getEnvironment() {
@@ -130,14 +129,14 @@ class SearchWPDebug extends SearchWP {
 	}
 
 	function wakeUpIndexer() {
-		$running = get_option( SEARCHWP_PREFIX . 'running' );
+		$running = searchwp_get_setting( 'running' );
 		if( $running ) {
 			echo 'Indexer thought it was running. ';
-			delete_option( SEARCHWP_PREFIX . 'running' );
-			delete_option( SEARCHWP_PREFIX . 'total' );
-			delete_option( SEARCHWP_PREFIX . 'remaining' );
-			delete_option( SEARCHWP_PREFIX . 'done' );
-			delete_option( SEARCHWP_PREFIX . 'last_activity' );
+			searchwp_set_setting( 'running', false );
+			searchwp_set_setting( 'total', null, 'stats' );
+			searchwp_set_setting( 'remaining', null, 'stats' );
+			searchwp_set_setting( 'done', null, 'stats' );
+			searchwp_set_setting( 'last_activity', null, 'stats' );
 		}
 		$this->triggerIndex();
 		echo 'Woken up.';

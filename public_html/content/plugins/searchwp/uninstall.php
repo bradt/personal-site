@@ -10,49 +10,61 @@ if( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
 
 include_once( 'searchwp.php' );
 
-// maybe nuke all data and settings
-if( get_option( SEARCHWP_PREFIX . 'nuke_on_delete' ) ) {
+function searchwp_maybe_nuke() {
+	global $wpdb;
 
-	// purge the index including all post meta
-	$searchwp = new SearchWP();
-	$searchwp->purgeIndex();
+	// maybe nuke all data and settings
+	$swp_live_settings = get_option( SEARCHWP_PREFIX . 'settings' );
+	$swp_nuke_on_delete = isset( $swp_live_settings['nuke_on_delete'] ) ? $swp_live_settings['nuke_on_delete'] : false;
+	$swp_multisite = is_multisite() && function_exists( 'get_current_site' ) ? get_current_site() : null;
 
-	// deactivate the license
-	$searchwp->deactivateLicense();
-	delete_option( SEARCHWP_PREFIX . 'license_key' );
+	if( ! empty( $swp_nuke_on_delete ) || get_option( SEARCHWP_PREFIX . 'nuke_on_delete' ) || apply_filters( 'searchwp_nuke_on_delete', false, $swp_multisite ) ) {
 
-	// drop all custom database tables
-	$tables = array( 'cf', 'index', 'log', 'media', 'tax', 'terms' );
+		// purge the index including all post meta
+		$searchwp = new SearchWP();
+		$searchwp->purgeIndex();
 
-	foreach( $tables as $table )
-	{
-		$tableName = $wpdb->prefix . SEARCHWP_DBPREFIX . $table;
+		// deactivate the license
+		$searchwp->deactivateLicense();
 
-		// make sure the table exists
-		if( $wpdb->get_var( "SHOW TABLES LIKE '$tableName'") == $tableName )
-		{
-			// drop it
-			$sql = "DROP TABLE $tableName";
-			$wpdb->query( $sql );
+		// drop all custom database tables
+		$tables = array( 'cf', 'index', 'log', 'media', 'tax', 'terms' );
+
+		foreach( $tables as $table ){
+			$tableName = $wpdb->prefix . SEARCHWP_DBPREFIX . $table;
+
+			// make sure the table exists
+			if( $wpdb->get_var( "SHOW TABLES LIKE '$tableName'") == $tableName ) {
+				// drop it
+				$sql = "DROP TABLE $tableName";
+				$wpdb->query( $sql );
+			}
+		}
+
+		// delete all plugin settings
+		delete_option( SEARCHWP_PREFIX . 'settings' );
+		delete_option( SEARCHWP_PREFIX . 'indexer' );
+		delete_option( SEARCHWP_PREFIX . 'purge_queue' );
+		delete_option( SEARCHWP_PREFIX . 'version' );
+		delete_option( SEARCHWP_PREFIX . 'progress' );
+		delete_option( SEARCHWP_PREFIX . 'license_key' );
+		delete_option( SEARCHWP_PREFIX . 'paused' );
+		delete_option( SEARCHWP_PREFIX . 'last_activity' );
+
+		// remove transients
+		delete_transient( 'searchwp' );
+	}
+}
+
+if ( is_multisite() ) {
+	$blogs = $wpdb->get_results( "SELECT blog_id FROM {$wpdb->blogs}", ARRAY_A );
+	if ( $blogs ) {
+		foreach ( $blogs as $blog ) {
+			switch_to_blog( $blog['blog_id'] );
+			searchwp_maybe_nuke();
+			restore_current_blog();
 		}
 	}
-
-	// delete all plugin options
-	delete_option( SEARCHWP_PREFIX . 'settings' );
-	delete_option( SEARCHWP_PREFIX . 'version' );
-	delete_option( SEARCHWP_PREFIX . 'activated' );
-	delete_option( SEARCHWP_PREFIX . 'license_nag' );
-	delete_option( SEARCHWP_PREFIX . 'mysql_version_nag' );
-	delete_option( SEARCHWP_PREFIX . 'remote' );
-	delete_option( SEARCHWP_PREFIX . 'remote_meta' );
-	delete_option( SEARCHWP_PREFIX . 'paused' );
-	delete_option( SEARCHWP_PREFIX . 'nuke_on_delete' );
-	delete_option( SEARCHWP_PREFIX . 'done' );
-	delete_option( SEARCHWP_PREFIX . 'remaining' );
-	delete_option( SEARCHWP_PREFIX . 'total' );
-	delete_option( SEARCHWP_PREFIX . 'indexnonce' );
-	delete_option( SEARCHWP_PREFIX . 'dismissed' );
-
-	// remove transients
-	delete_transient( 'searchwp' );
+} else {
+	searchwp_maybe_nuke();
 }

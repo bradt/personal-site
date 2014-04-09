@@ -19,30 +19,30 @@ function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype 
 	switch( $type )
 	{
 		case 'title':
-			$weight = isset( $weights['title'] ) ? $weights['title'] : 20;
+			$weight = isset( $weights['title'] ) ? floatval( $weights['title'] ) : 20;
 			break;
 
 		case 'content':
-			$weight = isset( $weights['content'] ) ? $weights['content'] : 2;
+			$weight = isset( $weights['content'] ) ? floatval( $weights['content'] ) : 2;
 			break;
 
 		case 'slug':
-			$weight = isset( $weights['slug'] ) ? $weights['slug'] : 10;
+			$weight = isset( $weights['slug'] ) ? floatval( $weights['slug'] ) : 10;
 			break;
 
 		case 'tax':
 			$weight = 5;
 			if( is_string( $subtype ) && isset( $weights['tax'][$subtype] ) ) {
-				$weight = $weights['tax'][$subtype];
+				$weight = floatval( $weights['tax'][$subtype] );
 			}
 			break;
 
 		case 'excerpt':
-			$weight = isset( $weights['excerpt'] ) ? $weights['excerpt'] : 6;
+			$weight = isset( $weights['excerpt'] ) ? floatval( $weights['excerpt'] ) : 6;
 			break;
 
 		case 'comment':
-			$weight = isset( $weights['comment'] ) ? $weights['comment'] : 1;
+			$weight = isset( $weights['comment'] ) ? floatval( $weights['comment'] ) : 1;
 			break;
 	}
 
@@ -57,11 +57,10 @@ function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype 
  * @return bool
  * @since 1.0
  */
-function searchwpEngineSettingsTemplate( $engine = 'default' )
-{
+function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 	global $searchwp;
 
-	$settings = get_option( SEARCHWP_PREFIX . 'settings' );
+	$settings = $searchwp->settings;
 	$engine = sanitize_key( $engine );
 
 	if( $engine != 'default' && is_array( $settings ) && !array_key_exists( 'engines', $settings ) ) {
@@ -173,10 +172,12 @@ function searchwpEngineSettingsTemplate( $engine = 'default' )
 								</tr>
 							<?php endif; ?>
 							<?php if( post_type_supports( $post_type->name, 'comments' ) && $post_type->name != 'attachment' ) : ?>
-								<tr>
-									<td><label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_weights_comment"><?php _e( 'Comments', 'searchwp' ); ?></label></td>
-									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][weights][comment]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_weights_comment" value="<?php echo searchwpGetEngineWeight( $weights, 'comment' ); ?>" /></td>
-								</tr>
+								<?php if( apply_filters( 'searchwp_index_comments', true ) ) : ?>
+									<tr>
+										<td><label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_weights_comment"><?php _e( 'Comments', 'searchwp' ); ?></label></td>
+										<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][weights][comment]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_weights_comment" value="<?php echo searchwpGetEngineWeight( $weights, 'comment' ); ?>" /></td>
+									</tr>
+								<?php endif; ?>
 							<?php endif; ?>
 
 							<?php if( 'attachment' == $post_type->name ) : ?>
@@ -253,7 +254,12 @@ function searchwpEngineSettingsTemplate( $engine = 'default' )
 									<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_exclude"><?php _e( 'Exclude IDs: ', 'searchwp' ); ?></label>
 								</td>
 								<td>
-									<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][exclude]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_exclude" placeholder="<?php _e( 'Comma separated IDs', 'searchwp' ); ?>" value="<?php if( !empty( $options['exclude'] ) ) echo $options['exclude']; ?>" /> <a class="swp-tooltip" href="#swp-tooltip-exclude-<?php echo $engine; ?>_<?php echo $post_type->name; ?>">?</a>
+									<?php
+										if( ! empty( $options['exclude'] ) && false === strpos( $options['exclude'], ',' ) && ! is_numeric( $options['exclude'] ) ) {
+											$options['exclude'] = '';
+										}
+									?>
+									<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][exclude]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_exclude" placeholder="<?php _e( 'Comma separated IDs', 'searchwp' ); ?>" value="<?php if( ! empty( $options['exclude'] ) ) echo $options['exclude']; ?>" /> <a class="swp-tooltip" href="#swp-tooltip-exclude-<?php echo $engine; ?>_<?php echo $post_type->name; ?>">?</a>
 									<div class="swp-tooltip-content" id="swp-tooltip-exclude-<?php echo $engine; ?>_<?php echo $post_type->name; ?>">
 										<?php _e( 'Comma separated post IDs. Will be excluded entirely, even if attributed to.', 'searchwp' ); ?>
 									</div>
@@ -262,11 +268,13 @@ function searchwpEngineSettingsTemplate( $engine = 'default' )
 							<?php
 							$taxonomies = get_object_taxonomies( $post_type->name );
 							if( is_array( $taxonomies ) && count( $taxonomies ) ) :
-								foreach( $taxonomies as $taxonomy )
-								{
+								foreach( $taxonomies as $taxonomy ) {
 									$taxonomy = get_taxonomy( $taxonomy );
-									$terms = get_terms( $taxonomy->name );
-									if( !empty( $terms ) ) :
+									$taxonomy_args = array(
+										'hide_empty' => false,
+									);
+									$terms = get_terms( $taxonomy->name, $taxonomy_args );
+									if( ! empty( $terms ) ) :
 									?>
 									<tr>
 										<td>
