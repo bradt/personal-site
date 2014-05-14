@@ -143,49 +143,17 @@ var Bradt;
 				
 				var init_events = function() {
 					
-					$('.field-budget').after($('.section-budget'));
-					
 					if ($('input[name=what]:checked').val() != 'work') {
 						$('.field-budget, .field-schedule').hide();
 					}
 
-					$('input[name=budget]').change(function() {
-						var val = $(this).val();
-						switch (val) {
-							case 'too_low':
-								$('#message-details, .button, .section, .field-schedule').hide();
-								$('.section-budget').show();
-								break;
-							default:
-								$('.section').hide();
-								$('#message-details, .button, .field-schedule').show();
-						}
-					});
-		
-					/*
-					$('input[name=schedule]').change(function() {
-						var val = $(this).val();
-						switch (val) {
-							case '1-4':
-								$('#message-details, .button, .section').hide();
-								$('.section-schedule').show();
-								break;
-							default:
-								$('.section').hide();
-								$('#message-details, .button').show();
-						}
-					});
-					*/
-					
 					$('input[name=what]').change(function() {
 						$('.error').hide();
 						var val = $(this).val();
 						switch (val) {
 							case 'plugin':
 							case 'personal':
-							//case 'work':
 								$('#message-details, .button, .section, .field-budget, .field-schedule').hide();
-								//$('#message-details, .button, .section').hide();
 								$('.section-' + val).show();
 								break;
 							case 'work':

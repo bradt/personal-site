@@ -47,34 +47,23 @@ class ContactForm extends PHPFormWork {
                 )
             ) );
 
-        $fields[] = new PFW_Optionlist( 'budget', array(
+        $fields[] = new PFW_Field( 'budget', array(
                 'lbl' => 'What is your budget? <small>(Not sure? <a target="_blank" href="/archives/what-does-it-cost-to-build-a-web-site/">Read this</a>.)</small>',
-                'options' => $this->budget_options,
                 'validation' => array(
                     array(
                         'func' => array( $this, 'validate_work_required' ),
-                        'msg' => 'Please choose one of the options above.'
-                    ),
-                    array(
-                        'func' => array( $this, 'validate_budget' ),
-                        'msg' => 'Sorry, I don\'t take on projects with budgets that low.'
+                        'msg' => 'Please enter your budget.'
                     )
                 )
             ) );
 
-        $fields[] = new PFW_Optionlist( 'schedule', array(
+        $fields[] = new PFW_Field( 'schedule', array(
                 'lbl' => 'When do you need your project completed by?',
-                'options' => $this->schedule_options,
                 'validation' => array(
                     array(
                         'func' => array( $this, 'validate_work_required' ),
-                        'msg' => 'Please choose one of the options above.'
-                    ),
-                    /*
-                array(
-                    'func' => array($this, 'validate_schedule'),
-                    'msg' => 'Sorry, I don\'t take on projects with such a tight schedule.'
-                )*/
+                        'msg' => 'Please enter your project schedule.'
+                    )
                 )
             ) );
 
@@ -176,14 +165,6 @@ class ContactForm extends PHPFormWork {
 
     function validate_what( $str ) {
         return !in_array( $str, array( 'plugin', 'personal' ) );
-    }
-
-    function validate_budget( $str ) {
-        return 'work' != $_POST['what'] || ( 'work' == $_POST['what'] && 'too_low' != $str );
-    }
-
-    function validate_schedule( $str ) {
-        return 'work' != $_POST['what'] || ( 'work' == $_POST['what'] && '1-4' != $str );
     }
 
     function validate_work_required( $str ) {

@@ -1257,6 +1257,8 @@ section.single-post {
 }
 
 .page-contact {
+	min-height: 800px;
+
 	.req {
 		display: none;
 	}
@@ -1286,6 +1288,7 @@ section.single-post {
 			float: left;
 			color: #666;
 			display: block;
+			line-height: 2em;
 		}
 
 		.error {
@@ -1312,6 +1315,25 @@ section.single-post {
 			margin-bottom: 20px;
 			display: block;
 		}
+	}
+
+	.field-budget, .field-schedule {
+		label {
+			float: none;
+			width: auto;
+		}
+
+		input {
+			max-width: 300px;
+		}
+
+		.error {
+			margin-left: 0;
+		}
+	}
+
+	.field-schedule {
+		margin-bottom: 50px;
 	}
 
 	button {
@@ -1357,6 +1379,10 @@ section.single-post {
 		float: left;
 		margin-top: 8px;
 		margin-right: 10px;
+
+		@media screen and (max-width: 480px) {
+			margin-top: 3px;
+		}
 	}
 }
 
