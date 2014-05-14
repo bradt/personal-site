@@ -26,7 +26,7 @@ function bt_tiny_mce_before_init( $init ) {
 add_filter( 'tiny_mce_before_init', 'bt_tiny_mce_before_init' );
 
 function bt_bloginfo( $output, $show ) {
-	if ( 'template_url' == $show && !is_admin() && !defined( 'WP_LOCAL_DEV' ) ) {
+	if ( 'template_url' == $show && !is_admin() && !WP_LOCAL_DEV ) {
 		return 'http://assets.bradt.ca';
 	}
 
