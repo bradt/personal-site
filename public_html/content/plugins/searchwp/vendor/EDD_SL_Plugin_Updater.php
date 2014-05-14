@@ -1,5 +1,8 @@
 <?php
 
+// SearchWP environment check
+if ( ! defined( 'ABSPATH' ) || ! defined( 'SEARCHWP_VERSION' ) ) exit;
+
 // uncomment this line for testing
 //set_site_transient( 'update_plugins', null );
 

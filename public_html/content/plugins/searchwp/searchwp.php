@@ -3,7 +3,7 @@
 Plugin Name: SearchWP
 Plugin URI: https://searchwp.com/
 Description: The best WordPress search you can find
-Version: 2.0.3
+Version: 2.1.3
 Author: Jonathan Christopher
 Author URI: https://searchwp.com/
 Text Domain: searchwp
@@ -27,7 +27,7 @@ along with this program; if not, see <http://www.gnu.org/licenses/>.
 // exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-define( 'SEARCHWP_VERSION', '2.0.3' );
+define( 'SEARCHWP_VERSION', '2.1.3' );
 define( 'SEARCHWP_PREFIX', 'searchwp_' );
 define( 'SEARCHWP_DBPREFIX', 'swp_' );
 define( 'EDD_SEARCHWP_STORE_URL', 'http://searchwp.com' );
@@ -313,6 +313,9 @@ class SearchWP {
 		// strings of digits
 		"/\\b(\\d{1,})\\b/is",
 
+		// e.g. M&M, M & M
+		"/\\b([[:alnum:]]+\\s?(?:&\\s?[[:alnum:]]+)+)/is",
+
 	);
 
 	/**
@@ -320,6 +323,13 @@ class SearchWP {
 	 * @since 1.9.1
 	 */
 	public $settings_updated = false;
+
+
+	/**
+	 * @var string User capability to modify SearchWP settings in the WordPress admin
+	 * @since 2.1
+	 */
+	public $settings_cap = 'manage_options';
 
 
 	/**
@@ -354,8 +364,20 @@ class SearchWP {
 
 			// process the purge queue once everything is said and done
 			add_action( 'shutdown', array( self::$instance, 'setupPurgeQueue' ) );
+
+			add_action( 'after_setup_theme', array( self::$instance , 'set_settings_cap' ) );
 		}
 		return self::$instance;
+	}
+
+
+	/**
+	 * Set the capability necessary for interacting with SearchWP's settings in the WordPress admin
+	 *
+	 * @since 2.1
+	 */
+	function set_settings_cap() {
+		$this->settings_cap = apply_filters( 'searchwp_settings_cap', $this->settings_cap );
 	}
 
 
@@ -389,6 +411,11 @@ class SearchWP {
 		// append our indexer-specific settings since they're stored separately
 		if( $indexer_settings = get_option( SEARCHWP_PREFIX . 'indexer' ) ) {
 			$this->settings = array_merge( $this->settings, $indexer_settings );
+		}
+
+		// PdfParser runs only on 5.3+ but SearchWP runs on 5.2+
+		if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
+			include_once( $this->dir . '/vendor/pdfparser-bootloader.php' );
 		}
 
 		if ( ! class_exists( 'PDF2Text' ) ) {
@@ -502,7 +529,7 @@ class SearchWP {
 	 * @since 1.3.1
 	 */
 	function setupPurgeQueue() {
-		if( !empty( $this->purgeQueue ) ) {
+		if( ! empty( $this->purgeQueue ) ) {
 			do_action( 'searchwp_log', 'setupPurgeQueue() ' . count( $this->purgeQueue ) );
 			$existingPurgeQueue = searchwp_get_option( 'purge_queue' );
 			if ( is_array( $existingPurgeQueue ) && !empty( $existingPurgeQueue ) ) {
@@ -728,7 +755,7 @@ Results in this set:
 		}
 
 		// only show in the admin and if user can manage options
-		if( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+		if( ! is_admin() || ! current_user_can( $this->settings_cap ) ) {
 			return;
 		}
 
@@ -745,7 +772,7 @@ Results in this set:
 		$toggleLabel = searchwp_get_option( 'paused' ) ? __( 'Enable Indexer', 'searchwp' ) : __( 'Disable Indexer', 'searchwp' );
 		$this->adminBarAddSubMenu(
 			$toggleLabel,
-			add_query_arg( 'nonce', wp_create_nonce( 'swppausenonce' ) ),
+			add_query_arg( 'swppausenonce', wp_create_nonce( 'swppausenonce' ) ),
 			$this->textDomain,
 			$this->textDomain . '_toggle_pause'
 		);
@@ -845,10 +872,10 @@ Results in this set:
 		if (
 				( ( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) ) &&
 				( isset( $_REQUEST['action'] ) && wp_verify_nonce( $_REQUEST['action'], 'swppauseindexer' ) )
-				&& current_user_can( 'manage_options' ) )
+				&& current_user_can( $this->settings_cap ) )
 				||
-				( ( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swppausenonce' ) )
-						&& current_user_can( 'manage_options' ) )
+				( ( isset( $_REQUEST['swppausenonce'] ) && wp_verify_nonce( $_REQUEST['swppausenonce'], 'swppausenonce' ) )
+						&& current_user_can( $this->settings_cap ) )
 		) {
 			if( $this->paused ) {
 				$this->indexerUnpause();
@@ -936,9 +963,13 @@ Results in this set:
 				$search_template_content = $wp_filesystem->get_contents_array( $search_template );
 				$line_numbers = array();
 				while ( list( $key, $line ) = each( $search_template_content ) ) {
-					foreach( $potential_conflicts as $potential_conflict ) {
-						if( false !== strpos( $line, $potential_conflict ) ) {
-							$line_numbers[$key + 1][] = $potential_conflict;
+					$line = trim( $line );
+					foreach ( $potential_conflicts as $potential_conflict ) {
+						if ( false !== strpos( $line, $potential_conflict ) ) {
+							// make sure the line isn't commented out
+							if ( '//' != substr( $line, 0, 2 ) ) {
+								$line_numbers[$key + 1][] = $potential_conflict;
+							}
 						}
 					}
 				}
@@ -1498,9 +1529,7 @@ Results in this set:
 			$terms .= ' ' . implode( ' ', $whitelisted_terms );
 		}
 
-
 		do_action( 'searchwp_log', '$sanitizeTerms = ' . print_r( $sanitizeTerms, true ) );
-
 		do_action( 'searchwp_log', '$terms = ' . print_r( $terms, true ) );
 
 
@@ -1986,7 +2015,7 @@ Results in this set:
 	 * @since 1.0
 	 */
 	function adminMenu() {
-		add_options_page( $this->pluginName, __( $this->pluginName, 'searchwp' ), 'manage_options', $this->textDomain, array( $this, 'optionsPage' ) );
+		add_options_page( $this->pluginName, __( $this->pluginName, 'searchwp' ), $this->settings_cap, $this->textDomain, array( $this, 'optionsPage' ) );
 		add_dashboard_page( __( 'Search Statistics', 'searchwp' ), __( 'Search Stats', 'searchwp' ), apply_filters( 'searchwp_statistics_cap', 'publish_posts' ), $this->textDomain . '-stats', array( $this, 'statsPage' ) );
 	}
 
@@ -2388,12 +2417,6 @@ Results in this set:
 	 * @since 1.3
 	 */
 	function showErroneousPosts() {
-		if( isset( $_GET['action'] ) && strtolower( $_GET['action'] ) == 'reintroduce' && isset( $_GET['swpid'] ) ) {
-			// remove the flags preventing the post from being indexed
-			$post_id = absint( $_GET['swpid'] );
-			$this->purgePost( $post_id );
-			$this->triggerIndex();
-		}
 
 		$args = array(
 			'posts_per_page'        => -1,
@@ -2416,6 +2439,28 @@ Results in this set:
 			)
 		);
 
+		if( ( isset( $_GET['action'] ) && strtolower( $_GET['action'] ) == 'reintroduce' ) && isset( $_GET['swpid'] ) ) {
+			$erroneous_post_id = absint( $_GET['swpid'] );
+			if( isset( $_GET['swperroneous'] ) && wp_verify_nonce( $_GET['swperroneous'], 'swperroneouspost' . $erroneous_post_id ) ) {
+				// remove the flags preventing the post from being indexed
+				$this->purgePost( $erroneous_post_id );
+				$this->triggerIndex();
+			}
+		} else {
+			if( isset( $_GET['action'] ) && strtolower( $_GET['action'] ) == 'reintroduce_all' ) {
+				if( isset( $_GET['swperroneouspurge'] ) && wp_verify_nonce( $_GET['swperroneouspurge'], 'swperroneouspurge' ) ) {
+					// grab all erroneous posts
+					$erroneous_posts = get_posts( $args );
+					if( ! empty( $erroneous_posts ) ) {
+						foreach( $erroneous_posts as $erroneous_post_id ) {
+							$this->purgePost( $erroneous_post_id );
+						}
+						$this->triggerIndex();
+					}
+				}
+			}
+		}
+
 		$erroneousPosts = get_posts( $args );
 
 		?>
@@ -2430,7 +2475,8 @@ Results in this set:
 			<?php if( empty( $erroneousPosts ) ) : ?>
 				<p><?php _e( 'Nothing is currently excluded from the indexer.', 'searchwp' ); ?></p>
 			<?php else: ?>
-				<p><?php _e( 'SearchWP was unable to index the following content, and it is actively being excluded from subsequent index runs.', 'searchwp' ); ?></p>
+				<?php $nonce_main = wp_create_nonce( 'swperroneous' ); ?>
+				<p><?php _e( 'SearchWP was unable to index the following content, and it is actively being excluded from subsequent index runs.', 'searchwp' ); ?> <a href="options-general.php?page=searchwp&amp;nonce=<?php echo $nonce_main; ?>&action=reintroduce_all&swperroneouspurge=<?php echo wp_create_nonce( 'swperroneouspurge' ); ?>" class="button"><?php _e( 'Reintroduce All' ,'searchwp' ); ?></a></p>
 				<table class="swp-table swp-erroneous-posts">
 					<colgroup>
 						<col id="swp-erroneous-posts-titles" />
@@ -2446,7 +2492,7 @@ Results in this set:
 					<?php foreach( $erroneousPosts as $erroneousPost ) : if( absint( $_GET['swpid'] ) != $erroneousPost ) : ?>
 						<tr>
 							<td><a href="<?php echo admin_url( 'post.php?post=' . $erroneousPost . '&action=edit' ); ?>"><?php echo get_the_title( $erroneousPost ); ?></a></td>
-							<td><a href="options-general.php?page=searchwp&amp;nonce=<?php echo wp_create_nonce( 'swperroneous' ); ?>&action=reintroduce&swpid=<?php echo $erroneousPost; ?>"><?php _e( 'Reintroduce', 'searchwp' ); ?></a></td>
+							<td><a href="options-general.php?page=searchwp&amp;nonce=<?php echo $nonce_main; ?>&action=reintroduce&swpid=<?php echo $erroneousPost; ?>&swperroneous=<?php echo wp_create_nonce( 'swperroneouspost' . $erroneousPost ); ?>"><?php _e( 'Reintroduce', 'searchwp' ); ?></a></td>
 						</tr>
 					<?php endif; endforeach; ?>
 					</tbody>
@@ -2524,7 +2570,7 @@ Results in this set:
 		if (
 				( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) ) &&
 				( isset( $_REQUEST['action'] ) && wp_verify_nonce( $_REQUEST['action'], 'swppurgeindex' ) )
-				&& current_user_can( 'manage_options' )
+				&& current_user_can( $this->settings_cap )
 		) {
 			do_action( 'searchwp_log', 'Passed nonce, purge index' );
 			$this->purgeIndex();
@@ -2536,7 +2582,7 @@ Results in this set:
 		if (
 			( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) ) &&
 			( isset( $_REQUEST['action'] ) && wp_verify_nonce( $_REQUEST['action'], 'swppurgestats' ) )
-			&& current_user_can( 'manage_options' )
+			&& current_user_can( $this->settings_cap )
 		) {
 			do_action( 'searchwp_log', 'Passed nonce, reset stats' );
 			$this->resetStats();
@@ -2548,7 +2594,7 @@ Results in this set:
 		if (
 				( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) ) &&
 				( isset( $_REQUEST['action'] ) && wp_verify_nonce( $_REQUEST['action'], 'swpwakeindexer' ) )
-				&& current_user_can( 'manage_options' )
+				&& current_user_can( $this->settings_cap )
 		) {
 			do_action( 'searchwp_log', 'Waking up the indexer' );
 			$running = searchwp_get_setting( 'running' );
@@ -2565,7 +2611,7 @@ Results in this set:
 		if (
 				( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) ) &&
 				( isset( $_REQUEST['action'] ) && wp_verify_nonce( $_REQUEST['action'], 'swpremote' ) )
-				&& current_user_can( 'manage_options' )
+				&& current_user_can( $this->settings_cap )
 		) {
 			if( $remoteDebug ) {
 				do_action( 'searchwp_log', 'Turned off remote debugging' );
@@ -2586,7 +2632,7 @@ Results in this set:
 		if (
 			( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) ) &&
 			( isset( $_REQUEST['action'] ) && wp_verify_nonce( $_REQUEST['action'], 'swpnuke' ) )
-			&& current_user_can( 'manage_options' )
+			&& current_user_can( $this->settings_cap )
 		) {
 			if( $nuke_on_delete ) {
 				searchwp_set_setting( 'nuke_on_delete', false );
@@ -2602,7 +2648,7 @@ Results in this set:
 		if (
 			( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) ) &&
 			( isset( $_REQUEST['action'] ) && wp_verify_nonce( $_REQUEST['action'], 'swpresetconflictnags' ) )
-			&& current_user_can( 'manage_options' )
+			&& current_user_can( $this->settings_cap )
 		) {
 			do_action( 'searchwp_log', 'Passed nonce, reset conflict nags' );
 			$existing_dismissals = searchwp_get_setting( 'dismissed' );
@@ -2774,13 +2820,13 @@ Results in this set:
 		}
 
 		// check to see if we should show advanced settings
-		if ( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) && current_user_can( 'manage_options' ) ) {
+		if ( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swpadvanced' ) && current_user_can( $this->settings_cap ) ) {
 			$this->advancedSettings();
 			return;
 		}
 
 		// check to see if we should show posts that failed indexing
-		if ( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swperroneous' ) && current_user_can( 'manage_options' ) ) {
+		if ( isset( $_REQUEST['nonce'] ) && wp_verify_nonce( $_REQUEST['nonce'], 'swperroneous' ) && current_user_can( $this->settings_cap ) ) {
 			$this->showErroneousPosts();
 			return;
 		}
@@ -2816,7 +2862,7 @@ Results in this set:
 		<?php } ?>
 
 		<?php
-		if ( isset( $_REQUEST['inonce'] ) && wp_verify_nonce( $_REQUEST['inonce'], 'swpindexernag' ) && current_user_can( 'manage_options' ) ) {
+		if ( isset( $_REQUEST['inonce'] ) && wp_verify_nonce( $_REQUEST['inonce'], 'swpindexernag' ) && current_user_can( $this->settings_cap ) ) {
 			$dismissed = searchwp_get_setting( 'dismissed' );
 			if( is_array( $dismissed ) ) {
 				if( isset( $dismissed['nags'] ) && is_array( $dismissed['nags'] ) ) {
@@ -2899,7 +2945,7 @@ Results in this set:
 		<?php endif; ?>
 
 		<?php
-		if ( isset( $_REQUEST['nnonce'] ) && wp_verify_nonce( $_REQUEST['nnonce'], 'swplicensenag' ) && current_user_can( 'manage_options' ) ) {
+		if ( isset( $_REQUEST['nnonce'] ) && wp_verify_nonce( $_REQUEST['nnonce'], 'swplicensenag' ) && current_user_can( $this->settings_cap ) ) {
 			$dismissed = searchwp_get_setting( 'dismissed' );
 			if( is_array( $dismissed ) ) {
 				if( isset( $dismissed['nags'] ) && is_array( $dismissed['nags'] ) ) {
@@ -2928,7 +2974,7 @@ Results in this set:
 		/**
 		 * MYSQL CHECK
 		 */
-		if ( isset( $_REQUEST['vnonce'] ) && wp_verify_nonce( $_REQUEST['vnonce'], 'swpmysqlnag' ) && current_user_can( 'manage_options' ) ) {
+		if ( isset( $_REQUEST['vnonce'] ) && wp_verify_nonce( $_REQUEST['vnonce'], 'swpmysqlnag' ) && current_user_can( $this->settings_cap ) ) {
 			$dismissed = searchwp_get_setting( 'dismissed' );
 			if( is_array( $dismissed ) ) {
 				if( isset( $dismissed['nags'] ) && is_array( $dismissed['nags'] ) ) {
@@ -3448,7 +3494,7 @@ Results in this set:
 		if (
 			! current_user_can( 'edit_posts' ) &&
 			! current_user_can( 'edit_pages' ) &&
-			! current_user_can( 'manage_options' )
+			! current_user_can( $this->settings_cap )
 		) {
 			do_action( 'searchwp_log', 'Failed capabilities check in triggerReindex()' );
 			return false;
@@ -3655,6 +3701,7 @@ Results in this set:
 
 		$matches = array();
 		$term_pattern_whitelist = apply_filters( 'searchwp_term_pattern_whitelist', $this->term_pattern_whitelist );
+		$term_pattern_whitelist = array_unique( $term_pattern_whitelist );
 		if( is_array( $term_pattern_whitelist ) && ! empty( $term_pattern_whitelist ) ) {
 			foreach( $term_pattern_whitelist as $term_pattern ) {
 				preg_match_all( $term_pattern, $content, $pattern_matches );

@@ -53,13 +53,14 @@ First, install like any other plugin:
 Then, proceed to the settings:
 
 1. Fill the email address and name to use as the sender for all emails
-2. Fill in Amazon API credentials
-3. Save changes (Important !)
-4. Ask to add the email as a confirmed sender
-5. Click on the link you got by email from Amazon SES
+2. Via the amazon SES console, ask to add the sender email as a confirmed sender
+3. Click on the link you got by email from Amazon SES
+4. Fill in Amazon API credentials and same sender email
+5. Save changes (Important !)
 6. Refresh the plugin, send a test email
 7. If ok, ask Amazon to go out of sandbox into production mode
 7. Once in production mode, you can use the top button to activate the plugin.
+8. From the plugin, you can manage and validate other senders.
 
 == Frequently Asked Questions ==
 
@@ -121,6 +122,9 @@ define('WP_SES_AUTOACTIVATE',true);
 1. the settings screen of WP-SES plugin.
 
 == Changelog ==
+
+= 0.3.50 =
+* Notice fixed, setup documentation slightly tweaked
 
 = 0.3.48 =
 * Experimental "WP Better Email" Plugin compatibility

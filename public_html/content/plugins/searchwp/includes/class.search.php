@@ -210,6 +210,7 @@ class SearchWPSearch
 			if( $sanitizeTerms ) {
 				$terms = $this->searchwp->sanitizeTerms( $args['terms'] );
 			} else {
+				$terms = $args['terms'];
 				do_action( 'searchwp_log', 'Opted out of internal sanitization' );
 			}
 
@@ -217,11 +218,11 @@ class SearchWPSearch
 				$whitelisted_terms = array_filter( array_map( 'trim', $whitelisted_terms ), 'strlen' );
 			}
 
-			if( is_array( $args['terms'] ) ) {
-				$args['terms'] = array_filter( array_map( 'trim', $args['terms'] ), 'strlen' );
-				$terms = array_merge( $args['terms'], $whitelisted_terms );
+			if( is_array( $terms ) ) {
+				$terms = array_filter( array_map( 'trim', $terms ), 'strlen' );
+				$terms = array_merge( $terms, $whitelisted_terms );
 			} else {
-				$args['terms'] .= ' ' . implode( ' ', $whitelisted_terms );
+				$terms .= ' ' . implode( ' ', $whitelisted_terms );
 			}
 
 			// make sure the terms are unique, especially after whitelist matching
@@ -275,12 +276,12 @@ class SearchWPSearch
 		do_action( 'searchwp_log', 'query()' );
 
 		do_action( 'searchwp_before_query_index', array(
-			'terms'     => $this->terms,
-			'engine'    => $this->engine,
-			'settings'  => $this->settings,
-			'page'      => $this->page,
-			'postsPer'  => $this->postsPer
-		) );
+				'terms'     => $this->terms,
+				'engine'    => $this->engine,
+				'settings'  => $this->settings,
+				'page'      => $this->page,
+				'postsPer'  => $this->postsPer
+			) );
 
 		$this->queryForPostIDs();
 
@@ -519,21 +520,66 @@ class SearchWPSearch
 		$andTerm = $wpdb->prepare( '%s', $andTerm );
 		$relevantTermWhere = " {$this->db_prefix}terms.stem = " . strtolower( $andTerm );
 
-		$andTermSQL = "
-			SELECT {$this->db_prefix}index.post_id,
-				{$andFieldsCoalesce} as termcount
-			FROM {$this->db_prefix}index
-			LEFT JOIN {$this->db_prefix}terms
-			ON {$this->db_prefix}index.term = {$this->db_prefix}terms.id
-			LEFT JOIN {$this->db_prefix}cf
-			ON {$this->db_prefix}index.post_id = {$this->db_prefix}cf.post_id
-			LEFT JOIN {$this->db_prefix}tax
-			ON {$this->db_prefix}index.post_id = {$this->db_prefix}tax.post_id
-			WHERE {$relevantTermWhere}
-			GROUP BY {$this->db_prefix}index.post_id
-			HAVING termcount > 0";
+		// as an optimization we're going to break up this query into three 'parts'
+		//  1) SELECT against the index table to find out where this term appears at least once
+		//  2) SELECT against the cf table
+		//  3) SELECT against the tax table
+		//
+		// all three will be UNIONed but all three are also filterable so we need to build this query carefully
+		// and completely based on $andFields (which is an array of fields to consider)
+
+		$andTermSQL = "";
+
+		// first SQL segment is against the index table
+		if ( ! empty( $andFieldsCoalesce ) ) {
+			// we do in fact want to run query 1
+			$andTermSQL .= "
+				SELECT {$this->db_prefix}index.post_id,
+				       {$andFieldsCoalesce} as termcount
+				FROM {$this->db_prefix}index FORCE INDEX (termindex)
+				LEFT JOIN {$this->db_prefix}terms
+					ON {$this->db_prefix}index.term = {$this->db_prefix}terms.id
+				WHERE {$relevantTermWhere}
+				GROUP BY {$this->db_prefix}index.post_id
+				HAVING termcount > 0";
+		}
+
+		// next SQL segment is against the cf table
+		if ( ! empty( $andTermSQL ) ) {
+			$andTermSQL .= " UNION ";
+		}
+		if ( in_array( 'meta', $andFields ) ) {
+			// we want to apply AND logic to the cf table
+			$andTermSQL .= "
+				SELECT {$this->db_prefix}cf.post_id, count as termcount
+				FROM {$this->db_prefix}cf FORCE INDEX (term)
+				LEFT JOIN {$this->db_prefix}terms
+					ON {$this->db_prefix}cf.term = {$this->db_prefix}terms.id
+				WHERE {$relevantTermWhere}
+				GROUP BY {$this->db_prefix}cf.post_id";
+		}
+
+		// last SQL segment is against the tax table
+		if ( ! empty( $andTermSQL ) ) {
+			$andTermSQL .= " UNION ";
+		}
+		if ( in_array( 'tax', $andFields ) ) {
+			// we want to apply AND logic to the cf table
+			$andTermSQL .= "
+				SELECT {$this->db_prefix}tax.post_id, count as termcount
+				FROM {$this->db_prefix}tax FORCE INDEX (term)
+				LEFT JOIN {$this->db_prefix}terms
+					ON {$this->db_prefix}tax.term = {$this->db_prefix}terms.id
+				WHERE {$relevantTermWhere}
+				GROUP BY {$this->db_prefix}tax.post_id";
+		}
 
 		$postsWithTermPresent = $wpdb->get_col( $andTermSQL );
+
+		// even though we're using UNION, we will likely have duplicate post_ids because each row will have different term counts
+		if( is_array( $postsWithTermPresent ) && ! empty( $postsWithTermPresent ) ) {
+			$postsWithTermPresent = array_unique( $postsWithTermPresent );
+		}
 
 		return $postsWithTermPresent;
 	}
@@ -551,17 +597,13 @@ class SearchWPSearch
 		$coalesceFields = array();
 
 		// we're going to utilize $andFields to build our query based on what the dev wants to count for AND queries
-		foreach( $andFields as $andField )
-		{
-			switch( $andField )
-			{
+		foreach( $andFields as $andField ) {
+			switch( $andField ) {
 				case 'tax':
-					$andFieldTable = 'tax';
-					$andFieldColumn = 'count';
+					// taxonomy has been broken out into UNION as of version 2.0.5
 					break;
 				case 'meta':
-					$andFieldTable = 'cf';
-					$andFieldColumn = 'count';
+					// cf has been broken out into UNION as of 2.0.5
 					break;
 				default:
 					$andFieldTable = 'index';
@@ -774,7 +816,7 @@ class SearchWPSearch
 			}
 
 			$postsWithTermInTitle = $wpdb->get_col(
-				"SELECT post_id
+			"SELECT post_id
 				FROM {$this->db_prefix}index
 				LEFT JOIN {$this->db_prefix}terms
 				ON {$this->db_prefix}index.term = {$this->db_prefix}terms.id

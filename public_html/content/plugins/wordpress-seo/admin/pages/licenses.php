@@ -43,6 +43,15 @@ global $wpseo_admin_pages;
 			</div>
 			<?php
 				}
+				if ( ! class_exists( 'WPSEO_News' ) ) {
+			?>
+			<div class="extension news-seo">
+				<a target="_blank" href="https://yoast.com/wordpress/plugins/news-seo/#utm_source=wordpress-seo-config&utm_medium=banner&utm_campaign=extension-page-banners"><h3>News SEO</h3></a>
+				<p>Are you in Google News? Increase your traffic from Google News by optimizing for it!</p>
+				<p><a target="_blank" href="https://yoast.com/wordpress/plugins/news-seo/#utm_source=wordpress-seo-config&utm_medium=banner&utm_campaign=extension-page-banners" class="button-primary">Get this extension</a></p>
+			</div>
+			<?php
+				}
 				if ( ! defined( 'WPSEO_LOCAL_VERSION' ) ) {
 			?>
 			<div class="extension local-seo">
@@ -70,37 +79,25 @@ global $wpseo_admin_pages;
 			</div>
 			<?php
 				}
+				if ( ! class_exists( 'Post_Connector' ) ) {
+			?>
+			<div class="extension post-connector">
+				<a target="_blank" href="https://yoast.com/wordpress/plugins/post-connector/#utm_source=wordpress-seo-config&utm_medium=banner&utm_campaign=extension-page-banners"><h3>Post Connector</h3></a>
+				<p>Easily create related posts that don't lag your server!</p>
+				<p><a target="_blank" href="https://yoast.com/wordpress/plugins/post-connector/#utm_source=wordpress-seo-config&utm_medium=banner&utm_campaign=extension-page-banners" class="button-primary">Get this extension</a></p>
+			</div>
+			<?php
+				}
 			?>
 		</div>
 		<div id="licenses" class="wpseotab">
 			<?php
 
-
-			if ( is_multisite() && is_plugin_active_for_network( plugin_basename( WPSEO_FILE ) ) && 'wpseo_network_licenses' != $_GET['page'] ) {
-
-				/**
-				 * Site is a network installation and WPSEO is network activated and the current page is not the network license page
-				 */
-
-				// Check if current user can manage network sites
-				if ( is_super_admin() ) {
-					echo "<p>" . sprintf( __( 'WordPress SEO is network activated, you can manage your licenses in the <a href="%s">network admin license page</a>.', 'wordpress-seo' ), network_admin_url( 'admin.php?page=wpseo_network_licenses#top#licenses' ) ) . "</p>";
-				}else {
-					echo "<p>" . __( 'WordPress SEO is network activated, please contact your site administrator to manage the licenses.', 'wordpress-seo' ) . "</p>";
-				}
-
-			} elseif ( is_multisite() && false == is_plugin_active_for_network( plugin_basename( WPSEO_FILE ) ) && 'wpseo_network_licenses' == $_GET['page'] ) {
-				/**
-				 * Site is a network installation but WPSEO is not network activated and the current page is the network license page
-				 */
-				echo "<p>" . __( 'WordPress SEO is not network activated, you can manage your licenses per site.', 'wordpress-seo' ) . "</p>";
-			} else {
 				/**
 				 * Display license page
 				 */
 				settings_errors();
-				do_action( 'wpseo_licenses_forms' );
-			}
+                do_action('wpseo_licenses_forms');
 
 			?>
 		</div>

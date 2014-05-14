@@ -5,7 +5,7 @@ global $wpdb;
 // exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-if( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
+if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) {
 	wp_die( __( 'Invalid request', 'searchwp' ) );
 }
 
@@ -130,7 +130,7 @@ if ( $this->keys ) {
 			</div>
 
 			<div class="swp-settings-footer swp-group">
-				<?php if ( current_user_can( 'manage_options' ) ) : ?>
+				<?php if ( current_user_can( apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) : ?>
 					<p class="swp-settings-advanced">
 						<a href="options-general.php?page=searchwp&amp;nonce=<?php echo wp_create_nonce( 'swpadvanced' ); ?>"><?php _e( 'Advanced', 'searchwp' ); ?></a>
 					</p>

@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: Text Link Ads Advertiser Plugin
-Plugin URI: http://www.text-link-ads.com/?ref=267085
+Plugin URI: http://www.matomyseo.com/?ref=267085
 Description: Allows many xml keys per plugin install. Text Link Ads sell ads on specific pages. Join the Text Link Ads marketplace.
 Author: Text Link Ads
-Version: 3.9.12
-Author URI: http://www.text-link-ads.com/?ref=267085
+Version: 3.9.13
+Author URI: http://www.matomyseo.com/?ref=267085
 */
 if (!function_exists('add_action')) {
     header($_SERVER['SERVER_PROTOCOL'].' 404 Not Found');
@@ -13,18 +13,10 @@ if (!function_exists('add_action')) {
     require TEMPLATEPATH.'/404.php';
     exit;
 }
-global $wp_version;
-
-//ensure that mysql_real_escape_string exists
-
-if (!function_exists('mysql_real_escape_string')) {
-    echo('You must be running PHP 4.3.0 or higher to use the Text Link Ads plugin. Please contact your web host about upgrading.');
-    tla_disable_plugin();
-    exit;
-}
 
 $wp_cache_shutdown_gc = 1;
 
+$wp_version = get_bloginfo('version');
 $textlinkads_object = null;
 
 add_action('init', 'tla_initialize');
@@ -88,6 +80,7 @@ function tla_disable_plugin()
 function tla_admin_init()
 {
     global $textlinkads_object;
+    $textlinkads_object->checkInstallation();
     if (!function_exists('register_setting')) return;
     register_setting('textlinkads', 'tla_between_posts');
     register_setting('textlinkads', 'tla_site_keys', 'tla_site_key_check');
@@ -139,7 +132,8 @@ function tla_admin_menu()
 
 function tla_options_page()
 {
-    global $textlinkads_object, $wp_version;
+    global $textlinkads_object;
+    $wp_version = get_bloginfo('version');
     $home = @parse_url(get_option('siteurl'));
     $home = $home['scheme'] . '://' . $home['host'];
     if (isset($_POST['action']) && $_POST['action'] == 'update' && $wp_version < 2.7) {
@@ -213,7 +207,7 @@ function tla_options_page()
                             ?>
                             <tr>
                                 <td colspan="2" valign="top">
-                                    This key can be obtained logging into <a href="http://www.text-link-ads.com/?ref=267085">Text Link Ads</a> and submitting your blog site. Delete a key by emptying the url and key fields.
+                                    This key can be obtained logging into <a href="http://www.matomyseo.com/?ref=267085">Text Link Ads</a> and submitting your blog site. Delete a key by emptying the url and key fields.
                                 </td>
                                 <td valign="top">
                                     The full url that your page was setup as. This is your default URI <br><em> <?php echo $home;?> </em>
@@ -235,7 +229,7 @@ function tla_options_page()
                         </table>
                     </td>
                 </tr>
-                
+
                 <tr valign="top">
                     <th>Ad Display Method</th>
                     <td>
@@ -301,7 +295,7 @@ function tla_options_page()
                 <?php endif;?>
                 <tr>
                     <td colspan="2">
-                        
+
                     </td>
                 </tr>
                 <tr>
@@ -436,7 +430,7 @@ if (!tla_between_posts()) {
             }
             if ($textlinkads_object->title_invalid($options['title'])) {
                 $options['title'] = '';
-                ?><font color="red">Your title was removed cause it isn't valid per the Text Link Ads user agreement</font><?php
+                ?><font color="red">Your title was removed cause it isn't valid per the Matomy SEO user agreement</font><?php
             }
             ?>
             <p><label for="textlinkads-title">Title: <input type="text" style="width: 250px;" id="textlinkads-title" name="textlinkads-title" value="<?php echo htmlspecialchars($options['title']); ?>" /></label></p>
@@ -476,7 +470,7 @@ if (!tla_between_posts()) {
                 $instance = wp_parse_args((array)$instance, array('title' => ''));
                 if ($textlinkads_object->title_invalid($instance['title'])) {
                     $instance['title'] = '';
-                    ?><font color="red">Your title was removed cause it isn't valid per the Text Link Ads user agreement</font><?php
+                    ?><font color="red">Your title was removed cause it isn't valid per the Matomy SEO user agreement</font><?php
                 }
                 $title = esc_attr($instance['title']);
                 ?>
@@ -537,12 +531,12 @@ function tla_between_content_show($content)
 
 class textlinkadsObject
 {
-    var $websiteKey = 'XXXXXXJOINtextlinkadsFORKEYXXXXXX';
+    var $websiteKey = '';
     var $websiteKeys = array();
     var $refreshInterval = 3600;
     var $connectionTimeout = 10;
     var $DataTable = 'tla_data';
-    var $version = '3.9.12';
+    var $version = '3.9.13';
     var $ads;
 
     function textlinkadsObject()
@@ -566,7 +560,7 @@ class textlinkadsObject
 
     function debug($install = false)
     {
-        global $wpdb, $wp_version;
+        global $wpdb;
         $home = @parse_url(get_option('siteurl'));
         $home = $home['scheme'] . '://' . $home['host'];
 
@@ -587,7 +581,7 @@ class textlinkadsObject
         <version><?php echo $this->version ?></version>
         <caching><?php echo defined('WP_CACHE') ? 'Y' : 'N' ?></caching>
         <phpVersion><?php echo phpversion() ?></phpVersion>
-        <engineVersion><?php echo $wp_version ?></engineVersion>
+        <engineVersion><?php echo get_bloginfo('version'); ?></engineVersion>
         <installed><?php echo $installed ?></installed>
         <data><![CDATA[<?php echo $data ?>]]></data>
         <requestUrl><?php echo $home; ?></requestUrl>
@@ -598,7 +592,7 @@ class textlinkadsObject
     function installDatabase()
     {
         global $wpdb;
-        require_once(ABSPATH . 'wp-admin/upgrade-functions.php');
+        require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
         $sql = "DROP TABLE IF EXISTS `" . $this->DataTable . "`";
         $wpdb->query($sql);
 
@@ -695,7 +689,7 @@ class textlinkadsObject
                 $pageKey = isset($this->websiteKeys[$altBase2]) ? $this->websiteKeys[$altBase2] : '';
             }
             if ($pageKey) {
-                $this->ads = $wpdb->get_results("SELECT * FROM " . $this->DataTable . " WHERE xml_key='" . mysql_real_escape_string($pageKey) . "'");
+                $this->ads = $wpdb->get_results($wpdb->prepare("SELECT * FROM " . $this->DataTable . " WHERE xml_key=%s", $pageKey));
             }
         }
         if (!$this->ads) {
@@ -716,12 +710,13 @@ class textlinkadsObject
 
     function updateLocalAds()
     {
-        global $wpdb, $wp_version;
-        
+        global $wpdb;
+        $wp_version = get_bloginfo('version');
         foreach ($this->websiteKeys as $url => $key) {
             $ads = 0;
-            $query = '';
-            $url = 'http://www.text-link-ads.com/xml.php?k=' . $key . '&l=wordpress-tla-3.9.10&v='.$wp_version;
+            $insert_query = '';
+            $insert_query_arguments = array();
+            $url = 'http://www.matomyseo.com/xml.php?k=' . $key . '&l=wordpress-tla-3.9.13&v='.$wp_version;
 
             if (function_exists('json_decode') && is_array(json_decode('{"a":1}', true))) {
                 $url .= '&f=json';
@@ -730,27 +725,30 @@ class textlinkadsObject
             update_option('tla_last_update', date('Y-m-d H:i:s'));
 
             if ($xml = $this->fetchLive($url)) {
+
                 $links = $this->decode($xml);
                 $wpdb->show_errors();
-                $wpdb->query("DELETE FROM `" . $this->DataTable . "` WHERE xml_key='" . mysql_real_escape_string($key) . "' OR xml_key = ''");
+                $wpdb->query($wpdb->prepare("DELETE FROM `" . $this->DataTable . "` WHERE xml_key=%s OR xml_key = ''", $key));
                 if ($links && is_array($links)) {
                     foreach ($links as $link) {
                         $postId = isset($link['PostID']) ? $link['PostID'] : 0;
                         if ($postId) {
                             continue;
                         }
-                        $query .= " (
-                            '" . mysql_real_escape_string($link['URL']) . "',
-                            '" . mysql_real_escape_string($postId) . "',
-                            '" . mysql_real_escape_string($key) . "',
-                            '" . mysql_real_escape_string(trim($link['Text'])) . "',
-                            '" . mysql_real_escape_string(trim($link['BeforeText'])) . "',
-                            '" . mysql_real_escape_string(trim($link['AfterText'])) . "'
-                        ),";
-                        $ads++;
+                        if ($insert_query) {
+                            $insert_query .= ",";
+                        }
+                        $insert_query .= " (%s, %s, %s, %s, %s, %s)";
+                        $insert_query_arguments[] = $link['URL'];
+                        $insert_query_arguments[] = $postId;
+                        $insert_query_arguments[] = $key;
+                        $insert_query_arguments[] = trim($link['Text']);
+                        $insert_query_arguments[] = trim($link['BeforeText']);
+                        $insert_query_arguments[] = trim($link['AfterText']);
                     }
-                    if ($ads){
-                        $wpdb->query("INSERT INTO `" . $this->DataTable . "` (`url`, `post_id`, `xml_key`, `text`, `before_text`, `after_text`) VALUES " . substr($query, 0, strlen($query) - 1));
+                    if ($insert_query_arguments) {
+                        $prepare_string = "INSERT INTO `" . $this->DataTable . "` (`url`, `post_id`, `xml_key`, `text`, `before_text`, `after_text`) VALUES " . $insert_query;
+                        $wpdb->query($wpdb->prepare($prepare_string, $insert_query_arguments));
                     }
                 }
             }
@@ -809,8 +807,8 @@ class textlinkadsObject
                     break;
             }
         } else {
-            $results = wp_remote_get($url);
-            if (!is_wp_error($results)) {
+            $results = wp_remote_get($url, array('timeout' => 15));
+	    if (!is_wp_error($results)) {
                 $results = substr($results['body'], strpos($results['body'], '<?'));
             } else {
                 $results = '';
@@ -829,7 +827,6 @@ class textlinkadsObject
                 $return .= $line . "\n";
             }
         }
-
         return $return;
     }
 

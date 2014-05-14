@@ -2,7 +2,7 @@
 
 global $wp_filesystem;
 
-if( !defined( 'ABSPATH' ) ) die();
+if( ! defined( 'ABSPATH' ) ) exit;
 
 include_once ABSPATH . 'wp-admin/includes/file.php';
 
@@ -698,22 +698,32 @@ class SearchWPIndexer
 								// allow for external PDF content extraction
 								$pdfContent = apply_filters( 'searchwp_external_pdf_processing', '', $filename, $this->post->ID );
 
-								// only try to extract content if we have control over the max execution time
-								// OR the external processing has already provided the PDF content we're looking for
-								@ini_set( 'max_execution_time', 60 );
-								if ( 60 == absint( ini_get( 'max_execution_time' ) ) || ! empty( $pdfContent ) ) {
+								// only try to extract content if the external processing has not provided the PDF content we're looking for
+								if ( empty( $pdfContent ) ) {
+
+									// PdfParser runs only on 5.3+ but SearchWP runs on 5.2+
+									// a wrapper class was conditionally included if we're running PHP 5.3+ so let's try that
+									if( class_exists( 'SearchWP_PdfParser' ) ) {
+										// try PdfParser first
+										$parser = new SearchWP_PdfParser();
+										$parser = $parser->init();
+										$pdf = $parser->parseFile( $filename );
+										$text = $pdf->getText();
+										$pdfContent = trim( str_replace( "\n", " ", $text ) );
+									}
+
+									// try PDF2Text
 									if ( empty( $pdfContent ) ) {
 										$pdfParser = new PDF2Text();
 										$pdfParser->setFilename( $filename );
 										$pdfParser->decodePDF();
 										$pdfContent = $pdfParser->output();
-										$pdfContent = preg_replace( '/[\x00-\x1F\x80-\xFF]/', ' ', $pdfContent );
 										$pdfContent = trim( str_replace( "\n", " ", $pdfContent ) );
 									}
 
 									// check to see if the first pass produced nothing or concatenated strings
 									$fullContentLength = strlen( $pdfContent );
-									$numberOfSpaces = substr_count($pdfContent, ' ');;
+									$numberOfSpaces = substr_count( $pdfContent, ' ' );
 									if ( empty( $pdfContent ) || ( ( $numberOfSpaces / $fullContentLength ) * 100 < 10 ) ) {
 										WP_Filesystem();
 										$filecontent = $wp_filesystem->exists( $filename ) ? $wp_filesystem->get_contents( $filename ) : '';
@@ -740,6 +750,7 @@ class SearchWPIndexer
 									$pdfContent = trim( $pdfContent );
 
 									if ( ! empty( $pdfContent ) ) {
+										$pdfContent = sanitize_text_field( $pdfContent );
 										delete_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content' );
 										update_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content', $pdfContent );
 									}
@@ -751,6 +762,7 @@ class SearchWPIndexer
 								$textContent = $wp_filesystem->exists( $filename ) ? $wp_filesystem->get_contents( $filename ) : '';
 								$textContent = str_replace( "\n", " ", $textContent );
 								if ( ! empty( $textContent ) ) {
+									$textContent = sanitize_text_field( $textContent );
 									update_post_meta( $this->post->ID, SEARCHWP_PREFIX . 'content', $textContent );
 								}
 							} else {
@@ -1315,7 +1327,7 @@ class SearchWPIndexer
 		$content = stripslashes( $content );
 
 		// remove punctuation
-		$punctuation = array( "(", ")", "·", "'", "´", "’", "‘", "”", "“", "„", "—", "–", "×", "…", "€", "\n", ".", ",", "/", "\\", "|", "[", "]", "{", "}" );
+		$punctuation = array( "(", ")", "·", "'", "´", "’", "‘", "”", "“", "„", "—", "–", "×", "…", "€", "\n", ".", ",", "/", "\\", "|", "[", "]", "{", "}", "•" );
 		$content = str_replace( $punctuation, ' ', $content );
 		$content = preg_replace( "/[[:punct:]]/uiU", " ", $content );
 		$content = preg_replace( "/[[:space:]]/uiU", " ", $content );

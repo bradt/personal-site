@@ -1,3 +1,28 @@
+### 2.1.3
+- **[Improvement]** Better encoding and font support for PDF content extraction
+- **[Improvement]** Reduced memory footprint when not indexing PDFs
+- **[Fix]** Fixed an issue where `searchwp_settings_cap` was not properly applied
+- **[Fix]** Reduced aggressiveness when tokenizing PDF content
+- **[Fix]** Fixed thrown exception when parsing specific PDF encodings
+- **[Fix]** Fixed a PHP 5.2 issue
+- **[Fix]** Corrected an include path for ElementXRef.php
+
+
+### 2.1
+- **[Improvement]** Significant query performance improvement in AND logic pass
+- **[Improvement]** Much improved PDF content extraction when using only PHP as opposed to Xpdf Integration (requires PHP5.3+ else SearchWP will fall back to previous method)
+- **[New]** New Filter: `searchwp_settings_cap` allows you to customize the capability required to manage SearchWP's settings in the WordPress admin
+- **[New]** You can now bulk-reintroduce posts that failed indexing
+
+
+### 2.0.4
+- **[New]** New regex whitelist pattern to support ampersand-joined terms (e.g. M&M)
+- **[Fix]** Fixed an issue where toggling whether the indexer was enabled/disabled would sometimes conflict if not done on the SearchWP settings screen
+- **[Improvement]** Fixed an issue where umlaut's were incorrectly removed from PDF content when extracted using internal (PHP-based) method
+- **[Improvement]** Theme conflict detection now takes into account single line comments (does not cover all commented use cases)
+- **[Improvement]** Improved term processing when using built in sanitization prior to searches
+
+
 ### 2.0.3
 - **[New]** New Filter: `searchwp_get_custom_fields` allowing developers to pre-fetch (and set) post metadata just before indexing takes place (props Stefan Hans Schonert)
 - **[New]** New Filter: `searchwp_term_in` allowing you to modify each term (per term) used in the main search algorithm

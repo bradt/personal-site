@@ -45,7 +45,7 @@ Other excellent options to search within a PDF:
 
 // BEGIN added for SearchWP
 global $wp_filesystem;
-if( !defined( 'ABSPATH' ) ) die();
+if ( ! defined( 'ABSPATH' ) || ! defined( 'SEARCHWP_VERSION' ) ) exit;
 include_once ABSPATH . 'wp-admin/includes/file.php';
 // END added for SearchWP
 
