@@ -1,0 +1,158 @@
+#ppp-days-table {
+	padding: 0;
+	margin: 0;
+	text-align: center
+}
+
+#ppp-days-table td {
+	padding: 0;
+}
+
+#ppp-post-override-wrap label, #ppp-post-override-wrap input {
+	padding-right: 5px;
+}
+
+#ppp-post-override-wrap .ppp-share-text {
+	width: 65%;
+}
+
+.ppp-twitter-profile {
+	height: 65px;
+	width: 360px;
+	background-color: #E1E8ED;
+	padding: 5px 0 0 5px;
+	border: 1px solid #55ACEE;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+.ppp-social-icon {
+	float: left;
+	padding: 5px;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.ppp-twitter-info {
+	font-size: 16px;
+	margin-top: 10px;
+}
+
+/* Dashicon Styles */
+@charset "UTF-8";
+
+@font-face {
+	font-family: "ppp-dashicon";
+	src:url("../../fonts/ppp-dashicon.eot");
+	src:url("../../fonts/ppp-dashicon.eot?#iefix") format("embedded-opentype"),
+	url("../../fonts/ppp-dashicon.woff") format("woff"),
+	url("../../fonts/ppp-dashicon.ttf") format("truetype"),
+	url("../../fonts/ppp-dashicon.svg#ppp-dashicon") format("svg");
+	font-weight: normal;
+	font-style: normal;
+}
+
+[data-icon]:before {
+	font-family: "ppp-dashicon" !important;
+	content: attr(data-icon);
+	font-style: normal !important;
+	font-weight: normal !important;
+	font-variant: normal !important;
+	text-transform: none !important;
+	speak: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+[class^="icon-"]:before,
+[class*=" icon-"]:before {
+	font-family: "ppp-dashicon" !important;
+	font-style: normal !important;
+	font-weight: normal !important;
+	font-variant: normal !important;
+	text-transform: none !important;
+	speak: none;
+	line-height: 1;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#adminmenu #toplevel_page_ppp-options.menu-icon-generic div.wp-menu-image:before {
+	font-family: "ppp-dashicon" !important;
+ 	content: "a";
+}
+
+/* End Dashicons */
+
+
+/* Styles for Timepicker */
+.ui-timepicker-wrapper {
+	overflow-y: auto;
+	height: 150px;
+	width: 6.5em;
+	background: #fff;
+	border: 1px solid #ddd;
+	-webkit-box-shadow:0 5px 10px rgba(0,0,0,0.2);
+	-moz-box-shadow:0 5px 10px rgba(0,0,0,0.2);
+	box-shadow:0 5px 10px rgba(0,0,0,0.2);
+	outline: none;
+	z-index: 10001;
+	margin: 0;
+}
+
+.ui-timepicker-wrapper.ui-timepicker-with-duration {
+	width: 11em;
+}
+
+.ui-timepicker-list {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.ui-timepicker-duration {
+	margin-left: 5px; color: #888;
+}
+
+.ui-timepicker-list:hover .ui-timepicker-duration {
+	color: #888;
+}
+
+.ui-timepicker-list li {
+	padding: 3px 0 3px 5px;
+	cursor: pointer;
+	white-space: nowrap;
+	color: #000;
+	list-style: none;
+	margin: 0;
+}
+
+.ui-timepicker-list:hover .ui-timepicker-selected {
+	background: #fff; color: #000;
+}
+
+li.ui-timepicker-selected,
+.ui-timepicker-list li:hover,
+.ui-timepicker-list .ui-timepicker-selected:hover {
+	background: #1980EC; color: #fff;
+}
+
+li.ui-timepicker-selected .ui-timepicker-duration,
+.ui-timepicker-list li:hover .ui-timepicker-duration {
+	color: #ccc;
+}
+
+.ui-timepicker-list li.ui-timepicker-disabled,
+.ui-timepicker-list li.ui-timepicker-disabled:hover,
+.ui-timepicker-list li.ui-timepicker-selected.ui-timepicker-disabled {
+	color: #888;
+	cursor: default;
+}
+
+.ui-timepicker-list li.ui-timepicker-disabled:hover,
+.ui-timepicker-list li.ui-timepicker-selected.ui-timepicker-disabled {
+	background: #f2f2f2;
+}
