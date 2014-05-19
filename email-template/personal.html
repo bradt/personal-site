@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+p {
+    margin-top: 0;
+}
+
+@media only screen and (max-width: 580px) {
+    .desc {
+        font-size: 12px !important;
+    }
+
+    img.full-width, img.half-width {
+        width: 100% !important;
+        float: none !important;
+        margin: 0 0 12px 0 !important;
+    }
+}
+</style>
+</head>
+<body>
+
+<div style="max-width: 580px;">
+
+<repeater>
+
+    <layout label="Text only">
+        <div class="desc" style="font-size: 14px; line-height: 1.4em; font-family: Arial, sans-serif;">
+            <multiline label="Description"><p>Hi [firstname,fallback=],</p><p>Cheers,</p></multiline>
+        </div>
+    </layout>                        
+
+    <layout label="Text with full-width image">
+        <img style="margin: 0 0 16px 0;" editable="true" label="Image" class="full-width" width="580" border="0">
+
+        <div class="desc" style="font-size: 14px; line-height: 1.4em; font-family: Arial, sans-serif;">
+            <multiline label="Description"><p>Enter your description</p></multiline>
+        </div>
+    </layout>
+
+    <layout label="Text with left-aligned image">
+        <img style="margin: 0 16px 16px 0;" editable="true" label="Image" align="left" class="half-width" width="300" border="0">
+
+        <div class="desc" style="font-size: 14px; line-height: 1.4em; font-family: Arial, sans-serif;">
+            <multiline label="Description"><p>Enter your description</p></multiline>
+        </div>     
+        <div style="clear:both;"></div>
+    </layout>
+
+    <layout label="Text with right-aligned image">
+        <img style="margin: 0 0 16px 16px;" editable="true" label="Image" align="right" class="half-width" width="300" border="0">
+
+        <div class="desc" style="font-size: 14px; line-height: 1.4em; font-family: Arial, sans-serif;">
+            <multiline label="Description"><p>Enter your description</p></multiline>
+        </div>
+        <div style="clear:both;"></div>
+    </layout>
+                        
+</repeater>
+
+<table>
+<tr>
+    <td>
+        <img src="http://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=100" alt="" width="50" height="50" style="margin: 0 0 10px 0; font-family: Arial, sans-serif; border-radius: 50%;">
+    </td>
+    <td>&nbsp;&nbsp;</td>
+    <td valign="top" style="font-size: 14px; line-height: 16px; font-family: Arial, sans-serif;">
+        <strong>Brad Touesnard</strong><br>
+        <span style="font-size: 12px;">
+        Developer of WP Migrate DB<br>
+        Founder of <a href="https://deliciousbrains.com" style="text-decoration: none; color: #496b8e;">Delicious Brains Inc.</a>
+        </span><br>
+    </td>
+</tr>
+</table>
+
+<br>
+
+<div style="font-size: 12px; color: #666; font-family: Arial, sans-serif;">
+    You're receiving this email because you subscribed to my mailing list at <a href="http://bradt.ca" style="text-decoration: none; color: #496b8e;">bradt.ca</a>.<br>
+    No longer wish to receive emails from me?
+    <unsubscribe style="text-decoration: none; color: #496b8e;">Remove&nbsp;yourself&nbsp;from&nbsp;my&nbsp;list</unsubscribe>
+</div>
+
+</div>
+
+</body>
+</html>
