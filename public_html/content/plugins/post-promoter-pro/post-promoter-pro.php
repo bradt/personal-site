@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: http://postpromoterpro.com
 Description: Schedule the promotion of blog posts for the next 6 days, with no further work.
-Version: 1.2.0.1
+Version: 1.3.0.2
 Author: Post Promoter Pro
 Author URI: http://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '1.2.0.1' );
+define( 'PPP_VERSION', '1.3.0.2' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -37,13 +37,18 @@ class PostPromoterPro {
 		include PPP_PATH . '/includes/share-functions.php';
 		include PPP_PATH . '/includes/cron-functions.php';
 		include PPP_PATH . '/includes/libs/social-loader.php';
+		include PPP_PATH . '/includes/filters.php';
 
 		if ( is_admin() ) {
+			include PPP_PATH . '/includes/admin/upgrades.php';
+			include PPP_PATH . '/includes/admin/actions.php';
 			include PPP_PATH . '/includes/admin/admin-pages.php';
+			include PPP_PATH . '/includes/admin/admin-ajax.php';
 			include PPP_PATH . '/includes/admin/meta-boxes.php';
 			include PPP_PATH . '/includes/admin/welcome.php';
 
 			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
+			add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
 
 			// Handle licenses
 			add_action( 'admin_init', array( $this, 'plugin_updater' ) );
@@ -58,7 +63,8 @@ class PostPromoterPro {
 			add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
 		}
 
-		add_action( 'save_post', 'ppp_schedule_share', 10, 2);
+		add_action( 'save_post', 'ppp_schedule_share', 20, 2);
+		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
 	}
 
 	/**
@@ -82,11 +88,18 @@ class PostPromoterPro {
 
 		$default_settings['post_types']['post'] = '1';
 		$default_settings['times']['day1']      = '8:00am';
+		$default_settings['days']['day1']       = 'on';
 		$default_settings['times']['day2']      = '10:00am';
+		$default_settings['days']['day2']       = 'on';
 		$default_settings['times']['day3']      = '12:00pm';
+		$default_settings['days']['day3']       = 'on';
 		$default_settings['times']['day4']      = '4:00pm';
+		$default_settings['days']['day4']       = 'on';
 		$default_settings['times']['day5']      = '10:30am';
+		$default_settings['days']['day5']       = 'on';
 		$default_settings['times']['day6']      = '8:00pm';
+		$default_settings['days']['day6']       = 'on';
+
 
 
 		update_option( 'ppp_options', $default_settings );
@@ -109,12 +122,12 @@ class PostPromoterPro {
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_enqueue_script( 'jquery-ui-slider' );
-		wp_enqueue_script( 'ppp_timepicker_js', PPP_URL . '/includes/scripts/libs/jquery-ui-timepicker-addon.js', array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
-		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'/includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
+		wp_enqueue_script( 'ppp_timepicker_js', PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js', array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
+		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
 	}
 
 	public function load_styles() {
-		wp_register_style( 'ppp_admin_css', PPP_URL . '/includes/scripts/css/admin-style.css', false, PPP_VERSION );
+		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
 	}
 

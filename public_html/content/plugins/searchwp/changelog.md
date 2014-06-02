@@ -1,3 +1,31 @@
+### 2.2.1
+- **[Improvement]** Better handling of indexer stall check
+- **[Improvement]** Switched Admin Bar entry from 'Currently Being Indexed' to 'In index queue' for accuracy's sake
+- **[Improvement]** Better handling of delta updates prior to the initial index being built
+- **[Improvement]** Better implementation of `searchwp_exclusive_regex_matches` usage, matches are now extracted earlier resulting in more concise results
+- **[Fix]** Fixed an issue where manually edited PDF content would be overwritten by a subsequent delta index update after saving
+- **[Fix]** Fixed an issue that may have prevented the indexer from fully waking up when waking up the indexer
+- **[Fix]** Fixed a false positive when checking for WPML Integration
+- **[Fix]** Fixed an issue with Xpdf Integration not saving the extracted text
+
+
+### 2.2
+- **[New]** New class: `SearchWP_Stats` which will eventually house a number of utility methods for better statistics as development continues
+- **[New]** SearchWP will now detect if you're running a plugin that has an integration Extension available and tell you about it
+- **[New]** New Filter: `searchwp_omit_meta_key` allows developers to omit specific meta keys from being indexed during indexing
+- **[Improvement]** Hardened the indexer communication process, reducing server resource consumption during indexing
+- **[Improvement]** Better handling of regex whitelist matches that result with multi-word tokens (e.g. spaces within) NOTE: having multi-word matches is not recommended
+- **[Improvement]** Added `$engine` parameter to `searchwp_query_orderby` filter
+- **[Improvement]** Simplified the check for a stalled indexer
+- **[Improvement]** Multi-term regex whitelist matches will no longer be tokenized but indexed as a whole for better phrase-matching
+- **[Fix]** Fixed an issue where Heartbeat index time updates were not prefixed with "Last indexed"
+- **[Fix]** Fixed an issue where the debugger would not properly instantiate thereby preventing additions to the log file
+- **[Fix]** Fixed an issue where Heartbeat API-powered timestamp of last index was missing "Last Indexed" phrasing
+- **[Fix]** Fixed an issue where in some circumstances content blocks parsed from PDFs would not be properly separated, resulted in the last word of one section being lumped together with the first word of the next section
+- **[Fix]** Prevent over-preparation of terms when performing AND logic refinement
+- **[Fix]** Check for indexer being disabled when issuing delta updates
+
+
 ### 2.1.3
 - **[Improvement]** Better encoding and font support for PDF content extraction
 - **[Improvement]** Reduced memory footprint when not indexing PDFs

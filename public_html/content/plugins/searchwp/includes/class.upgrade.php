@@ -434,6 +434,19 @@ class SearchWPUpgrade {
 			}
 		}
 
+		// add 'busy' option
+		if( version_compare( $this->last_version, '2.1.5', '<' ) ) {
+			searchwp_add_option( 'busy', false );
+			searchwp_add_option( 'doing_delta', false );
+		}
+
+		// force a wakeup
+		if( version_compare( $this->last_version, '2.2.1', '<' ) ) {
+			if( function_exists( 'searchwp_wake_up_indexer' ) ) {
+				searchwp_wake_up_indexer();
+			}
+		}
+
 	}
 
 }

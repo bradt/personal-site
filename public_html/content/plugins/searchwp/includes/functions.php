@@ -246,6 +246,8 @@ if( ! function_exists( 'searchwp_wake_up_indexer' ) ) {
 		// reset all the flags used when indexing
 		searchwp_set_setting( 'stats', array() );
 		searchwp_set_setting( 'running', false );
+		searchwp_update_option( 'busy', false );
+		searchwp_update_option( 'doing_delta', false );
 	}
 }
 

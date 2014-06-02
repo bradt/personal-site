@@ -1,5 +1,53 @@
 <?php
 /**
+ * Determine if we should share this post when it's being published
+ * @param  int    $post_id The Post ID being published
+ * @param  object $post    The Post Object
+ * @return void
+ */
+function ppp_share_on_publish( $new_status, $old_status, $post ) {
+	// don't publish password protected posts
+	if ( '' !== $post->post_password ) {
+		return;
+	}
+
+	if ( $new_status == 'publish' && $old_status != 'publish' ) {
+		global $ppp_options;
+
+		$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
+		$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
+
+		if ( !isset( $post->post_status ) || !array_key_exists( $post->post_type, $allowed_post_types ) ) {
+			return;
+		}
+
+		$from_meta = get_post_meta( $post->ID, '_ppp_share_on_publish', true );
+		$from_post = isset( $_POST['_ppp_share_on_publish'] );
+
+		if ( empty( $from_meta ) && empty( $from_post ) ) {
+			return;
+		}
+
+		// Determine if we're seeing the share on publish in meta or $_POST
+		if ( $from_meta && !$from_post ) {
+			$ppp_share_on_publish_text = get_post_meta( $post->ID, '_ppp_share_on_publish_text', true );
+		} else {
+			$ppp_share_on_publish_text = isset( $_POST['_ppp_share_on_publish_text'] ) ? $_POST['_ppp_share_on_publish_text'] : '';
+		}
+
+		$share_content = ( !empty( $ppp_share_on_publish_text ) ) ? $ppp_share_on_publish_text : ppp_generate_share_content( $post->ID, null, false );
+		$name = 'sharedate_0_' . $post->ID;
+		$share_link = ppp_generate_link( $post->ID, $name, true );
+
+		$status['twitter'] = ppp_send_tweet( $share_content . ' ' . $share_link );
+
+		if ( isset( $ppp_options['enable_debug'] ) && $ppp_options['enable_debug'] == '1' ) {
+			update_post_meta( $post->ID, '_ppp-' . $name . '-status', $status );
+		}
+	}
+}
+
+/**
  * Create timestamps and unique identifiers for each cron.
  * @param  int $month
  * @param  int $day
@@ -17,7 +65,7 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
 	$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
 
-	$tweet_times = ( empty( $ppp_post_override ) ) ? $ppp_options['times'] : $override_times;
+	$tweet_times = ( empty( $ppp_post_override ) ) ? ppp_get_default_times() : $override_times;
 
 	$times = array();
 	foreach ( $tweet_times as $key => $data ) {
@@ -45,6 +93,42 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	}
 
 	return apply_filters( 'ppp_get_timestamps', $times );
+}
+
+/**
+ * Returns if a day is enabled by default
+ * @return  bool Day is enabled or not
+ */
+function ppp_is_day_enabled( $day ) {
+	global $ppp_options;
+
+	$day_status = ( ( isset( $ppp_options['days']['day' . $day] ) && $ppp_options['days']['day' . $day] === 'on' ) ) ? true : false;
+
+	return apply_filters( 'ppp_is_day_enabled', $day_status, $day );
+}
+
+function ppp_get_default_times() {
+	$number_of_days = ppp_share_days_count();
+	$day = 1;
+	$times = array();
+	while ( $day <= $number_of_days ) {
+		if ( ppp_is_day_enabled( $day ) ) {
+			$times['day' . $day] = ppp_get_day_default_time( $day );
+		}
+		$day++;
+	}
+
+	return $times;
+}
+
+function ppp_get_day_default_time( $day ) {
+	global $ppp_options;
+
+	if ( isset( $ppp_options['times']['day' . $day] ) ) {
+		return $ppp_options['times']['day' . $day];
+	}
+
+	return '8:00am';
 }
 
 /**
@@ -101,9 +185,14 @@ function ppp_set_social_tokens() {
 		}
 	}
 
-	if ( !empty( $social_tokens) && property_exists( $social_tokens, 'twitter' ) ) {
+	if ( !empty( $social_tokens ) && property_exists( $social_tokens, 'twitter' ) ) {
 		define( 'PPP_TW_CONSUMER_KEY', $social_tokens->twitter->consumer_token );
 		define( 'PPP_TW_CONSUMER_SECRET', $social_tokens->twitter->consumer_secret );
+	}
+
+	if ( !empty( $social_tokens ) && property_exists( $social_tokens, 'bitly' ) ) {
+		define( 'bitly_clientid', $social_tokens->bitly->client_id );
+		define( 'bitly_secret', $social_tokens->bitly->client_secret );
 	}
 }
 
@@ -113,19 +202,25 @@ function ppp_set_social_tokens() {
  * @param  string $name    The 'Name' from the cron
  * @return string          The Content to include in the social media post
  */
-function ppp_generate_share_content( $post_id, $name ) {
+function ppp_generate_share_content( $post_id, $name, $is_scheduled = true ) {
+	global $ppp_options;
+	$default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : '';
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
 
-	if ( !empty( $ppp_post_override ) ) {
+	if ( $is_scheduled && !empty( $ppp_post_override ) ) {
 		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
 		$name_array = explode( '_', $name );
 		$day = 'day' . $name_array[1];
 		$share_content = $ppp_post_override_data[$day]['text'];
 	}
 
-	$share_content = isset( $share_content ) ? $share_content : get_the_title( $post_id );
+	// If an override was found, use it, otherwise try the default text content
+	$share_content = ( isset( $share_content ) && !empty( $share_content ) ) ? $share_content : $default_text;
 
-	return apply_filters( 'ppp_share_content', $share_content );
+	// If the content is still empty, just use the post title
+	$share_content = ( isset( $share_content ) && !empty( $share_content ) ) ? $share_content : get_the_title( $post_id );
+
+	return apply_filters( 'ppp_share_content', $share_content, array( 'post_id' => $post_id ) );
 }
 
 /**
@@ -134,7 +229,7 @@ function ppp_generate_share_content( $post_id, $name ) {
  * @param  string $name    The 'Name from the cron'
  * @return string          The URL to the post, to share
  */
-function ppp_generate_link( $post_id, $name ) {
+function ppp_generate_link( $post_id, $name, $scheduled = true ) {
 	global $ppp_share_settings;
 	$share_link = get_permalink( $post_id );
 
@@ -142,36 +237,30 @@ function ppp_generate_link( $post_id, $name ) {
 		$share_link = ppp_generate_link_tracking( $share_link, $post_id, $name );
 	}
 
+	if ( ppp_is_shortener_enabled() && $scheduled ) {
+		$shortener_name = $ppp_share_settings['shortener'];
+		$share_link = apply_filters( 'ppp_apply_shortener-' . $shortener_name, $share_link );
+	}
+
 
 	return apply_filters( 'ppp_share_link', $share_link );
 }
 
+/**
+ * Given a link, determine if link tracking needs to be applied
+ * @param  string $share_link The Link to share
+ * @param  int    $post_id    The Post ID the link belongs to
+ * @param  string $name       The Name string from the cron
+ * @return string             The URL to post, with proper analytics applied if necessary
+ */
 function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
-	$name_parts = explode( '_', $name );
-	if ( ppp_link_tracking_enabled( 'ppp_unique_links') ) {
-		$share_link .= strpos( $share_link, '?' ) ? '&' : '?' ;
+	if ( ppp_link_tracking_enabled() ) {
+		global $ppp_share_settings;
+		$link_tracking_type = $ppp_share_settings['analytics'];
 
-		$query_string_var = apply_filters( 'ppp_query_string_var', 'ppp' );
-
-		$share_link .= $query_string_var . '=' . $post_id . '-' . $name_parts[1];
-	} elseif ( ppp_link_tracking_enabled( 'ppp_ga_tags' ) ) {
-		$utm['source']   = 'Twitter';
-		$utm['medium']   = 'social';
-		$utm['term']     =  ppp_get_post_slug_by_id( $post_id );
-		$utm['content']  = $name_parts[1]; // The day after publishing
-		$utm['campaign'] = 'PostPromoterPro';
-
-		$utm_string  = strpos( $share_link, '?' ) ? '&' : '?' ;
-		$first = true;
-		foreach ( $utm as $key => $value ) {
-			if ( !$first ) {
-				$utm_string .= '&';
-			}
-			$utm_string .= 'utm_' . $key . '=' . $value;
-			$first = false;
-		}
-
-		$share_link .= $utm_string;
+		// Given the setting name, devs can extend this and apply a filter of ppp_analytics-[setting value]
+		// to apply their own rules for link tracking
+		$share_link = apply_filters( 'ppp_analytics-' . $link_tracking_type, $share_link, $post_id, $name );
 	}
 
 	$share_link = apply_filters( 'ppp_generate_link_tracking', $share_link, $post_id, $name );
@@ -185,9 +274,9 @@ function ppp_generate_link_tracking( $share_link, $post_id, $name ) {
  * @param  string $name    The 'name' element from the Cron
  * @return string          The Full text for the social share
  */
-function ppp_build_share_message( $post_id, $name ) {
+function ppp_build_share_message( $post_id, $name, $scheduled = true ) {
 	$share_content = ppp_generate_share_content( $post_id, $name );
-	$share_link    = ppp_generate_link( $post_id, $name );
+	$share_link    = ppp_generate_link( $post_id, $name, $scheduled );
 
 	return apply_filters( 'ppp_build_share_message', $share_content . ' ' . $share_link );
 }
@@ -199,5 +288,5 @@ function ppp_build_share_message( $post_id, $name ) {
  */
 function ppp_send_tweet( $message ) {
 	global $ppp_twitter_oauth;
-	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( html_entity_decode( htmlentities( $message ) ) ) );
+	return apply_filters( 'ppp_twitter_tweet', $ppp_twitter_oauth->ppp_tweet( html_entity_decode( $message ) ) );
 }

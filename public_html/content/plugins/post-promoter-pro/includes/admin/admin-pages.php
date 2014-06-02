@@ -7,6 +7,7 @@ function ppp_admin_page() {
 	global $ppp_options;
 	$license 	= get_option( '_ppp_license_key' );
 	$status 	= get_option( '_ppp_license_key_status' );
+	$share_days_count = ppp_share_days_count();
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 	<div class="wrap">
@@ -42,32 +43,53 @@ function ppp_admin_page() {
 				<?php } ?>
 
 				<tr valign="top">
+					<th scope="row"><?php _e( 'Default Share Text', 'ppp-txt' ); ?><br />
+						<span style="font-size: x-small;"><a href="#" onclick="jQuery('#ppp-text-helper').toggle(); return false;"><?php _e( 'Default Text Tips', 'ppp-txt' ); ?></a></span>
+					</th>
+					<td>
+						<?php $default_text = isset( $ppp_options['default_text'] ) ? $ppp_options['default_text'] : ''; ?>
+						<input name="ppp_options[default_text]" value="<?php echo $default_text; ?>" placeholder="Post Title will be used if empty" size="50" />
+						<p id="ppp-text-helper" style="display: none">
+							<small>
+							<?php _e( 'The typical length of a link shortened on Twitter is 23 characters, so keep that in mind when writing your default text.', 'ppp-txt' ); ?>
+							<br />
+							<?php _e( 'Status updates over 140 charcters will fail to post.', 'ppp-txt' ); ?>
+							<br />
+							<?php _e( 'Possible Replacements:', 'ppp-txt' ); ?>
+							<br />
+							<?php foreach( ppp_get_text_tokens() as $token ): ?>
+								<code>{<?php echo $token['token']; ?>}</code> - <?php echo $token['description']; ?><br />
+							<?php endforeach; ?>
+							</small>
+						</p>
+					</td>
+				</tr>
+
+				<?php $day = 1; ?>
+				<tr valign="top">
 					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
-						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can changes this on a per post basis as well', 'ppp-txt' ); ?></span></th>
+						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can change this on a per post basis as well', 'ppp-txt' ); ?></span></th>
 					<td>
 						<strong><?php _e( 'Days After Publish', 'ppp-txt' ); ?></strong>
 						<table id="ppp-days-table">
 							<tr>
-								<td><label for="ppp_options[times][day1]">1</label></td>
-								<td><label for="ppp_options[times][day2]">2</label></td>
-								<td><label for="ppp_options[times][day3]">3</label></td>
-								<td><label for="ppp_options[times][day4]">4</label></td>
-								<td><label for="ppp_options[times][day5]">5</label></td>
-								<td><label for="ppp_options[times][day6]">6</label></td>
+								<?php while( $day <= $share_days_count ): ?>
+									<td><label for="ppp_options[days][day<?php echo $day; ?>]"><?php echo $day; ?></label>
+									<input id="day<?php echo $day; ?>"
+										       type="checkbox"
+										       name="ppp_options[days][day<?php echo $day; ?>]"
+										       value="on"
+										       <?php checked( true, ppp_is_day_enabled( $day ), true ); ?>/></td>
+									<?php $day++; ?>
+								<?php endwhile; ?>
 							</tr>
 							<tr>
-								<td><input id="day1" type="text" name="ppp_options[times][day1]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day1'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day1'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day2" type="text" name="ppp_options[times][day2]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day2'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day2'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day3" type="text" name="ppp_options[times][day3]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day3'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day3'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day4" type="text" name="ppp_options[times][day4]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day4'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day4'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day5" type="text" name="ppp_options[times][day5]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day5'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day5'] ); ?>"<?php ;}?> size="8" /></td>
-								<td><input id="day6" type="text" name="ppp_options[times][day6]" class="share-time-selector"
-									<?php if ( $ppp_options['times']['day6'] != '' ) {?>value="<?php echo htmlspecialchars( $ppp_options['times']['day6'] ); ?>"<?php ;}?> size="8" /></td>
+								<?php $day = 1; ?>
+								<?php while( $day <= $share_days_count ): ?>
+								<td><input id="day<?php echo $day; ?>" type="text" name="ppp_options[times][day<?php echo $day; ?>]" class="share-time-selector"
+									value="<?php echo htmlspecialchars( ppp_get_day_default_time( $day ) ); ?>" size="8" /></td>
+									<?php $day++; ?>
+								<?php endwhile; ?>
 							</tr>
 						</table>
 					</td>
@@ -127,7 +149,9 @@ function ppp_display_social() {
 		}
 	}
 
-	global $ppp_twitter_oauth;
+	do_action( 'ppp_social_settings_pre_form' );
+
+	global $ppp_twitter_oauth, $ppp_bitly_oauth, $ppp_social_settings;
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
 	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	?>
@@ -143,10 +167,9 @@ function ppp_display_social() {
 					} ?>
 					<th scope="row"><?php _e( 'Twitter', 'ppp-txt' ); ?></th>
 					<td>
-						<?php $ppp_twitter_oauth->ppp_initialize_twitter(); ?>
 						<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
 
-						<?php if ( !isset( $ppp_social_settings['twitter']['user'] ) ) { ?>
+						<?php if ( !ppp_twitter_enabled() ) { ?>
 							<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
 							<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>
 						<?php } else { ?>
@@ -162,8 +185,7 @@ function ppp_display_social() {
 				</tr>
 
 				<?php
-				$uq_status = ( isset( $ppp_share_settings['ppp_unique_links'] ) && $ppp_share_settings['ppp_unique_links'] == '1' ) ? $ppp_share_settings['ppp_unique_links'] : 0;
-				$ga_status = ( isset( $ppp_share_settings['ppp_ga_tags'] ) && $ppp_share_settings['ppp_ga_tags'] == '1' ) ? $ppp_share_settings['ppp_ga_tags'] : 0;
+				$analytics_option = isset( $ppp_share_settings['analytics'] ) ? $ppp_share_settings['analytics'] : 0;
 				?>
 				<tr valign="top">
 					<th scope="row" valign="top">
@@ -172,33 +194,50 @@ function ppp_display_social() {
 					<td id="ppp-analytics-options">
 						<p>
 							<input id="ppp_unique_links"
-							       class="ppp-analytics-checkbox"
-							       name="ppp_share_settings[ppp_unique_links]"
-							       type="checkbox"
-							       value="1"
-							       <?php if ( !empty( $ga_status ) ): ?> disabled<?php endif; ?>
-							       <?php checked( '1', $uq_status, true ); ?>
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="unique_links"
+							       <?php checked( 'unique_links', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?><br /></small>
 						</p>
 						<br />
 						<p>
 							<input id="ppp_ga_tags"
-							       class="ppp-analytics-checkbox"
-							       name="ppp_share_settings[ppp_ga_tags]"
-							       type="checkbox"
-							       value="1"
-							       <?php if ( !empty( $uq_status ) ): ?> disabled<?php endif; ?>
-							       <?php checked( '1', $ga_status, true ); ?>
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="google_analytics"
+							       <?php checked( 'google_analytics', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_ga_tags"><?php _e( 'Google Analytics Tags', 'ppp-txt' ); ?></label><br />
 							<small><?php _e( 'Results can be seen in the Acquisition Menu under "Campaigns"', 'ppp-txt' ); ?></small>
 						</p>
+						<?php do_action( 'ppp-settings-analytics-radio' ); ?>
 						<p id="ppp-link-example">
 						<hr />
 						<small>Here is an example of what your link will look like: <br />
 							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
-							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'] ); ?></code></small>
+							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
 						</p>
+					</td>
+				</tr>
+
+				<?php
+				$shortener = isset( $ppp_share_settings['shortener'] ) ? $ppp_share_settings['shortener'] : false;
+				?>
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<?php _e( 'URL Shortener', 'ppp-txt' ); ?></span>
+					</th>
+					<td id="ppp-shortener-options">
+						<p>
+							<select name="ppp_share_settings[shortener]">
+								<option value="-1"><?php _e( 'Select a Service', 'ppp-txt' ); ?></option>
+								<?php do_action( 'ppp_url_shorteners', $shortener ); ?>
+							</select>
+						</p>
+						<?php if ( $shortener ) : ?>
+							<?php do_action( 'ppp_shortener_settings-' . $shortener ); ?>
+						<?php endif; ?>
 					</td>
 				</tr>
 
@@ -238,6 +277,9 @@ function ppp_display_schedule() {
 	<div class="wrap">
 		<?php $schedule_table->display() ?>
 	</div>
+	<?php if ( ppp_is_shortener_enabled() ): ?>
+		<small><?php _e( 'NOTICE: Schedule view does not show shortened links, they will be shortened at the time of sharing', 'ppp-txt' ); ?></small>
+	<?php endif; ?>
 	<?php
 }
 

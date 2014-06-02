@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Post Promoter Pro\n"
-"POT-Creation-Date: 2014-05-14 22:44-0700\n"
-"PO-Revision-Date: 2014-05-14 22:45-0700\n"
+"POT-Creation-Date: 2014-05-27 20:51-0700\n"
+"PO-Revision-Date: 2014-05-27 20:51-0700\n"
 "Last-Translator: \n"
 "Language-Team: Filament Studios <chris@filament-studios.com>\n"
 "Language: en_US\n"
@@ -18,125 +18,173 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: includes/admin/admin-pages.php:11
-msgid "Post Promoter Pro"
+#: includes/admin/actions.php:35
+msgid "Invalid Login or Password"
 msgstr ""
 
-#: includes/admin/admin-pages.php:19
-msgid "License Key"
-msgstr ""
-
-#: includes/admin/admin-pages.php:19
-msgid "Enter your license key"
-msgstr ""
-
-#: includes/admin/admin-pages.php:23
-msgid "active"
-msgstr ""
-
-#: includes/admin/admin-pages.php:30 includes/admin/admin-pages.php:38
-msgid "Activate License"
-msgstr ""
-
-#: includes/admin/admin-pages.php:35
-msgid "Deactivate License"
-msgstr ""
-
-#: includes/admin/admin-pages.php:45
-msgid "Default Share Times"
-msgstr ""
-
-#: includes/admin/admin-pages.php:46
-msgid ""
-"When would you like your posts to be shared? You can changes this on a per "
-"post basis as well"
-msgstr ""
-
-#: includes/admin/admin-pages.php:48
-msgid "Days After Publish"
-msgstr ""
-
-#: includes/admin/admin-pages.php:77
-msgid "Post Types"
-msgstr ""
-
-#: includes/admin/admin-pages.php:77
-msgid "What post types do you want to schedule for?"
-msgstr ""
-
-#: includes/admin/admin-pages.php:90
-msgid "Advanced"
-msgstr ""
-
-#: includes/admin/admin-pages.php:90
-msgid "Tools for troubleshooting and advanced usage"
-msgstr ""
-
-#: includes/admin/admin-pages.php:94
-msgid "Enable Debug"
-msgstr ""
-
-#: includes/admin/admin-pages.php:98
-msgid "Delete All Data On Uninstall"
-msgstr ""
-
-#: includes/admin/admin-pages.php:110 includes/admin/admin-pages.php:213
-msgid "Save Changes"
-msgstr ""
-
-#: includes/admin/admin-pages.php:134
-msgid "Post Promoter Pro - Social Settings"
-msgstr ""
-
-#: includes/admin/admin-pages.php:144
-msgid "Twitter"
-msgstr ""
-
-#: includes/admin/admin-pages.php:155
+#: includes/admin/actions.php:45 includes/admin/admin-pages.php:178
 msgid "Signed in as"
 msgstr ""
 
+#: includes/admin/actions.php:46
+msgid "Access Token: "
+msgstr ""
+
+#: includes/admin/actions.php:50
+msgid "Disconnect from Bit.ly"
+msgstr ""
+
+#: includes/admin/admin-pages.php:12
+msgid "Post Promoter Pro"
+msgstr ""
+
+#: includes/admin/admin-pages.php:20
+msgid "License Key"
+msgstr ""
+
+#: includes/admin/admin-pages.php:20
+msgid "Enter your license key"
+msgstr ""
+
+#: includes/admin/admin-pages.php:24
+msgid "active"
+msgstr ""
+
+#: includes/admin/admin-pages.php:31 includes/admin/admin-pages.php:39
+msgid "Activate License"
+msgstr ""
+
+#: includes/admin/admin-pages.php:36
+msgid "Deactivate License"
+msgstr ""
+
+#: includes/admin/admin-pages.php:46
+msgid "Default Share Text"
+msgstr ""
+
+#: includes/admin/admin-pages.php:47
+msgid "Default Text Tips"
+msgstr ""
+
+#: includes/admin/admin-pages.php:54
+msgid ""
+"The typical length of a link shortened on Twitter is 23 characters, so keep "
+"that in mind when writing your default text."
+msgstr ""
+
+#: includes/admin/admin-pages.php:56
+msgid "Status updates over 140 charcters will fail to post."
+msgstr ""
+
+#: includes/admin/admin-pages.php:58
+msgid "Possible Replacements:"
+msgstr ""
+
+#: includes/admin/admin-pages.php:70
+msgid "Default Share Times"
+msgstr ""
+
+#: includes/admin/admin-pages.php:71
+msgid ""
+"When would you like your posts to be shared? You can change this on a per "
+"post basis as well"
+msgstr ""
+
+#: includes/admin/admin-pages.php:73
+msgid "Days After Publish"
+msgstr ""
+
+#: includes/admin/admin-pages.php:99
+msgid "Post Types"
+msgstr ""
+
+#: includes/admin/admin-pages.php:99
+msgid "What post types do you want to schedule for?"
+msgstr ""
+
+#: includes/admin/admin-pages.php:112
+msgid "Advanced"
+msgstr ""
+
+#: includes/admin/admin-pages.php:112
+msgid "Tools for troubleshooting and advanced usage"
+msgstr ""
+
+#: includes/admin/admin-pages.php:116
+msgid "Enable Debug"
+msgstr ""
+
+#: includes/admin/admin-pages.php:120
+msgid "Delete All Data On Uninstall"
+msgstr ""
+
+#: includes/admin/admin-pages.php:132 includes/admin/admin-pages.php:252
+msgid "Save Changes"
+msgstr ""
+
 #: includes/admin/admin-pages.php:158
-msgid "Disconnect from Twitter"
+msgid "Post Promoter Pro - Social Settings"
 msgstr ""
 
-#: includes/admin/admin-pages.php:159
-msgid "Revoke Access via Twitter"
-msgstr ""
-
-#: includes/admin/admin-pages.php:170
-msgid "Analytics"
+#: includes/admin/admin-pages.php:168
+msgid "Twitter"
 msgstr ""
 
 #: includes/admin/admin-pages.php:181
-msgid "Simple Tracking"
+msgid "Disconnect from Twitter"
 msgstr ""
 
 #: includes/admin/admin-pages.php:182
+msgid "Revoke Access via Twitter"
+msgstr ""
+
+#: includes/admin/admin-pages.php:192
+msgid "Analytics"
+msgstr ""
+
+#: includes/admin/admin-pages.php:201
+msgid "Simple Tracking"
+msgstr ""
+
+#: includes/admin/admin-pages.php:202
 msgid "Appends a query string to shared links for analytics."
 msgstr ""
 
-#: includes/admin/admin-pages.php:193
+#: includes/admin/admin-pages.php:211
 msgid "Google Analytics Tags"
 msgstr ""
 
-#: includes/admin/admin-pages.php:194
+#: includes/admin/admin-pages.php:212
 msgid "Results can be seen in the Acquisition Menu under \"Campaigns\""
 msgstr ""
 
-#: includes/admin/admin-pages.php:237
+#: includes/admin/admin-pages.php:229
+msgid "URL Shortener"
+msgstr ""
+
+#: includes/admin/admin-pages.php:234
+msgid "Select a Service"
+msgstr ""
+
+#: includes/admin/admin-pages.php:276
 msgid "Post Promoter Pro - Scheduled Shares"
 msgstr ""
 
-#: includes/admin/admin-pages.php:252
+#: includes/admin/admin-pages.php:281
+msgid ""
+"NOTICE: Schedule view does not show shortened links, they will be shortened "
+"at the time of sharing"
+msgstr ""
+
+#: includes/admin/admin-pages.php:294
 msgid "Post Promoter Pro - System Info"
 msgstr ""
 
-#: includes/admin/admin-pages.php:331
+#: includes/admin/admin-pages.php:373
 msgid "Your server supports fsockopen."
 msgstr ""
 
-#: includes/admin/admin-pages.php:331
+#: includes/admin/admin-pages.php:373
 msgid "Your server does not support fsockopen."
 msgstr ""
 
@@ -189,28 +237,36 @@ msgstr ""
 msgid "<a href=\"%s\">Share Now & Delete</a>"
 msgstr ""
 
-#: includes/admin/meta-boxes.php:35
+#: includes/admin/class-schedule-table.php:94
+msgid "Warning: Multiple items scheduled at this time."
+msgstr ""
+
+#: includes/admin/meta-boxes.php:26
+msgid "Social Text"
+msgstr ""
+
+#: includes/admin/meta-boxes.php:42
+msgid "Share this post at the time of publishing?"
+msgstr ""
+
+#: includes/admin/meta-boxes.php:56
 msgid "Do not schedule social media promotion for this post."
 msgstr ""
 
-#: includes/admin/meta-boxes.php:39
+#: includes/admin/meta-boxes.php:60
 msgid "Override Default Text and Times"
 msgstr ""
 
-#: includes/admin/meta-boxes.php:48
+#: includes/admin/meta-boxes.php:72
 #, php-format
 msgid "Day %s"
 msgstr ""
 
-#: includes/admin/meta-boxes.php:54
+#: includes/admin/meta-boxes.php:78
 msgid "Time"
 msgstr ""
 
-#: includes/admin/meta-boxes.php:65
-msgid "Social Text"
-msgstr ""
-
-#: includes/admin/meta-boxes.php:76
+#: includes/admin/meta-boxes.php:101
 msgid "Do not include links in your text, this will be added automatically."
 msgstr ""
 
@@ -338,12 +394,20 @@ msgstr ""
 msgid "Post Promoter Pro makes sharing your content as easy as possible."
 msgstr ""
 
-#: includes/cron-functions.php:134
+#: includes/cron-functions.php:133
 msgid "Scheduled item has been deleted."
 msgstr ""
 
-#: includes/cron-functions.php:142
+#: includes/cron-functions.php:141
 msgid "Item has been shared."
+msgstr ""
+
+#: includes/filters.php:9
+msgid "The title of the post being shared"
+msgstr ""
+
+#: includes/filters.php:10
+msgid "The site title, from Settings > General"
 msgstr ""
 
 #: includes/libs/twitter.php:108
@@ -352,27 +416,27 @@ msgid ""
 "reauthorize to continue promoting your content."
 msgstr ""
 
-#: post-promoter-pro.php:133
+#: post-promoter-pro.php:146
 msgid "Settings"
 msgstr ""
 
-#: post-promoter-pro.php:146 post-promoter-pro.php:147
+#: post-promoter-pro.php:159 post-promoter-pro.php:160
 msgid "Post Promoter"
 msgstr ""
 
-#: post-promoter-pro.php:153
+#: post-promoter-pro.php:166
 msgid "Social Settings"
 msgstr ""
 
-#: post-promoter-pro.php:154
+#: post-promoter-pro.php:167
 msgid "Schedule"
 msgstr ""
 
-#: post-promoter-pro.php:155
+#: post-promoter-pro.php:168
 msgid "System Info"
 msgstr ""
 
-#: post-promoter-pro.php:207
+#: post-promoter-pro.php:220
 #, php-format
 msgid ""
 "Post Promoter Pro requires your license key to work, please <a href=\"%s"

@@ -12,7 +12,7 @@
 	padding-right: 5px;
 }
 
-#ppp-post-override-wrap .ppp-share-text {
+.ppp-share-text {
 	width: 65%;
 }
 
@@ -22,6 +22,17 @@
 	background-color: #E1E8ED;
 	padding: 5px 0 0 5px;
 	border: 1px solid #55ACEE;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+}
+
+.ppp-bitly-profile {
+	height: 85px;
+	width: 360px;
+	background-color: #f9c9b4;
+	padding: 5px 0 0 5px;
+	border: 1px solid #ee6123;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
@@ -38,6 +49,15 @@
 .ppp-twitter-info {
 	font-size: 16px;
 	margin-top: 10px;
+}
+
+.ppp-bitly-info {
+	margin-top: 0px;
+	margin-left: 35px;
+}
+
+#ppp-bitly-login-form-submit {
+	width: 160px;
 }
 
 /* Dashicon Styles */

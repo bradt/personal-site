@@ -8,7 +8,6 @@
  */
 function ppp_schedule_share( $post_id, $post ) {
 	global $ppp_options;
-
 	$allowed_post_types = isset( $ppp_options['post_types'] ) ? $ppp_options['post_types'] : array();
 	$allowed_post_types = apply_filters( 'ppp_schedule_share_post_types', $allowed_post_types );
 
@@ -16,10 +15,9 @@ function ppp_schedule_share( $post_id, $post ) {
 		return;
 	}
 
-	$ppp_post_exclude = get_post_meta( $post->ID, '_ppp_post_exclude', true );
+	$ppp_post_exclude = get_post_meta( $post_id, '_ppp_post_exclude', true );
 	if ( $ppp_post_exclude ) { // If the post meta says to exclude from social media posts, delete all scheduled and return
 		ppp_remove_scheduled_shares( $post_id );
-		return;
 	}
 
 	if ( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ||
@@ -41,6 +39,7 @@ function ppp_schedule_share( $post_id, $post ) {
 		}
 	}
 }
+// This action is for the cron event. It triggers ppp_share_post when the crons run
 add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );
 
 /**
@@ -51,7 +50,7 @@ add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );
 function ppp_remove_scheduled_shares( $post_id ) {
 	do_action( 'ppp_pre_remove_scheduled_shares', $post_id );
 	$days_ahead = 1;
-	while ( $days_ahead <= 6 ) {
+	while ( $days_ahead <= ppp_share_days_count() ) {
 		$name = 'sharedate_' . $days_ahead . '_' . $post_id;
 		wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
 
@@ -157,7 +156,11 @@ function ppp_get_shceduled_crons() {
 			continue;
 		}
 
-		$ppp_crons[$timestamp] = $cron;
+		foreach ( $cron['ppp_share_post_event'] as $key => $single_event ) {
+			$single_event['timestamp'] = $timestamp;
+			$ppp_crons[$key] = $single_event;
+		}
+
 	}
 
 	return $ppp_crons;

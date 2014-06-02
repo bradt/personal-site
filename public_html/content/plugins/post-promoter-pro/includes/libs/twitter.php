@@ -117,8 +117,6 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 		/**
 		 * Get auth url for twitter
 		 *
-		 * @param Easy Digital Downloads - Social Login
-		 * @since 1.0.0
 		 */
 		public function ppp_get_twitter_auth_url () {
 			//load twitter class

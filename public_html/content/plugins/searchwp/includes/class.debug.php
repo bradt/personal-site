@@ -9,36 +9,30 @@ include_once ABSPATH . 'wp-admin/includes/file.php';
 /**
  * Class SearchWPDebug is responsible for various debugging operations
  */
-class SearchWPDebug extends SearchWP {
-	public $active;
+class SearchWPDebug {
 
+	public $active;
 	private $logfile;
 	private $remoteMeta;
-
 	private $apiPrefix = 'swpapi';
 
-	function __construct() {
+	function init( $dir ) {
 		global $wp_filesystem;
 
-		// determine whether we are active
-		$this->active = apply_filters( 'searchwp_debug', false );
+		$this->active = true;
+		$this->logfile = trailingslashit( $dir ) . 'debug.log';
 
-		// if we're not active, don't do anything
+		// init environment
+		if( ! file_exists( $this->logfile ) ) {
+			WP_Filesystem();
+			if( ! $wp_filesystem->put_contents( $this->logfile, '' ) ); {
+				$this->active = false;
+			}
+		}
+
+		// after determining whether we can write to the logfile, add our action
 		if( $this->active ) {
-			$this->logfile = trailingslashit( $this->instance()->dir ) . 'debug.log';
-
-			// init environment
-			if( !file_exists( $this->logfile ) ) {
-				WP_Filesystem();
-				if( !$wp_filesystem->put_contents( $this->logfile, '' ) ); {
-					$this->active = false;
-				}
-			}
-
-			// after determining whether we can write to the logfile, add our action
-			if( $this->active ) {
-				add_action( 'searchwp_log', array( $this, 'log' ), 1, 2 );
-			}
+			add_action( 'searchwp_log', array( $this, 'log' ), 1, 2 );
 		}
 
 		// handle remote debugging call
@@ -86,7 +80,7 @@ class SearchWPDebug extends SearchWP {
 		WP_Filesystem();
 
 		// if we're not active, don't do anything
-		if( !$this->active || !file_exists( $this->logfile ) ) {
+		if ( ! $this->active || ! file_exists( $this->logfile ) ) {
 			return false;
 		}
 
@@ -102,6 +96,7 @@ class SearchWPDebug extends SearchWP {
 		// sanitize the message
 		$message = sanitize_text_field( esc_html( $message ) );
 		$message = str_replace( '=&gt;', '=>', $message ); // put back array identifiers
+		$message = str_replace( '-&gt;', '->', $message ); // put back property identifiers
 		$message = str_replace( '&#039;', "'", $message ); // put back apostrophe's
 
 		// finally append the message
@@ -112,6 +107,7 @@ class SearchWPDebug extends SearchWP {
 
 		// write log
 		$wp_filesystem->put_contents( $this->logfile, $log );
+		error_log( $log );
 	}
 
 	function resetLicenseStatus() {
@@ -203,5 +199,3 @@ class SearchWPDebug extends SearchWP {
 		echo json_encode( $results );
 	}
 }
-
-new SearchWPDebug();

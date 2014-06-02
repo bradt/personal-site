@@ -306,7 +306,7 @@ class Object
                             continue;
                         }
 
-                        $sub_text = $current_font->decodeText($command[self::COMMAND]);
+                        $sub_text = ' ' . $current_font->decodeText($command[self::COMMAND]);
                         $text .= $sub_text;
                         break;
 

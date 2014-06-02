@@ -35,8 +35,7 @@
 	float:left;
 }
 
-#wpbody-content .swp-stats-4 .swp-stat:nth-of-type(4)
-{
+#wpbody-content .swp-stats-4 .swp-stat:nth-of-type(4) {
 	margin-right:0;
 	float:right
 }

@@ -11,8 +11,8 @@ global $searchwp;
 /**
  * Class SearchWPSearch performs search queries on the index
  */
-class SearchWPSearch
-{
+class SearchWPSearch {
+
 	/**
 	 * @var string Search engine name
 	 * @since 1.0
@@ -206,6 +206,8 @@ class SearchWPSearch
 			// whitelist search terms
 			$pre_whitelist_terms = is_array( $args['terms'] ) ? implode( ' ', $args['terms'] ) : ' ' . $args['terms'] . ' ';
 			$whitelisted_terms = $this->searchwp->extract_terms_using_pattern_whitelist( $pre_whitelist_terms, false );
+
+			// TODO: if $whitelisted_terms has matches with spaces, there will be dupes: do we need to loop through and remove?
 
 			if( $sanitizeTerms ) {
 				$terms = $this->searchwp->sanitizeTerms( $args['terms'] );
@@ -804,7 +806,7 @@ class SearchWPSearch
 			// determine whether we want a term match or stem match
 			$andTerm = $wpdb->prepare( '%s', $andTerm );
 			if( !isset( $postTypeWeights['options']['stem'] ) || empty( $postTypeWeights['options']['stem'] ) ) {
-				$relavantTermWhere = " {$this->db_prefix}terms.term = " . strtolower( $wpdb->prepare( '%s', $andTerm ) );
+				$relavantTermWhere = " {$this->db_prefix}terms.term = " . strtolower( $andTerm );
 			} else {
 				$unstemmed = $andTerm;
 				$maybeStemmed = apply_filters( 'searchwp_custom_stemmer', $unstemmed );
@@ -812,7 +814,7 @@ class SearchWPSearch
 				// if the term was stemmed via the filter use it, else generate our own
 				$andTerm = ( $unstemmed == $maybeStemmed ) ? $this->stemmer->stem( $andTerm ) : $maybeStemmed;
 
-				$relavantTermWhere = " {$this->db_prefix}terms.stem = " . strtolower( $wpdb->prepare( '%s', $andTerm ) );
+				$relavantTermWhere = " {$this->db_prefix}terms.stem = " . strtolower( $andTerm );
 			}
 
 			$postsWithTermInTitle = $wpdb->get_col(
@@ -1784,7 +1786,7 @@ class SearchWPSearch
 		}
 
 		// allow for arbitrary ORDER BY filtration
-		$finalOrderBySQL = apply_filters( 'searchwp_query_orderby', $finalOrderBySQL );
+		$finalOrderBySQL = apply_filters( 'searchwp_query_orderby', $finalOrderBySQL, $this->engine );
 
 		$this->sql .= "
 			GROUP BY {$wpdb->prefix}posts.ID

@@ -1,6 +1,10 @@
 (function ($) {
 	$('.share-time-selector').timepicker({ 'step': 15 });
 
+	$('#ppp_share_on_publish').click( function() {
+		$('#ppp_share_on_publish_text').toggle();
+	});
+
 	$('#_ppp_post_override').click( function() {
 		$('.post-override-matrix').toggle();
 	});
@@ -18,13 +22,27 @@
 		}
 	});
 
-	$('.ppp-analytics-checkbox').click( function() {
-		var clicked = $(this);
-		var status  = $(this).is(':checked');
-		$('#ppp-analytics-options input').each(function() {
-			if ($(this).attr('id') != clicked.attr('id')) {
-				$(this).attr('checked', false);
-				$(this).attr('disabled', status);
+	$('#bitly-login').click( function() {
+		var data = {};
+		var button = $('#bitly-login');
+		button.removeClass('button-primary');
+		button.addClass('button-secondary');
+		button.css('opacity', '.5');
+		$('.spinner').show();
+		$('#ppp-bitly-invalid-login').hide();
+		data.action   = 'ppp_bitly_connect';
+		data.username = $('#bitly-username').val();
+		data.password = $('#bitly-password').val();
+
+		$.post(ajaxurl, data, function(response) {
+			if (response == '1') {
+				window.location.replace( '/wp-admin/admin.php?page=ppp-social-settings' );
+			} else if (response === 'INVALID_LOGIN') {
+				$('.spinner').hide();
+				$('#ppp-bitly-invalid-login').show();
+				button.addClass('button-primary');
+				button.removeClass('button-secondary');
+				button.css('opacity', '1');
 			}
 		});
 	});
@@ -42,4 +60,4 @@ function PPPCountChar(val) {
 	} else if ( len > 117 ) {
 		lengthField.css('color', '#FF3333');
 	}
-};
+}

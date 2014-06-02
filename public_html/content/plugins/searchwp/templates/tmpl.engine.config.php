@@ -159,9 +159,10 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 								foreach( $taxonomies as $taxonomy ) :
 									if( $taxonomy != 'post_format' ) : // we don't want Post Formats here
 										$taxonomy = get_taxonomy( $taxonomy );
+										$tax_label = ! empty( $taxonomy->labels->name ) ? $taxonomy->labels->name : $taxonomy->name;
 										?>
 										<tr>
-											<td><label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_weights_tax_<?php echo $taxonomy->name; ?>"><?php echo $taxonomy->labels->name; ?></label></td>
+											<td><label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_weights_tax_<?php echo $taxonomy->name; ?>"><?php echo $tax_label; ?></label></td>
 											<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][weights][tax][<?php echo $taxonomy->name; ?>]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_weights_tax_<?php echo $taxonomy->name; ?>" value="<?php echo searchwpGetEngineWeight( $weights, 'tax', $taxonomy->name ); ?>" /></td>
 										</tr>
 									<?php endif; endforeach; endif; ?>

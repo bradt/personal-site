@@ -50,6 +50,8 @@ function searchwp_maybe_nuke() {
 		delete_option( SEARCHWP_PREFIX . 'license_key' );
 		delete_option( SEARCHWP_PREFIX . 'paused' );
 		delete_option( SEARCHWP_PREFIX . 'last_activity' );
+		delete_option( SEARCHWP_PREFIX . 'busy' );
+		delete_option( SEARCHWP_PREFIX . 'doing_delta' );
 
 		// remove transients
 		delete_transient( 'searchwp' );

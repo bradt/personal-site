@@ -89,7 +89,12 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 * @return string       The HTML to display the date
 	 */
 	public function column_date( $item ) {
-		return date_i18n( get_option('date_format') . ' @ ' . get_option('time_format'), $item['date'] );
+		$date = date_i18n( get_option('date_format') . ' @ ' . get_option('time_format'), $item['date'] );
+		if ( $item['conflict'] ) {
+			$date .= '<br /><small style="color: red">' . __( 'Warning: Multiple items scheduled at this time.', 'ppp-txt' ) . '</small>';
+		}
+
+		return $date;
 	}
 
 	/**
@@ -107,21 +112,24 @@ class PPP_Schedule_Table extends WP_List_Table {
 		$current_page = $this->get_pagenum();
 
 		$crons = ppp_get_shceduled_crons();
+		$cron_tally = array();
+		foreach ( $crons as $key => $cron ) {
+			$ppp_data = $cron;
+			$timestamp = $ppp_data['timestamp'];
 
-		foreach ( $crons as $timestamp => $cron ) {
-			$ppp_data   = $cron['ppp_share_post_event'];
-			$array_keys = array_keys( $ppp_data );
-			$hash_key   = $array_keys[0];
-			$event_info = $ppp_data[$hash_key];
-			$name_parts = explode( '_', $event_info['args'][1] );
+			$cron_tally[$timestamp] = isset( $cron_tally[$timestamp] ) ? $cron_tally[$timestamp] + 1 : 1;
+
+			$name_parts = explode( '_', $ppp_data['args'][1] );
 			$day        = $name_parts[1];
+			$conflict   = $cron_tally[$timestamp] > 1 ? true : false;
 
-			$data[$hash_key] = array(  'post_id'      => $event_info['args'][0],
-				                       'post_title'   => get_the_title( $event_info['args'][0] ),
+			$data[$key] = array(  'post_id'      => $ppp_data['args'][0],
+				                       'post_title'   => get_the_title( $ppp_data['args'][0] ),
 			                           'day'          => $day,
 			                           'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-			                           'content'      => ppp_build_share_message( $event_info['args'][0], $event_info['args'][1] ),
-			                           'name'         => 'sharedate_' . $day . '_' . $event_info['args'][0] );
+			                           'content'      => ppp_build_share_message( $ppp_data['args'][0], $ppp_data['args'][1], false ),
+			                           'name'         => 'sharedate_' . $day . '_' . $ppp_data['args'][0],
+			                           'conflict'     => $conflict );
 		}
 
 		$total_items = count( $data );
