@@ -264,3 +264,36 @@ if( ! function_exists( 'searchwp_get_indexer_progress' ) ) {
 		die();
 	}
 }
+
+
+/**
+ * Determines whether the indexer has stalled based on the time of last activity
+ *
+ * @since 1.0
+ */
+if ( ! function_exists( 'searchwp_check_for_stalled_indexer' ) ) {
+	function searchwp_check_for_stalled_indexer( $threshold = 180 ) {
+		$last_activity  = searchwp_get_setting( 'last_activity', 'stats' );
+		$running        = searchwp_get_setting( 'running' );
+		$doing_delta    = searchwp_get_option( 'doing_delta' );
+		$busy           = searchwp_get_option( 'busy' );
+		if( ! is_null( $last_activity ) && false !== $last_activity ) {
+			if(
+				( current_time( 'timestamp' ) > $last_activity + absint( $threshold ) )
+				&& ( $running || $doing_delta || $busy )
+				) {
+				// stalled
+				do_action( 'searchwp_log', '---------- Indexer has stalled, jumpstarting' );
+				searchwp_wake_up_indexer();
+			}
+		} else {
+			// prior to version 2.2.2 the last activity was set to false once indexing was done
+			// so if that timestamp is false but there is still a purge queue, we're going to
+			// wake up the indexer by force
+			$purge_queue = searchwp_get_option( 'purge_queue' );
+			if ( ! empty( $purge_queue ) ) {
+				searchwp_wake_up_indexer();
+			}
+		}
+	}
+}

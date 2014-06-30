@@ -1,3 +1,13 @@
+### 2.2.2
+- **[Improvement]** Another revision to the indexer stall check
+- **[New]** Added an admin notice if your log file exceeds 2MB
+
+
+### 2.2.2
+- **[Improvement]** Better indexer stall check
+- **[Improvement]** Better handling of search logs (moved from main class method to search class) to better accommodate 3rd party integrations
+
+
 ### 2.2.1
 - **[Improvement]** Better handling of indexer stall check
 - **[Improvement]** Switched Admin Bar entry from 'Currently Being Indexed' to 'In index queue' for accuracy's sake

@@ -262,6 +262,25 @@ class SearchWPSearch {
 
 			// perform our query
 			$this->posts = $this->query();
+
+			// log this
+			$wpdb->insert(
+			     $wpdb->prefix . SEARCHWP_DBPREFIX . 'log',
+				     array(
+					     'event'    => 'search',
+					     'query'    => sanitize_text_field( $searchwp->original_query ),
+					     'hits'     => count( $this->posts ),
+					     'engine'   => $engine,
+					     'wpsearch' => 0
+				     ),
+				     array(
+					     '%s',
+					     '%s',
+					     '%d',
+					     '%s',
+					     '%d'
+				     )
+			);
 		}
 
 	}
@@ -273,8 +292,7 @@ class SearchWPSearch {
 	 * @return array Posts returned by the query
 	 * @since 1.0
 	 */
-	function query()
-	{
+	function query() {
 		do_action( 'searchwp_log', 'query()' );
 
 		do_action( 'searchwp_before_query_index', array(

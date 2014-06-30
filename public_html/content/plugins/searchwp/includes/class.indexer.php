@@ -214,7 +214,7 @@ class SearchWPIndexer {
 			}
 
 			// see if the indexer has stalled
-			$this->checkIfStalled();
+			searchwp_check_for_stalled_indexer();
 
 			// check to see if indexer is already running
 			$running = searchwp_get_setting( 'running' );
@@ -307,9 +307,6 @@ class SearchWPIndexer {
 						);
 					}
 				}
-
-				// done indexing
-				searchwp_set_setting( 'last_activity', false, 'stats' );
 			} else {
 				do_action( 'searchwp_log', 'SHORT CIRCUIT: Indexer already running' );
 			}
@@ -347,30 +344,6 @@ class SearchWPIndexer {
 		if ( $remaining < 1 ) {
 			do_action( 'searchwp_log', 'Setting initial' );
 			searchwp_set_setting( 'initial_index_built', true );
-		}
-	}
-
-
-	/**
-	 * Checks to see if the indexer has stalled with posts left to index
-	 *
-	 * @since 1.0
-	 */
-	function checkIfStalled() {
-		// if the last activity was over three minutes ago, let's reset and notify of an issue
-		//		(it shouldn't take 3 minutes to index a chunk of posts)
-		$last_activity = searchwp_get_setting( 'last_activity', 'stats' );
-		if( ! is_null( $last_activity ) && false !== $last_activity ) {
-			if( current_time( 'timestamp' ) > $last_activity + 180 ) {
-				// stalled
-				do_action( 'searchwp_log', '---------- Indexer has stalled, jumpstarting' );
-				searchwp_wake_up_indexer();
-			}
-		} else {
-			// if the last activity was null, reset the 'running' flag and update the timestamp
-			searchwp_set_setting( 'running', false );
-			searchwp_set_setting( 'last_activity', current_time( 'timestamp' ), 'stats' );
-			searchwp_update_option( 'busy', false );
 		}
 	}
 

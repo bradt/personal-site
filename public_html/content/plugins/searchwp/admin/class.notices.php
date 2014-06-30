@@ -1,0 +1,420 @@
+<?php
+
+global $wp_filesystem;
+
+if( ! defined( 'ABSPATH' ) ) die();
+
+include_once ABSPATH . 'wp-admin/includes/file.php';
+
+/**
+ * Class SearchWPAdminNotices is responsible for displaying notices in the WordPress admin
+ */
+class SearchWPAdminNotices extends SearchWP {
+
+	function admin_notices() {
+		add_action( 'admin_notices', array( $this, 'media_note' ), 9999 );
+		add_action( 'admin_notices', array( $this, 'conflicts' ), 9999 );
+		add_action( 'admin_notices', array( $this, 'indexer_disabled' ), 9999 );
+		add_action( 'admin_notices', array( $this, 'failed_index' ), 9999 );
+		add_action( 'admin_notices', array( $this, 'missing_integrations' ), 9999 );
+		add_action( 'admin_notices', array( $this, 'log_file_size_warning' ), 9999 );
+	}
+
+	/**
+	 * If the debug log is over 2MB
+	 */
+	function log_file_size_warning() {
+		global $searchwp;
+		$logfile = trailingslashit( $searchwp->dir ) . 'debug.log';
+
+		// if the logfile is over a 2MB it's likely the developer forgot to disable debugging
+		if ( file_exists( $logfile ) && absint( filesize( $logfile ) ) > 2097151 ) :
+		?>
+			<div class="error" id="searchwp-log-file-size">
+				<p><?php _e( 'Your SearchWP debug log is quite large. Please remember to disable debugging and delete <code>~/wp-content/plugins/searchwp/debug.log</code> when you are done.', 'searchwp' ); ?></p>
+			</div>
+		<?php endif;
+	}
+
+	/**
+	 * If we're running plugins with known SearchWP integrations that are missing
+	 */
+	function missing_integrations() {
+		$integration_extensions = array(
+			'bbpress' => array(
+				'plugin' => array(
+					'file' => 'bbpress/bbpress.php',
+					'name' => 'bbPress',
+					'url' => 'https://wordpress.org/plugins/bbpress/',
+				),
+				'integration' => array(
+					'file' => 'searchwp-bbpress/searchwp-bbpress.php',
+					'name' => 'bbPress Integration',
+					'url' => 'https://searchwp.com/docs/extensions/bbpress-integration/',
+				),
+			),
+			'wpml' => array(
+				'plugin' => array(
+					'file' => 'sitepress-multilingual-cms/sitepress.php',
+					'name' => 'WPML',
+					'url' => 'http://wpml.org/',
+				),
+				'integration' => array(
+					'file' => 'searchwp-wpml/searchwp-wpml.php',
+					'name' => 'WPML Integration',
+					'url' => 'https://searchwp.com/docs/extensions/wpml-integration/',
+				),
+			),
+			'polylang' => array(
+				'plugin' => array(
+					'file' => 'polylang/polylang.php',
+					'name' => 'Polylang',
+					'url' => 'http://wordpress.org/plugins/polylang/',
+				),
+				'integration' => array(
+					'file' => 'searchwp-polylang/searchwp-polylang.php',
+					'name' => 'Polylang Integration',
+					'url' => 'https://searchwp.com/docs/extensions/polylang-integration/',
+				),
+			),
+			'wpjobmanager' => array(
+				'plugin' => array(
+					'file' => 'wp-job-manager/wp-job-manager.php',
+					'name' => 'WP Job Manager',
+					'url' => 'https://wordpress.org/plugins/wp-job-manager/',
+				),
+				'integration' => array(
+					'file' => 'searchwp-wp-job-manager-integration/searchwp-wp-job-manager-integration.php',
+					'name' => 'WP Job Manager Integration',
+					'url' => 'https://searchwp.com/docs/extensions/wp-job-manager-integration/',
+				),
+			),
+		);
+
+		$missing_integrations = array();
+		foreach ( $integration_extensions as $integration_extension_key => $integration_extension ) {
+			if ( is_plugin_active( $integration_extension['plugin']['file'] ) && ! is_plugin_active( $integration_extension['integration']['file'] ) ) {
+				$missing_integrations[] = $integration_extension_key;
+			}
+		}
+
+		if ( ! empty( $missing_integrations ) && apply_filters( 'searchwp_missing_integration_notices', true ) ) { ?>
+			<?php foreach( $missing_integrations as $missing_integration ) : ?>
+				<?php
+				$plugin         = $integration_extensions[$missing_integration]['plugin']['name'];
+				$url            = $integration_extensions[$missing_integration]['integration']['url'];
+				$integration    = $integration_extensions[$missing_integration]['integration']['name'];
+				?>
+				<div class="error" id="searchwp-missing-integrations-notice">
+					<p><strong><?php _e( 'Missing SearchWP integration', 'searchwp' ); ?>:</strong> <?php echo sprintf( __( 'In order for SearchWP to work with %s you will need to install and activate the <a href="%s">%s</a> Extension', 'searchwp' ), $plugin, $url, $integration ); ?></p>
+				</div>
+			<?php endforeach; ?>
+		<?php }
+	}
+
+	/**
+	 * Check for erroneous posts that were not indexed after multiple attempts
+	 */
+	function failed_index() {
+
+		// allow dev to forcefully omit posts from being indexed
+		$exclude_from_index = apply_filters( 'searchwp_prevent_indexing', array() );
+		if ( ! is_array( $exclude_from_index ) ) {
+			$exclude_from_index = array();
+		}
+		$exclude_from_index = array_map( 'absint', $exclude_from_index );
+
+		$args = array(
+			'posts_per_page'        => -1,
+			'post_type'             => 'any',
+			'post_status'           => array( 'publish', 'inherit' ),
+			'post__not_in'          => $exclude_from_index,
+			'fields'                => 'ids',
+			'meta_query'    => array(
+				'relation'          => 'AND',
+				array(
+					'key'           => '_' . SEARCHWP_PREFIX . 'indexed',
+					'value'         => '', // http://core.trac.wordpress.org/ticket/23268
+					'compare'       => 'NOT EXISTS',
+					'type'          => 'BINARY'
+				),
+				array( // only want media that hasn't failed indexing multiple times
+					'key'           => '_' . SEARCHWP_PREFIX . 'skip',
+					'compare'       => 'EXISTS',
+					'type'          => 'BINARY'
+				)
+			)
+		);
+
+		$erroneousPosts = get_posts( $args );
+
+		if( ! empty( $erroneousPosts ) ) : ?>
+			<div class="error" id="searchwp-index-errors-notice">
+				<p><?php _e( 'SearchWP failed to index', 'searchwp' ); ?> <strong><?php echo count( $erroneousPosts ); ?></strong> <?php if( count( $erroneousPosts ) == 1 ) { _e( 'post', 'searchwp' ); } else { _e( 'posts', 'searchwp' ); } ?>. <a href="options-general.php?page=searchwp&amp;nonce=<?php echo wp_create_nonce( 'swperroneous' ); ?>"><?php _e( 'View details', 'searchwp' ); ?> &raquo;</a></p>
+			</div>
+		<?php endif;
+	}
+
+	/**
+	 * If the indexer is disabled
+	 */
+	function indexer_disabled() {
+		$paused = searchwp_get_option( 'paused' );
+		if( $paused ) {
+			?>
+			<div class="updated">
+				<p><?php _e( 'The SearchWP indexer is currently <strong>disabled</strong>', 'searchwp' ); ?></p>
+			</div>
+		<?php
+		}
+	}
+
+	/**
+	 * If a filter conflict was detected, we need to set up our AJAX dismissal
+	 *
+	 * @since 1.8
+	 */
+	function filter_conflict_javascript() {
+		?>
+		<script type="text/javascript" >
+			jQuery(document).ready(function($) {
+				var data = { action: 'swp_conflict' };
+				$('body').on('click','a.swp-dismiss-conflict',function(){
+					data.swphash = $(this).data('hash');
+					data.swpnonce = $(this).data('nonce');
+					data.swpfilter = $(this).data('filter');
+					$.post(ajaxurl, data, function(response) {});
+					$(this).parents('.updated').remove();
+					return false;
+				});
+				$('body').on('click','.swp-conflict-toggle',function(){
+					var $target = $($(this).attr('href'));
+					if($target.is(':visible')){
+						$target.hide();
+					}else{
+						$target.show();
+					}
+					return false;
+				});
+			});
+		</script>
+	<?php
+	}
+
+	/**
+	 * Detect whether other plugins are using the hooks SearchWP absolutely depends on as they're likely to cause interference
+	 */
+	function conflicts() {
+		global $wp_filesystem;
+
+		// allow developers to disable potential conflict notices if they want
+		$show_conflict_notices = apply_filters( 'searchwp_show_conflict_notices', true );
+
+		if ( ! $show_conflict_notices ) {
+			return;
+		}
+
+		// whether the JavaScript for these notices has been output
+		$javascript_deployed = false;
+
+		// output a notification if there are potential query_posts or WP_Query conflicts in search.php
+		$search_template = locate_template( 'search.php' ) ? locate_template( 'search.php' ) : locate_template( 'index.php' );
+		if( $search_template ) {
+			include_once ABSPATH . 'wp-admin/includes/file.php';
+			WP_Filesystem();
+			$potential_conflicts = array( 'new WP_Query', 'query_posts' );
+			$search_template_content = $wp_filesystem->get_contents_array( $search_template );
+			$line_numbers = array();
+			while ( list( $key, $line ) = each( $search_template_content ) ) {
+				$line = trim( $line );
+				foreach ( $potential_conflicts as $potential_conflict ) {
+					if ( false !== strpos( $line, $potential_conflict ) ) {
+						// make sure the line isn't commented out
+						if ( '//' != substr( $line, 0, 2 ) ) {
+							$line_numbers[$key + 1][] = $potential_conflict;
+						}
+					}
+				}
+			}
+			if( ! empty( $line_numbers ) ) {
+				add_action( 'admin_footer', array( $this, 'filter_conflict_javascript' ) );
+				$javascript_deployed = true;
+				?>
+				<div class="updated">
+					<p><?php _e( 'SearchWP has detected a <strong>theme conflict</strong> with the active theme.', 'searchwp' ); ?> <a class="swp-conflict-toggle swp-theme-conflict-show" href="#searchwp-conflict-theme"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
+					<div id="searchwp-conflict-theme" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
+						<p><?php _e( "In order for SearchWP to display it's results, occurrences of <code>new WP_Query</code> and <code>query_posts()</code> must be removed from your search results template.", 'searchwp' ); ?></p>
+						<p>
+							<strong><?php _e( 'File location', 'searchwp' ); ?>:</strong>
+							<code><?php echo $search_template; ?></code>
+						</p>
+						<?php foreach( $line_numbers as $line_number => $conflicts ) : ?>
+							<p>
+								<strong><?php _e( 'Line', 'searchwp' ); ?>: <?php echo $line_number; ?></strong>
+								<code><?php echo implode( '</code>, <code>', $conflicts ); ?></code>
+							</p>
+						<?php endforeach; ?>
+						<p><?php _e( 'Please ensure the offending lines are removed from the theme template to avoid conflicts with SearchWP. When removed, this notice will disappear.', 'searchwp' ); ?></p>
+					</div>
+				</div>
+			<?php
+			}
+		}
+
+		// output a notification if there are potential action/filter conflicts
+		if( is_array( $GLOBALS ) ) {
+			if( isset( $GLOBALS['wp_filter'] ) ) {
+
+				// whitelist which functions are acceptable
+				$function_whitelist = array(
+					'_close_comments_for_old_posts',    // WordPress core
+					'SearchWP::wpSearch',               // SearchWP search hijack
+					'SearchWP::checkForMainQuery',      // SearchWP main query check
+				);
+
+				// the filters we want to check for conflicts and their associated Knowledge Base resources
+				$filter_checklist = array(
+					'pre_get_posts'     => 'https://searchwp.com/?p=10370',
+					'the_posts'         => 'https://searchwp.com/?p=10370',
+				);
+
+				foreach( $filter_checklist as $filter_name => $filter_resolution_url ) {
+					if( isset( $GLOBALS['wp_filter'][$filter_name] ) ) {
+						$potential_conflict = false;
+						foreach( $GLOBALS['wp_filter'][$filter_name] as $filter_priority ) {
+							foreach( $filter_priority as $filter_hook ) {
+								if( isset( $filter_hook['function'] ) ) {
+
+									// the function 'name' is either going to be just that (the function name) or
+									// it's also going to include the class name for easier debugging
+									// if it's a Closure we'll call that out too
+									$function = $filter_hook['function'];
+									if( is_object( $function ) && ( $function instanceof Closure ) ) {
+										$function_name = 'Anonymous Function (Closure)';
+									} elseif ( is_array( $function ) ) {
+										if( is_object( $filter_hook['function'][0] ) ) {
+											$function_name = get_class( $filter_hook['function'][0] ) . '::' . $filter_hook['function'][1];
+										} else {
+											$function_name = (string) $filter_hook['function'][0] . '::' . $filter_hook['function'][1];
+										}
+									} else {
+										$function_name = $filter_hook['function'];
+									}
+
+									if( ! in_array( $function_name, $function_whitelist ) ) {
+										// we're going to store all potential conflicts for the warning message
+										if( !is_array( $potential_conflict ) ) {
+											$potential_conflict = array();
+										}
+										$potential_conflict[] = $function_name;
+									}
+								}
+							}
+						}
+
+						if( $potential_conflict ) {
+							// user may have already dismissed this conflict so let's check
+							$existing_dismissals = searchwp_get_setting( 'dismissed' );
+
+							// dismissals are stored as hashes of the hooks as they were when the dismissal was enabled
+							$conflict_hash = md5( json_encode( $potential_conflict ) );
+							$conflict_nonce = wp_create_nonce( 'swpconflict_' . $filter_name );
+
+							// by default we want to show it, but we'll check to see if it was already dismissed
+							$show_conflict = true;
+							if( is_array( $existing_dismissals ) ) {
+								if( isset( $existing_dismissals['filter_conflicts'] ) && is_array( $existing_dismissals['filter_conflicts'] ) ) {
+									if( in_array( $conflict_hash, $existing_dismissals['filter_conflicts'] ) ) {
+										$show_conflict = false;
+									}
+								}
+							}
+
+							if( $show_conflict ) {
+								// dump out the JavaScript that allows dismissals
+								if( ! $javascript_deployed ) {
+									add_action( 'admin_footer', array( $this, 'filter_conflict_javascript' ) );
+									$javascript_deployed = true;
+								}
+								?>
+								<div class="updated">
+									<p><?php echo sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), $filter_name ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo $filter_name; ?>"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
+									<div id="searchwp-conflict-<?php echo $filter_name; ?>" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
+										<p><?php _e( '<strong>This is simply a <em>preliminary</em> detection of a <em>possible</em> conflict.</strong> Many times these detections can be <strong>safely dismissed</strong>', 'searchwp' ); ?></p>
+										<p><?php _e( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ); ?></p>
+										<ol>
+											<?php foreach( $potential_conflict as $conflict ) : ?>
+												<?php
+												// if it was class based we'll break out the class
+												if( strpos( $conflict, '::' ) ) {
+													$conflict = explode( '::', $conflict );
+													$conflict = '<code>' . $conflict[1] . '</code> ' . __( '(method) in', 'searchwp' ) . ' <code>' . $conflict[0] . '</code>' . __( ' (class)', 'searchwp' );
+												} else {
+													$conflict = '<code>' . $conflict . '</code> ' . __( '(function)', 'searchwp' );
+												}
+												?>
+												<li><?php echo $conflict; ?></li>
+											<?php endforeach; ?>
+										</ol>
+										<p><?php echo sprintf( __( '<strong>If you believe there to be a conflict (e.g. search results not showing up):</strong> use this information you can determine how to best disable this interference. For more information please see <a href="%s">this Knowledge Base article</a>.', 'searchwp' ), $filter_resolution_url ); ?></p>
+										<p><a class="button swp-dismiss-conflict" href="#" data-hash="<?php echo esc_attr( $conflict_hash ); ?>" data-nonce="<?php echo esc_attr( $conflict_nonce ); ?>" data-filter="<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'Dismiss this message', 'searchwp' ); ?></a></p>
+									</div>
+								</div>
+							<?php
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
+	 * SearchWP by default does not index Media for the following reasons:
+	 *      - minimal number of users enable it
+	 *      - it bloats the index quite a bit
+	 * As a result searching for Media in the WordPress admin will not work properly unless it's enabled
+	 */
+	function media_note() {
+		if( class_exists( 'WP_Screen' ) ) {
+			$current_screen = get_current_screen();
+			if( $current_screen instanceof WP_Screen ) {
+				if( isset( $current_screen->id ) ) {
+					if( is_search() && 'upload' == $current_screen->id ) {
+
+						// we're on the search results of the Media page in the WP admin, as a result of that the
+						// search engine settings have been hijacked and limited to Media only, so we need to retrieve
+						// the engine settings from the database (which are unaltered) because we need to check to see
+						// whether Media may not be indexed at all
+
+						$live_engine_settings = searchwp_get_option( 'settings' );
+						$index_attachments_from_settings = false;
+						if( isset( $live_engine_settings['engines'] ) && is_array( $live_engine_settings['engines'] ) ) {
+							foreach( $live_engine_settings['engines'] as $engine ) {
+								if( isset( $engine['attachment'] ) && isset( $engine['attachment']['enabled'] ) && true == $engine['attachment']['enabled'] ) {
+									$index_attachments_from_settings = true;
+									break;
+								}
+							}
+						}
+
+						$maybe_index_attachments = apply_filters( 'searchwp_index_attachments', $index_attachments_from_settings );
+						$maybe_search_in_admin = apply_filters( 'searchwp_in_admin', false );
+
+						// if Media isn't explicity indexed and searching in the admin is enabled and we're on
+						// the search results screen for Media, tell the user that results might be incomplete
+						if( ! $maybe_index_attachments && $maybe_search_in_admin ) {
+							?><div class="updated">
+								<p><?php _e( '<strong>Potentially incomplete results:</strong> Since you <em>do not have Media enabled</em> for any search engine, you should implement the <code>searchwp_index_attachments</code> hook to ensure Media is properly indexed by SearchWP. Once attachment indexing has been enabled, ensure there is no progress bar on the SearchWP Settings screen, confirming all Media is indexed.', 'searchwp' ); ?></p>
+							</div>
+						<?php }
+					}
+				}
+			}
+		}
+	}
+
+}
+
+$searchwp_admin_notices = new SearchWPAdminNotices();
+$searchwp_admin_notices->admin_notices();
