@@ -80,3 +80,10 @@ function ppp_is_shortener_enabled() {
 
 	return ( isset( $ppp_share_settings['shortener'] ) && !empty( $ppp_share_settings['shortener'] ) && $ppp_share_settings != '-1' );
 }
+
+/**
+ * Strips slashes and html_entities_decode for sending to the networks.
+ */
+function ppp_entities_and_slashes( $string ) {
+	return stripslashes( html_entity_decode( $string ) );
+}
