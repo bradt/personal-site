@@ -32,22 +32,24 @@
 
 				<section class="subscribe">
 					<h1>
-						Advanced WordPress Development<br />
-						(Free Pro Tips Delivered Via Email)
+						Free Tips On How To Build And<br />
+						Launch Your First Software Product
 					</h1>
 					<p class="desc">
-						Learn from my many years of 
-						experience (since 2004) working with WordPress, from hosting, to developing themes and plugins.
-						I'll share my best tips and techniques with you via email.
+						I used to be a full-time employee, then I went freelance,
+						and now I run a successful product company. I've learned
+						a lot along that path and will share failures and 
+						successes with you via email.
 					</p>
-					<form action="http://deliciousbrains.createsend.com/t/t/s/tdhrly/" method="post">
+					<form action="//bradt.us8.list-manage.com/subscribe/post?u=3ae56658d135818e5b69adcbf&amp;id=483204597a" method="post">
 						<div class="field email">
-							<input type="email" name="cm-tdhrly-tdhrly" id="cm-tdhrly-tdhrly" placeholder="Email Address" />
+							<input type="email" name="EMAIL" placeholder="Email Address" />
 						</div>
 						<div class="field name" style="display: none;">
-							<input type="text" name="cm-name" id="post-subscribe-name" placeholder="Your Full Name" />
+							<input type="text" name="FNAME" placeholder="First Name" />
 						</div>
-						<button type="submit">Sign Up</button>
+						<div style="position: absolute; left: -5000px;"><input type="text" name="b_3ae56658d135818e5b69adcbf_483204597a" tabindex="-1" value=""></div>
+						<button type="submit">Send Me Free Business Tips</button>
 					</form>
 
 					<p class="rss">Prefer RSS? <a href="<?php bloginfo('rss2_url'); ?>" rel="alternate" type="application/rss+xml">Subscribe to my news feed</a></p>
