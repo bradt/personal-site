@@ -124,7 +124,7 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 				FROM {$wpdb->posts}
 				WHERE post_type IN ({$own_posts_string}) AND post_author = %d
 			)sub_base";
-	
+
 			return $subquery;
 		}
 
@@ -157,7 +157,7 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 
 
 			$class               = empty( $_GET['post_status'] ) ? ' class="current"' : '';
-			$status_links['all'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpseo_bulk-description-editor' ) ) . '"' . $class . '>' . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts, 'posts' ), number_format_i18n( $total_posts ) ) . '</a>';
+			$status_links['all'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpseo_bulk-description-editor' ) ) . '"' . $class . '>' . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts, 'posts', 'wordpress-seo' ), number_format_i18n( $total_posts ) ) . '</a>';
 
 			$post_stati = get_post_stati( array( 'show_in_admin_all_list' => true ), 'objects' );
 			if ( is_array( $post_stati ) && $post_stati !== array() ) {
@@ -202,7 +202,7 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 			);
 
 			$class                 = ( isset( $_GET['post_status'] ) && 'trash' == $_GET['post_status'] ) ? 'class="current"' : '';
-			$status_links['trash'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpseo_bulk-description-editor&post_status=trash' ) ) . '"' . $class . '>' . sprintf( _nx( 'Trash <span class="count">(%s)</span>', 'Trash <span class="count">(%s)</span>', $trashed_posts, 'posts' ), number_format_i18n( $trashed_posts ) ) . '</a>';
+			$status_links['trash'] = '<a href="' . esc_url( admin_url( 'admin.php?page=wpseo_bulk-description-editor&post_status=trash' ) ) . '"' . $class . '>' . sprintf( _nx( 'Trash <span class="count">(%s)</span>', 'Trash <span class="count">(%s)</span>', $trashed_posts, 'posts', 'wordpress-seo' ), number_format_i18n( $trashed_posts ) ) . '</a>';
 
 			return $status_links;
 		}
@@ -226,7 +226,7 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 
 					$states          = get_post_stati( array( 'show_in_admin_all_list' => true ) );
 					$states['trash'] = 'trash';
-					$states = esc_sql( $states );
+					$states          = esc_sql( $states );
 					$all_states      = "'" . implode( "', '", $states ) . "'";
 
 					$subquery        = $this->get_base_subquery();
@@ -254,8 +254,8 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 						}
 					}
 
-					echo sprintf( '<select name="post_type_filter">%1$s</select>' , $options );
-					submit_button( __( 'Filter' ), 'button', false, false, array( 'id' => 'post-query-submit' ) );
+					echo sprintf( '<select name="post_type_filter">%1$s</select>', $options );
+					submit_button( __( 'Filter', 'wordpress-seo' ), 'button', false, false, array( 'id' => 'post-query-submit' ) );
 					echo '</div>';
 				}
 			}
@@ -271,13 +271,13 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 		 */
 		function get_columns() {
 			return $columns = array(
-				'col_page_title'                  => __( 'WP Page Title' ),
-				'col_post_type'                   => __( 'Post Type' ),
-				'col_post_status'                 => __( 'Post Status' ),
-				'col_page_slug'                   => __( 'Page URL/Slug' ),
+				'col_page_title'                  => __( 'WP Page Title', 'wordpress-seo' ),
+				'col_post_type'                   => __( 'Post Type', 'wordpress-seo' ),
+				'col_post_status'                 => __( 'Post Status', 'wordpress-seo' ),
+				'col_page_slug'                   => __( 'Page URL/Slug', 'wordpress-seo' ),
 				'col_existing_yoast_seo_metadesc' => __( 'Existing Yoast Meta Description', 'wordpress-seo' ),
 				'col_new_yoast_seo_metadesc'      => __( 'New Yoast Meta Description', 'wordpress-seo' ),
-				'col_row_action'                  => __( 'Action' ),
+				'col_row_action'                  => __( 'Action', 'wordpress-seo' ),
 			);
 		}
 
@@ -292,12 +292,12 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 				'col_existing_yoast_seo_metadesc' => array( 'meta_desc', false )
 			);
 		}
-	
+
 		function prepare_items() {
 			global $wpdb;
 
 			//	Filter Block
-	
+
 			$post_types       = null;
 			$post_type_clause = '';
 
@@ -421,16 +421,17 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 								$actions = array();
 
 								if ( $can_edit_post && 'trash' != $rec->post_status ) {
-									$actions['edit'] = '<a href="' . esc_url( get_edit_post_link( $rec->ID, true ) ) . '" title="' . esc_attr( __( 'Edit this item' ) ) . '">' . __( 'Edit' ) . '</a>';
+									$actions['edit'] = '<a href="' . esc_url( get_edit_post_link( $rec->ID, true ) ) . '" title="' . esc_attr( __( 'Edit this item', 'wordpress-seo' ) ) . '">' . __( 'Edit', 'wordpress-seo' ) . '</a>';
 								}
 
 								if ( $post_type_object->public ) {
 									if ( in_array( $rec->post_status, array( 'pending', 'draft', 'future' ) ) ) {
-										if ( $can_edit_post )
-											$actions['view'] = '<a href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $rec->ID ) ) ) . '" title="' . esc_attr( sprintf( __( 'Preview &#8220;%s&#8221;' ), $rec->post_title ) ) . '">' . __( 'Preview' ) . '</a>';
+										if ( $can_edit_post ) {
+											$actions['view'] = '<a href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $rec->ID ) ) ) . '" title="' . esc_attr( sprintf( __( 'Preview &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ) . '">' . __( 'Preview', 'wordpress-seo' ) . '</a>';
+										}
 									}
 									elseif ( 'trash' != $rec->post_status ) {
-										$actions['view'] = '<a href="' . esc_url( get_permalink( $rec->ID ) ) . '" title="' . esc_attr( sprintf( __( 'View &#8220;%s&#8221;' ), $rec->post_title ) ) . '" rel="bookmark">' . __( 'View' ) . '</a>';
+										$actions['view'] = '<a href="' . esc_url( get_permalink( $rec->ID ) ) . '" title="' . esc_attr( sprintf( __( 'View &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ) . '" rel="bookmark">' . __( 'View', 'wordpress-seo' ) . '</a>';
 									}
 								}
 
@@ -461,12 +462,12 @@ if ( ! class_exists( 'WPSEO_Bulk_Description_List_Table' ) ) {
 
 							case 'col_new_yoast_seo_metadesc':
 								$input = sprintf( '<textarea id="%1$s" name="%1$s" class="wpseo-new-metadesc" data-id="%2$s"></textarea>', 'wpseo-new-metadesc-' . $rec->ID, $rec->ID );
-								echo sprintf( '<td %2$s>%1$s</td>', $input , $attributes );
+								echo sprintf( '<td %2$s>%1$s</td>', $input, $attributes );
 								break;
 
 							case 'col_row_action':
 								$actions = sprintf( '<a href="#" class="wpseo-save" data-id="%1$s">Save</a> | <a href="#" class="wpseo-save-all">Save All</a>', $rec->ID );
-								echo sprintf( '<td %2$s>%1$s</td>', $actions , $attributes );
+								echo sprintf( '<td %2$s>%1$s</td>', $actions, $attributes );
 								break;
 						}
 					}

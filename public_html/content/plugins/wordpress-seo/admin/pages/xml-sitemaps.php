@@ -9,7 +9,7 @@
  * google-sitemaps-plugin/generator and remove as it will cause errors for our sitemaps
  * (or inform the user and disallow enabling of sitemaps )
  * @todo - [JRF => whomever] check if anything along these lines is already being done
-*/
+ */
 
 
 if ( ! defined( 'WPSEO_VERSION' ) ) {
@@ -37,7 +37,7 @@ rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 las
 }
 
 if ( $options['enablexmlsitemap'] === true ) {
-	$content .= '<p>' . sprintf( __( 'You can find your XML Sitemap here: %sXML Sitemap%s', 'wordpress-seo' ), '<a target="_blank" class="button-secondary" href="' . esc_url( home_url( $base . 'sitemap_index.xml' ) ) . '">', '</a>' ) . '<br/><br/>' . __( 'You do <strong>not</strong> need to generate the XML sitemap, nor will it take up time to generate after publishing a post.', 'wordpress-seo' ) . '</p>';
+	$content .= '<p>' . sprintf( esc_html__( 'You can find your XML Sitemap here: %sXML Sitemap%s', 'wordpress-seo' ), '<a target="_blank" class="button-secondary" href="' . esc_url( home_url( $base . 'sitemap_index.xml' ) ) . '">', '</a>' ) . '<br/><br/>' . __( 'You do <strong>not</strong> need to generate the XML sitemap, nor will it take up time to generate after publishing a post.', 'wordpress-seo' ) . '</p>';
 }
 else {
 	$content .= '<p>' . __( 'Save your settings to activate XML Sitemaps.', 'wordpress-seo' ) . '</p>';
@@ -68,8 +68,9 @@ if ( is_array( $taxonomies ) && $taxonomies !== array() ) {
 	$content .= '<h2>' . __( 'Exclude taxonomies', 'wordpress-seo' ) . '</h2>';
 	$content .= '<p>' . __( 'Please check the appropriate box below if there\'s a taxonomy that you do <strong>NOT</strong> want to include in your sitemap:', 'wordpress-seo' ) . '</p>';
 	foreach ( $taxonomies as $tax ) {
-		if ( isset( $tax->labels->name ) && trim( $tax->labels->name ) != '' )
+		if ( isset( $tax->labels->name ) && trim( $tax->labels->name ) != '' ) {
 			$content .= $wpseo_admin_pages->checkbox( 'taxonomies-' . $tax->name . '-not_in_sitemap', $tax->labels->name . ' (<code>' . $tax->name . '</code>)' );
+		}
 	}
 }
 

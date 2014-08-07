@@ -64,13 +64,13 @@ if ( ! class_exists( 'WPSEO_Pointers' ) ) {
 			$id    = '#wpadminbar';
 			$nonce = wp_create_nonce( 'wpseo_activate_tracking' );
 
-			$content = '<h3>' . __( 'Help improve WordPress SEO', 'wordpress-seo' ) . '</h3>';
+			$content  = '<h3>' . __( 'Help improve WordPress SEO', 'wordpress-seo' ) . '</h3>';
 			$content .= '<p>' . __( 'You\'ve just installed WordPress SEO by Yoast. Please helps us improve it by allowing us to gather anonymous usage stats so we know which configurations, plugins and themes to test with.', 'wordpress-seo' ) . '</p>';
-			$opt_arr = array(
+			$opt_arr  = array(
 				'content'  => $content,
 				'position' => array( 'edge' => 'top', 'align' => 'center' )
 			);
-			$button2 = __( 'Allow tracking', 'wordpress-seo' );
+			$button2  = __( 'Allow tracking', 'wordpress-seo' );
 
 			$function2 = 'wpseo_store_answer("yes","' . $nonce . '")';
 			$function1 = 'wpseo_store_answer("no","' . $nonce . '")';
@@ -164,11 +164,7 @@ if ( ! class_exists( 'WPSEO_Pointers' ) ) {
 			);
 
 			// Remove the last step and add tour end to import page if file editing is disallowed or if the site is a multisite and the current user isn't a superadmin
-			if (
-				( ( defined( 'DISALLOW_FILE_EDIT' ) && DISALLOW_FILE_EDIT ) || ( defined( 'DISALLOW_FILE_MODS' ) && DISALLOW_FILE_MODS ) )
-				||
-				( ( is_multisite() && ! is_super_admin() ) )
-			) {
+			if ( wpseo_allow_system_file_edit() === false ) {
 				unset( $adminpages['wpseo_files'] );
 				$adminpages['wpseo_import']['function'] = '';
 				unset( $adminpages['wpseo_import']['button2'] );
@@ -176,16 +172,17 @@ if ( ! class_exists( 'WPSEO_Pointers' ) ) {
 			}
 
 			$page = '';
-			if ( isset( $_GET['page'] ) )
+			if ( isset( $_GET['page'] ) ) {
 				$page = $_GET['page'];
+			}
 
 			$function = '';
 			$button2  = '';
 			$opt_arr  = array();
 			$id       = '#wpseo-title';
 			if ( 'admin.php' != $pagenow || ! array_key_exists( $page, $adminpages ) ) {
-				$id      = 'li.toplevel_page_wpseo_dashboard';
-				$content = '<h3>' . __( 'Congratulations!', 'wordpress-seo' ) . '</h3>';
+				$id       = 'li.toplevel_page_wpseo_dashboard';
+				$content  = '<h3>' . __( 'Congratulations!', 'wordpress-seo' ) . '</h3>';
 				$content .= '<p>' . __( 'You\'ve just installed WordPress SEO by Yoast! Click "Start Tour" to view a quick introduction of this plugins core functionality.', 'wordpress-seo' ) . '</p>';
 				$opt_arr  = array(
 					'content'  => $content,
@@ -198,15 +195,15 @@ if ( ! class_exists( 'WPSEO_Pointers' ) ) {
 				if ( '' != $page && in_array( $page, array_keys( $adminpages ) ) ) {
 					$align   = ( is_rtl() ) ? 'right' : 'left';
 					$opt_arr = array(
-						'content'      => $adminpages[$page]['content'],
+						'content'      => $adminpages[ $page ]['content'],
 						'position'     => array( 'edge' => 'top', 'align' => $align ),
 						'pointerWidth' => 400,
 					);
-					if ( isset( $adminpages[$page]['button2'] ) ) {
-						$button2 = $adminpages[$page]['button2'];
+					if ( isset( $adminpages[ $page ]['button2'] ) ) {
+						$button2 = $adminpages[ $page ]['button2'];
 					}
-					if ( isset( $adminpages[$page]['function'] ) ) {
-						$function = $adminpages[$page]['function'];
+					if ( isset( $adminpages[ $page ]['function'] ) ) {
+						$function = $adminpages[ $page ]['function'];
 					}
 				}
 			}
@@ -290,7 +287,7 @@ if ( ! class_exists( 'WPSEO_Pointers' ) ) {
 		 * @deprecated 1.5.0, now handled by css
 		 */
 		function admin_head() {
-			_deprecated_function( __CLASS__ . '::' . __METHOD__, 'WPSEO 1.5.0' );
+			_deprecated_function( __METHOD__, 'WPSEO 1.5.0' );
 			return;
 		}
 
