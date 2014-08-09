@@ -58,8 +58,10 @@ while ( have_posts() ) :
 
 		<ul class="actions">
 			<li><a class="permalink" href="<?php the_permalink() ?>" rel="bookmark">#</a>
+			<?php if ( current_user_can( 'export' ) ) : ?>
 			<li><a class="edit" target="_blank" href="<?php echo admin_url( 'post.php?post=' . get_the_ID() . '&action=edit' ); ?>">Edit</a></li>
 			<li><a class="delete" href="<?php echo $delete_url; ?>">Delete</a></li>
+			<?php endif; ?>
 		</ul>
 
 		<?php if ( $day != $prev_day ) : ?>
