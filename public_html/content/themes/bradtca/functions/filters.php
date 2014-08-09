@@ -67,3 +67,7 @@ function bt_the_content_feed( $content ) {
 	return $content;
 }
 add_filter( 'the_content_feed', 'bt_the_content_feed' );
+
+add_filter( 'private_title_format', function( $format ) {
+	return '';
+} );

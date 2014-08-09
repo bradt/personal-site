@@ -156,8 +156,6 @@ function bt_theme_setup() {
 add_action( 'init', 'bt_theme_setup' );
 
 function bt_enqueue_scripts() {
-	wp_enqueue_style( 'bradtca', get_template_directory_uri() . '/assets/css/style.css', array(), '20140514' );
-
 	if ( WP_DEBUG ) {
 		$suffix = '';
 	}
@@ -165,6 +163,13 @@ function bt_enqueue_scripts() {
 		$suffix = '.min';
 	}
 
+	if ( 'journal_entry' == get_post_type() ) {
+		wp_enqueue_style( 'bradtca-journal', get_template_directory_uri() . '/assets/css/journal.css', array(), '20140514' );
+		wp_enqueue_script( 'bradtca-journal', get_template_directory_uri() . '/assets/js/journal' . $suffix . '.js', array( 'jquery' ), '20140514', true );
+		return;
+	}
+
+	wp_enqueue_style( 'bradtca', get_template_directory_uri() . '/assets/css/style.css', array(), '20140514' );
 	wp_enqueue_script( 'bradtca', get_template_directory_uri() . '/assets/js/script' . $suffix . '.js', array( 'jquery' ), '20140514', true );
 }
 add_action( 'wp_enqueue_scripts', 'bt_enqueue_scripts', 100 );
@@ -174,6 +179,10 @@ add_editor_style();
 
 function bt_parse_query( $query ) {
 	if ( is_admin() ) return;
+
+	if ( is_post_type_archive( 'journal_entry' ) ) {
+		$query->set( 'posts_per_page', 50 );
+	}
 
 	if ( is_post_type_archive( 'portfolio_item' ) ) {
 		$query->set( 'posts_per_page', -1 );
@@ -197,3 +206,28 @@ function bt_parse_query( $query ) {
 	}
 }
 add_filter( 'parse_query', 'bt_parse_query' );
+
+function bt_post_status_new( $new_status, $old_status, $post ) { 
+    if ( $post->post_type == 'journal_entry' && $new_status == 'publish' && $old_status != $new_status && $old_status != 'private' ) {
+        $post->post_status = 'private';
+        wp_update_post( $post );
+    }
+} 
+add_action( 'transition_post_status', 'bt_post_status_new', 10, 3 );
+
+function bt_ajax_record_journal_entry() {
+	if ( !check_ajax_referer( 'record-journal-entry', 'nonce', false ) || !current_user_can( 'export' ) ) {
+		die( "Cheatin' eh?" );
+	}
+
+	wp_insert_post( array(
+		'post_type' => 'journal_entry',
+		'post_status' => 'private',
+		'post_content' => $_POST['entry-content']
+	) );
+
+	if ( isset( $_POST['_wp_http_referer'] ) ) {
+		wp_redirect( $_POST['_wp_http_referer'] );
+	}
+}
+add_action( 'wp_ajax_record_journal_entry', 'bt_ajax_record_journal_entry' );
