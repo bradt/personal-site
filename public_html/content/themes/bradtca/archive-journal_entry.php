@@ -1,11 +1,15 @@
 <?php get_header( 'journal' ); ?>
 
+<?php if ( current_user_can( 'export' ) ) : ?>
+
 <form action="<?php echo admin_url( 'admin-ajax.php' ); ?>" method="post" class="new-entry">
 <?php wp_nonce_field( 'record-journal-entry' ); ?>
 <input type="hidden" name="action" value="record_journal_entry" />
 <textarea name="entry-content" placeholder="What have you been up to?"></textarea>
 <button type="submit">Record</button>
 </form>
+
+<?php endif; ?>
 
 <section class="day-entries">
 
