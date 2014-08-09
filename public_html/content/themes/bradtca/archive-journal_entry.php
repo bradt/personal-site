@@ -40,6 +40,13 @@ while ( have_posts() ) :
 	$text = wp_strip_all_tags( $content );
 	$words_array = preg_split( "/[\n\r\t ]+/", $text, -1, PREG_SPLIT_NO_EMPTY );
 	$word_count = count( $words_array );
+
+	$delete_url = admin_url( 'post.php?action=delete' );
+	$delete_url = add_query_arg( array(
+		'post' => get_the_ID(),
+		'_wp_http_referer' => wp_unslash( $_SERVER['REQUEST_URI'] )
+	), $delete_url );
+	$delete_url = wp_nonce_url( $delete_url, 'delete-post_' . get_the_ID() );
 	?>
 
 	<?php if ( $prev_day && $day != $prev_day ) : ?>
@@ -47,6 +54,13 @@ while ( have_posts() ) :
 	<?php endif; ?>
 
 	<article class="journal-entry">
+	<div class="wrap">
+
+		<ul class="actions">
+			<li><a class="permalink" href="<?php the_permalink() ?>" rel="bookmark">#</a>
+			<li><a class="edit" target="_blank" href="<?php echo admin_url( 'post.php?post=' . get_the_ID() . '&action=edit' ); ?>">Edit</a></li>
+			<li><a class="delete" href="<?php echo $delete_url; ?>">Delete</a></li>
+		</ul>
 
 		<?php if ( $day != $prev_day ) : ?>
 		<time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate"><span class="day"><span class="dom"><?php the_time('j'); ?></span> <span class="dow"><?php the_time('l'); ?></span></span> <?php echo $display_month; ?></time>
@@ -55,14 +69,14 @@ while ( have_posts() ) :
 		<?php endif; ?>
 
 		<?php if ( $title = get_the_title() ) : ?>
-		<h1 class="entry-title"><a href="<?php the_permalink() ?>" rel="bookmark"><?php echo $title; ?></a></h1>
+		<h1 class="entry-title"><?php echo $title; ?></h1>
 		<?php endif; ?>
 
 		<div class="entry-content<?php if ( $word_count <= 100 ) echo ' shorty'; ?>">
 			<?php echo $content; ?>
-			<a class="edit" target="_blank" href="<?php echo admin_url( 'post.php?post=' . get_the_ID() . '&action=edit' ); ?>">Edit</a>
 		</div>
 
+	</div>
 	</article>
 
 	<?php

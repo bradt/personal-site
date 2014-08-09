@@ -102,6 +102,37 @@ $width: 600px;
 	&:last-of-type {
 		border-bottom: 0;
 	}
+
+	.wrap {
+		position: relative;
+	}
+
+	.actions {
+		position: absolute;
+		top: 0;
+		width: 100px;
+		right: -160px;
+		font-size: 14px;
+		line-height: 1.2em;
+		font-family: $SourceSansPro;
+
+		.permalink {
+			font-size: 16px;
+			font-family: $Lora;
+		}
+
+		li {
+			margin-bottom: 5px;
+		}
+
+		a {
+			color: #ccc;
+
+			&:hover {
+				color: #999;
+			}
+		}
+	}
 }
 
 .entry-title {
@@ -134,24 +165,6 @@ $width: 600px;
 		width: 100%;
 		height: auto;
 		clear: right;
-	}
-
-	&:hover {
-		.edit {
-			opacity: 1;
-		}
-	}
-
-	.edit {
-		position: absolute;
-		top: 8px;
-		width: 100px;
-		right: -160px;
-		font-size: 12px;
-		line-height: 1.2em;
-		color: #999;
-		opacity: 0.3;
-		font-family: $SourceSansPro;
 	}
 }
 
