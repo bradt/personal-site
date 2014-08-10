@@ -25,7 +25,7 @@ module.exports = function(grunt) {
 				tasks: ['compass']
 			},
 			livereload: {
-				files: ['js/*.min.js','css/*'],
+				files: ['js/*.js','css/*'],
 				options: { livereload: true }
 			}
 		}

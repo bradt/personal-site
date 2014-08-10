@@ -2,7 +2,7 @@
 <html <?php language_attributes(); ?>>
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
-<meta name="viewport" content="width=850px" />
+<meta name="viewport" content="width=device-width" />
 
 <title><?php wp_title( '' ); ?></title>
 
@@ -17,5 +17,7 @@
 </head>
 
 <body <?php body_class( $post->post_name . ' journal' ); ?>>
+
+<div class="container">
 
 <h1 class="page-title">Journal</h1>

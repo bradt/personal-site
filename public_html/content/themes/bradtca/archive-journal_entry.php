@@ -11,7 +11,7 @@
 
 <?php endif; ?>
 
-<section class="day-entries">
+<section class="month">
 
 <?php 
 $prev_month = '';
@@ -21,16 +21,24 @@ while ( have_posts() ) :
 
 	$day = get_the_time( 'd F Y' );
 
+	if ( $prev_day && $day != $prev_day ) {
+		echo '</section>';
+	}
+
 	$month = get_the_time( 'F Y' );
+
+	if ( $prev_month && $month != $prev_month ) {
+		echo '</section><section class="month">';
+	}
+
 	if ( $month != $prev_month ) {
-		$display_month = '<span class="month-year">' . get_the_time( 'F' );
+		$display_month = '<h1 class="month-year">' . get_the_time( 'F' );
 		if ( date( 'Y' ) != get_the_time( 'Y' ) ) {
 			$display_month .= get_the_time( ' Y' );
 		}
+		$display_month .= '</h1>';
+		echo $display_month;
 		$prev_month = $month;
-	}
-	else {
-		$display_month = '';
 	}
 
 	$content = get_the_content();
@@ -47,14 +55,20 @@ while ( have_posts() ) :
 		'_wp_http_referer' => wp_unslash( $_SERVER['REQUEST_URI'] )
 	), $delete_url );
 	$delete_url = wp_nonce_url( $delete_url, 'delete-post_' . get_the_ID() );
-	?>
 
-	<?php if ( $prev_day && $day != $prev_day ) : ?>
-	</section><section class="day-entries">
-	<?php endif; ?>
+	if ( !$prev_day || $day != $prev_day ) {
+		echo '<section class="day-entries">';
+	}
+	?>
 
 	<article class="journal-entry">
 	<div class="wrap">
+
+		<?php if ( $day != $prev_day ) : ?>
+		<time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate"><span class="day"><span class="dom"><?php the_time('j'); ?></span> <span class="dow"><?php the_time('l'); ?></span></span></time>
+		<?php else : ?>
+		<time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate" class="tod"><?php the_time( 'h:i A' ); ?></time>
+		<?php endif; ?>
 
 		<ul class="actions">
 			<li><a class="permalink" href="<?php the_permalink() ?>" rel="bookmark">#</a>
@@ -63,12 +77,6 @@ while ( have_posts() ) :
 			<li><a class="delete" href="<?php echo $delete_url; ?>">Delete</a></li>
 			<?php endif; ?>
 		</ul>
-
-		<?php if ( $day != $prev_day ) : ?>
-		<time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate"><span class="day"><span class="dom"><?php the_time('j'); ?></span> <span class="dow"><?php the_time('l'); ?></span></span> <?php echo $display_month; ?></time>
-		<?php else : ?>
-		<time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate" class="tod"><?php the_time( 'h:i A' ); ?></time>
-		<?php endif; ?>
 
 		<?php if ( $title = get_the_title() ) : ?>
 		<h1 class="entry-title"><?php echo $title; ?></h1>
