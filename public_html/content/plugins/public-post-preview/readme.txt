@@ -3,8 +3,8 @@ Contributors: ocean90
 Tags: public, post, preview, posts, custom post types, draft
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VR8YU922B7K46
 Requires at least: 3.5
-Tested up to: 3.7
-Stable tag: 2.3
+Tested up to: 4.0
+Stable tag: 2.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -53,17 +53,6 @@ To upload the plugin through WordPress, instead of FTP:
 
 1. Edit Posts Page
 
-== Upgrade Notice ==
-
-= 2.2 =
-Based on feedback: Removed the extra metabox and added preview link to the main Publish metabox. Requires now WordPress 3.5
-
-= 2.1 =
-The update fixes a rare issue which had created 404 errors.
-
-= 2.0 =
-New plugin maintainer, supports now all public post types, saves preview status via an AJAX request, ready for translation, requires at least WordPress 3.3.
-
 == Usage ==
 * To enable a public post preview check the box below the edit post box.
 * The link will be displayed if the checkbox is checked, just copy and share the link with your friends.
@@ -85,7 +74,15 @@ function my_nonce_life() {
 	return 60 * 60 * 24 * 5; // 5 days
 }`
 
+Or use the [Public Post Preview Configurator](https://wordpress.org/plugins/public-post-preview-configurator/).
+
 == Change Log ==
+= 2.4 (2014-08-21):
+* Supports EditFlow and custom statuses
+* Disables comments and pings during public post preview
+* Adds **Public Preview** to the list of display states used in the Posts list table
+* Prevents flickering of link box on Post edit while loading
+
 = 2.3 (2013-11-18): =
 * Introduces a filter `ppp_preview_link`. With the filter you can adjust the preview link.
 * If a post has gone live, redirect to it's proper permalink.

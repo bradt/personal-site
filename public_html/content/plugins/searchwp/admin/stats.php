@@ -184,7 +184,7 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 			searchwp_resize_columns();
 			jQuery(window).resize(function(){
 				searchwp_resize_columns();
-			})
+			});
 		});
 	</script>
 

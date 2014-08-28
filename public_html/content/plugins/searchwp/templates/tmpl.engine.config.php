@@ -46,7 +46,7 @@ function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype 
 			break;
 	}
 
-	return $weight;
+	return esc_attr( $weight );
 }
 
 
@@ -58,7 +58,8 @@ function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype 
  * @since 1.0
  */
 function searchwpEngineSettingsTemplate( $engine = 'default' ) {
-	global $searchwp;
+
+	$searchwp = SWP();
 
 	$settings = $searchwp->settings;
 	$engine = sanitize_key( $engine );
@@ -96,6 +97,10 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 	<ul class="swp-nav swp-tabs">
 		<?php foreach( $post_types as $post_type ) : $post_type = get_post_type_object( $post_type ); ?>
 			<?php if( $post_type->name != 'attachment' ) : ?>
+				<?php
+					$engine = esc_attr( $engine );
+					$post_type->name = esc_attr( $post_type->name );
+				?>
 				<li data-swp-engine="swp-engine-<?php echo $engine; ?>-<?php echo $post_type->name; ?>" class="">
 					<span>
 						<?php $enabled = !empty( $engineSettings[$post_type->name]['enabled'] ); ?>
@@ -115,12 +120,16 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 	</ul>
 	<div class="swp-tab-content">
 		<?php foreach( $post_types as $post_type ) : $post_type = get_post_type_object( $post_type ); ?>
+			<?php
+				$engine = esc_attr( $engine );
+				$post_type->name = esc_attr( $post_type->name );
+			?>
 			<div class="swp-engine swp-engine-<?php echo $engine; ?> swp-group swp-tab-pane" id="swp-engine-<?php echo $engine; ?>-<?php echo $post_type->name; ?>">
 				<?php $weights = !empty( $engineSettings[$post_type->name]['weights'] ) ? $engineSettings[$post_type->name]['weights'] : array(); ?>
 				<div class="swp-tooltip-content" id="swp-tooltip-weights-<?php echo $engine; ?>_<?php echo $post_type->name; ?>">
 					<?php _e( 'These values add weight to results.<br /><br />A weight of 1 is neutral<br />Between 0 &amp; 1 lowers result weight<br />Over 1 increases result weight<br />Zero omits the result<br />-1 excludes matches', 'searchwp' ); ?>
 				</div>
-				<!-- <p class="description" style="padding-bottom:10px;"><?php _e( 'Applicable entries', 'searchwp' ); ?>: <?php $count_posts = wp_count_posts( $post_type->name ); echo 'attachment' != $post_type->name ? $count_posts->publish : $count_posts->inherit; ?></p> -->
+				<!-- <p class="description" style="padding-bottom:10px;"><?php _e( 'Applicable entries', 'searchwp' ); ?>: <?php $count_posts = wp_count_posts( $post_type->name ); echo 'attachment' != $post_type->name ? absint( $count_posts->publish ) : absint( $count_posts->inherit ); ?></p> -->
 				<div class="swp-engine-weights">
 					<table>
 						<colgroup>
@@ -222,8 +231,12 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 										<td class="swp-custom-field-select">
 											<select name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][weights][cf][<?php echo $arrayFlag; ?>][metakey]" style="width:80%;">
 												<option value="searchwpcfdefault" <?php selected( $cfWeight['metakey'], 'searchwpcfdefault' ); ?>><?php _e( 'Any', 'searchwp' ); ?></option>
-												<?php if( !empty( $searchwp->keys ) ) : foreach( $searchwp->keys as $key ) : ?>
-													<option value="<?php echo $key; ?>" <?php selected( strtolower( $cfWeight['metakey'] ), strtolower( $key ) ); ?>><?php echo $key; ?></option>
+												<?php if( ! empty( $searchwp->keys ) ) : foreach( $searchwp->keys as $key ) : ?>
+													<?php
+														$meta_key_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $cfWeight['metakey'] ) : strtolower( $cfWeight['metakey'] );
+														$this_key_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $key ) : strtolower( $key );
+													?>
+													<option value="<?php echo $key; ?>" <?php selected( $meta_key_lower, $this_key_lower ); ?>><?php echo $key; ?></option>
 												<?php endforeach; endif; ?>
 											</select>
 											<a class="swp-delete" href="#">x</a>
@@ -279,58 +292,34 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 									?>
 									<tr>
 										<td>
-											<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_exclude_<?php echo $taxonomy->name; ?>">
-												<?php echo __( 'Exclude ', 'searchwp' ) . $taxonomy->labels->name . ': '; ?>
+											<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_exclude_<?php echo esc_attr( $taxonomy->name ); ?>">
+												<?php echo __( 'Exclude ', 'searchwp' ) . esc_attr( $taxonomy->labels->name ) . ': '; ?>
 											</label>
 										</td>
 										<td>
 											<?php
 												// retrieve our stored exclusions
 												$excluded = isset( $options['exclude_' . $taxonomy->name] ) ? explode( ',', $options['exclude_' . $taxonomy->name] ) : array();
-												if( !empty( $excluded ) )
-													foreach( $excluded as $excludedKey => $excludedValue )
+												if( !empty( $excluded ) ) {
+													foreach( $excluded as $excludedKey => $excludedValue ) {
 														 $excluded[$excludedKey] = intval( $excludedValue );
+													}
+												}
 											?>
-											<select class="swp-exclude-select" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][exclude_<?php echo $taxonomy->name; ?>][]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_exclude_<?php echo $taxonomy->name; ?>" multiple data-placeholder="<?php _e( 'Leave blank to omit', 'searchwp' ); ?>" style="width:170px;">
+											<select class="swp-exclude-select" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][exclude_<?php echo esc_attr( $taxonomy->name ); ?>][]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_exclude_<?php echo esc_attr( $taxonomy->name ); ?>" multiple data-placeholder="<?php _e( 'Leave blank to omit', 'searchwp' ); ?>" style="width:170px;">
 												<?php foreach( $terms as $term ) : ?>
 													<?php $selected = in_array( $term->term_id, $excluded ) ? ' selected="selected"' : ''; ?>
-													<option value="<?php echo $term->term_id; ?>" <?php echo $selected; ?>><?php echo $term->name; ?></option>
+													<option value="<?php echo absint($term->term_id ); ?>" <?php echo $selected; ?>><?php echo esc_html( $term->name ); ?></option>
 												<?php endforeach; ?>
 											</select>
-											<a class="swp-tooltip" href="#swp-tooltip-exclude-<?php echo $post_type->name; ?>-<?php echo $taxonomy->name; ?>">?</a>
-											<div class="swp-tooltip-content" id="swp-tooltip-exclude-<?php echo $post_type->name; ?>-<?php echo $taxonomy->name; ?>">
+											<a class="swp-tooltip" href="#swp-tooltip-exclude-<?php echo $post_type->name; ?>-<?php echo esc_attr( $taxonomy->name ); ?>">?</a>
+											<div class="swp-tooltip-content" id="swp-tooltip-exclude-<?php echo $post_type->name; ?>-<?php echo esc_attr( $taxonomy->name ); ?>">
 												<?php _e( 'Entries with these will be excluded entirely, even if attributed to.', 'searchwp' ); ?>
 											</div>
 										</td>
 									</tr>
 								<?php endif; }
 							endif; ?>
-							<?php /*
-							<p>
-								<?php $enabled = !empty( $options['other_statuses'] ); ?>
-								<input type="checkbox" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][other_statuses]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_other_statuses" value="1" <?php checked( $enabled ); ?>/>
-								<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_other_statuses"><?php _e( 'Include additional statuses: ', 'searchwp' ); ?></label>
-								<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][statuses]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_statuses" placeholder="<?php _e( 'Comma separated statuses', 'searchwp' ); ?>" value="<?php if( !empty( $options['statuses'] ) ) echo $options['statuses']; ?>" /> <a class="swp-tooltip" title="<?php _e( 'By default, only published entries are indexed. You can include additional statuses here. Ensure specified statuses are properly implemented.', 'searchwp' ); ?>">?</a>
-							</p>
-							<p>
-								<?php $enabled = !empty( $options['limit_formats'] ); ?>
-								<input type="checkbox" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][limit_formats]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_limit_formats" value="1" <?php checked( $enabled ); ?>/>
-								<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_limit_formats"><?php _e( 'Limit to Post Formats: ', 'searchwp' ); ?></label>
-								<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][formats]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_formats" placeholder="<?php _e('Comma separated formats', 'searchwp' ); ?>" value="<?php if( !empty( $options['formats'] ) ) echo $options['formats']; ?>" /> <a class="swp-tooltip" title="<?php _e( 'By default, all post formats are indexed. You can limit that here. Ensure specified formats have been properly implemented.', 'searchwp' ); ?>">?</a>
-							</p>
-							<p>
-								<?php $enabled = !empty( $options['shortcodes'] ); ?>
-								<input type="checkbox" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][shortcodes]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_shortcodes" value="1" <?php echo checked( $enabled ); ?>/>
-								<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_shortcodes"><?php _e( 'Process Shortcodes', 'searchwp' ); ?></label>
-								<a class="swp-tooltip" title="<?php _e( 'Expand Shortcodes before indexing. By default, Shortcodes are not processed.', 'searchwp' ); ?>">?</a>
-							</p>
-							<p>
-								<?php $enabled = !empty( $options['logged_in'] ); ?>
-								<input type="checkbox" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][logged_in]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_logged_in" value="1" <?php echo checked( $enabled ); ?>/>
-								<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_logged_in"><?php _e( 'Index as though logged in', 'searchwp' ); ?></label>
-								<a class="swp-tooltip" title="<?php _e( "Some conditional logic outputs different content if you're logged in. Enabling this option will force that condition to be true.", 'searchwp' ); ?>">?</a>
-							</p>
-							*/ ?>
 							<?php if( $post_type->name == 'attachment' ) : ?>
 								<tr>
 									<td>
@@ -351,14 +340,16 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 										);
 										// retrieve our stored exclusions
 										$limitedMimes = isset( $options['mimes'] ) ? explode( ',', $options['mimes'] ) : array();
-										if( !empty( $limitedMimes ) )
-											foreach( $limitedMimes as $limitedMimeKey => $limitedMimeValue )
+										if( !empty( $limitedMimes ) ) {
+											foreach( $limitedMimes as $limitedMimeKey => $limitedMimeValue ) {
 												$limitedMimes[$limitedMimeKey] = intval( $limitedMimeValue );
+											}
+										}
 										?>
 										<select class="swp-exclude-select" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][mimes][]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_mimes" multiple data-placeholder="<?php _e( 'Leave blank to omit', 'searchwp' ); ?>" style="width:170px;">
 											<?php for( $i = 0; $i < count( $mimes ); $i++ ) : ?>
 												<?php $selected = in_array( $i, $limitedMimes ) ? ' selected="selected"' : ''; ?>
-												<option value="<?php echo $i; ?>" <?php echo $selected; ?>><?php echo $mimes[$i]; ?></option>
+												<option value="<?php echo $i; ?>" <?php echo $selected; ?>><?php echo esc_html( $mimes[$i] ); ?></option>
 											<?php endfor; ?>
 										</select>
 										<a class="swp-tooltip" href="#swp-tooltip-limit-<?php echo $post_type->name; ?>-mime-<?php echo $engine; ?>_<?php echo $post_type->name; ?>">?</a>
@@ -387,7 +378,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 										<label for="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_attribute"><?php _e( 'Attribute search results to ', 'searchwp' ); ?></label>
 									</td>
 									<td>
-										<input type="number" min="1" step="1" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][attribute_to]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_attribute_to" value="<?php if( !empty( $options['attribute_to'] ) ) echo $options['attribute_to']; ?>" placeholder="<?php _e( 'Single post ID', 'searchwp' ); ?>" />
+										<input type="number" min="1" step="1" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php echo $engine; ?>][<?php echo $post_type->name; ?>][options][attribute_to]" id="swp_engine_<?php echo $engine; ?>_<?php echo $post_type->name; ?>_attribute_to" value="<?php if ( ! empty( $options['attribute_to'] ) ) echo esc_attr( $options['attribute_to'] ); ?>" placeholder="<?php _e( 'Single post ID', 'searchwp' ); ?>" />
 										<a class="swp-tooltip" href="#swp-tooltip-attribute-<?php echo $engine; ?>_<?php echo $post_type->name; ?>">?</a>
 										<div class="swp-tooltip-content" id="swp-tooltip-attribute-<?php echo $engine; ?>_<?php echo $post_type->name; ?>">
 											<?php _e( "<strong>Expects single post ID</strong><br/>If permalinks for this post type should not be included in search results, you can have it's search weight count toward another post ID.", 'searchwp' ); ?>

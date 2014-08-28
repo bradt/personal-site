@@ -19,17 +19,16 @@
 	-o-transition:all 200ms linear;
 	transition:all 200ms linear;
 	margin-top:15px !important;
-	margin-right:20px !important;
 	overflow:hidden;
 	height:32px;
 }
 
 .wrap h2 {
-	padding-right:20px;
+	padding-right:0;
 }
 
 .wrap div.updated {
-	margin:15px 20px 5px 2px;
+	margin:15px 0 5px 2px;
 }
 
 .swp-in-progress-done {
@@ -44,6 +43,11 @@
 	zoom:1;
 	position:relative;
 	height:32px;
+}
+
+.swp-waiting.swp-in-progress,
+.swp-waiting .swp-progress-wrapper {
+	height:auto !important;
 }
 
 .swp-label {
@@ -536,4 +540,29 @@ select.swp-exclude-select {
 	font-size:0.9em !important;
 	display:inline-block;
 	margin-left:1em;
+}
+
+.swp-loading {
+	width:100% !important;
+	float:none !important;
+	background-position:50% 150px !important;
+	height:500px !important;
+	display:block !important;
+	opacity:1 !important;
+}
+
+.searchwp-system-info {
+	clear:both;
+	padding-top:4em;
+}
+
+.searchwp-system-info-textarea {
+	display:block;
+	width:100%;
+	max-width:800px;
+	height:400px;
+	font-family:Meno, Monaco, monospace;
+	background:white;
+	white-space:pre;
+	overflow:auto;
 }

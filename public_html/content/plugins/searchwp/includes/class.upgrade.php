@@ -151,7 +151,7 @@ class SearchWPUpgrade {
 				PRIMARY KEY (id),
 				KEY termindex (term),
   				KEY postidindex (post_id)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			) DEFAULT CHARSET=utf8";
 		dbDelta( $sql );
 
 		// terms table
@@ -165,7 +165,7 @@ class SearchWPUpgrade {
 				UNIQUE KEY termunique (term),
 				KEY termindex (term(2)),
   				KEY stemindex (stem(2))
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			) DEFAULT CHARSET=utf8";
 		dbDelta( $sql );
 
 		// custom field table
@@ -180,7 +180,7 @@ class SearchWPUpgrade {
 				KEY metakey (metakey),
 				KEY term (term),
 				KEY postidindex (post_id)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			) DEFAULT CHARSET=utf8";
 		dbDelta( $sql );
 
 		// taxonomy table
@@ -195,7 +195,7 @@ class SearchWPUpgrade {
 				KEY taxonomy (taxonomy),
 				KEY term (term),
 				KEY postidindex (post_id)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			) DEFAULT CHARSET=utf8";
 		dbDelta( $sql );
 
 		// log table
@@ -212,7 +212,7 @@ class SearchWPUpgrade {
 	            KEY eventindex (event),
 	            KEY queryindex (query),
 	            KEY engineindex (engine)
-			) ENGINE=MyISAM DEFAULT CHARSET=utf8;";
+			) DEFAULT CHARSET=utf8";
 		dbDelta( $sql );
 
 	}
@@ -245,7 +245,7 @@ class SearchWPUpgrade {
 				// make sure additional array keys are present and defined
 				foreach( $settings['engines'] as $engine_key => $engine_setting ) {
 					foreach( $settings['engines'][$engine_key] as $post_type => $post_type_settings ) {
-						if( is_array( $settings['engines'][$engine_key][$post_type] ) && ! is_array( $settings['engines'][$engine_key][$post_type]['options'] ) ) {
+						if( is_array( $settings['engines'][$engine_key][$post_type] ) && isset( $settings['engines'][$engine_key][$post_type]['options'] ) && ! is_array( $settings['engines'][$engine_key][$post_type]['options'] ) ) {
 							$settings['engines'][$engine_key][$post_type]['options'] = array(
 								'exclude' 		=> false,
 								'attribute_to' 	=> false,
@@ -447,13 +447,23 @@ class SearchWPUpgrade {
 			}
 		}
 
+		// add new 'waiting' flag, prep for possible new custom endpoint, clear out redundant post meta
+		if( version_compare( $this->last_version, '2.3', '<' ) ) {
+			searchwp_add_option( 'waiting', false );
+			searchwp_set_setting( 'endpoint', '' );
+
+			// now using last_index instead of indexed, we don't need separate records
+			$wpdb->delete( $wpdb->prefix . 'postmeta', array( 'meta_key' => '_' . SEARCHWP_PREFIX . 'indexed' ) );
+		}
+
 	}
 
 }
 
 
 function searchwp_generate_settings( $engines ) {
-	global $searchwp;
+
+	$searchwp = SWP();
 
 	// grab this early because they're going to be nested
 	$dismissed_filter_nags = searchwp_get_option( 'dismissed' );

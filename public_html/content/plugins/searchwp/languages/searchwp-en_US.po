@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: SearchWP\n"
-"POT-Creation-Date: 2014-06-30 11:17-0500\n"
-"PO-Revision-Date: 2014-06-30 11:17-0500\n"
+"POT-Creation-Date: 2014-08-13 08:50-0500\n"
+"PO-Revision-Date: 2014-08-13 08:51-0500\n"
 "Last-Translator: Jonathan Christopher <info@searchwp.com>\n"
 "Language-Team: \n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.5\n"
+"X-Generator: Poedit 1.6.7\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
@@ -18,76 +18,127 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class.notices.php:34
+#: admin/class.dashboard.php:31 admin/stats.php:20 searchwp.php:1831
+msgid "Search Statistics"
+msgstr ""
+
+#: admin/class.dashboard.php:68 admin/class.dashboard.php:74
+#: admin/stats.php:28 admin/stats.php:96
+msgid "Default"
+msgstr ""
+
+#: admin/class.dashboard.php:88 admin/stats.php:192
+msgid "Today"
+msgstr ""
+
+#: admin/class.dashboard.php:92 admin/stats.php:386
+msgid "Past 30 Days"
+msgstr ""
+
+#: admin/class.dashboard.php:96
+msgid "View Full Stats"
+msgstr ""
+
+#: admin/class.dashboard.php:118 admin/stats.php:214 admin/stats.php:261
+#: admin/stats.php:308 admin/stats.php:355 admin/stats.php:409
+msgid "Query"
+msgstr ""
+
+#: admin/class.dashboard.php:119
+msgid "Count"
+msgstr ""
+
+#: admin/class.dashboard.php:132
+msgid "No searches for this time period."
+msgstr ""
+
+#: admin/class.notices.php:51
+#, php-format
+msgid ""
+"SearchWP has detected HTTP Basic Authentication, in order for the indexer to "
+"operate as expected you must provide credentials via the <a href=\"%s"
+"\"><code>searchwp_basic_auth_creds</code></a> hook, or disable HTTP Basic "
+"Authentication."
+msgstr ""
+
+#: admin/class.notices.php:74
 msgid ""
 "Your SearchWP debug log is quite large. Please remember to disable debugging "
 "and delete <code>~/wp-content/plugins/searchwp/debug.log</code> when you are "
 "done."
 msgstr ""
 
-#: admin/class.notices.php:109
+#: admin/class.notices.php:149
 msgid "Missing SearchWP integration"
 msgstr ""
 
-#: admin/class.notices.php:109
+#: admin/class.notices.php:149
 #, php-format
 msgid ""
 "In order for SearchWP to work with %s you will need to install and activate "
 "the <a href=\"%s\">%s</a> Extension"
 msgstr ""
 
-#: admin/class.notices.php:153
+#: admin/class.notices.php:193
 msgid "SearchWP failed to index"
 msgstr ""
 
-#: admin/class.notices.php:153
+#: admin/class.notices.php:193
 msgid "post"
 msgstr ""
 
-#: admin/class.notices.php:153
+#: admin/class.notices.php:193
 msgid "posts"
 msgstr ""
 
-#: admin/class.notices.php:153
+#: admin/class.notices.php:193
 msgid "View details"
 msgstr ""
 
-#: admin/class.notices.php:166
+#: admin/class.notices.php:206
 msgid "The SearchWP indexer is currently <strong>disabled</strong>"
 msgstr ""
 
-#: admin/class.notices.php:244
+#: admin/class.notices.php:270
 msgid ""
 "SearchWP has detected a <strong>theme conflict</strong> with the active "
 "theme."
 msgstr ""
 
-#: admin/class.notices.php:244 admin/class.notices.php:341
+#: admin/class.notices.php:270 admin/class.notices.php:320
 msgid "More info &raquo;"
 msgstr ""
 
-#: admin/class.notices.php:246
+#: admin/class.notices.php:272
 msgid ""
 "In order for SearchWP to display it's results, occurrences of <code>new "
 "WP_Query</code> and <code>query_posts()</code> must be removed from your "
 "search results template."
 msgstr ""
 
-#: admin/class.notices.php:248
+#: admin/class.notices.php:274
 msgid "File location"
 msgstr ""
 
-#: admin/class.notices.php:253
+#: admin/class.notices.php:279
 msgid "Line"
 msgstr ""
 
-#: admin/class.notices.php:257
+#: admin/class.notices.php:283
 msgid ""
 "Please ensure the offending lines are removed from the theme template to "
-"avoid conflicts with SearchWP. When removed, this notice will disappear."
+"avoid conflicts with SearchWP. When removed, this notice will disappear. You "
+"may also dismiss this message using"
 msgstr ""
 
-#: admin/class.notices.php:341
+#: admin/class.notices.php:284
+msgid ""
+"You may dismiss this (and all like this) message by adding "
+"<code>add_filter( 'searchwp_show_conflict_notices', '__return_false' );</"
+"code> to your theme's <code>functions.php</code>."
+msgstr ""
+
+#: admin/class.notices.php:320
 #, php-format
 msgid ""
 "SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> "
@@ -95,33 +146,33 @@ msgid ""
 "the active theme."
 msgstr ""
 
-#: admin/class.notices.php:343
+#: admin/class.notices.php:322
 msgid ""
 "<strong>This is simply a <em>preliminary</em> detection of a <em>possible</"
 "em> conflict.</strong> Many times these detections can be <strong>safely "
 "dismissed</strong>"
 msgstr ""
 
-#: admin/class.notices.php:344
+#: admin/class.notices.php:323
 msgid ""
 "<em>If (and only if) you are experiencing issues</em> with search results "
 "not changing or not appearing, the following Hooks (put in place by other "
 "plugins or your active theme) <em>may be</em> contributing to the problem:"
 msgstr ""
 
-#: admin/class.notices.php:351
+#: admin/class.notices.php:330
 msgid "(method) in"
 msgstr ""
 
-#: admin/class.notices.php:351
+#: admin/class.notices.php:330
 msgid " (class)"
 msgstr ""
 
-#: admin/class.notices.php:353
+#: admin/class.notices.php:332
 msgid "(function)"
 msgstr ""
 
-#: admin/class.notices.php:359
+#: admin/class.notices.php:338
 #, php-format
 msgid ""
 "<strong>If you believe there to be a conflict (e.g. search results not "
@@ -130,11 +181,11 @@ msgid ""
 "\">this Knowledge Base article</a>."
 msgstr ""
 
-#: admin/class.notices.php:360
+#: admin/class.notices.php:339
 msgid "Dismiss this message"
 msgstr ""
 
-#: admin/class.notices.php:408
+#: admin/class.notices.php:383
 msgid ""
 "<strong>Potentially incomplete results:</strong> Since you <em>do not have "
 "Media enabled</em> for any search engine, you should implement the "
@@ -144,61 +195,55 @@ msgid ""
 "indexed."
 msgstr ""
 
-#: admin/settings.php:9 admin/stats.php:11
-msgid "Invalid request"
+#: admin/class.systeminfo.php:33
+msgid ""
+"To copy the system info, click below then press CTRL + C (PC) or CMD + C "
+"(Mac)."
 msgstr ""
 
-#: admin/settings.php:50 templates/tmpl.engine.config.php:224
-msgid "Any"
-msgstr ""
-
-#: admin/settings.php:65
+#: admin/settings.php:16
 msgid "Default Search Engine"
 msgstr ""
 
-#: admin/settings.php:65 admin/settings.php:89 searchwp.php:821
+#: admin/settings.php:16 admin/settings.php:40 searchwp.php:919
 msgid "Statistics"
 msgstr ""
 
-#: admin/settings.php:69
+#: admin/settings.php:20
 msgid ""
 "These settings will override WordPress default searches. Customize which "
 "post types are included in search and how much weight each content type "
 "receives."
 msgstr ""
 
-#: admin/settings.php:73 admin/settings.php:104
+#: admin/settings.php:24 admin/settings.php:56
 msgid ""
 "Only checked post types will be included in search results. If a post type "
 "isn't displayed, ensure <code>exclude_from_search</code> is set to false "
 "when registering it."
 msgstr ""
 
-#: admin/settings.php:96
+#: admin/settings.php:47
 msgid "Supplemental Search Engines"
 msgstr ""
 
-#: admin/settings.php:100
+#: admin/settings.php:51
 msgid ""
 "Here you can build supplemental search engines to use in specific sections "
 "of your site. When used, the default search engine settings are completely "
 "ignored."
 msgstr ""
 
-#: admin/settings.php:124
+#: admin/settings.php:76
 msgid "Add New Supplemental Engine"
 msgstr ""
 
-#: admin/settings.php:135
+#: admin/settings.php:87
 msgid "Advanced"
 msgstr ""
 
-#: admin/stats.php:20 searchwp.php:1674
-msgid "Search Statistics"
-msgstr ""
-
-#: admin/stats.php:28 admin/stats.php:96
-msgid "Default"
+#: admin/stats.php:11 searchwp.php:2860
+msgid "Invalid request"
 msgstr ""
 
 #: admin/stats.php:101
@@ -211,15 +256,6 @@ msgstr ""
 
 #: admin/stats.php:176
 msgid "Popular Searches"
-msgstr ""
-
-#: admin/stats.php:192
-msgid "Today"
-msgstr ""
-
-#: admin/stats.php:214 admin/stats.php:261 admin/stats.php:308
-#: admin/stats.php:355 admin/stats.php:409
-msgid "Query"
 msgstr ""
 
 #: admin/stats.php:215 admin/stats.php:262 admin/stats.php:309
@@ -259,10 +295,6 @@ msgstr ""
 msgid "Failed Searches"
 msgstr ""
 
-#: admin/stats.php:386
-msgid "Past 30 Days"
-msgstr ""
-
 #: admin/stats.php:428
 msgid "There have been no failed searches within the past 30 days."
 msgstr ""
@@ -271,332 +303,379 @@ msgstr ""
 msgid "Are you sure you want to ignore this search from all statistics?"
 msgstr ""
 
-#: searchwp.php:41
+#: includes/class.search.php:1938
+msgid "SearchWP Error"
+msgstr ""
+
+#: includes/class.search.php:1946
+msgid "View SQL_BIG_SELECTS Fix"
+msgstr ""
+
+#: searchwp.php:43
 msgid ""
 "SearchWP requires WordPress 3.5 or higher. Please upgrade before activating "
 "this plugin."
 msgstr ""
 
-#: searchwp.php:603
+#: searchwp.php:688
 msgid "Check for update"
 msgstr ""
 
-#: searchwp.php:728
+#: searchwp.php:813
 msgid " ago"
 msgstr ""
 
-#: searchwp.php:763
+#: searchwp.php:848
 msgid "Enable Indexer"
 msgstr ""
 
-#: searchwp.php:763 searchwp.php:2396
+#: searchwp.php:848 searchwp.php:2569
 msgid "Disable Indexer"
 msgstr ""
 
-#: searchwp.php:785
+#: searchwp.php:870
 msgid "In index queue"
 msgstr ""
 
-#: searchwp.php:795
+#: searchwp.php:882
+msgid "This entry is being indexed"
+msgstr ""
+
+#: searchwp.php:884
 msgid "This entry is indexed"
 msgstr ""
 
-#: searchwp.php:797
+#: searchwp.php:891
+msgid "Not indexed "
+msgstr ""
+
+#: searchwp.php:891
+msgid "status is"
+msgstr ""
+
+#: searchwp.php:894
 msgid "Not indexed"
 msgstr ""
 
-#: searchwp.php:800 searchwp.php:1770
+#: searchwp.php:898 searchwp.php:1928
 msgid "Last indexed"
 msgstr ""
 
-#: searchwp.php:911
+#: searchwp.php:1015
 msgid ""
 "<p>SearchWP <strong>has been automatically deactivated</strong> because it "
 "failed to create necessary database table(s):</p>"
 msgstr ""
 
-#: searchwp.php:913
+#: searchwp.php:1017
 msgid ""
 "<p>Please ensure the applicable MySQL user has <code>CREATE</code> "
 "permissions and try activating again.</p>"
 msgstr ""
 
-#: searchwp.php:914
+#: searchwp.php:1018
 msgid "Back to Plugins"
 msgstr ""
 
-#: searchwp.php:1112
+#: searchwp.php:1266
 msgid "SearchWP must be updated to the latest version to work with "
 msgstr ""
 
-#: searchwp.php:1674
+#: searchwp.php:1831
 msgid "Search Stats"
 msgstr ""
 
-#: searchwp.php:2013
+#: searchwp.php:2185
 msgid "License"
 msgstr ""
 
-#: searchwp.php:2017 searchwp.php:2593
+#: searchwp.php:2189 searchwp.php:2782
 msgid ""
 "A license key was found, but it is <strong>inactive</strong>. Automatic "
 "updates <em>will not be available</em> until your license is activated."
 msgstr ""
 
-#: searchwp.php:2021 searchwp.php:2031
+#: searchwp.php:2193 searchwp.php:2203
 msgid "License Key"
 msgstr ""
 
-#: searchwp.php:2023
+#: searchwp.php:2195
 msgid "Your license key was included in your purchase receipt."
 msgstr ""
 
-#: searchwp.php:2035
+#: searchwp.php:2207
 msgid "Enter your license key"
 msgstr ""
 
-#: searchwp.php:2041 searchwp.php:2052 searchwp.php:2564
+#: searchwp.php:2213 searchwp.php:2224 searchwp.php:2753
 msgid "Activate License"
 msgstr ""
 
-#: searchwp.php:2045
+#: searchwp.php:2217
 msgid "Active"
 msgstr ""
 
-#: searchwp.php:2047
+#: searchwp.php:2219
 msgid "Deactivate License"
 msgstr ""
 
-#: searchwp.php:2061 searchwp.php:2165 searchwp.php:2477
+#: searchwp.php:2233 searchwp.php:2338 searchwp.php:2665
 msgid "Back to SearchWP Settings"
 msgstr ""
 
-#: searchwp.php:2129
+#: searchwp.php:2302
 msgid "Outstanding Index Issues"
 msgstr ""
 
-#: searchwp.php:2131
+#: searchwp.php:2304
 msgid "Nothing is currently excluded from the indexer."
 msgstr ""
 
-#: searchwp.php:2134
+#: searchwp.php:2307
 msgid ""
 "SearchWP was unable to index the following content, and it is actively being "
 "excluded from subsequent index runs."
 msgstr ""
 
-#: searchwp.php:2134
+#: searchwp.php:2307
 msgid "Reintroduce All"
 msgstr ""
 
-#: searchwp.php:2142 templates/tmpl.engine.config.php:140
+#: searchwp.php:2315 templates/tmpl.engine.config.php:149
 msgid "Title"
 msgstr ""
 
-#: searchwp.php:2143
+#: searchwp.php:2316
 msgid "Reintroduce to indexer"
 msgstr ""
 
-#: searchwp.php:2155
+#: searchwp.php:2328
 msgid "Manually populate PDF content if reintroduction fails"
 msgstr ""
 
-#: searchwp.php:2158
+#: searchwp.php:2331
 msgid "Reintroduce"
 msgstr ""
 
-#: searchwp.php:2336
+#: searchwp.php:2509
 msgid "Advanced Settings"
 msgstr ""
 
-#: searchwp.php:2340
+#: searchwp.php:2513
 msgid ""
 "Index purged. <strong>The index will not be rebuilt until you initiate a "
 "reindex</strong>."
 msgstr ""
 
-#: searchwp.php:2341
+#: searchwp.php:2514
 msgid "Initiate reindex"
 msgstr ""
 
-#: searchwp.php:2347
+#: searchwp.php:2520
 msgid "Search Stats have been reset"
 msgstr ""
 
-#: searchwp.php:2353
+#: searchwp.php:2526
 msgid "Attempted to wake up the indexer."
 msgstr ""
 
-#: searchwp.php:2354
+#: searchwp.php:2527
 msgid "View indexer progress"
 msgstr ""
 
-#: searchwp.php:2360
+#: searchwp.php:2533
 msgid "Remote Debugging is <strong>enabled</strong> with key"
 msgstr ""
 
-#: searchwp.php:2366
+#: searchwp.php:2539
 msgid "Nuke on Delete is <strong>enabled</strong>"
 msgstr ""
 
-#: searchwp.php:2372
+#: searchwp.php:2545
 msgid ""
 "Conflict notifications have been restored, they will be visible on the <a "
 "href=\"options-general.php?page=searchwp\">settings screen</a>"
 msgstr ""
 
-#: searchwp.php:2376
+#: searchwp.php:2549
 msgid "Purge index"
 msgstr ""
 
-#: searchwp.php:2378
+#: searchwp.php:2551
 msgid ""
 "If you would like to <strong>completely wipe out the index and start fresh</"
 "strong>, you can do so."
 msgstr ""
 
-#: searchwp.php:2379
+#: searchwp.php:2552
 msgid "Search statistics will be left as is"
 msgstr ""
 
-#: searchwp.php:2380
+#: searchwp.php:2553
 msgid "Purge Index"
 msgstr ""
 
-#: searchwp.php:2383
+#: searchwp.php:2556
 msgid "Reset search stats"
 msgstr ""
 
-#: searchwp.php:2385
+#: searchwp.php:2558
 msgid ""
 "If you would like to <strong>completely reset your Search Stats</strong>, "
 "you can do so."
 msgstr ""
 
-#: searchwp.php:2386
+#: searchwp.php:2559
 msgid "Existing index will be left as is"
 msgstr ""
 
-#: searchwp.php:2387
+#: searchwp.php:2560
 msgid "Reset Stats"
 msgstr ""
 
-#: searchwp.php:2390
+#: searchwp.php:2563
 msgid "Restore conflict notifications"
 msgstr ""
 
-#: searchwp.php:2392
+#: searchwp.php:2565
 msgid ""
 "If you would like to reset all conflict notifications, you can restore them "
 "all at once."
 msgstr ""
 
-#: searchwp.php:2393
+#: searchwp.php:2566
 msgid "Restore Conflict Notices"
 msgstr ""
 
-#: searchwp.php:2398
+#: searchwp.php:2571
 msgid "Disable the indexer. It will pick up where it left off when re-enabled."
 msgstr ""
 
-#: searchwp.php:2399
+#: searchwp.php:2572
 msgid "Toggle Indexer"
 msgstr ""
 
-#: searchwp.php:2402 searchwp.php:2405
+#: searchwp.php:2575 searchwp.php:2578
 msgid "Wake Up Indexer"
 msgstr ""
 
-#: searchwp.php:2404
+#: searchwp.php:2577
 msgid "If you believe the indexer has stalled, you can try to wake it up."
 msgstr ""
 
-#: searchwp.php:2408
+#: searchwp.php:2582
 msgid "Remote Debugging"
 msgstr ""
 
-#: searchwp.php:2408
+#: searchwp.php:2582
 msgid "REQUIRES that this install to be publicly accessible"
 msgstr ""
 
-#: searchwp.php:2410
+#: searchwp.php:2584
 msgid ""
 "To better assist with support requests, SearchWP facilitates remote "
 "debugging."
 msgstr ""
 
-#: searchwp.php:2411
+#: searchwp.php:2585
 msgid "Toggle Remote Debugging"
 msgstr ""
 
-#: searchwp.php:2414
+#: searchwp.php:2589
 msgid "Nuke on Delete"
 msgstr ""
 
-#: searchwp.php:2414
+#: searchwp.php:2589
 msgid ""
 "Completely remove all traces of SearchWP when deleted via WordPress admin"
 msgstr ""
 
-#: searchwp.php:2417
+#: searchwp.php:2592
 msgid ""
 "SearchWP can completely remove all traces of itself when you choose to "
 "Delete it using the Plugin menu."
 msgstr ""
 
-#: searchwp.php:2418
+#: searchwp.php:2593
 msgid "Enable Nuke on Delete"
 msgstr ""
 
-#: searchwp.php:2420
+#: searchwp.php:2595
 msgid ""
 "SearchWP has been configured to completely remove all traces of itself when "
 "you choose to Delete it using the Plugin menu."
 msgstr ""
 
-#: searchwp.php:2421
+#: searchwp.php:2596
 msgid "Disable Nuke on Delete"
 msgstr ""
 
-#: searchwp.php:2429
+#: searchwp.php:2604
 msgid "Back to Settings"
 msgstr ""
 
-#: searchwp.php:2434
+#: searchwp.php:2609
 msgid "Are you SURE you want to delete the entire SearchWP index?"
 msgstr ""
 
-#: searchwp.php:2435 searchwp.php:2441
+#: searchwp.php:2610 searchwp.php:2616
 msgid "Are you completely sure? THIS CAN NOT BE UNDONE!"
 msgstr ""
 
-#: searchwp.php:2440
+#: searchwp.php:2615
 msgid "Are you SURE you want to completely reset your Search Stats?"
 msgstr ""
 
-#: searchwp.php:2473
+#: searchwp.php:2624
+msgid "System Information"
+msgstr ""
+
+#: searchwp.php:2626
+#, php-format
+msgid ""
+"When submitting this information to support staff it will also be helpful if "
+"you can create a <a href=\"%s\">Gist</a> of your search results template "
+"which is found here:"
+msgstr ""
+
+#: searchwp.php:2628
+#, php-format
+msgid ""
+"Please provide this information (ideally as a link to a <a href=\"%s\">Gist</"
+"a>) when requested by support staff"
+msgstr ""
+
+#: searchwp.php:2661
 msgid "SearchWP"
 msgstr ""
 
-#: searchwp.php:2517
+#: searchwp.php:2705
 msgid "Indexing is"
 msgstr ""
 
-#: searchwp.php:2518
+#: searchwp.php:2706
 msgid "almost"
 msgstr ""
 
-#: searchwp.php:2518
+#: searchwp.php:2706
 msgid "complete"
 msgstr ""
 
-#: searchwp.php:2522
+#: searchwp.php:2710
 msgid ""
 "This process is running in the background. You can leave this page and the "
 "index will continue to be built until completion."
 msgstr ""
 
-#: searchwp.php:2553
+#: searchwp.php:2715
+#, php-format
+msgid ""
+"The indexer has been <strong>temporarily scaled back</strong> to reduce "
+"server load. This is monitored automatically. <a href=\"%s\">More "
+"information &raquo;</a>"
+msgstr ""
+
+#: searchwp.php:2742
 #, php-format
 msgid ""
 "The SearchWP indexer runs as fast as it can without overloading your server; "
@@ -605,36 +684,36 @@ msgid ""
 "page=searchwp&amp;inonce=%s\">Dismiss</a>"
 msgstr ""
 
-#: searchwp.php:2562
+#: searchwp.php:2751
 msgid "Settings"
 msgstr ""
 
-#: searchwp.php:2567 searchwp.php:2593 searchwp.php:2636
+#: searchwp.php:2756 searchwp.php:2782 searchwp.php:2825
 msgid "Manage License"
 msgstr ""
 
-#: searchwp.php:2572
+#: searchwp.php:2761
 msgid "Extensions"
 msgstr ""
 
-#: searchwp.php:2602
+#: searchwp.php:2791
 msgid "Initial index has been built"
 msgstr ""
 
-#: searchwp.php:2636
+#: searchwp.php:2825
 msgid ""
 "In order to receive updates and support, you must have an active license."
 msgstr ""
 
-#: searchwp.php:2636
+#: searchwp.php:2825
 msgid "Purchase License"
 msgstr ""
 
-#: searchwp.php:2636 searchwp.php:2665
+#: searchwp.php:2825 searchwp.php:2854
 msgid "Dismiss"
 msgstr ""
 
-#: searchwp.php:2665
+#: searchwp.php:2854
 #, php-format
 msgid ""
 "Your server is running MySQL version %1$s which may prevent search results "
@@ -642,193 +721,197 @@ msgid ""
 "41156</a>. Please update MySQL to a more recent version (at least 5.1)."
 msgstr ""
 
-#: searchwp.php:2750
+#: searchwp.php:2880 templates/tmpl.engine.config.php:233
+msgid "Any"
+msgstr ""
+
+#: searchwp.php:3029
 msgid "SearchWP Frequent (Every five minutes until initial index is built)"
 msgstr ""
 
-#: searchwp.php:3213
+#: searchwp.php:3491
 msgid ""
 "SearchWP has been activated and the index is now being built. <a href="
 "\"options-general.php?page=searchwp\">View progress and settings</a>"
 msgstr ""
 
-#: searchwp.php:3232
+#: searchwp.php:3510
 msgid "SearchWP File Content"
 msgstr ""
 
-#: searchwp.php:3299
+#: searchwp.php:3577
 msgid ""
 "The content below will be indexed for this file. If you are experiencing "
 "unexpected search results, ensure accuracy here."
 msgstr ""
 
-#: searchwp.php:3305
+#: searchwp.php:3583
 msgid ""
 "Only plain text files, PDFs, and office documents are supported at this time."
 msgstr ""
 
-#: templates/tmpl.engine.config.php:112
+#: templates/tmpl.engine.config.php:117
 msgid "Media"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:121
+#: templates/tmpl.engine.config.php:130
 msgid ""
 "These values add weight to results.<br /><br />A weight of 1 is neutral<br /"
 ">Between 0 &amp; 1 lowers result weight<br />Over 1 increases result "
 "weight<br />Zero omits the result<br />-1 excludes matches"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:123
+#: templates/tmpl.engine.config.php:132
 msgid "Applicable entries"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:132
+#: templates/tmpl.engine.config.php:141
 msgid "Content Type"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:133
+#: templates/tmpl.engine.config.php:142
 msgid "Weight"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:146
+#: templates/tmpl.engine.config.php:155
 msgid "Content"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:146
+#: templates/tmpl.engine.config.php:155
 msgid "Description"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:152
+#: templates/tmpl.engine.config.php:161
 msgid "Slug"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:171
+#: templates/tmpl.engine.config.php:180
 msgid "Excerpt"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:171
+#: templates/tmpl.engine.config.php:180
 msgid "Caption"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:178
+#: templates/tmpl.engine.config.php:187
 msgid "Comments"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:203
+#: templates/tmpl.engine.config.php:212
 msgid "Document (PDF) content (when applicable)"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:214
+#: templates/tmpl.engine.config.php:223
 msgid "Custom Fields"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:238
+#: templates/tmpl.engine.config.php:251
 msgid "Add Custom Field"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:241
+#: templates/tmpl.engine.config.php:254
 msgid ""
 "Include Custom Field data in search results. Meta values do not need to be "
 "plain strings, available keywords in metadata are extracted and indexed."
 msgstr ""
 
-#: templates/tmpl.engine.config.php:255
+#: templates/tmpl.engine.config.php:268
 msgid "Exclude IDs: "
 msgstr ""
 
-#: templates/tmpl.engine.config.php:263
+#: templates/tmpl.engine.config.php:276
 msgid "Comma separated IDs"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:265
+#: templates/tmpl.engine.config.php:278
 msgid ""
 "Comma separated post IDs. Will be excluded entirely, even if attributed to."
 msgstr ""
 
-#: templates/tmpl.engine.config.php:283
+#: templates/tmpl.engine.config.php:296
 msgid "Exclude "
 msgstr ""
 
-#: templates/tmpl.engine.config.php:294 templates/tmpl.engine.config.php:358
+#: templates/tmpl.engine.config.php:309 templates/tmpl.engine.config.php:349
 msgid "Leave blank to omit"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:302
+#: templates/tmpl.engine.config.php:317
 msgid "Entries with these will be excluded entirely, even if attributed to."
 msgstr ""
 
-#: templates/tmpl.engine.config.php:338
+#: templates/tmpl.engine.config.php:327
 msgid "Limit File Type(s) to"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:345
+#: templates/tmpl.engine.config.php:334
 msgid "All Documents"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:346
+#: templates/tmpl.engine.config.php:335
 msgid "PDFs"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:347
+#: templates/tmpl.engine.config.php:336
 msgid "Plain Text"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:348
+#: templates/tmpl.engine.config.php:337
 msgid "Images"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:349
+#: templates/tmpl.engine.config.php:338
 msgid "Video"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:350
+#: templates/tmpl.engine.config.php:339
 msgid "Audio"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:366
+#: templates/tmpl.engine.config.php:357
 msgid "If populated, Media results will be limited to these Media types"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:373
+#: templates/tmpl.engine.config.php:364
 msgid "Attribute post parent"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:377 templates/tmpl.engine.config.php:403
+#: templates/tmpl.engine.config.php:368 templates/tmpl.engine.config.php:394
 msgid "Enabled"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:380
+#: templates/tmpl.engine.config.php:371
 msgid ""
 "When enabled, search weights will be applied to the post parent, not the "
 "post GUID"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:387
+#: templates/tmpl.engine.config.php:378
 msgid "Attribute search results to "
 msgstr ""
 
-#: templates/tmpl.engine.config.php:390
+#: templates/tmpl.engine.config.php:381
 msgid "Single post ID"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:393
+#: templates/tmpl.engine.config.php:384
 msgid ""
 "<strong>Expects single post ID</strong><br/>If permalinks for this post type "
 "should not be included in search results, you can have it's search weight "
 "count toward another post ID."
 msgstr ""
 
-#: templates/tmpl.engine.config.php:399
+#: templates/tmpl.engine.config.php:390
 msgid "Use keyword stem"
 msgstr ""
 
-#: templates/tmpl.engine.config.php:406
+#: templates/tmpl.engine.config.php:397
 msgid ""
 "<em>May increase search latency</em><br />For example: when enabled, "
 "searches for <strong>run</strong> and <strong>running</strong> will generate "
 "the same results. When disabled, results may be different."
 msgstr ""
 
-#: templates/tmpl.supplemental.config.php:42
+#: templates/tmpl.supplemental.config.php:32
 msgid "Remove"
 msgstr ""

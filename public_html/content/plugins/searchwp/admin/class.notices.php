@@ -18,13 +18,53 @@ class SearchWPAdminNotices extends SearchWP {
 		add_action( 'admin_notices', array( $this, 'failed_index' ), 9999 );
 		add_action( 'admin_notices', array( $this, 'missing_integrations' ), 9999 );
 		add_action( 'admin_notices', array( $this, 'log_file_size_warning' ), 9999 );
+		add_action( 'admin_notices', array( $this, 'http_basic_auth' ), 9999 );
 	}
+
+	/**
+	 * Detect whether the site is using HTTP Basic Auth, as that prevents the indexer from working
+	 * @since 2.3.4
+	 *
+	 * @return bool
+	 */
+	function http_basic_auth(){
+
+		$basic_auth = searchwp_get_setting( 'basic_auth' );
+
+		// determine if the environment has already been verified; don't want redundant HTTP requests on every page load
+		if ( 'no' === $basic_auth ) {
+			return;
+		}
+
+		// check to see if the credentials are already provided
+		$http_basic_auth_creds = apply_filters( 'searchwp_basic_auth_creds', false );
+		if ( true == $basic_auth && is_array( $http_basic_auth_creds ) && isset( $http_basic_auth_creds['username'] ) && isset( $http_basic_auth_creds['password'] ) ) {
+			return;
+		}
+
+		$searchwp = SWP();
+		$response = $searchwp->get_indexer_communication_result();
+		if ( ! is_wp_error( $response ) && isset( $response['response']['code'] ) && 401 === (int) $response['response']['code'] ) {
+			searchwp_set_setting( 'basic_auth', true );
+			?>
+			<div class="error" id="searchwp-http-basic-auth">
+				<p><?php echo sprintf( __( 'SearchWP has detected HTTP Basic Authentication, in order for the indexer to operate as expected you must provide credentials via the <a href="%s"><code>searchwp_basic_auth_creds</code></a> hook, or disable HTTP Basic Authentication.', 'searchwp' ), 'https://searchwp.com/docs/hooks/searchwp_basic_auth_creds/' ); ?></p>
+			</div>
+		<?php
+		} else {
+			// flag the environment as 'good'
+			if ( ! is_wp_error( $response ) ) {
+				searchwp_set_setting( 'basic_auth', 'no' );
+			}
+		}
+	}
+
 
 	/**
 	 * If the debug log is over 2MB
 	 */
 	function log_file_size_warning() {
-		global $searchwp;
+		$searchwp = SWP();
 		$logfile = trailingslashit( $searchwp->dir ) . 'debug.log';
 
 		// if the logfile is over a 2MB it's likely the developer forgot to disable debugging
@@ -133,10 +173,10 @@ class SearchWPAdminNotices extends SearchWP {
 			'meta_query'    => array(
 				'relation'          => 'AND',
 				array(
-					'key'           => '_' . SEARCHWP_PREFIX . 'indexed',
+					'key'           => '_' . SEARCHWP_PREFIX . 'last_index',
 					'value'         => '', // http://core.trac.wordpress.org/ticket/23268
 					'compare'       => 'NOT EXISTS',
-					'type'          => 'BINARY'
+					'type'          => 'NUMERIC'
 				),
 				array( // only want media that hasn't failed indexing multiple times
 					'key'           => '_' . SEARCHWP_PREFIX . 'skip',
@@ -150,7 +190,7 @@ class SearchWPAdminNotices extends SearchWP {
 
 		if( ! empty( $erroneousPosts ) ) : ?>
 			<div class="error" id="searchwp-index-errors-notice">
-				<p><?php _e( 'SearchWP failed to index', 'searchwp' ); ?> <strong><?php echo count( $erroneousPosts ); ?></strong> <?php if( count( $erroneousPosts ) == 1 ) { _e( 'post', 'searchwp' ); } else { _e( 'posts', 'searchwp' ); } ?>. <a href="options-general.php?page=searchwp&amp;nonce=<?php echo wp_create_nonce( 'swperroneous' ); ?>"><?php _e( 'View details', 'searchwp' ); ?> &raquo;</a></p>
+				<p><?php _e( 'SearchWP failed to index', 'searchwp' ); ?> <strong><?php echo count( $erroneousPosts ); ?></strong> <?php if( count( $erroneousPosts ) == 1 ) { _e( 'post', 'searchwp' ); } else { _e( 'posts', 'searchwp' ); } ?>. <a href="options-general.php?page=searchwp&amp;nonce=<?php echo urlencode( wp_create_nonce( 'swperroneous' ) ); ?>"><?php _e( 'View details', 'searchwp' ); ?> &raquo;</a></p>
 			</div>
 		<?php endif;
 	}
@@ -208,35 +248,21 @@ class SearchWPAdminNotices extends SearchWP {
 		global $wp_filesystem;
 
 		// allow developers to disable potential conflict notices if they want
-		$show_conflict_notices = apply_filters( 'searchwp_show_conflict_notices', true );
+		$maybe_debugging = apply_filters( 'searchwp_debug', false );
+		$show_conflict_notices = apply_filters( 'searchwp_show_conflict_notices', $maybe_debugging );
 
-		if ( ! $show_conflict_notices ) {
+		if ( ! $show_conflict_notices || ! class_exists( 'SearchWP_Conflicts' ) ) {
 			return;
 		}
+
+		$conflicts = new SearchWP_Conflicts();
 
 		// whether the JavaScript for these notices has been output
 		$javascript_deployed = false;
 
 		// output a notification if there are potential query_posts or WP_Query conflicts in search.php
-		$search_template = locate_template( 'search.php' ) ? locate_template( 'search.php' ) : locate_template( 'index.php' );
-		if( $search_template ) {
-			include_once ABSPATH . 'wp-admin/includes/file.php';
-			WP_Filesystem();
-			$potential_conflicts = array( 'new WP_Query', 'query_posts' );
-			$search_template_content = $wp_filesystem->get_contents_array( $search_template );
-			$line_numbers = array();
-			while ( list( $key, $line ) = each( $search_template_content ) ) {
-				$line = trim( $line );
-				foreach ( $potential_conflicts as $potential_conflict ) {
-					if ( false !== strpos( $line, $potential_conflict ) ) {
-						// make sure the line isn't commented out
-						if ( '//' != substr( $line, 0, 2 ) ) {
-							$line_numbers[$key + 1][] = $potential_conflict;
-						}
-					}
-				}
-			}
-			if( ! empty( $line_numbers ) ) {
+		if ( $conflicts->search_template ) {
+			if ( ! empty( $conflicts->search_template_conflicts ) ) {
 				add_action( 'admin_footer', array( $this, 'filter_conflict_javascript' ) );
 				$javascript_deployed = true;
 				?>
@@ -246,15 +272,16 @@ class SearchWPAdminNotices extends SearchWP {
 						<p><?php _e( "In order for SearchWP to display it's results, occurrences of <code>new WP_Query</code> and <code>query_posts()</code> must be removed from your search results template.", 'searchwp' ); ?></p>
 						<p>
 							<strong><?php _e( 'File location', 'searchwp' ); ?>:</strong>
-							<code><?php echo $search_template; ?></code>
+							<code><?php echo esc_html( $search_template ); ?></code>
 						</p>
-						<?php foreach( $line_numbers as $line_number => $conflicts ) : ?>
+						<?php foreach( $conflicts->search_template_conflicts as $line_number => $conflicts ) : ?>
 							<p>
-								<strong><?php _e( 'Line', 'searchwp' ); ?>: <?php echo $line_number; ?></strong>
+								<strong><?php _e( 'Line', 'searchwp' ); ?>: <?php echo absint( $line_number ); ?></strong>
 								<code><?php echo implode( '</code>, <code>', $conflicts ); ?></code>
 							</p>
 						<?php endforeach; ?>
-						<p><?php _e( 'Please ensure the offending lines are removed from the theme template to avoid conflicts with SearchWP. When removed, this notice will disappear.', 'searchwp' ); ?></p>
+						<p><?php _e( 'Please ensure the offending lines are removed from the theme template to avoid conflicts with SearchWP. When removed, this notice will disappear. You may also dismiss this message using', 'searchwp' ); ?></p>
+						<p class="description"><?php _e( "You may dismiss this (and all like this) message by adding <code>add_filter( 'searchwp_show_conflict_notices', '__return_false' );</code> to your theme's <code>functions.php</code>.", 'searchwp' ); ?></p>
 					</div>
 				</div>
 			<?php
@@ -262,109 +289,57 @@ class SearchWPAdminNotices extends SearchWP {
 		}
 
 		// output a notification if there are potential action/filter conflicts
-		if( is_array( $GLOBALS ) ) {
-			if( isset( $GLOBALS['wp_filter'] ) ) {
+		if ( ! empty( $conflicts->filter_conflicts ) ) {
+			foreach ( $conflicts->filter_conflicts as $filter_name => $potential_conflict ) {
+				$show_conflict = true;
 
-				// whitelist which functions are acceptable
-				$function_whitelist = array(
-					'_close_comments_for_old_posts',    // WordPress core
-					'SearchWP::wpSearch',               // SearchWP search hijack
-					'SearchWP::checkForMainQuery',      // SearchWP main query check
-				);
+				// user may have already dismissed this conflict so let's check
+				$existing_dismissals = searchwp_get_setting( 'dismissed' );
 
-				// the filters we want to check for conflicts and their associated Knowledge Base resources
-				$filter_checklist = array(
-					'pre_get_posts'     => 'https://searchwp.com/?p=10370',
-					'the_posts'         => 'https://searchwp.com/?p=10370',
-				);
+				// dismissals are stored as hashes of the hooks as they were when the dismissal was enabled
+				$conflict_hash = md5( json_encode( $potential_conflict ) );
+				$conflict_nonce = wp_create_nonce( 'swpconflict_' . $filter_name );
 
-				foreach( $filter_checklist as $filter_name => $filter_resolution_url ) {
-					if( isset( $GLOBALS['wp_filter'][$filter_name] ) ) {
-						$potential_conflict = false;
-						foreach( $GLOBALS['wp_filter'][$filter_name] as $filter_priority ) {
-							foreach( $filter_priority as $filter_hook ) {
-								if( isset( $filter_hook['function'] ) ) {
-
-									// the function 'name' is either going to be just that (the function name) or
-									// it's also going to include the class name for easier debugging
-									// if it's a Closure we'll call that out too
-									$function = $filter_hook['function'];
-									if( is_object( $function ) && ( $function instanceof Closure ) ) {
-										$function_name = 'Anonymous Function (Closure)';
-									} elseif ( is_array( $function ) ) {
-										if( is_object( $filter_hook['function'][0] ) ) {
-											$function_name = get_class( $filter_hook['function'][0] ) . '::' . $filter_hook['function'][1];
-										} else {
-											$function_name = (string) $filter_hook['function'][0] . '::' . $filter_hook['function'][1];
-										}
-									} else {
-										$function_name = $filter_hook['function'];
-									}
-
-									if( ! in_array( $function_name, $function_whitelist ) ) {
-										// we're going to store all potential conflicts for the warning message
-										if( !is_array( $potential_conflict ) ) {
-											$potential_conflict = array();
-										}
-										$potential_conflict[] = $function_name;
-									}
-								}
-							}
-						}
-
-						if( $potential_conflict ) {
-							// user may have already dismissed this conflict so let's check
-							$existing_dismissals = searchwp_get_setting( 'dismissed' );
-
-							// dismissals are stored as hashes of the hooks as they were when the dismissal was enabled
-							$conflict_hash = md5( json_encode( $potential_conflict ) );
-							$conflict_nonce = wp_create_nonce( 'swpconflict_' . $filter_name );
-
-							// by default we want to show it, but we'll check to see if it was already dismissed
-							$show_conflict = true;
-							if( is_array( $existing_dismissals ) ) {
-								if( isset( $existing_dismissals['filter_conflicts'] ) && is_array( $existing_dismissals['filter_conflicts'] ) ) {
-									if( in_array( $conflict_hash, $existing_dismissals['filter_conflicts'] ) ) {
-										$show_conflict = false;
-									}
-								}
-							}
-
-							if( $show_conflict ) {
-								// dump out the JavaScript that allows dismissals
-								if( ! $javascript_deployed ) {
-									add_action( 'admin_footer', array( $this, 'filter_conflict_javascript' ) );
-									$javascript_deployed = true;
-								}
-								?>
-								<div class="updated">
-									<p><?php echo sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), $filter_name ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo $filter_name; ?>"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
-									<div id="searchwp-conflict-<?php echo $filter_name; ?>" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
-										<p><?php _e( '<strong>This is simply a <em>preliminary</em> detection of a <em>possible</em> conflict.</strong> Many times these detections can be <strong>safely dismissed</strong>', 'searchwp' ); ?></p>
-										<p><?php _e( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ); ?></p>
-										<ol>
-											<?php foreach( $potential_conflict as $conflict ) : ?>
-												<?php
-												// if it was class based we'll break out the class
-												if( strpos( $conflict, '::' ) ) {
-													$conflict = explode( '::', $conflict );
-													$conflict = '<code>' . $conflict[1] . '</code> ' . __( '(method) in', 'searchwp' ) . ' <code>' . $conflict[0] . '</code>' . __( ' (class)', 'searchwp' );
-												} else {
-													$conflict = '<code>' . $conflict . '</code> ' . __( '(function)', 'searchwp' );
-												}
-												?>
-												<li><?php echo $conflict; ?></li>
-											<?php endforeach; ?>
-										</ol>
-										<p><?php echo sprintf( __( '<strong>If you believe there to be a conflict (e.g. search results not showing up):</strong> use this information you can determine how to best disable this interference. For more information please see <a href="%s">this Knowledge Base article</a>.', 'searchwp' ), $filter_resolution_url ); ?></p>
-										<p><a class="button swp-dismiss-conflict" href="#" data-hash="<?php echo esc_attr( $conflict_hash ); ?>" data-nonce="<?php echo esc_attr( $conflict_nonce ); ?>" data-filter="<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'Dismiss this message', 'searchwp' ); ?></a></p>
-									</div>
-								</div>
-							<?php
-							}
+				// check to see if this particular filter conflict was already dismissed
+				if( is_array( $existing_dismissals ) ) {
+					if( isset( $existing_dismissals['filter_conflicts'] ) && is_array( $existing_dismissals['filter_conflicts'] ) ) {
+						if( in_array( $conflict_hash, $existing_dismissals['filter_conflicts'] ) ) {
+							$show_conflict = false;
 						}
 					}
 				}
+
+				if( $show_conflict ) {
+					// dump out the JavaScript that allows dismissals
+					if( ! $javascript_deployed ) {
+						add_action( 'admin_footer', array( $this, 'filter_conflict_javascript' ) );
+						$javascript_deployed = true;
+					}
+					?>
+					<div class="updated">
+						<p><?php echo sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), $filter_name ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
+						<div id="searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
+							<p><?php _e( '<strong>This is simply a <em>preliminary</em> detection of a <em>possible</em> conflict.</strong> Many times these detections can be <strong>safely dismissed</strong>', 'searchwp' ); ?></p>
+							<p><?php _e( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ); ?></p>
+							<ol>
+								<?php foreach( $potential_conflict as $conflict ) : ?>
+									<?php
+									// if it was class based we'll break out the class
+									if( strpos( $conflict, '::' ) ) {
+										$conflict = explode( '::', $conflict );
+										$conflict = '<code>' . $conflict[1] . '</code> ' . __( '(method) in', 'searchwp' ) . ' <code>' . $conflict[0] . '</code>' . __( ' (class)', 'searchwp' );
+									} else {
+										$conflict = '<code>' . $conflict . '</code> ' . __( '(function)', 'searchwp' );
+									}
+									?>
+									<li><?php echo $conflict; ?></li>
+								<?php endforeach; ?>
+							</ol>
+							<p><?php echo sprintf( __( '<strong>If you believe there to be a conflict (e.g. search results not showing up):</strong> use this information you can determine how to best disable this interference. For more information please see <a href="%s">this Knowledge Base article</a>.', 'searchwp' ), $filter_resolution_url ); ?></p>
+							<p><a class="button swp-dismiss-conflict" href="#" data-hash="<?php echo esc_attr( $conflict_hash ); ?>" data-nonce="<?php echo esc_attr( $conflict_nonce ); ?>" data-filter="<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'Dismiss this message', 'searchwp' ); ?></a></p>
+						</div>
+					</div>
+				<?php }
 			}
 		}
 	}

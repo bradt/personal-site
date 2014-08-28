@@ -9,32 +9,22 @@ if( !defined( 'ABSPATH' ) ) die();
  * @param null $engineLabel The engine label
  * @since 1.0
  */
-function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engineLabel = null ) {
-	global $searchwp;
-
-	?>
-
+function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engineLabel = null ) { ?>
 	<li class="swp-supplemental-engine">
 		<div class="swp-supplemental-engine-controls swp-group">
 			<div class="swp-supplemental-engine-name">
 				<a href="#" class="swp-supplemental-engine-edit-trigger"><?php
-					if( is_null( $engineLabel ) )
-					{
+					if( is_null( $engineLabel ) ) {
 						echo '{{swp.engineLabel}}';
-					}
-					else
-					{
-						echo $engineLabel . ' <code>' . $engineName . '</code>';
+					} else {
+						echo esc_html( $engineLabel ) . ' <code>' . esc_html( $engineName ) . '</code>';
 					}
 					?></a>
-				<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php if( is_null( $engineName ) ) { ?>{{swp.engine}}<?php } { echo $engineName; } ?>][label]" value="<?php
-				if( is_null( $engineLabel ) )
-				{
+				<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php if( is_null( $engineName ) ) { ?>{{swp.engine}}<?php } { echo esc_attr( $engineName ); } ?>][label]" value="<?php
+				if( is_null( $engineLabel ) ) {
 					echo '{{swp.engineLabel}}';
-				}
-				else
-				{
-					echo $engineLabel;
+				} else {
+					echo esc_attr( $engineLabel );
 				}
 				?>" />
 			</div>
@@ -43,16 +33,12 @@ function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engine
 			</div>
 		</div>
 		<div class="swp-supplemental-engine-settings"><?php
-			if( is_null( $engineName ) )
-			{
+			if( is_null( $engineName ) ) {
 				echo '{{swp.engineSettings}}';
-			}
-			else
-			{
+			} else {
 				searchwpEngineSettingsTemplate( $engineName );
 			}
 		?></div>
 	</li>
-
 <?php
 }

@@ -55,6 +55,7 @@ function searchwp_maybe_nuke() {
 
 		// remove transients
 		delete_transient( 'searchwp' );
+		delete_transient( 'swppurge' );
 	}
 }
 
