@@ -169,8 +169,8 @@ function bt_enqueue_scripts() {
 		return;
 	}
 
-	wp_enqueue_style( 'bradtca', get_template_directory_uri() . '/assets/css/style.css', array(), '20140514' );
-	wp_enqueue_script( 'bradtca', get_template_directory_uri() . '/assets/js/script' . $suffix . '.js', array( 'jquery' ), '20140514', true );
+	wp_enqueue_style( 'bradtca', get_template_directory_uri() . '/assets/css/style.css', array(), '20140902' );
+	wp_enqueue_script( 'bradtca', get_template_directory_uri() . '/assets/js/script' . $suffix . '.js', array( 'jquery' ), '20140902', true );
 }
 add_action( 'wp_enqueue_scripts', 'bt_enqueue_scripts', 100 );
 
@@ -207,12 +207,12 @@ function bt_parse_query( $query ) {
 }
 add_filter( 'parse_query', 'bt_parse_query' );
 
-function bt_post_status_new( $new_status, $old_status, $post ) { 
+function bt_post_status_new( $new_status, $old_status, $post ) {
     if ( $post->post_type == 'journal_entry' && $new_status == 'publish' && $old_status != $new_status && $old_status != 'private' ) {
         $post->post_status = 'private';
         wp_update_post( $post );
     }
-} 
+}
 add_action( 'transition_post_status', 'bt_post_status_new', 10, 3 );
 
 function bt_ajax_record_journal_entry() {
