@@ -25,7 +25,7 @@ function bradt_load_js_vars() {
 
 <?php if ( WP_LOCAL_DEV ) : ?>
 
-	<script src="http://localhost:35729/livereload.js"></script>
+	<script src="http://localhost:35730/livereload.js"></script>
 
 <?php endif; ?>
 
