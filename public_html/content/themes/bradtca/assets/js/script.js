@@ -80,7 +80,7 @@ var Bradt;
 							$close.click(function() {
 								$orig.show();
 								$subscribe.hide();
-								$.cookie('no_subscribe_popover', '1');
+								$.cookie('no_subscribe_popover', '1', {path: '/'});
 								return false;
 							});
 
