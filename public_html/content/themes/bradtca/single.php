@@ -60,12 +60,45 @@
 			</section>
 
 		</article>
-				
+
 		<!--
 		<?php trackback_rdf(); ?>
 		-->
 
 		<?php comments_template(); // Get comments.php template ?>
+
+		<?php
+		$args = array(
+			'type' => 'pings',
+			'status' => 'approve',
+			'post_id' => get_the_ID()
+		);
+
+		$pings = get_comments( $args);
+
+		if ( $pings ) :
+			?>
+
+			<section class="pings">
+
+				<h1>Comments Elsewhere</h1>
+
+				<ul>
+
+				<?php
+				foreach ( $pings as $ping ) {
+					$parts = parse_url( $ping->comment_author_url );
+					printf('<li><a href="%s"><span class="host">%s</span><span class="post-title">%s</span></a></li>', esc_attr( $ping->comment_author_url ), esc_html( $parts['host'] ), esc_html( $ping->comment_author ) );
+				}
+				?>
+
+				</ul>
+
+			</section>
+
+			<?php
+		endif;
+		?>
 
 	<?php $i++; endwhile; else: ?>
 

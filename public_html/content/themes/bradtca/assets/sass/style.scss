@@ -481,6 +481,36 @@ section.single-post {
 			}
 		}
 	}
+
+	.pings {
+		padding-top: 60px;
+		margin-bottom: -30px;
+
+		h1 {
+			font-size: 20px;
+			color: #666;
+			text-transform: uppercase;
+			margin-bottom: 10px;
+		}
+
+		li {
+			margin-bottom: 10px;
+			font-size: 18px;
+
+			span {
+				display: block;
+			}
+		}
+
+		a {
+			color: #333;
+		}
+
+		.host {
+			color: #999;
+			font-size: 14px;
+		}
+	}
 }
 
 .subscribe {
