@@ -6,13 +6,13 @@
 		<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
 	</header>
 
-	<?php 
-	$i = 0; 
+	<?php
+	$i = 0;
 	if (have_posts()) : while (have_posts()) : the_post();
 		?>
-		
+
 		<article <?php post_class(); ?>>
-			
+
 			<header>
 				<h1 class="entry-title"><a id="post-<?php the_ID(); ?>" href="<?php the_permalink() ?>"><?php the_title(); ?></a></h1>
 
@@ -38,7 +38,7 @@
 					<p class="desc">
 						I used to be a full-time employee, then I went freelance,
 						and now I run a successful product company. I've learned
-						a lot along that path and will share failures and 
+						a lot along that path and will share failures and
 						successes with you via email.
 					</p>
 					<form action="//bradt.us8.list-manage.com/subscribe/post?u=3ae56658d135818e5b69adcbf&amp;id=483204597a" method="post">

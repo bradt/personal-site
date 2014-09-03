@@ -123,11 +123,11 @@ var Bradt;
 				$('.photo-set').css('height', 'auto').gridify();
 			}
 		},
-		
+
 		about: {
 			init: function() {
 				if (!$('.page-about').get(0)) return;
-			
+
 				$('.more-history').before('<a href="" class="more-history-btn">Show more work history...</a>');
 				$('.more-history-btn').click(function() {
 					$('.more-history').fadeIn();
@@ -136,13 +136,13 @@ var Bradt;
 				});
 			}
 		},
-		
+
 		contact: {
 			init: function() {
 				if (!$('.page-contact').get(0)) return;
-				
+
 				var init_events = function() {
-					
+
 					if ($('input[name=what]:checked').val() != 'work') {
 						$('.field-budget, .field-schedule').hide();
 					}
@@ -172,11 +172,11 @@ var Bradt;
 
 					$('li.option-bot').hide();
 				};
-				
+
 				init_events();
-				
+
 				$('input[name=what]').trigger('change');
-				
+
 				$('form').submit(function() {
 					var form = $(this);
 					var data = form.serialize();
@@ -192,12 +192,12 @@ var Bradt;
 							$.scrollTo('#header', 500);
 						}
 					});
-					
+
 					return false;
 				});
 			}
 		},
-		
+
 		menu: function() {
 			$('#header ul.nav li a').click(function() {
 				$('#header ul.nav li a').removeClass('active');
@@ -207,38 +207,38 @@ var Bradt;
 
 		portfolio_list: {
 			resizing: 0,
-		
+
 			init: function() {
 				if (!$('.page-portfolio-list').get(0))
 					return;
 
 				Bradt.portfolio.roles.init();
-				
+
 				$('.project').gridify();
 				if ($('body').width() > 640) {
 					on_resize(Bradt.portfolio_list.resize);
 				}
 			},
-			
+
 			resize: function() {
 				$('.project').css('height', 'auto').gridify();
 			}
-			
+
 		},
-		
+
 		portfolio: {
-		
+
 			init: function() {
 				if (!$('.page-portfolio').get(0))
 					return;
-				
+
 				$.localScroll.hash();
-				
+
 				var scr = $('.scr');
-			
+
 				$('ul.screenshots li').click(function() {
 					var anchor = $('a',this);
-					
+
 					$('ul.screenshots li').removeClass('current');
 					$(this).addClass('current');
 
@@ -248,7 +248,7 @@ var Bradt;
 					else {
 						$('.bubblingG', scr).show();
 					}
-					
+
 					var img = new Image();
 					$(img).load(function() {
 						$('.bubblingG', scr).hide();
@@ -259,26 +259,26 @@ var Bradt;
 						scr.attr('href', url);
 				   });
 				   img.src = anchor.attr('href');
-		
+
 				   return false;
 				});
-			
+
 				// Preload screenshots
 				$('ul.screenshots li a').each(function() {
 					var img = new Image();
 					img.src = $(this).attr('href');
 				});
 			},
-			
+
 			roles: {
-				
+
 				init: function() {
 					$('.tabs li').click(function() {
 						var selected = $(this).attr('class');
-						
+
 						$('.tabs li a').removeClass('current');
 						$('a', this).addClass('current');
-						
+
 						if (selected == 'all') {
 							$('.project')
 								.removeClass('hidden')
@@ -291,7 +291,7 @@ var Bradt;
 						else {
 							$('.old-portfolio').hide();
 						}
-						
+
 						$('.project').addClass('hidden').hide();
 
 						if (selected == 'featured') {
@@ -302,7 +302,7 @@ var Bradt;
 								.gridify();
 							return;
 						}
-						
+
 						$('.project').each(function() {
 							var found = 0;
 							$('.roles li span', this).each(function() {
@@ -312,15 +312,15 @@ var Bradt;
 									found = 1;
 								}
 							});
-							
+
 							if (found) {
 								$(this).removeClass('hidden').show();
 							}
 						});
-						
+
 						$('.project').css('height', 'auto').gridify();
 					});
-					
+
 					var hash = document.location.hash;
 					if (hash) {
 						hash = hash.replace('#', '');
@@ -330,7 +330,7 @@ var Bradt;
 						}
 					}
 					else {
-						$('.tabs li:first').trigger('click');					
+						$('.tabs li:first').trigger('click');
 					}
 				}
 			}
@@ -341,16 +341,16 @@ var Bradt;
 		bradt_load_js_vars();
 		Bradt.init();
 	});
-	
+
 	$.fn.gridify = function(per_row) {
 		var items = this.not('.hidden');
-		
+
 		if (!per_row && items.size()) {
 			var container = items.parent();
 			var item = items.eq(0);
 			per_row = Math.floor(container.width() / item.outerWidth());
 		}
-		
+
 		var row_num = 1;
 		return items.each(function(i) {
 			if ((i+1) % per_row == 0) {
@@ -365,7 +365,7 @@ var Bradt;
 						el = el.prev();
 					}
 				}
-				
+
 				var el = $(this);
 				for (var x = 1; x <= per_row; x++) {
 					el.height(max_height);
@@ -374,12 +374,12 @@ var Bradt;
 						el = el.prev();
 					}
 				}
-				
+
 				row_num++;
 			}
 		});
 	};
-	
+
 })(jQuery);
 
 /**
