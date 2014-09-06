@@ -1,5 +1,6 @@
 _archive
 tmp
+public_html/wp
 public_html/content/uploads
 public_html/content/object-cache.php
 public_html/content/debug.log
