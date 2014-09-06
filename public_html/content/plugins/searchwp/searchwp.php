@@ -3,7 +3,7 @@
 Plugin Name: SearchWP
 Plugin URI: https://searchwp.com/
 Description: The best WordPress search you can find
-Version: 2.4.3
+Version: 2.4.4
 Author: Jonathan Christopher
 Author URI: https://searchwp.com/
 Text Domain: searchwp
@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'SEARCHWP_VERSION', '2.4.3' );
+define( 'SEARCHWP_VERSION', '2.4.4' );
 define( 'SEARCHWP_PREFIX', 'searchwp_' );
 define( 'SEARCHWP_DBPREFIX', 'swp_' );
 define( 'EDD_SEARCHWP_STORE_URL', 'http://searchwp.com' );

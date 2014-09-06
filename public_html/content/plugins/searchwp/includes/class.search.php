@@ -290,21 +290,21 @@ class SearchWPSearch {
 			// log this
 			if ( ! empty( $pre_search_original_terms ) ) {
 				$log_result = $wpdb->insert(
-					$this->db_prefix . 'log',
-						array(
-							'event'    => 'search',
-							'query'    => sanitize_text_field( $pre_search_original_terms ),
-							'hits'     => count( $this->posts ),
-							'engine'   => $engine,
-							'wpsearch' => 0
-						),
-						array(
-							'%s',
-							'%s',
-							'%d',
-							'%s',
-							'%d'
-						)
+				                   $this->db_prefix . 'log',
+					                   array(
+						                   'event'    => 'search',
+						                   'query'    => sanitize_text_field( $pre_search_original_terms ),
+						                   'hits'     => count( $this->posts ),
+						                   'engine'   => $engine,
+						                   'wpsearch' => 0
+					                   ),
+					                   array(
+						                   '%s',
+						                   '%s',
+						                   '%d',
+						                   '%s',
+						                   '%d'
+					                   )
 				);
 			}
 		}
@@ -1939,10 +1939,10 @@ class SearchWPSearch {
 
 		// retrieve how many total posts were found without the limit
 		$this->foundPosts = (int) $wpdb->get_var(
-			apply_filters_ref_array(
-				'found_posts_query',
-				array( 'SELECT FOUND_ROWS()', &$wpdb )
-			)
+		                               apply_filters_ref_array(
+			                               'found_posts_query',
+			                               array( 'SELECT FOUND_ROWS()', &$wpdb )
+		                               )
 		);
 
 		// store an accurate max_num_pages for $wp_query
@@ -1968,7 +1968,7 @@ class SearchWPSearch {
 				color:#fff !important;
 			}
 		</style>
-		<?php
+	<?php
 	}
 
 
@@ -1988,11 +1988,11 @@ class SearchWPSearch {
 		$wp_admin_bar->add_menu( $args );
 
 		$wp_admin_bar->add_menu( array(
-			'parent'  => 'searchwp-sql-big-selects-notice',
-			'id'      => 'searchwp-sql-big-selects-notice-sub',
-			'title'   => __( 'View SQL_BIG_SELECTS Fix', 'text_domain' ),
-			'href'    => 'https://searchwp.com/docs/hooks/searchwp_big_selects/',
-		) );
+				'parent'  => 'searchwp-sql-big-selects-notice',
+				'id'      => 'searchwp-sql-big-selects-notice-sub',
+				'title'   => __( 'View SQL_BIG_SELECTS Fix', 'text_domain' ),
+				'href'    => 'https://searchwp.com/docs/hooks/searchwp_big_selects/',
+			) );
 	}
 
 
@@ -2088,24 +2088,14 @@ class SearchWPSearch {
 
 		// limit the full pool to search term(s) stem
 		if ( is_array( $this->terms_final ) && count ( $this->terms_final ) ) {
-			$closing_stems = array();
-			foreach( $this->terms_final as $closing_term ) {
 
-				$unstemmed = $closing_term;
-				$maybe_stemmed = apply_filters( 'searchwp_custom_stemmer', $unstemmed );
-
-				// if the term was stemmed via the filter use it, else generate our own
-				$closing_term = ( $unstemmed == $maybe_stemmed ) ? $this->stemmer->stem( $closing_term ) : $maybe_stemmed;
-
-				$closing_stems[] = $closing_term;
-			}
-
-			$limiter_sql = " ( {$this->db_prefix}terms.term IN ('" . implode( "','", $this->terms_final ) . "') OR {$this->db_prefix}terms.stem IN ('" . implode( "','", $closing_stems ) . "') ) ";
+			// if stemming was enabled, the terms have already been stemmed
+			$limiter_sql = " ( {$this->db_prefix}terms.term IN ('" . implode( "','", $this->terms_final ) . "') OR {$this->db_prefix}terms.stem IN ('" . implode( "','", $this->terms_final ) . "') ) ";
 
 			// if attribution is concerned, the post_parent likely WILL NOT have the term or stem, so we need to accommodate
 			// by adding a conditional that excuses attributed post types that do not have any terms/stems
 			if ( $post_types_with_attribution = $this->maybe_attribution_anywhere() ) {
-				$limiter_sql .= " OR ( {$this->db_prefix}terms.term NOT IN ('" . implode( "','", $this->terms_final ) . "') AND {$this->db_prefix}terms.stem NOT IN ('" . implode( "','", $closing_stems ) . "') AND {$wpdb->posts}.post_type NOT IN ('" . implode( "','", $post_types_with_attribution ) . "') ) ";
+				$limiter_sql .= " OR ( {$this->db_prefix}terms.term NOT IN ('" . implode( "','", $this->terms_final ) . "') AND {$this->db_prefix}terms.stem NOT IN ('" . implode( "','", $this->terms_final ) . "') AND {$wpdb->posts}.post_type NOT IN ('" . implode( "','", $post_types_with_attribution ) . "') ) ";
 			}
 
 			// let it rip

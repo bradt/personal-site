@@ -1,3 +1,7 @@
+### 2.4.4
+- **[Fix]** Fixed an issue where certain search terms were being double-stemmed
+
+
 ### 2.4.3
 - **[Fix]** Fixed an issue where PDFs attributed to their post parent weren't showing up in search results
 
