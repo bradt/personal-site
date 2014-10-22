@@ -10,20 +10,18 @@ get_header();
 
 	<div class="entry-content">
 
-		<p>I was born an <strong>entrepreneur</strong>. From lemonade stands and mowing lawns, to
-		making my first dollars online, I've always been motivated to solve
-		problems for people.  I currently work full time on 
+		<p>I currently spend all my working time managing
 		<a style="white-space:nowrap;" href="http://deliciousbrains.com/?utm_source=bradt.ca&utm_medium=web&utm_content=deliciousbrainsinc&utm_campaign=bradtca-about-page">Delicious Brains Inc,</a>
 		a company I started in December 2012 to develop and sell
 		<a style="white-space:nowrap;" href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_content=wpmdbpro&utm_campaign=bradtca-about-page">WP Migrate DB Pro</a>,
 		a database migration plugin for WordPress.</p>
 
 		<p>Before that, I built web sites for a living. Working as an
-		independent, I collaborated with creative agencies and
+		independent web developer, I collaborated with creative agencies and
 		independent web designers. I did frontend and backend development, 
-		working with SilverStripe CMS and WordPress. See
-		<a href="http://www.linkedin.com/in/bradt">my LinkedIn profile</a> for more details
-		on my past work.</p>
+		working with SilverStripe CMS and WordPress. Check out my 
+		<a href="/portfolio/">portfolio</a>	and 
+		<a href="http://www.linkedin.com/in/bradt">LinkedIn profile</a> for more.</p>
 
 		<p><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/travel.jpg" alt="" /></p>
 
@@ -39,10 +37,10 @@ get_header();
 		truly are <a
 		href="http://en.wikipedia.org/wiki/World's_most_livable_cities">the
 		most liveable cities</a> on the planet. I miss them both. Today, my
-		wife Carolyn, son Max, and I call Halifax, Canada home.</p>
+		wife Carolyn, son Max, and I call Truro, Canada home.</p>
 
 		<p>I love <strong>sports</strong>. I play rec league hockey in the
-		winter, golf and <a
+		winter, tennis and <a
 		href="http://redcircus.brokenultimate.com">competitive ultimate
 		frisbee</a> in the summer.</p>
 
