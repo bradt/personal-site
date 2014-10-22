@@ -37,7 +37,7 @@ get_header();
 		truly are <a
 		href="http://en.wikipedia.org/wiki/World's_most_livable_cities">the
 		most liveable cities</a> on the planet. I miss them both. Today, my
-		wife Carolyn, son Max, and I call Truro, Canada home.</p>
+		wife Carolyn and our two sons call Truro, Canada home.</p>
 
 		<p>I love <strong>sports</strong>. I play rec league hockey in the
 		winter, tennis and <a
