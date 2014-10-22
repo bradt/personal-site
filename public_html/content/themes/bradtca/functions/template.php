@@ -74,7 +74,6 @@ function bt_site_nav() {
 	<ul>
 		<li><a href="/about/" <?php echo is_page( 'about' ) ? ' class="active"' : ''  ?>>About</a></li>
 		<li><a href="/blog/" <?php echo ( is_home() || is_tax( 'post_tag' ) || ( is_single() && 'post' == get_post_type() ) ) ? ' class="active"' : ''  ?>>Blog</a></li>
-		<li><a href="/portfolio/" <?php echo ( is_post_type_archive( 'portfolio_item' ) || ( is_single() && 'portfolio_item' == get_post_type() ) ) ? ' class="active"' : ''  ?>>Portfolio</a></li>
 		<li class="last"><a href="/contact/" <?php echo is_page( 'contact' ) ? ' class="active"' : ''  ?>>Contact</a></li>
 	</ul>
 	<?php
