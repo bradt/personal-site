@@ -18,9 +18,9 @@ get_header();
 
 		<p>Before that, I built web sites for a living. Working as an
 		independent web developer, I collaborated with creative agencies and
-		independent web designers. I did frontend and backend development, 
-		working with SilverStripe CMS and WordPress. Check out my 
-		<a href="/portfolio/">portfolio</a>	and 
+		independent web designers. I did frontend and backend development,
+		working with SilverStripe CMS and WordPress. Check out my
+		<a href="/portfolio/">portfolio</a>	and
 		<a href="http://www.linkedin.com/in/bradt">LinkedIn profile</a> for more.</p>
 
 		<p><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/travel.jpg" alt="" /></p>
@@ -48,10 +48,10 @@ get_header();
 		in 2004. This site is now mainly geared toward my professional career,
 		showcasing my work and publishing my original writings about the
 		business of building the web. I also share short thoughts on <a
-		href="http://twitter.com/bradt">Twitter</a> and 
+		href="http://twitter.com/bradt">Twitter</a> and
 		<a href="https://plus.google.com/103798016457548612622">Google+</a>
-		and post code to <a href="https://github.com/bradt">GitHub</a> and 
-		<a href="http://profiles.wordpress.org/bradt">WordPress.org</a>. 
+		and post code to <a href="https://github.com/bradt">GitHub</a> and
+		<a href="http://profiles.wordpress.org/bradt">WordPress.org</a>.
 		I also cohost the
 		<a href="http://applyfilters.fm">Apply Filters</a> podcast.</p>
 
@@ -99,8 +99,16 @@ get_header();
 
 		<table>
 		<tr>
+			<td>Jan 26-29, 2015</td>
+			<td><a href="http://bigsnowtinyconf.com/">Big Snow Tiny Conf</a> (Sugarbush, VT)</td>
+		</tr>
+		<tr>
+			<td>Jan 21-24, 2015</td>
+			<td><a href="http://pressnomics.com/">PressNomics</a> (Phoenix)</td>
+		</tr>
+		<tr>
 			<td>Apr 14-15, 2014</td>
-			<td><a href="http://www.microconf.com/">MicroConf</a></td>
+			<td><a href="http://www.microconf.com/">MicroConf</a> (Las Vegas)</td>
 		</tr>
 		<tr>
 			<td>Jan 19, 2014</td>
@@ -181,7 +189,7 @@ get_header();
 		</tr>
 		</table>
 
-		<p>This site is powered by a custom WordPress theme developed in Sublime 
+		<p>This site is powered by a custom WordPress theme developed in Sublime
 		Text and running on Linode.</p>
 
 	</div>
