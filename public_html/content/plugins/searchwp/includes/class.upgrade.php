@@ -456,6 +456,30 @@ class SearchWPUpgrade {
 			$wpdb->delete( $wpdb->prefix . 'postmeta', array( 'meta_key' => '_' . SEARCHWP_PREFIX . 'indexed' ) );
 		}
 
+		if( version_compare( $this->last_version, '2.4.5', '<' ) ) {
+
+			// implement our settings backup
+			$live_settings = searchwp_get_option( 'settings' );
+			$settings_backups = array();
+			$settings_backups[ current_time( 'timestamp' ) ] = $live_settings;
+			searchwp_add_option( 'settings_backup', $settings_backups );
+
+			// there was a bug triggered by a custom post type name of 'label' that caused issues
+			// so we need to update all of the supplemental engine label keys to searchwp_engine_label
+			// which will not trigger the issue because it is 21 characters in length and WordPress
+			// requires post type names to be 20 characters or less
+			if ( isset( $live_settings['engines'] ) ) {
+				foreach( $live_settings['engines'] as $live_settings_engine_key => $live_settings_engine_values ) {
+					if ( isset( $live_settings_engine_values['label'] ) ) {
+						$engine_label = $live_settings_engine_values['label'];
+						unset( $live_settings['engines'][ $live_settings_engine_key ]['label'] );
+						$live_settings['engines'][ $live_settings_engine_key ]['searchwp_engine_label'] = $engine_label;
+					}
+				}
+			}
+			searchwp_update_option( 'settings', $live_settings );
+		}
+
 	}
 
 }
@@ -521,6 +545,7 @@ function searchwp_generate_settings( $engines ) {
 
 	// save the new options
 	searchwp_add_option( 'settings', $new_settings );
+	searchwp_add_option( 'settings_backup', array() );
 	searchwp_add_option( 'indexer', $indexer_settings );
 	searchwp_add_option( 'purge_queue', searchwp_get_option( 'purgeQueue' ) );
 

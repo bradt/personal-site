@@ -11,7 +11,6 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 	exit();
 }
 
-
 if ( ! class_exists( 'WPSEO_OpenGraph' ) ) {
 	/**
 	 * Adds the OpenGraph output
@@ -458,6 +457,8 @@ if ( ! class_exists( 'WPSEO_OpenGraph' ) ) {
 					 */
 					$thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), apply_filters( 'wpseo_opengraph_image_size', 'original' ) );
 					$this->image_output( $thumb[0] );
+
+					return;
 				}
 
 				/**
@@ -481,8 +482,6 @@ if ( ! class_exists( 'WPSEO_OpenGraph' ) ) {
 			if ( count( $this->shown_images ) == 0 && $this->options['og_default_image'] !== '' ) {
 				$this->image_output( $this->options['og_default_image'] );
 			}
-
-			// @TODO add G+ image stuff
 		}
 
 		/**
@@ -517,7 +516,13 @@ if ( ! class_exists( 'WPSEO_OpenGraph' ) ) {
 			}
 
 			if ( is_category() || is_tag() || is_tax() ) {
-				$ogdesc = trim( strip_tags( term_description() ) );
+
+				$ogdesc = $this->metadesc( false );
+
+				if ( '' == $ogdesc ) {
+					$ogdesc = trim( strip_tags( term_description() ) );
+				}
+
 				if ( '' == $ogdesc ) {
 					global $wp_query;
 					$term   = $wp_query->get_queried_object();

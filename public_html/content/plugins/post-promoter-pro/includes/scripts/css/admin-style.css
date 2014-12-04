@@ -1,3 +1,21 @@
+#ppp-li-image .left {
+	float: left;
+}
+
+#ppp-li-image > img {
+	padding: 5px;
+	border: 1px solid #ccc;
+	margin: 0 5px 25px 0;
+}
+
+#ppp_schedule_metabox .wp-tab-panel {
+	max-height: none !important;
+}
+
+#ppp-tabs .category-tabs {
+	margin-bottom: 3px;
+}
+
 #ppp-days-table {
 	padding: 0;
 	margin: 0;
@@ -8,7 +26,7 @@
 	padding: 0;
 }
 
-#ppp-post-override-wrap label, #ppp-post-override-wrap input {
+.ppp-post-override-wrap label, .ppp-post-override-wrap input {
 	padding-right: 5px;
 }
 
@@ -16,26 +34,43 @@
 	width: 65%;
 }
 
+#li .ppp_share_on_publish_text textarea {
+	width: 65%;
+	height: 50px;
+}
+
+.ppp-override-meta {
+	margin-left: 44px;
+	line-height: 35px;
+}
+
+.ppp-social-profile {
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	padding: 5px 0 0 5px;
+	margin-bottom: 10px;
+}
+
 .ppp-twitter-profile {
 	height: 65px;
 	width: 360px;
 	background-color: #E1E8ED;
-	padding: 5px 0 0 5px;
 	border: 1px solid #55ACEE;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
 }
 
 .ppp-bitly-profile {
 	height: 85px;
 	width: 360px;
 	background-color: #f9c9b4;
-	padding: 5px 0 0 5px;
 	border: 1px solid #ee6123;
-	-webkit-border-radius: 8px;
-	-moz-border-radius: 8px;
-	border-radius: 8px;
+}
+
+.ppp-linkedin-profile {
+	height: 55px;
+	width: 360px;
+	background-color: #E0EFF6;
+	border: 1px solid #007bb6;
 }
 
 .ppp-social-icon {
@@ -51,6 +86,11 @@
 	margin-top: 10px;
 }
 
+.ppp-linkedin-info {
+	font-size: 16px;
+	padding: 5px 10px;
+}
+
 .ppp-bitly-info {
 	margin-top: 0px;
 	margin-left: 35px;
@@ -58,6 +98,17 @@
 
 #ppp-bitly-login-form-submit {
 	width: 160px;
+}
+
+.ppp-social-connect > div {
+	padding: 25px 0 50px 100px;
+	border-bottom: 1px solid #ccc;
+	border-left: 1px solid #ccc;
+	border-right: 1px solid #ccc;
+}
+
+.ppp_share_on_publish_text {
+	padding-left: 25px;
 }
 
 /* Dashicon Styles */
@@ -104,6 +155,23 @@
 	font-family: "ppp-dashicon" !important;
  	content: "a";
 }
+
+.icon-ppp-tw:before {
+  content: "b";
+}
+.icon-ppp-fb:before {
+  content: "c";
+}
+.icon-ppp-li:before {
+  content: "d";
+}
+.icon-ppp-gp:before {
+  content: "e";
+}
+.icon-ppp-pt:before {
+  content: "f";
+}
+
 
 /* End Dashicons */
 

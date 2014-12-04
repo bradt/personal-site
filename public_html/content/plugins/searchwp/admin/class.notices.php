@@ -2,7 +2,9 @@
 
 global $wp_filesystem;
 
-if( ! defined( 'ABSPATH' ) ) die();
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 include_once ABSPATH . 'wp-admin/includes/file.php';
 
@@ -109,12 +111,24 @@ class SearchWPAdminNotices extends SearchWP {
 				'plugin' => array(
 					'file' => 'polylang/polylang.php',
 					'name' => 'Polylang',
-					'url' => 'http://wordpress.org/plugins/polylang/',
+					'url' => 'https://wordpress.org/plugins/polylang/',
 				),
 				'integration' => array(
 					'file' => 'searchwp-polylang/searchwp-polylang.php',
 					'name' => 'Polylang Integration',
 					'url' => 'https://searchwp.com/docs/extensions/polylang-integration/',
+				),
+			),
+			'woocommerce' => array(
+				'plugin' => array(
+					'file' => 'woocommerce/woocommerce.php',
+					'name' => 'WooCommerce',
+					'url' => 'https://wordpress.org/plugins/woocommerce/',
+				),
+				'integration' => array(
+					'file' => 'searchwp-woocommerce/searchwp-woocommerce.php',
+					'name' => 'WooCommerce Integration',
+					'url' => 'https://searchwp.com/docs/extensions/woocommerce-integration/',
 				),
 			),
 			'wpjobmanager' => array(
@@ -129,19 +143,50 @@ class SearchWPAdminNotices extends SearchWP {
 					'url' => 'https://searchwp.com/docs/extensions/wp-job-manager-integration/',
 				),
 			),
+			'privatecontent' => array(
+				'plugin' => array(
+					'file' => 'private-content/private_content.php',
+					'name' => 'PrivateContent',
+					'url' => 'http://codecanyon.net/item/privatecontent-multilevel-content-plugin/1467885',
+				),
+				'integration' => array(
+					'file' => 'searchwp-privatecontent/searchwp-privatecontent.php',
+					'name' => 'PrivateContent Integration',
+					'url' => 'https://searchwp.com/docs/extensions/privatecontent-integration/',
+				),
+			),
+			// TODO: figure out how to handle multiple parent themes and any number of child themes?
+//			'directorypress' => array(
+//				'theme' => array(
+//					'file' => '',
+//					'name' => 'DirectoryPress',
+//					'url' => 'http://directorypress.net/',
+//				),
+//				'integration' => array(
+//					'file' => 'searchwp-directorypress/searchwp-directorypress.php',
+//					'name' => 'DirectoryPress Integration',
+//					'url' => 'https://searchwp.com/docs/extensions/directorypress-integration/',
+//				),
+//			),
 		);
 
 		$missing_integrations = array();
 		foreach ( $integration_extensions as $integration_extension_key => $integration_extension ) {
-			if ( is_plugin_active( $integration_extension['plugin']['file'] ) && ! is_plugin_active( $integration_extension['integration']['file'] ) ) {
+			if ( isset( $integration_extension['plugin'] ) && is_plugin_active( $integration_extension['plugin']['file'] ) && ! is_plugin_active( $integration_extension['integration']['file'] ) ) {
 				$missing_integrations[] = $integration_extension_key;
+			}
+			if ( isset( $integration_extension['theme'] ) ) {
+				$theme = wp_get_theme();
+				if ( $integration_extension['theme']['file'] == $theme->get( 'Template' ) ) {
+					$missing_integrations[] = $integration_extension_key;
+				}
 			}
 		}
 
 		if ( ! empty( $missing_integrations ) && apply_filters( 'searchwp_missing_integration_notices', true ) ) { ?>
 			<?php foreach( $missing_integrations as $missing_integration ) : ?>
 				<?php
-				$plugin         = $integration_extensions[$missing_integration]['plugin']['name'];
+				$plugin         = isset( $integration_extensions[$missing_integration]['plugin'] ) ? $integration_extensions[$missing_integration]['plugin']['name'] : $integration_extensions[$missing_integration]['theme']['name'];
 				$url            = $integration_extensions[$missing_integration]['integration']['url'];
 				$integration    = $integration_extensions[$missing_integration]['integration']['name'];
 				?>
@@ -251,7 +296,7 @@ class SearchWPAdminNotices extends SearchWP {
 		$maybe_debugging = apply_filters( 'searchwp_debug', false );
 		$show_conflict_notices = apply_filters( 'searchwp_show_conflict_notices', $maybe_debugging );
 
-		if ( ! $show_conflict_notices || ! class_exists( 'SearchWP_Conflicts' ) ) {
+		if ( ! class_exists( 'SearchWP_Conflicts' ) ) {
 			return;
 		}
 
@@ -261,7 +306,7 @@ class SearchWPAdminNotices extends SearchWP {
 		$javascript_deployed = false;
 
 		// output a notification if there are potential query_posts or WP_Query conflicts in search.php
-		if ( $conflicts->search_template ) {
+		if ( $conflicts->search_template && apply_filters( 'searchwp_show_conflict_notices', true ) ) {
 			if ( ! empty( $conflicts->search_template_conflicts ) ) {
 				add_action( 'admin_footer', array( $this, 'filter_conflict_javascript' ) );
 				$javascript_deployed = true;
@@ -272,7 +317,7 @@ class SearchWPAdminNotices extends SearchWP {
 						<p><?php _e( "In order for SearchWP to display it's results, occurrences of <code>new WP_Query</code> and <code>query_posts()</code> must be removed from your search results template.", 'searchwp' ); ?></p>
 						<p>
 							<strong><?php _e( 'File location', 'searchwp' ); ?>:</strong>
-							<code><?php echo esc_html( $search_template ); ?></code>
+							<code><?php echo esc_html( $conflicts->search_template ); ?></code>
 						</p>
 						<?php foreach( $conflicts->search_template_conflicts as $line_number => $conflicts ) : ?>
 							<p>
@@ -289,7 +334,7 @@ class SearchWPAdminNotices extends SearchWP {
 		}
 
 		// output a notification if there are potential action/filter conflicts
-		if ( ! empty( $conflicts->filter_conflicts ) ) {
+		if ( $show_conflict_notices && ! empty( $conflicts->filter_conflicts ) ) {
 			foreach ( $conflicts->filter_conflicts as $filter_name => $potential_conflict ) {
 				$show_conflict = true;
 

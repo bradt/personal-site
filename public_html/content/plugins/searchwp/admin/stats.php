@@ -25,7 +25,7 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 		<?php foreach( $this->settings['engines'] as $engine => $engineSettings ) : ?>
 			<?php
 			$active_tab = '';
-			$engine_label = isset( $engineSettings['label'] ) ? sanitize_text_field( $engineSettings['label'] ) : __( 'Default', 'searchwp' );
+			$engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? sanitize_text_field( $engineSettings['searchwp_engine_label'] ) : __( 'Default', 'searchwp' );
 			if( ( isset( $_GET['tab'] ) && $engine == $_GET['tab'] ) || ( ! isset( $_GET['tab'] ) && 'default' == $engine ) ) {
 				$active_tab = ' nav-tab-active';
 			}
@@ -37,7 +37,8 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 	<br />
 
 	<div class="swp-searches-chart-wrapper">
-		<div id="swp-searches-chart" style="width:100%;height:300px;"></div>
+		<h3><?php _e( 'Searches over the past 30 days', 'searchwp' ); ?></h3>
+		<div class="swp-searches-chart ct-chart"></div>
 	</div>
 
 	<script type="text/javascript">
@@ -70,7 +71,7 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 
 					// key our array
 					$searchesPerDay = array();
-					for($i = 0; $i < 30; $i++) {
+					for($i = 0; $i <= 30; $i++) {
 						$searchesPerDay[strtoupper(date( 'Md', strtotime( '-'. ( $i ) .' days' ) ))] = 0;
 					}
 
@@ -89,55 +90,72 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 
 					$searchesPerDay = array_reverse( $searchesPerDay );
 
-					echo 'var s = [';
-					echo implode( ',', $searchesPerDay );
-					echo '];';
+					// generate the x-axis labels
+					$x_axis_labels = array();
+					foreach( $searchesPerDay as $day_key => $day_value ) {
+						// keys are stored as 'Md' date format so we'll "decode"
+						$x_axis_labels[] = intval( substr( $day_key, 3, 5 ) );
+					}
 
-					$engineLabel = isset( $engineSettings['label'] ) ? $engineSettings['label'] : esc_attr__( 'Default', 'searchwp' );
+					$engineLabel = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : esc_attr__( 'Default', 'searchwp' );
 
 					// dump out the necessary JavaScript vars
 					?>
-					plot = $.jqplot('swp-searches-chart', [s], {
-						title            : '<?php esc_attr_e( 'Searches Performed in the Past 30 Days', 'searchwp' ); ?>',
-						stackSeries      : false,
-						captureRightClick: true,
-						seriesDefaults   : {
-							renderer       : $.jqplot.BarRenderer,
-							rendererOptions: {
-								barMargin         : 20,
-								highlightMouseDown: false,
-								shadowOffset      : 0,
-								shadowDepth       : 0,
-								shadowAlpha       : 0
-							},
-							pointLabels    : {show: true},
-							lineWidth      : 2,
-							shadow         : false
-						},
-						grid             : {
-							drawGridlines: true,
-							gridLineColor: '#f1f1f1',
-							gridLineWidth: 1,
-							borderWidth  : 1,
-							shadow       : false,
-							background   : '#fafafa',
-							borderColor  : '#ffffff'
-						},
-						axes             : {
-							xaxis: {
-								renderer: $.jqplot.CategoryAxisRenderer
-							},
-							yaxis: {
-								padMin: 0
-							}
-						},
-						legend           : {
-							show     : true,
-							location : 'nw',
-							placement: 'inside',
-							labels   : [<?php echo "'" . __( 'Search engine: ', 'searchwp' ) . $engineLabel . "'"; ?>]
+					var chart_data = {
+						labels: [<?php echo implode( ',', $x_axis_labels ); ?>],
+						series: [[<?php echo implode( ',', $searchesPerDay ); ?>]]
+					};
+					var chart_options = {
+						low: 0,
+						showArea: true
+					};
+
+					function ordinal_suffix_of(i) {
+						var j = i % 10,
+							k = i % 100;
+						if (j == 1 && k != 11) {
+							return i + "st";
 						}
-					});
+						if (j == 2 && k != 12) {
+							return i + "nd";
+						}
+						if (j == 3 && k != 13) {
+							return i + "rd";
+						}
+						return i + "th";
+					}
+
+					var chart_responsive_options = [
+						['screen and (min-width: 1251px)', {
+							axisX: {
+								labelInterpolationFnc: function(value) {
+									value = ordinal_suffix_of(value);
+									return value;
+								}
+							}
+						}],
+						['screen and (min-width: 751px) and (max-width: 1250px)', {
+							axisX: {
+								labelInterpolationFnc: function(value) {
+									// only show every other day
+									if(value%2){
+										value = '';
+									}else{
+										value = ordinal_suffix_of(value);
+									}
+									return value;
+								}
+							}
+						}],
+						['screen and (max-width: 750px)', {
+							axisX: {
+								labelInterpolationFnc: function(value) {
+									// hide the x axis labels
+									return '';
+								}
+							}
+						}]];
+					Chartist.Line('.swp-searches-chart', chart_data, chart_options, chart_responsive_options );
 					<?php
 				}
 			?>
@@ -193,17 +211,18 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 
 		<div class="inside">
 			<?php
+			$today = date( 'Y-m-d' ) . ' 00:00:00';
 			$sql = $wpdb->prepare( "
 					SELECT {$prefix}swp_log.query, count({$prefix}swp_log.query) AS searchcount
 					FROM {$prefix}swp_log
-					WHERE tstamp > DATE_SUB(NOW(), INTERVAL 1 DAY)
+					WHERE tstamp > %s
 					AND {$prefix}swp_log.event = 'search'
 					AND {$prefix}swp_log.engine = %s
 					{$ignored_queries_sql_where}
 					GROUP BY {$prefix}swp_log.query
 					ORDER BY searchcount DESC
 					LIMIT 10
-				", $engine );
+				", $today, $engine );
 
 			$searchCounts = $wpdb->get_results( $sql );
 			?>

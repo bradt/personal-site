@@ -391,11 +391,11 @@ a.swp-manage-license {
 	display:block;
 	float:right;
 	position:relative;
-	top:5px;
+	top:1px;
 }
 
 a.swp-activate-license {
-	top:2px;
+	top:0;
 }
 
 .swp-tooltip-content {
@@ -416,6 +416,10 @@ select.swp-exclude-select {
 	padding:30px 0;
 }
 
+.swp-preload {
+	display:none !important;
+}
+
 .swp-btn-group {
 	position:relative;
 	display:inline-block;
@@ -425,6 +429,7 @@ select.swp-exclude-select {
 	top:-3px;
 }
 
+.swp-btn-support,
 .swp-dropdown-toggle {
 	position:relative;
 	left:10px;
@@ -553,7 +558,7 @@ select.swp-exclude-select {
 
 .searchwp-system-info {
 	clear:both;
-	padding-top:4em;
+	padding-top:1.5em;
 }
 
 .searchwp-system-info-textarea {
@@ -566,3 +571,36 @@ select.swp-exclude-select {
 	white-space:pre;
 	overflow:auto;
 }
+
+.searchwp-export-settings {
+	padding-top:1.5em;
+}
+
+.searchwp-import-settings {
+	padding-top:2.5em;
+	padding-bottom:2em;
+}
+
+.swp-import-export-sources {
+	width:40%;
+	float:right;
+}
+
+.searchwp-export-settings .swp-export-source {
+	padding-top:0.5em;
+}
+
+.swp-json {
+	width:55%;
+	float:left;
+}
+
+.swp-json textarea {
+	display:block;
+	resize:none;
+	width:100%;
+	height:10em;
+	font-family:Meno, Monaco, monospace;
+	font-size:12px;
+}
+

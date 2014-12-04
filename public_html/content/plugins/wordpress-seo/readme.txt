@@ -4,9 +4,9 @@ Donate link: https://yoast.com/
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: seo, SEO, Yoast SEO, google, meta, meta description, search engine optimization, xml sitemap, xml sitemaps, google sitemap, sitemap, sitemaps, robots meta, rss, rss footer, yahoo, bing, news sitemaps, XML News Sitemaps, WordPress SEO, WordPress SEO by Yoast, yoast, multisite, canonical, nofollow, noindex, keywords, meta keywords, description, webmaster tools, google webmaster tools, seo pack
-Requires at least: 3.5
+Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 1.5.6
+Stable tag: 1.7.1
 
 Improve your WordPress SEO: Write better content and have a fully optimized WordPress site using Yoast's WordPress SEO plugin.
 
@@ -115,6 +115,94 @@ You'll find the [FAQ on Yoast.com](https://yoast.com/wordpress/plugins/seo/faq/)
 7. The advanced section of the WordPress SEO meta box.
 
 == Changelog ==
+
+= 1.7.1 =
+
+* Security fix: fixed possible cross scripting issue with encoded entities in a post title. This could potentially allow an author on your site to execute JavaScript when you visit that posts edit page, allowing them to do rights expansion or otherwise. 
+
+Thanks to [Joe Hoyle](http://www.joehoyle.co.uk/) for responsibly disclosing this issue.
+
+= 1.7 =
+
+* Features:
+	* Adds Twitter inputs to the Social tab.
+	* Tries to purge Facebook cache when OpenGraph settings are edited.
+	* Added a new box promoting our translation site for non en_US users.
+	* Added several new tools (Pinterest Rich Pins, HTML Validation, CSS Validation, Google PageSpeed), props [bhubbard](https://github.com/bhubbard)
+
+* Enhancements:
+	* Functionality change: when there's a featured image, output only that for both Twitter and FB, ignore other images in post.
+	* UX change: rework logic for showing networks on Social tab, social network no longer shows on social tabs if not enabled in admin.
+	* Always output a specific Twitter title and description, as otherwise we can't overwrite them from metabox.
+    * Check for conflicts with other plugins doing XML sitemaps or OpenGraph.
+    * Qtip library replaced with Qtip2.
+    * Merged several similar translation strings, props [@ramiy](https://github.com/ramiy)
+    * Several RTL improvements, props [@ramiy](https://github.com/ramiy)
+    * Several Typo fixes, props [@ramiy](https://github.com/ramiy)
+    * Updated Open Site Explorer Link, props [bhubbard](https://github.com/bhubbard)
+    * Updated all links to use // instead of https:// and http://, props [bhubbard](https://github.com/bhubbard)
+    * When importing from AIOSEO, on finding GA settings, advertise Yoast GA plugin.
+    * Makes sure stopwords are only removed from slug on publication.
+    * Updated translations.
+
+* Bugfixes:
+	* Fixes a bug where the wrong image was being displayed in twitter cards.
+	* Fixes a bug where facebook would display the wrong image.
+	* Fixes a bug where last modified in sitemap was broken.
+	* Fixes a bug wher SEO-score heading made the table row jump on hover because there wasn't enough place left for the down arrow.
+	* Removed a couple of languages that were not up to date.
+
+= 1.6.3 =
+
+* Bugfixes:
+	* Revert earlier logic change that broke taxonomy sitemaps.
+
+= 1.6.2 =
+
+* Bugfixes:
+	* Fixed security issue with XSS in bulk editor, props @ryanhellyer.
+	* Fix bug where URL would show wrongly in snippet preview for static homepage.
+	* Fix bug where filtering for posts without a focus keyword in the posts overview wouldn't work.
+	* Fix a bug where code wouldn't be escaped in the bulk editor.
+
+* Enhancements:
+	* When meta description is present, `og:description` is filled with that on category pages.
+	* Texturize some pointers, props @nacin.
+	* Fix typo in tour, props @markjaquith.
+	* Code optimization in in replace vars functionality, props @dannyvankooten.
+
+= 1.6.1 =
+
+* Bugfixes:
+	* Remove tags from title and description for snippet preview.
+	* Fix several notices.
+	* Improve escaping of values in the bulk editor before saving.
+
+* Enhancements:
+	* New admin icon using SVG, which uses proper color.
+	* Introduced a filter for the XML Sitemap base URL, `wpseo_sitemaps_base_url`
+	* Introduced a filter for the JSON+LD output: `wpseo_json_ld_search_output`
+
+* For developers: the [GitHub version](https://github.com/Yoast/wordpress-seo) now contains a full Grunt implementation for many actions.
+
+= 1.6 =
+
+This update removes more code than it adds, because Google stopped support for rel=author. It adds the new json+ld code for search in sitelinks though, so could have some cool results!
+
+* Bugfixes:
+	* Removed leftover code for the deleted HTML sitemap functionality.
+	* Fix [a bug](https://github.com/Yoast/wordpress-seo/pull/1520) where the wrong `$post` info would be used for the metabox, props [mgmartel](https://github.com/mgmartel).
+	* Fix the way we [replace whitespace](https://github.com/Yoast/wordpress-seo/pull/1542) to be more compatible with different encoding, props [Jrf](http://profiles.wordpress.org/jrf).
+
+* Enhancements:
+	* Implement new [sitelinks search box json+ld code](https://developers.google.com/webmasters/richsnippets/sitelinkssearch). Enabled by default, to disable use the new `disable_wpseo_json_ld_search` filter. To change the URL being put out use the `wpseo_json_ld_search_url` filter.
+	* Improved the onboarding tour to be more in line with the current status of the plugin.
+
+* Other:
+	* Removed all code to do with `rel=author` as Google has stopped that "experiment", see [this blog post](https://yoast.com/ten-blue-links/) for more info.
+
+* i18n
+	* Updated da_DK, fa_IR, fr_FR, hr, hu_HU, nl_NL, pt_BR and tr_RK
 
 = 1.5.6 =
 

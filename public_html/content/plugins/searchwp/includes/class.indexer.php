@@ -124,11 +124,9 @@ class SearchWPIndexer {
 		$searchwp = SWP();
 
 		// make sure we've got a valid request to index
-		if ( get_transient( 'searchwp' ) !== $hash ) {
+		if ( get_option( 'searchwp_transient' ) !== $hash ) {
 			do_action( 'searchwp_log', 'Invalid index request ' . $hash );
 		} else {
-
-			delete_transient( 'searchwp' );
 			do_action( 'searchwp_indexer_pre' );
 
 			// init
@@ -262,7 +260,7 @@ class SearchWPIndexer {
 
 					// reset the transient
 					$hash = sprintf( '%.22F', microtime( true ) ); // inspired by $doing_wp_cron
-					set_transient( 'searchwp', $hash );
+					update_option( 'searchwp_transient', $hash );
 
 					$destination = esc_url( $searchwp->endpoint ) . '?swpnonce=' . $hash;
 
@@ -699,16 +697,19 @@ class SearchWPIndexer {
 									// PdfParser runs only on 5.3+ but SearchWP runs on 5.2+
 									if ( version_compare( PHP_VERSION, '5.3', '>=' ) ) {
 										include_once( $searchwp->dir . '/vendor/pdfparser-bootloader.php' );
-									}
 
-									// a wrapper class was conditionally included if we're running PHP 5.3+ so let's try that
-									if( class_exists( 'SearchWP_PdfParser' ) ) {
-										// try PdfParser first
-										$parser = new SearchWP_PdfParser();
-										$parser = $parser->init();
-										$pdf = $parser->parseFile( $filename );
-										$text = $pdf->getText();
-										$pdfContent = trim( str_replace( "\n", " ", $text ) );
+										// a wrapper class was conditionally included if we're running PHP 5.3+ so let's try that
+										if( class_exists( 'SearchWP_PdfParser' ) ) {
+
+											include_once( $searchwp->dir . '/vendor/pdfparser/vendor/autoload.php' );
+
+											// try PdfParser first
+											$parser = new SearchWP_PdfParser();
+											$parser = $parser->init();
+											$pdf = $parser->parseFile( $filename );
+											$pdfContent = $pdf->getText();
+										}
+
 									}
 
 									// try PDF2Text
@@ -805,28 +806,34 @@ class SearchWPIndexer {
 						}
 
 						// index custom fields
-						$customFields = apply_filters( 'searchwp_get_custom_fields', get_post_custom( $this->post->ID ), $this->post->ID );
+						$customFields = apply_filters( 'searchwp_get_custom_fields', $this->post->custom, $this->post->ID );
+
+						// if it was a PDF let's ensure that our content is in the list
+						if ( ! empty( $pdfContent ) && is_array( $customFields ) && ! array_key_exists( 'searchwp_content', $customFields ) ) {
+							$customFields['searchwp_content'] = $pdfContent;
+						}
+
 						if ( ! empty( $customFields ) ) {
 							while ( ( $customFieldValue = current( $customFields ) ) !== false ) {
 								$customFieldName = key( $customFields );
 
 								// there are a few useless (when it comes to search) WordPress core custom fields, so let's exclude them by default
 								$omitWpMetadata = apply_filters( 'searchwp_omit_wp_metadata', array(
-										'_edit_lock',
-										'_wp_page_template',
-										'_edit_last',
-										'_wp_old_slug',
-									) );
+									'_edit_lock',
+									'_wp_page_template',
+									'_edit_last',
+									'_wp_old_slug',
+								) );
 
 								$excludedCustomFieldKeys = apply_filters( 'searchwp_excluded_custom_fields', array(
-										'_' . SEARCHWP_PREFIX . 'indexed',      // deprecated as of 2.3
-										'_' . SEARCHWP_PREFIX . 'last_index',
-										'_' . SEARCHWP_PREFIX . 'attempts',
-										'_' . SEARCHWP_PREFIX . 'terms',
-										'_' . SEARCHWP_PREFIX . 'skip',
-										'_' . SEARCHWP_PREFIX . 'skip_doc_processing',
-										'_' . SEARCHWP_PREFIX . 'review',
-									) );
+									'_' . SEARCHWP_PREFIX . 'indexed',      // deprecated as of 2.3
+									'_' . SEARCHWP_PREFIX . 'last_index',
+									'_' . SEARCHWP_PREFIX . 'attempts',
+									'_' . SEARCHWP_PREFIX . 'terms',
+									'_' . SEARCHWP_PREFIX . 'skip',
+									'_' . SEARCHWP_PREFIX . 'skip_doc_processing',
+									'_' . SEARCHWP_PREFIX . 'review',
+								) );
 
 								// merge the two arrays of keys if possible
 								if( is_array( $omitWpMetadata ) && is_array( $excludedCustomFieldKeys ) ) {
@@ -1023,7 +1030,7 @@ class SearchWPIndexer {
 		$attemptCount = 1;
 		$maxAttempts = absint( apply_filters( 'searchwp_indexer_max_attempts', 4 ) ) + 1;  // try to recover 5 times
 		$insert_result = $wpdb->query(
-		                      $wpdb->prepare( "INSERT IGNORE INTO {$termsTable} (term,reverse,stem) VALUES " . implode( ',', $newTermsSQL ), $newTerms )
+			$wpdb->prepare( "INSERT IGNORE INTO {$termsTable} (term,reverse,stem) VALUES " . implode( ',', $newTermsSQL ), $newTerms )
 		);
 		while( ( is_wp_error( $insert_result ) || false === $insert_result ) && $attemptCount < $maxAttempts ) {
 			// sometimes a deadlock can happen, wait a second then try again
@@ -1110,14 +1117,14 @@ class SearchWPIndexer {
 				// insert the counts for our standard fields
 				$indexTermsSQL[] = "(%d,%d,%d,%d,%d,%d,%d)";
 				$indexTerms = array_merge( $indexTerms, array(
-						$termID,
-						isset( $term['content'] )  ? absint( $term['content'] ) : 0,
-						isset( $term['title'] )    ? absint( $term['title'] ) : 0,
-						isset( $term['comments'] ) ? absint( $term['comments'] ) : 0,
-						isset( $term['excerpt'] )  ? absint( $term['excerpt'] ) : 0,
-						isset( $term['slug'] )     ? absint( $term['slug'] ) : 0,
-						absint( $this->post->ID )
-					) );
+					$termID,
+					isset( $term['content'] )  ? absint( $term['content'] ) : 0,
+					isset( $term['title'] )    ? absint( $term['title'] ) : 0,
+					isset( $term['comments'] ) ? absint( $term['comments'] ) : 0,
+					isset( $term['excerpt'] )  ? absint( $term['excerpt'] ) : 0,
+					isset( $term['slug'] )     ? absint( $term['slug'] ) : 0,
+					absint( $this->post->ID )
+				) );
 
 				// insert our custom field counts
 				if( isset( $term['customfield'] ) && is_array( $term['customfield'] ) && count( $term['customfield'] ) ) {
@@ -1126,11 +1133,11 @@ class SearchWPIndexer {
 						$customField = key( $term['customfield'] );
 						$customFieldTermsSQL[] = "(%s,%d,%d,%d)";
 						$customFieldTerms = array_merge( $customFieldTerms, array(
-								$customField,
-								isset( $term['id'] ) ? absint( $term['id'] ) : 0,
-								absint( $customFieldCount ),
-								absint( $this->post->ID )
-							) );
+							$customField,
+							isset( $term['id'] ) ? absint( $term['id'] ) : 0,
+							absint( $customFieldCount ),
+							absint( $this->post->ID )
+						) );
 						next( $term['customfield'] );
 					}
 					reset( $term['customfield'] );
@@ -1142,11 +1149,11 @@ class SearchWPIndexer {
 						$taxonomyName = key( $term['taxonomy'] );
 						$taxonomyTermsSQL[] = "(%s,%d,%d,%d)";
 						$taxonomyTerms = array_merge( $taxonomyTerms, array(
-								$taxonomyName,
-								isset( $term['id'] ) ? absint( $term['id'] ) : 0,
-								absint( $taxonomyCount ),
-								absint( $this->post->ID )
-							) );
+							$taxonomyName,
+							isset( $term['id'] ) ? absint( $term['id'] ) : 0,
+							absint( $taxonomyCount ),
+							absint( $this->post->ID )
+						) );
 						next( $term['taxonomy'] );
 					}
 					reset( $term['taxonomy'] );
@@ -1161,7 +1168,7 @@ class SearchWPIndexer {
 		if( !empty( $indexTerms ) ) {
 			$indexTable = $wpdb->prefix . SEARCHWP_DBPREFIX . 'index';
 			$wpdb->query(
-			     $wpdb->prepare( "INSERT INTO {$indexTable} (term,content,title,comment,excerpt,slug,post_id) VALUES " . implode( ',', $indexTermsSQL ), $indexTerms )
+				$wpdb->prepare( "INSERT INTO {$indexTable} (term,content,title,comment,excerpt,slug,post_id) VALUES " . implode( ',', $indexTermsSQL ), $indexTerms )
 			);
 		}
 
@@ -1169,7 +1176,7 @@ class SearchWPIndexer {
 		if( !empty( $customFieldTerms ) ) {
 			$cfTable = $wpdb->prefix . SEARCHWP_DBPREFIX . 'cf';
 			$wpdb->query(
-			     $wpdb->prepare( "INSERT INTO {$cfTable} (metakey,term,count,post_id) VALUES " . implode( ',', $customFieldTermsSQL ), $customFieldTerms )
+				$wpdb->prepare( "INSERT INTO {$cfTable} (metakey,term,count,post_id) VALUES " . implode( ',', $customFieldTermsSQL ), $customFieldTerms )
 			);
 		}
 
@@ -1177,7 +1184,7 @@ class SearchWPIndexer {
 		if( !empty( $taxonomyTerms ) ) {
 			$taxTable = $wpdb->prefix . SEARCHWP_DBPREFIX . 'tax';
 			$wpdb->query(
-			     $wpdb->prepare( "INSERT INTO {$taxTable} (taxonomy,term,count,post_id) VALUES " . implode( ',', $taxonomyTermsSQL ), $taxonomyTerms )
+				$wpdb->prepare( "INSERT INTO {$taxTable} (taxonomy,term,count,post_id) VALUES " . implode( ',', $taxonomyTermsSQL ), $taxonomyTerms )
 			);
 		}
 
@@ -1328,10 +1335,10 @@ class SearchWPIndexer {
 
 		// we want to extract potentially valuable content from certain HTML attributes
 		$accepted_attributes = apply_filters( 'searchwp_indexer_tag_attributes', array(
-				'a'     => array( 'title' ),
-				'img'   => array( 'alt', 'src', 'longdesc', 'title' ),
-				'input' => array( 'placeholder', 'value' ),
-			) );
+			'a'     => array( 'title' ),
+			'img'   => array( 'alt', 'src', 'longdesc', 'title' ),
+			'input' => array( 'placeholder', 'value' ),
+		) );
 
 		// parse $content as a DOMDocument and if applicable extract the accepted attribute content
 		$attribute_content = array();
@@ -1564,9 +1571,9 @@ class SearchWPIndexer {
 
 		// index comments
 		$comments = get_comments( array(
-				'status'	=> 'approve',
-				'post_id'	=> $this->post->ID
-			) );
+			'status'	=> 'approve',
+			'post_id'	=> $this->post->ID
+		) );
 
 		$commentTerms = array();
 		if ( ! empty( $comments ) ) {

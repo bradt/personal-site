@@ -4,7 +4,7 @@ Donate link: https://yoast.com/donate/
 Tags: analytics, google analytics, statistics, tracking, stats, google, yoast
 Requires at least: 3.8
 Tested up to: 4.0
-Stable tag: 5.0.5
+Stable tag: 5.1.4
 
 Track your WordPress site easily with the latest tracking codes and lots added data for search result pages and error pages.
 
@@ -13,7 +13,7 @@ Track your WordPress site easily with the latest tracking codes and lots added d
 The Google Analytics by Yoast plugin for WordPress allows you to track your blog easily and always stays up to date with the newest features in Google Analytics.
 
 > <strong>Development on GitHub</strong><br>
-> The development of Google Analytics by Yoast [takes place on GitHub](https://github.com/Yoast/google-analytics-for-wordpress). Bugs and pull requests are welcomed there. For support, please refer to the forums. A premium version of Google Analytics by Yoast will be available soon which will give you access to email support.
+> The development of Google Analytics by Yoast [takes place on GitHub](https://github.com/Yoast/google-analytics-for-wordpress). Bugs and pull requests are welcomed there. For support, you have two options: either [buy the premium version of Google Analytics by Yoast on Yoast.com](https://yoast.com/wordpress/plugins/google-analytics/), this will give you access to our support team, or refer to the forums.
 
 Full list of features:
 
@@ -48,6 +48,95 @@ This section describes how to install the plugin and get it working.
 1. Go to the options panel under the 'Settings' menu and add your Analytics account number and set the settings you want.
 
 == Changelog ==
+
+= 5.1.4 =
+
+Release Date: December 2nd, 2014
+
+* Enhancements:
+	* Added GA property name to 'Analytics profile' selection in settings. Thanks [stephenyeargin](https://github.com/stephenyeargin) for reporting.
+	* Removed firebug lite as it's rather obsolete with todays development consoles.
+
+* i18n:
+    * Several string fixes for easier translation.
+    * Added en_GB and he_IL.
+
+* Bugfixes:
+	* Fixes a bug where site admins for sites on a multisite setup would receive a notice when visiting another site on the same setup which they didn't administrate, props [nerrad](https://github.com/nerrad).
+	* Fixes a bug where saving the admin settings would cause non-string form fields to be ignored or rejected.
+
+= 5.1.3 =
+
+Release Date: November 26th, 2014
+
+* Security fix: fixed a very minor cross site scripting issue with the manual UA code in de admin settings. The manual UA code is now sanitized before it is saved.
+
+= 5.1.2 =
+
+Release Date: November 19th, 2014
+
+* Features:
+	* Added a new box promoting our translation site for non en_US users.
+
+* Bugfixes:
+	* Fixes a bug where links on the extension page where not pointing to the correct url.
+
+= 5.1.1 =
+
+Release Date: November 12th, 2014
+
+* Bugfixes:
+	* Fixes a conflict with Fancybox.
+	* Fixes a bug where links without the href attribute would cause the tracking code to be added wrongly.
+	* Fixes a multisite bug in Premium which was caused by the absence of a network admin menu.
+	* Fixes an issue with the version number.
+	* Fixes a bug where translations might be loaded several times.
+
+* Enhancements:
+	* Shows more relevant banners.
+	* Adds an image to the premium extension on the extensions page.
+	* Always show the custom dimension tab.
+	* Added translations for Finnish, Dutch and Russian.
+
+= 5.1 =
+
+Release Date: October 30th, 2014
+
+* Bugfixes:
+	* Fixes a possible JavaScript conflict within the tracking code.
+	* Makes sure translations are loaded correctly.
+
+* Enhancements:
+	* Improved UX for help texts in form.
+	* Added "Google Analytics by Yoast Premium" to the extensions page.
+	* Makes sure the user returns to the original settings tab after saving.
+	* Added a filter `wp_nav_menu` to enable tracking outbound links from the menu.
+	* Added a filter `wp_list_bookmarks` to enable tracking for blogroll widgets.
+
+= 5.0.7 =
+Release Date: October 14th, 2014
+
+* Bugfixes:
+	* Fixes a bug where 404 tracking would not work when using ga.js tracking.
+
+* Enhancements:
+	* Refactored several bits of code.
+
+= 5.0.6 =
+Release Date: September 17th, 2014
+
+* Bugfixes:
+	* Fixed several notices.
+	* Improved support for premium extensions to this plugin.
+	* Fixed bug where on multi-site or subdirectory installs, settings wouldn't save.
+	* Fix the tracking of downloads in ga.js tracking.
+	* Fixed a bug where custom code would be output after the send pageview instead of before.
+	* Fixed an empty delimiter warning.
+
+* Enhancements:
+	* Improved admin icon.
+	* Added a filter `wpga_menu_on_top` which, when returned false, moves the analytics menu down.
+	* Added filters `yoast-ga-push-array-ga-js` and `yoast-ga-push-array-universal` to filter the push arrays.
 
 = 5.0.5 =
 Release Date: September 4th, 2014
@@ -413,3 +502,4 @@ For all frequently asked questions, and their answers, check the [Yoast Knowledg
 1. Screenshot of the general settings panel for this plugin.
 2. Screenshot of the universal settings panel.
 3. Screenshot of the advanced settings panel.
+4. Screenshot of the account selection drop down.

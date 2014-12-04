@@ -36,7 +36,7 @@ $searchwp = SWP(); ?>
 		$supplemental_stats_link = '';
 		if ( isset( $searchwp->settings['engines'] ) && is_array( $searchwp->settings['engines'] ) && count( $searchwp->settings['engines'] ) ) {
 			foreach ( $searchwp->settings['engines'] as $engineFlag => $engine ) {
-				if ( isset( $engine['label'] ) && ! empty( $engine['label'] ) ) {
+				if ( isset( $engine['searchwp_engine_label'] ) && ! empty( $engine['searchwp_engine_label'] ) ) {
 					$supplemental_stats_link = '<a class="swp-engine-stats" href="' . get_admin_url() . 'index.php?page=searchwp-stats&tab=' . urlencode( sanitize_text_field( $engineFlag ) ) . '">' . __( 'Statistics', 'searchwp' ) . ' &raquo;</a>';
 					break;
 				}
@@ -67,8 +67,8 @@ $searchwp = SWP(); ?>
 		<div class="swp-supplemental-engines-wrapper">
 			<ul class="swp-supplemental-engines">
 				<?php if ( isset( $searchwp->settings['engines'] ) && is_array( $searchwp->settings['engines'] ) && count( $searchwp->settings['engines'] ) ) : ?>
-					<?php foreach ( $searchwp->settings['engines'] as $engineFlag => $engine ) : if ( isset( $engine['label'] ) && ! empty( $engine['label'] ) ) : ?>
-						<?php searchwpSupplementalEngineSettingsTemplate( $engineFlag, $engine['label'] ); ?>
+					<?php foreach ( $searchwp->settings['engines'] as $engineFlag => $engine ) : if ( isset( $engine['searchwp_engine_label'] ) && ! empty( $engine['searchwp_engine_label'] ) ) : ?>
+						<?php searchwpSupplementalEngineSettingsTemplate( $engineFlag, $engine['searchwp_engine_label'] ); ?>
 					<?php endif; endforeach; ?>
 				<?php endif; ?>
 			</ul>

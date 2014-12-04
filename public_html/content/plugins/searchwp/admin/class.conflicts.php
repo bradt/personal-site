@@ -31,7 +31,7 @@ class SearchWP_Conflicts {
 					if ( false !== strpos( $line, $potential_conflict ) ) {
 						// make sure the line isn't commented out
 						if ( '//' != substr( $line, 0, 2 ) ) {
-							$search_template_conflicts[$key + 1][] = $potential_conflict;
+							$this->search_template_conflicts[$key + 1][] = $potential_conflict;
 						}
 					}
 				}

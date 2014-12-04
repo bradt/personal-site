@@ -25,7 +25,7 @@ class SearchWP_Dashboard {
 	 * @since 2.4
 	 */
 	function add_widget() {
-		if ( apply_filters( 'searchwp_dashboard_widget', true ) ) {
+		if ( apply_filters( 'searchwp_dashboard_widget', true ) && apply_filters( 'searchwp_dashboard_widget_cap', apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) {
 			wp_add_dashboard_widget(
 				'searchwp_stats',
 				__( 'Search Statistics', 'searchwp' ),
@@ -40,7 +40,7 @@ class SearchWP_Dashboard {
 	 * @since 2.8
 	 */
 	function assets() {
-		if ( apply_filters( 'searchwp_dashboard_widget', true ) ) {
+		if ( apply_filters( 'searchwp_dashboard_widget', true ) && apply_filters( 'searchwp_dashboard_widget_cap', apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) {
 			$searchwp = SWP();
 
 			wp_enqueue_script( 'searchwp-tabs', trailingslashit( $searchwp->url ) . 'assets/js/searchwp-tabs.js', array( 'jquery' ), $searchwp->version );
@@ -65,23 +65,25 @@ class SearchWP_Dashboard {
 				<div class="searchwp-dashboard-stats">
 					<ul class="searchwp-tabs-nav">
 						<?php foreach( $searchwp->settings['engines'] as $engine => $engineSettings ) :
-								$engine_label = isset( $engineSettings['label'] ) ? $engineSettings['label'] : __( 'Default', 'searchwp' ); ?>
+								$engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : __( 'Default', 'searchwp' ); ?>
 							<li><a href="#swp-<?php echo esc_attr( $engine ); ?>"><?php echo esc_html( $engine_label ); ?></a></li>
 						<?php endforeach; ?>
 					</ul>
 					<div class="searchwp-tabs-content">
 						<?php foreach( $searchwp->settings['engines'] as $engine => $engineSettings ) : ?>
-							<?php $engine_label = isset( $engineSettings['label'] ) ? $engineSettings['label'] : __( 'Default', 'searchwp' ); ?>
+							<?php $engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : __( 'Default', 'searchwp' ); ?>
 							<div class="searchwp-widget-tab-wrapper ui-helper-clearfix" id="swp-<?php echo esc_attr( $engine ); ?>">
 								<?php
-									if ( false === ( $popular_searches_today = get_transient( 'searchwp_widget_stats_today_' . $engine ) ) ) {
+									$transient_today_key = 'swp_stats_' . md5( 'searchwp_widget_stats_today_' . $engine );
+									if ( false === ( $popular_searches_today = get_transient( $transient_today_key ) ) ) {
 										$popular_searches_today = $stats->get_popular_searches( array( 'days' => 1, 'engine' => $engine ) );
-										set_transient( 'searchwp_widget_stats_today_'  . $engine, $popular_searches_today, 12 * HOUR_IN_SECONDS );
+										set_transient( $transient_today_key, $popular_searches_today, 12 * HOUR_IN_SECONDS );
 									}
 
-									if ( false === ( $popular_searches_month = get_transient( 'searchwp_widget_stats_month_' . $engine ) ) ) {
+									$transient_month_key = 'swp_stats_' . md5( 'searchwp_widget_stats_month_' . $engine );
+									if ( false === ( $popular_searches_month = get_transient( $transient_month_key ) ) ) {
 										$popular_searches_month = $stats->get_popular_searches( array( 'days' => 30, 'engine' => $engine ) );
-										set_transient( 'searchwp_widget_stats_month_' . $engine, $popular_searches_month, 12 * HOUR_IN_SECONDS );
+										set_transient( $transient_month_key, $popular_searches_month, 12 * HOUR_IN_SECONDS );
 									}
 								?>
 								<div class="searchwp-stats-segment searchwp-stats-today">

@@ -1671,11 +1671,10 @@ class Bitly
         $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
         if ($status_code !== 200) {
-            throw new BitlyAPIError($result, $status_code);
+            trigger_error('Error establishing connection to bitly');
         }
         if ($json) {
             $result = json_decode($result, true);
-            var_dump($result); die();
             if ($result['status_code'] !== 200) {
                 throw new BitlyAPIError($result['status_txt'],
                                         (int)$result['status_code']);

@@ -48,9 +48,9 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 			add_action( 'wpseo_head', array( $this, 'metakeywords' ), 11 );
 			add_action( 'wpseo_head', array( $this, 'canonical' ), 20 );
 			add_action( 'wpseo_head', array( $this, 'adjacent_rel_links' ), 21 );
-			add_action( 'wpseo_head', array( $this, 'author' ), 22 );
-			add_action( 'wpseo_head', array( $this, 'publisher' ), 23 );
+			add_action( 'wpseo_head', array( $this, 'publisher' ), 22 );
 			add_action( 'wpseo_head', array( $this, 'webmaster_tools_authentication' ), 90 );
+			add_action( 'wpseo_head', array( $this, 'internal_search_json_ld' ), 90 );
 
 			// Remove actions that we will handle through our wpseo_head call, and probably change the output of
 			remove_action( 'wp_head', 'rel_canonical' );
@@ -105,6 +105,7 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 			}
 			if ( $this->options['cleanreplytocom'] === true ) {
 				add_filter( 'comment_reply_link', array( $this, 'remove_reply_to_com' ) );
+				add_action( 'template_redirect', array( $this, 'replytocom_redirect' ), 1 );
 			}
 			add_filter( 'the_content_feed', array( $this, 'embed_rssfooter' ) );
 			add_filter( 'the_excerpt_rss', array( $this, 'embed_rssfooter_excerpt' ) );
@@ -116,10 +117,6 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 
 			if ( $this->options['title_test'] > 0 ) {
 				add_filter( 'wpseo_title', array( $this, 'title_test_helper' ) );
-			}
-			if ( isset( $_GET['replytocom'] ) ) {
-				remove_action( 'wp_head', 'wp_no_robots' );
-				add_action( 'template_redirect', array( $this, 'replytocom_redirect' ), 1 );
 			}
 		}
 
@@ -550,6 +547,44 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 		}
 
 		/**
+		 * Outputs JSON+LD code to allow recognition of the internal search engine
+		 *
+		 * @since 1.5.7
+		 *
+		 * @link https://developers.google.com/webmasters/richsnippets/sitelinkssearch
+		 */
+		public function internal_search_json_ld() {
+			if ( ! is_front_page() ) {
+				return;
+			}
+
+			/**
+			 * Filter: 'disable_wpseo_json_ld_search' - Allow disabling of the json+ld output
+			 *
+			 * @api bool $display_search Whether or not to display json+ld search on the frontend
+			 */
+			if ( apply_filters( 'disable_wpseo_json_ld_search', false ) === true ) {
+				return;
+			}
+
+			$home_url = trailingslashit( home_url() );
+
+			/**
+			 * Filter: 'wpseo_json_ld_search_url' - Allows filtering of the search URL for WP SEO
+			 *
+			 * @api string $search_url The search URL for this site with a `{search_term}` variable.
+			 */
+			$search_url = apply_filters( 'wpseo_json_ld_search_url', $home_url . '?s={search_term}' );
+
+			/**
+			 * Filter: 'wpseo_json_ld_search_output' - Allows filtering of the entire output of the function
+			 *
+			 * @api string $output The output of the function.
+			 */
+			echo apply_filters( 'wpseo_json_ld_search_output', '<script type="application/ld+json">{ "@context": "http://schema.org", "@type": "WebSite", "url": "' . $home_url . '", "potentialAction": { "@type": "SearchAction", "target": "' . $search_url .'", "query-input": "required name=search_term" } }</script>' . "\n" );
+		}
+
+		/**
 		 * Main wrapper function attached to wp_head. This combines all the output on the frontend of the WP SEO plugin.
 		 */
 		public function head() {
@@ -819,8 +854,7 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 					$canonical = add_query_arg( 'paged', get_query_var( 'paged' ), $canonical );
 				} else {
 					if ( is_front_page() ) {
-						$base      = $wp_rewrite->using_index_permalinks() ? 'index.php/' : '/';
-						$canonical = home_url( $base );
+						$canonical = wpseo_xml_sitemaps_base_url( '' );
 					}
 					$canonical = user_trailingslashit( trailingslashit( $canonical ) . trailingslashit( $wp_rewrite->pagination_base ) . get_query_var( 'paged' ) );
 				}
@@ -840,7 +874,7 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 			if ( is_string( $canonical ) && $canonical !== '' ) {
 				// Force canonical links to be absolute, relative is NOT an option.
 				if ( wpseo_is_url_relative( $canonical ) === true ) {
-					$canonical = home_url( $canonical );
+					$canonical = $this->base_url( $canonical );
 				}
 
 				if ( $echo !== false ) {
@@ -851,6 +885,27 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 			} else {
 				return false;
 			}
+		}
+
+		/**
+		 * Parse the home URL setting to find the base URL for relative URLs.
+		 *
+		 * @param string $path
+		 *
+		 * @return string
+		 */
+		private function base_url( $path = null ) {
+			$url = get_option( 'home' );
+
+			$parts = parse_url( $url );
+
+			$base_url = trailingslashit( $parts['scheme'] . '://' . $parts['host'] );
+
+			if ( ! is_null( $path ) ) {
+				$base_url .= ltrim( $path, '/' );
+			}
+
+			return $base_url;
 		}
 
 		/**
@@ -888,8 +943,7 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 
 					// Make sure to use index.php when needed, done after paged == 2 check so the prev links to homepage will not have index.php erroneously.
 					if ( is_front_page() ) {
-						$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '/';
-						$url  = home_url( $base );
+						$url = wpseo_xml_sitemaps_base_url( '' );
 					}
 
 					if ( $paged > 2 ) {
@@ -978,49 +1032,7 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 
 			if ( $this->options['plus-publisher'] !== '' ) {
 				echo '<link rel="publisher" href="' . esc_url( $this->options['plus-publisher'] ) . '"/>' . "\n";
-				return true;
-			}
 
-			return false;
-		}
-
-		/**
-		 * Outputs the rel=author
-		 * @return boolean Boolean indiciting whether the autor link was printed
-		 */
-		public function author() {
-			global $post;
-
-			$gplus = false;
-
-			if ( is_singular() ) {
-				if ( is_object( $post ) ) {
-					$have_author = WPSEO_Meta::get_value( 'authorship' );
-
-					switch ( $have_author ) {
-						case 'always':
-							$gplus = get_the_author_meta( 'googleplus', $post->post_author );
-							break;
-
-						case '-':
-							// Defer to post_type default
-							if ( ! isset( $this->options[ 'noauthorship-' . $post->post_type ] ) || $this->options[ 'noauthorship-' . $post->post_type ] === false ) {
-								$gplus = get_the_author_meta( 'googleplus', $post->post_author );
-							}
-							break;
-					}
-				}
-			}
-
-			/**
-			 * Allow changing the rel=author link being put out by WPSEO
-			 *
-			 * @api string $gplus The rel=author link for the current URL.
-			 */
-			$gplus = apply_filters( 'wpseo_author_link', $gplus );
-
-			if ( is_string( $gplus ) && $gplus !== '' ) {
-				echo '<link rel="author" href="' . esc_url( $gplus ) . '"/>' . "\n";
 				return true;
 			}
 
@@ -1324,10 +1336,6 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 		 */
 		function replytocom_redirect() {
 
-			if ( $this->options['cleanreplytocom'] !== true ) {
-				return false;
-			}
-
 			if ( isset( $_GET['replytocom'] ) && is_singular() ) {
 				global $post;
 				$url          = get_permalink( $post->ID );
@@ -1501,7 +1509,7 @@ if ( ! class_exists( 'WPSEO_Frontend' ) ) {
 
 			$author_link = '';
 			if ( is_object( $post ) ) {
-				$author_link = '<a ' . $no_follow_attr . 'rel="author" href="' . esc_url( get_author_posts_url( $post->post_author ) ) . '">' . get_the_author() . '</a>';
+				$author_link = '<a ' . $no_follow_attr . 'href="' . esc_url( get_author_posts_url( $post->post_author ) ) . '">' . get_the_author() . '</a>';
 			}
 
 			$post_link      = '<a ' . $no_follow_attr . 'href="' . esc_url( get_permalink() ) . '">' . get_the_title() . '</a>';

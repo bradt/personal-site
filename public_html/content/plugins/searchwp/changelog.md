@@ -1,3 +1,48 @@
+### 2.4.10
+- **[Fix]** PHP 5.2 compatibility with PDF parser fallback 
+
+### 2.4.9
+- **[Fix]** Fixed an issue where limiting Media results to All Documents did not apply the expected limit
+- **[Fix]** Fixed an issue where AND logic refinement may cause zero results to display depending on Title weight
+- **[Update]** Updated PHP PDF parser (requires PHP 5.3+, will still fall back to less reliable legacy parser if PHP 5.2)
+- **[Change]** Return WP_Error when an invalid search engine name is used
+
+
+### 2.4.8
+- **[Fix]** Fixed an issue where proper weights may not have been properly retained throughout the entire search algorithm, resulting in zero results
+- **[Fix]** Default search results now take into account an offset (if one was set)
+- **[New]** New filter `searchwp_query_offset` allowing for customization of the offset of the default search engine
+
+
+### 2.4.7
+- **[Fix]** PHP Warning cleanup: removed deprecated usage of `mysql_get_server_info()`
+
+
+### 2.4.6
+- **[Fix]** Fixed an issue that prevented parsed PDF content from being indexed on the first pass
+- **[New]** Version numbers (SearchWP, WordPress, PHP, MySQL) are now passed along with support requests
+
+
+### 2.4.5.1
+- **[Fix]** PHP Warning cleanup for `in_array()` in `searchwp.php` on line 1588
+
+
+### 2.4.5
+- **[New]** Direct integration of support ticket creation within the WordPress admin
+- **[New]** New filter `searchwp_lightweight_settings` allowing for a speedier but degraded settings screen loading (e.g. not loading taxonomy terms)
+- **[New]** New filter `searchwp_dashboard_widget_cap` for more control over Dashboard Widget visibility (defaults to settings cap (which defaults to `manage_options`))
+- **[New]** Settings export/import facilitated by copying and pasting JSON of engine configuration(s)
+- **[Improvement]** Due to numerous issues with object caching, index validation hashes are stored as options instead of transients
+- **[Improvement]** Updated licensing system framework
+- **[Improvement]** Better handling of initial UI load on settings screen by obstructing UI until all bindings are properly in place
+- **[Change]** Switched to [Chartist](http://gionkunz.github.io/chartist-js/) for statistics graphs
+- **[Change]** Reinstated automatic theme conflict notices (filter conflicts continue to appear only when debugging is enabled)
+- **[Fix]** Search statistics for Today are more accurate
+- **[Fix]** Fixed an issue that prevented Shortcodes from being processed when using `searchwp_do_shortcode`
+- **[Fix]** Fixed an issue triggered by a Custom Post Type named `label` preventing proper SearchWP settings storage
+- **[Fix]** Fixed an issue that prevented Dashboard Widget transient storage if supplemental search names exceeded 17 characters
+
+
 ### 2.4.4
 - **[Fix]** Fixed an issue where certain search terms were being double-stemmed
 

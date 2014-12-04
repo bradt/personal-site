@@ -16,9 +16,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 		var $twitter;
 
 		public function __construct(){
-			if ( !isset( $_SESSION ) ) {
-			  	session_start();
-			}
+			ppp_maybe_start_session();
 		}
 
 		/**
@@ -58,6 +56,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 
 			//when user is going to logged in in twitter and verified successfully session will create
 			if ( isset( $_REQUEST['oauth_verifier'] ) && isset( $_REQUEST['oauth_token'] ) ) {
+				$ppp_social_settings = get_option( 'ppp_social_settings' );
 
 				//load twitter class
 				$twitter = $this->ppp_load_twitter();
@@ -99,7 +98,7 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 				$this->twitter = new TwitterOAuth( PPP_TW_CONSUMER_KEY, PPP_TW_CONSUMER_SECRET,
 												   $ppp_social_settings['twitter']['user']->accessToken['oauth_token'], $ppp_social_settings['twitter']['user']->accessToken['oauth_token_secret'] );
 				$response = $this->twitter->get('account/verify_credentials');
-				if ( property_exists( $response, 'errors' ) && count( $response->errors ) > 0 ) {
+				if ( is_object( $response ) && property_exists( $response, 'errors' ) && count( $response->errors ) > 0 ) {
 					foreach ( $response->errors as $error ) {
 						if ( $error->code == 89 ) { // Expired or revoked tokens
 							unset( $ppp_social_settings['twitter'] );
@@ -144,15 +143,22 @@ if( !class_exists( 'PPP_Twitter' ) ) {
 			return $url;
 		}
 
-		public function ppp_tweet( $message = '' ) {
+		public function ppp_tweet( $message = '', $media = null ) {
 			if ( empty( $message ) ) {
 				return false;
 			}
 
 			$verify = $this->ppp_verify_twitter_credentials();
 			if ( $verify === true ) {
+				if ( ! empty( $media ) ) {
+					$endpoint = 'statuses/update_with_media';
+					$args['media[]'] = wp_remote_retrieve_body( wp_remote_get( $media ) );
+				} else {
+					$endpoint = 'statuses/update';
+				}
 				$args['status'] = $message;
-				return $this->twitter->post( 'statuses/update', $args );
+
+				return $this->twitter->post( $endpoint, $args, true );
 			} else {
 				return false;
 			}

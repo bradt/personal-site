@@ -51,7 +51,7 @@ Host:                     <?php echo $host . "\n"; ?>
 Registered Post Stati:    <?php echo implode( ', ', get_post_stati() ) . "\n\n"; ?>
 
 PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-MySQL Version:            <?php echo mysql_get_server_info() . "\n"; ?>
+MySQL Version:            <?php echo $wpdb->db_version() . "\n"; ?>
 Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
 
 WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT; ?><?php echo "\n"; ?>
@@ -116,8 +116,8 @@ POTENTIAL TEMPLATE CONFLICTS:
 <?php
 	$conflicts = new SearchWP_Conflicts();
 	if ( ! empty( $conflicts->search_template_conflicts ) ) {
-		foreach ( $conflicts->search_template_conflicts as $line_number => $conflicts ) {
-			echo esc_textarea( 'Line ' . absint( $line_number) . ': ' . implode( ', ', $conflicts ) ) . "\n";
+		foreach ( $conflicts->search_template_conflicts as $line_number => $the_conflicts ) {
+			echo esc_textarea( 'Line ' . absint( $line_number) . ': ' . implode( ', ', $the_conflicts ) ) . "\n";
 		}
 	} else {
 		echo "NONE\n";
@@ -179,7 +179,7 @@ STATS:
 
 <?php
 if ( isset( $this->searchwp->settings['stats'] ) ) {
-	if ( isset( $this->searchwp->settings['stats']['last_activity'] ) ) {
+	if ( ! empty( $this->searchwp->settings['stats']['last_activity'] ) ) {
 		$this->searchwp->settings['stats']['last_activity'] = human_time_diff( $this->searchwp->settings['stats']['last_activity'], current_time( 'timestamp' ) ) . ' ago';
 	}
 	echo esc_textarea( print_r( $this->searchwp->settings['stats'], true ) );
@@ -218,7 +218,8 @@ SETTINGS:
 
 PURGE QUEUE:
 
-<?php if ( isset( $this->searchwp->settings['purgeQueue'] ) ) echo esc_textarea( print_r( $this->searchwp->settings['purgeQueue'], true ) ); ?>
+<?php echo isset( $this->searchwp->settings['purgeQueue'] ) ? esc_textarea( print_r( $this->searchwp->settings['purgeQueue'], true ) ) : '[Empty]'; ?>
+
 
 ### End System Info ###</textarea></form>
 	<?php }

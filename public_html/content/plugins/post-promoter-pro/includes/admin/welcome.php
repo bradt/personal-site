@@ -145,36 +145,36 @@ class PPP_Welcome {
 		list( $display_version ) = explode( '-', PPP_VERSION );
 		?>
 		<div class="wrap about-wrap">
-			<h1><?php printf( __( 'Welcome to Post Promoter Pro %s', 'ppp-txt' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'The simplest way to promote your WordPress content with maximum results.', 'ppp-txt' ), $display_version ); ?></div>
+			<h1><?php printf( __( 'Post Promoter Pro %s', 'ppp-txt' ), $display_version ); ?></h1>
+			<div class="about-text"><?php printf( __( 'The most effective way to promote your WordPress content.', 'ppp-txt' ), $display_version ); ?></div>
 			<div class="ppp-badge"><?php printf( __( 'Version %s', 'ppp-txt' ), $display_version ); ?></div>
 
 			<?php $this->tabs(); ?>
 
 			<div class="changelog">
-				<h3><?php _e( 'More actions in the Schedule View', 'ppp-txt' );?></h3>
+				<h3><?php _e( 'Improved Social Network Integration', 'ppp-txt' );?></h3>
 
 				<div class="feature-section">
 
-					<img src="<?php echo PPP_URL . '/includes/images/screenshots/schedule-actions.png'; ?>" class="ppp-welcome-screenshots"/>
+					<img src="<?php echo PPP_URL . '/includes/images/screenshots/social-settings.png'; ?>" class="ppp-welcome-screenshots"/>
 
-					<h4><?php _e( 'Share now', 'ppp-txt' );?></h4>
-					<p><?php _e( 'New actions allowing you to "Share Now" or "Share Now and Delete" a scheduled item.', 'ppp-txt' );?></p>
-					<p><?php _e( 'If a conversation is happening in your social circles right now, why not share what you\'ve got right now.', 'ppp-txt' );?></p>
+					<h4><?php _e( 'Redesigned and Expanded', 'ppp-txt' );?></h4>
+					<p><?php _e( 'You can now setup and configure LinkedIn alongside your Twitter account.', 'ppp-txt' );?></p>
+					<p><?php _e( 'Post Promoter Pro has a redesigned settings panel for social networks for a clutter free experience.', 'ppp-txt' );?></p>
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h3><?php _e( 'Keep your data on uninstall', 'ppp-txt' );?></h3>
+				<h3><?php _e( 'Standout in the Timeline', 'ppp-txt' );?></h3>
 
 				<div class="feature-section">
 
-					<img src="<?php echo PPP_URL . '/includes/images/screenshots/delete.png'; ?>" class="ppp-welcome-screenshots"/>
+					<img src="<?php echo PPP_URL . '/includes/images/screenshots/twitter-image.png'; ?>" class="ppp-welcome-screenshots"/>
 
-					<h4><?php _e( 'Prevent data loss while debugging.','ppp-txt' );?></h4>
-					<p><?php _e( 'With 1.2, deleting all the options and crons when uninstalling the plugin is Opt-In. This allows you to remove the plugin, upgrade, or reinstall without losing your data. ', 'ppp-txt' );?></p>
-					<p><?php _e( 'If at any time you wish to fully remove Post Promoter Pro and it\'s options, simply click the checkbox, and then uninstall.', 'ppp-txt' );?></p>
+					<h4><?php _e( 'Featured Image Support.','ppp-txt' );?></h4>
+					<p><?php _e( 'You can choose to attach a posts\' featured image to your social media publishing, to really standout amongst the competition.', 'ppp-txt' );?></p>
+					<p><?php _e( 'We\'ve created custom thumbnails specifically for each social media service, for the best results.', 'ppp-txt' );?></p>
 
 				</div>
 			</div>
@@ -184,19 +184,19 @@ class PPP_Welcome {
 
 				<div class="feature-section col three-col">
 					<div>
-						<h4><?php _e( 'Improved WP Cron Integration', 'ppp-txt' );?></h4>
-						<p><?php _e( 'A rare case when a share is tried to be made twice at the same time is prevented.', 'ppp-txt' );?></p>
+						<h4><?php _e( 'Rewritten From the Ground Up', 'ppp-txt' );?></h4>
+						<p><?php _e( 'With 10 new Actions and 5 new Filters, Version 2.0 is extremely extendibles.', 'ppp-txt' );?></p>
+						<p><?php _e( 'A grand total of 18 Actions and 23 Filters for your customization needs.', 'ppp-txt' );?></p>
 
-						<h4><?php _e( 'Customize the role', 'ppp-txt' );?></h4>
-						<p><?php _e( 'Using the new <code>ppp_manage_role</code> filter, you can change what roles can use Post Promoter Pro. By default it is administrators', 'ppp-txt' );?></p>
+						<h4><?php _e( 'Better Schedule View', 'ppp-txt' );?></h4>
+						<p><?php _e( 'Easily see when you\'ve attached a featured image to a scheduled share.', 'ppp-txt' );?></p>
 					</div>
 
 					<div class="last-feature">
-						<h4><?php _e( 'Better i18n', 'ppp-txt' );?></h4>
-						<p><?php _e( 'Thanks to feedback from you, we\'ve improved the i18n of the plugin, makeing it easier to translate and use in your language.', 'ppp-txt' );?></p>
-
-						<h4><?php _e( 'This fancy Welcome Page', 'ppp-txt' );?></h4>
-						<p><?php _e( 'A great way to keep you informed of the changes and getting you started with Post Promoter Pro.', 'ppp-txt' );?></p>
+						<h4><?php _e( 'WP.me Support', 'ppp-txt' );?></h4>
+						<p><?php _e( 'Using the new extensibility, we\'ve got our first user addition in WP.me URL shortener support. ', 'ppp-txt' );?></p>
+						<p><?php _e( 'Simply install Jetpack and enable the shortener module and you are all set!', 'ppp-txt' );?></p>
+						<p><?php _e( 'Thanks to Dan Griffiths of <a href="http://section214.com/">Section214.com</a>', 'ppp-txt' );?></p>
 					</div>
 				</div>
 			</div>
@@ -220,7 +220,7 @@ class PPP_Welcome {
 		?>
 		<div class="wrap about-wrap">
 			<h1><?php printf( __( 'Welcome to Post Promoter Pro %s', 'ppp-txt' ), $display_version ); ?></h1>
-			<div class="about-text"><?php printf( __( 'The simplest way to promote your WordPress content with maximum results.', 'ppp-txt' ), $display_version ); ?></div>
+			<div class="about-text"><?php printf( __( 'The most effective way to promote your WordPress content.', 'ppp-txt' ), $display_version ); ?></div>
 			<div class="ppp-badge"><?php printf( __( 'Version %s', 'ppp-txt' ), $display_version ); ?></div>
 
 			<?php $this->tabs(); ?>

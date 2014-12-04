@@ -283,6 +283,7 @@ class SearchWPSearch {
 			$this->postsPer     = intval( $args['posts_per_page'] );
 			$this->order        = $args['order'];
 			$this->load_posts   = is_bool( $args['load_posts'] ) ? $args['load_posts'] : true;
+			$this->offset       = ( isset( $args['offset'] ) && ! empty( $args['offset'] ) ) ? absint( $args['offset'] ) : 0;
 
 			// perform our query
 			$this->posts = $this->query();
@@ -494,7 +495,7 @@ class SearchWPSearch {
 
 						$excludedByTerm = new WP_Query( $args );
 
-						if( !empty( $excludedByTerm ) ) {
+						if ( ! empty( $excludedByTerm ) ) {
 							$this->excluded = array_merge( $this->excluded, $excludedByTerm->posts );
 						}
 					}
@@ -1354,11 +1355,11 @@ class SearchWPSearch {
 		$this->sql .= "
             LEFT JOIN (
                 SELECT {$wpdb->prefix}posts.{$args['post_column']} AS post_id,
-                    ( {$this->db_prefix}index.title * {$args['title_weight']} ) +
-                    ( {$this->db_prefix}index.slug * {$args['slug_weight']} ) +
-                    ( {$this->db_prefix}index.content * {$args['content_weight']} ) +
-                    ( {$this->db_prefix}index.comment * {$args['comment_weight']} ) +
-                    ( {$this->db_prefix}index.excerpt * {$args['excerpt_weight']} ) +
+                    ( SUM( {$this->db_prefix}index.title ) * {$args['title_weight']} ) +
+                    ( SUM( {$this->db_prefix}index.slug ) * {$args['slug_weight']} ) +
+                    ( SUM( {$this->db_prefix}index.content ) * {$args['content_weight']} ) +
+                    ( SUM( {$this->db_prefix}index.comment ) * {$args['comment_weight']} ) +
+                    ( SUM( {$this->db_prefix}index.excerpt ) * {$args['excerpt_weight']} ) +
                     {$args['custom_fields']} + {$args['taxonomies']}";
 
 		// the identifier is different if we're attributing
@@ -1414,7 +1415,7 @@ class SearchWPSearch {
 			}
 			$this->sql .= "
                 LEFT JOIN (
-                    SELECT {$wpdb->prefix}posts.{$column} as post_id, SUM({$this->db_prefix}cf.count * {$weight_key}) AS cfweight{$i}
+                    SELECT {$wpdb->prefix}posts.{$column} as post_id, ( SUM( {$this->db_prefix}cf.count ) * {$weight_key} ) AS cfweight{$i}
                     FROM {$this->db_prefix}terms
                     LEFT JOIN {$this->db_prefix}cf ON {$this->db_prefix}terms.id = {$this->db_prefix}cf.term
                     LEFT JOIN {$wpdb->prefix}posts ON {$this->db_prefix}cf.post_id = {$wpdb->prefix}posts.ID
@@ -1437,7 +1438,7 @@ class SearchWPSearch {
 				$post_meta_clause = " AND " . $this->db_prefix . "cf.metakey LIKE '" . $like_weight['metakey'] . "'";
 				$this->sql .= "
                 LEFT JOIN (
-                    SELECT {$wpdb->prefix}posts.{$column} as post_id, SUM({$this->db_prefix}cf.count * {$like_weight['weight']}) AS cfweight{$i}
+                    SELECT {$wpdb->prefix}posts.{$column} as post_id, ( SUM( {$this->db_prefix}cf.count ) * {$like_weight['weight']} ) AS cfweight{$i}
                     FROM {$this->db_prefix}terms
                     LEFT JOIN {$this->db_prefix}cf ON {$this->db_prefix}terms.id = {$this->db_prefix}cf.term
                     LEFT JOIN {$wpdb->prefix}posts ON {$this->db_prefix}cf.post_id = {$wpdb->prefix}posts.ID
@@ -1482,7 +1483,7 @@ class SearchWPSearch {
 			$postTypeTaxWeight = absint( $postTypeTaxWeight );
 			$this->sql .= "
                 LEFT JOIN (
-                    SELECT {$this->db_prefix}tax.post_id, SUM({$this->db_prefix}tax.count * {$postTypeTaxWeight}) AS taxweight{$i}
+                    SELECT {$this->db_prefix}tax.post_id, ( SUM( {$this->db_prefix}tax.count ) * {$postTypeTaxWeight} ) AS taxweight{$i}
                     FROM {$this->db_prefix}terms
                     LEFT JOIN {$this->db_prefix}tax ON {$this->db_prefix}terms.id = {$this->db_prefix}tax.term
                     LEFT JOIN {$wpdb->prefix}posts ON {$this->db_prefix}tax.post_id = {$wpdb->prefix}posts.ID
@@ -1627,7 +1628,7 @@ class SearchWPSearch {
 		$this->validate_post_types();
 
 		// we might need to short circuit for a number of reasons
-		if( ! $this->any_enabled_post_types() ) {
+		if ( ! $this->any_enabled_post_types() ) {
 			return false;
 		}
 
@@ -1651,9 +1652,29 @@ class SearchWPSearch {
 
 		// if there's an insane number of posts returned, we're dealing with a site with a lot of similar content
 		// so we need to trim out the initial results by relevance before proceeding else we'll have a wicked slow query
+
+		// NOTE: this only applies if titles have weights for all enabled post types, so we must check that first
+		$able_to_refine_results = true;
+		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
+			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+				$title_weight = isset( $postTypeWeights['weights']['title'] ) ? absint( $postTypeWeights['weights']['title'] ) : 0;
+				if ( 0 == $title_weight ) {
+					// at least one title weight is zero so we are NOT ABLE to refine results any
+					// further because the post IDs we find when refining by title will not apply
+					// in the main search query since those title hits are worth nothing
+					$able_to_refine_results = false;
+					break;
+				}
+			}
+		}
+
 		$parity = count( $this->terms );
 		$maxNumAndResults = absint( apply_filters( 'searchwp_max_and_results', 300 ) );
-		if( $parity > 1 && apply_filters( 'searchwp_refine_and_results', true ) && count( $this->relevant_post_ids) > $maxNumAndResults ) {
+		if (
+			$parity > 1
+			&& $able_to_refine_results
+			&& apply_filters( 'searchwp_refine_and_results', true )
+			&& count( $this->relevant_post_ids) > $maxNumAndResults ) {
 			$this->relevant_post_ids = $this->get_post_ids_via_and_in_title();
 		}
 
@@ -1724,7 +1745,7 @@ class SearchWPSearch {
 					$this->sql_status = "AND {$wpdb->prefix}posts.post_status IN ( '" . implode( "', '", $post_statuses ) . "' ) ";
 
 					// determine whether we need to limit to a mime type
-					if( isset( $postTypeWeights['options']['mimes'] ) && !empty( $postTypeWeights['options']['mimes'] ) ) {
+					if ( isset( $postTypeWeights['options']['mimes'] ) && is_numeric( $postTypeWeights['options']['mimes'] ) ) {
 						$mimes = explode( ',', $postTypeWeights['options']['mimes'] );
 						$this->query_limit_by_mimes( $mimes );
 					}
@@ -1830,14 +1851,13 @@ class SearchWPSearch {
 		 * END LOOP THROUGH EACH SUBMITTED TERM
 		 */
 
-
 		// make sure we're only getting posts with actual weight
 		$this->query_limit_to_weight();
 
 		$this->sql .= $this->postStatusLimiterSQL( $this->engineSettings );
 
 		$modifier = ( $this->postsPer < 1 ) ? 1 : $this->postsPer; // if posts_per_page is -1 there's no offset
-		$start = intval( ( $this->page - 1 ) * $modifier );
+		$start = ! empty( $this->offset ) ? $this->offset : intval( ( $this->page - 1 ) * $modifier );
 		$total = intval( $this->postsPer );
 		$order = $this->order;
 

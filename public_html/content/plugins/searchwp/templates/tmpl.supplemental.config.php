@@ -20,7 +20,7 @@ function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engine
 						echo esc_html( $engineLabel ) . ' <code>' . esc_html( $engineName ) . '</code>';
 					}
 					?></a>
-				<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php if( is_null( $engineName ) ) { ?>{{swp.engine}}<?php } { echo esc_attr( $engineName ); } ?>][label]" value="<?php
+				<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php if( is_null( $engineName ) ) { ?>{{swp.engine}}<?php } { echo esc_attr( $engineName ); } ?>][searchwp_engine_label]" value="<?php
 				if( is_null( $engineLabel ) ) {
 					echo '{{swp.engineLabel}}';
 				} else {

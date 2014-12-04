@@ -219,7 +219,7 @@ var searchwp_settings_handler = function(){
 		};
 
 		$(document).tooltip({
-			items: ".swp-tooltip",
+			items: ".swp-tooltip,.swp-tooltip-alt",
 			content: function(){
 				return $($(this).attr('href')).html();
 			}
@@ -341,7 +341,7 @@ var searchwp_settings_handler = function(){
 			return false;
 		});
 
-		$('body').on('click','.swp-add-supplemental-engine',function(e){
+		$body.on('click','.swp-add-supplemental-engine',function(e){
 			e.preventDefault();
 			_.templateSettings = {
 				variable : 'swp',
@@ -360,7 +360,7 @@ var searchwp_settings_handler = function(){
 
 			$(this).parents('.swp-supplemental-engines-wrapper').find('.swp-supplemental-engines').append(supplementalTemplate(swp));
 			$(this).parents('.swp-supplemental-engines-wrapper').find('.swp-supplemental-engines .swp-supplemental-engine:last .swp-supplemental-engine-name > a').trigger('click');
-			$(this).parents('.swp-supplemental-engines-wrapper').find('.swp-supplemental-engines .swp-supplemental-engine:last .swp-supplemental-engine-name > input').focus();
+			$(this).parents('.swp-supplemental-engines-wrapper').find('.swp-supplemental-engines .swp-supplemental-engine:last .swp-supplemental-engine-name > input').focus().select();
 			initTabs( $('.swp-supplemental-engines .swp-supplemental-engine:last' ) );
 			excludeSelects();
 			customFieldSelects();

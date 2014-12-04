@@ -141,19 +141,9 @@ function ppp_admin_page() {
 * @return void
 */
 function ppp_display_social() {
-	if ( isset( $_GET['ppp_twitter_disconnect'] ) ) {
-		$ppp_social_settings = get_option( 'ppp_social_settings' );
-		if ( isset( $ppp_social_settings['twitter'] ) ) {
-			unset( $ppp_social_settings['twitter'] );
-			update_option( 'ppp_social_settings', $ppp_social_settings );
-		}
-	}
-
 	do_action( 'ppp_social_settings_pre_form' );
 
-	global $ppp_twitter_oauth, $ppp_bitly_oauth, $ppp_social_settings;
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
-	$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
 	?>
 	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h2>
 		<div class="wrap">
@@ -161,28 +151,9 @@ function ppp_display_social() {
 			<?php wp_nonce_field( 'ppp-share-settings' ); ?>
 			<table class="form-table">
 
-				<tr valign="top">
-					<?php if ( isset( $tw_auth['error'] ) ) {
-						?><div class="update error"><p><?php echo $tw_auth['error']; ?></p></div><?php
-					} ?>
-					<th scope="row"><?php _e( 'Twitter', 'ppp-txt' ); ?></th>
-					<td>
-						<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
+				<?php do_action( 'ppp_social_media_tabs_display' ); ?>
 
-						<?php if ( !ppp_twitter_enabled() ) { ?>
-							<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
-							<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>
-						<?php } else { ?>
-						<div class="ppp-twitter-profile">
-							<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" />
-							<div class="ppp-twitter-info"><?php _e( 'Signed in as', 'ppp-txt' ); ?>:<br /><?php echo $ppp_social_settings['twitter']['user']->name; ?></div>
-						</div>
-						<br />
-						<a class="button-primary" href="<?php echo admin_url( 'admin.php?page=ppp-social-settings&ppp_twitter_disconnect=true' ); ?>" ><?php _e( 'Disconnect from Twitter', 'ppp-txt' ); ?></a>&nbsp;
-						<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank"><?php _e( 'Revoke Access via Twitter', 'ppp-txt' ); ?></a>
-						<?php } ?>
-					</td>
-				</tr>
+				<?php do_action( 'ppp_social_media_content_display' ); ?>
 
 				<?php
 				$analytics_option = isset( $ppp_share_settings['analytics'] ) ? $ppp_share_settings['analytics'] : 0;
@@ -193,13 +164,22 @@ function ppp_display_social() {
 					</th>
 					<td id="ppp-analytics-options">
 						<p>
+							<input id="ppp_no_tracking"
+							       name="ppp_share_settings[analytics]"
+							       type="radio"
+							       value="none"
+							       <?php checked( 'none', $analytics_option, true ); ?>
+							/>&nbsp<label for="ppp_no_tracking"><?php _e( 'None', 'ppp-txt' ); ?></label>
+						</p>
+						<br />
+						<p>
 							<input id="ppp_unique_links"
 							       name="ppp_share_settings[analytics]"
 							       type="radio"
 							       value="unique_links"
 							       <?php checked( 'unique_links', $analytics_option, true ); ?>
 							/>&nbsp<label for="ppp_unique_links"><?php _e( 'Simple Tracking', 'ppp-txt' ); ?></label><br />
-							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?><br /></small>
+							<small><?php _e( 'Appends a query string to shared links for analytics.', 'ppp-txt' ); ?></small>
 						</p>
 						<br />
 						<p>
@@ -214,7 +194,7 @@ function ppp_display_social() {
 						<?php do_action( 'ppp-settings-analytics-radio' ); ?>
 						<p id="ppp-link-example">
 						<hr />
-						<small>Here is an example of what your link will look like: <br />
+						<small><?php _e( 'Here is an example of what your link will look like', 'ppp-txt' ); ?>: <br />
 							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
 							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
 						</p>
@@ -278,8 +258,13 @@ function ppp_display_schedule() {
 		<?php $schedule_table->display() ?>
 	</div>
 	<?php if ( ppp_is_shortener_enabled() ): ?>
+	<p>
 		<small><?php _e( 'NOTICE: Schedule view does not show shortened links, they will be shortened at the time of sharing', 'ppp-txt' ); ?></small>
+	</p>
 	<?php endif; ?>
+	<p>
+		<small><?php _e( 'Items containing <span class="dashicons dashicons-format-image"></span> indicate that the featured image will be attached when sharing to the social media account.</small>', 'ppp-txt' ); ?>
+	</p>
 	<?php
 }
 

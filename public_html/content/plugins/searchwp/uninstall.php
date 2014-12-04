@@ -43,6 +43,7 @@ function searchwp_maybe_nuke() {
 
 		// delete all plugin settings
 		delete_option( SEARCHWP_PREFIX . 'settings' );
+		delete_option( SEARCHWP_PREFIX . 'settings_backup' );
 		delete_option( SEARCHWP_PREFIX . 'indexer' );
 		delete_option( SEARCHWP_PREFIX . 'purge_queue' );
 		delete_option( SEARCHWP_PREFIX . 'version' );
@@ -54,8 +55,8 @@ function searchwp_maybe_nuke() {
 		delete_option( SEARCHWP_PREFIX . 'doing_delta' );
 
 		// remove transients
-		delete_transient( 'searchwp' );
-		delete_transient( 'swppurge' );
+		delete_option( 'searchwp_transient' );
+		delete_option( 'swppurge_transient' );
 	}
 }
 

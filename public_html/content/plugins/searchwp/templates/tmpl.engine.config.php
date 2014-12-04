@@ -163,7 +163,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 								</tr>
 							<?php endif; ?>
 							<?php
-							$taxonomies = get_object_taxonomies( $post_type->name );
+							$taxonomies = apply_filters( 'searchwp_lightweight_settings', false ) ? array() : get_object_taxonomies( $post_type->name );
 							if( is_array( $taxonomies ) && count( $taxonomies ) ) :
 								foreach( $taxonomies as $taxonomy ) :
 									if( $taxonomy != 'post_format' ) : // we don't want Post Formats here
@@ -280,7 +280,6 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 								</td>
 							</tr>
 							<?php
-							$taxonomies = get_object_taxonomies( $post_type->name );
 							if( is_array( $taxonomies ) && count( $taxonomies ) ) :
 								foreach( $taxonomies as $taxonomy ) {
 									$taxonomy = get_taxonomy( $taxonomy );

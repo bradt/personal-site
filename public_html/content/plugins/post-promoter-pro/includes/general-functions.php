@@ -1,6 +1,16 @@
 <?php
 
 /**
+ * Checks to see if a session is set and it's appropriate to start one, and starts it if necessary
+ * @return void
+ */
+function ppp_maybe_start_session() {
+	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) ) {
+		session_start();
+	}
+}
+
+/**
  * Returns if a link tracking method is enabled
  * @return boolean True if a form of link tracking is enabled, false if not
  */
@@ -8,7 +18,7 @@ function ppp_link_tracking_enabled() {
 	global $ppp_share_settings;
 	$result = false;
 
-	if ( isset( $ppp_share_settings['analytics'] ) && !empty( $ppp_share_settings['analytics'] ) ) {
+	if ( isset( $ppp_share_settings['analytics'] ) && $ppp_share_settings['analytics'] !== 'none' ) {
 		$result =  true;
 	}
 
@@ -25,34 +35,6 @@ function ppp_get_post_slug_by_id( $post_id ) {
 	$slug = $post_data['post_name'];
 
 	return $slug;
-}
-
-/**
- * Return if twitter account is found
- * @return bool If the Twitter object exists
- */
-function ppp_twitter_enabled() {
-	global $ppp_social_settings;
-
-	if ( isset( $ppp_social_settings['twitter'] ) && !empty( $ppp_social_settings['twitter'] ) ) {
-		return true;
-	}
-
-	return false;
-}
-
-/**
- * Return if bitly account is found
- * @return bool If the Bitly object exists
- */
-function ppp_bitly_enabled() {
-	global $ppp_social_settings;
-
-	if ( isset( $ppp_social_settings['bitly'] ) && !empty( $ppp_social_settings['bitly'] ) ) {
-		return true;
-	}
-
-	return false;
 }
 
 /**
@@ -85,5 +67,13 @@ function ppp_is_shortener_enabled() {
  * Strips slashes and html_entities_decode for sending to the networks.
  */
 function ppp_entities_and_slashes( $string ) {
-	return stripslashes( html_entity_decode( $string ) );
+	return stripslashes( html_entity_decode( $string, ENT_COMPAT, 'UTF-8' ) );
+}
+
+/**
+ * Runs hook for the social networks to add their thumbnail sizes
+ * @return void
+ */
+function ppp_add_image_sizes() {
+	do_action( 'ppp_add_image_sizes' );
 }

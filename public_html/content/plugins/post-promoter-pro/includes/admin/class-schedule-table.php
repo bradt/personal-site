@@ -44,10 +44,15 @@ class PPP_Schedule_Table extends WP_List_Table {
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 		case 'date':
-		case 'content':
 		case 'day':
 		case 'post_title':
 			return $item[ $column_name ];
+		case 'content':
+			$content = $item[ $column_name ];
+			if ( $item['uses_media'] ) {
+				$content = '<span class="dashicons dashicons-format-image"></span>&nbsp;' . $content;
+			}
+			return $content;
 		default:
 			return;
 		}
@@ -80,7 +85,7 @@ class PPP_Schedule_Table extends WP_List_Table {
 		                  'share_delete'  => sprintf( __( '<a href="%s">Share Now & Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&day=' . $item['day'] . '&delete_too=true' ) )
 		                );
 
-		return sprintf( '%1$s %2$s', $item['post_title'], $this->row_actions( $actions ) );
+		return sprintf( '<span class="dashicons icon-ppp-' . $item['service'] . '"></span>&nbsp;%1$s %2$s', $item['post_title'], $this->row_actions( $actions ) );
 	}
 
 	/**
@@ -121,15 +126,31 @@ class PPP_Schedule_Table extends WP_List_Table {
 
 			$name_parts = explode( '_', $ppp_data['args'][1] );
 			$day        = $name_parts[1];
+			$service    = isset( $name_parts[3] ) ? $name_pargs[3] : 'tw';
+			$builder    = 'ppp_' . $service . '_build_share_message';
+
 			$conflict   = $cron_tally[$timestamp] > 1 ? true : false;
 
 			$data[$key] = array(  'post_id'      => $ppp_data['args'][0],
 				                       'post_title'   => get_the_title( $ppp_data['args'][0] ),
+				                       'service'      => $service,
 			                           'day'          => $day,
 			                           'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-			                           'content'      => ppp_build_share_message( $ppp_data['args'][0], $ppp_data['args'][1], false ),
+			                           'content'      => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ),
 			                           'name'         => 'sharedate_' . $day . '_' . $ppp_data['args'][0],
 			                           'conflict'     => $conflict );
+
+			switch( $service ) {
+				case 'tw':
+					$has_media = ppp_tw_use_media( $ppp_data['args'][0], $day );
+					break;
+				default:
+					$has_media = true;
+					break;
+			}
+
+			$data[$key]['uses_media'] = $has_media;
+
 		}
 
 		$total_items = count( $data );

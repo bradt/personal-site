@@ -24,8 +24,6 @@ $wpseo_admin_pages->admin_header( true, WPSEO_Options::get_group_name( 'wpseo_xm
 
 $options = get_option( 'wpseo_xml' );
 
-$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '';
-
 $content  = $wpseo_admin_pages->checkbox( 'enablexmlsitemap', __( 'Check this box to enable XML sitemap functionality.', 'wordpress-seo' ), false );
 $content .= '<div id="sitemapinfo">';
 if ( wpseo_is_nginx() ) {
@@ -37,7 +35,7 @@ rewrite ^/([^/]+?)-sitemap([0-9]+)?\.xml$ /index.php?sitemap=$1&sitemap_n=$2 las
 }
 
 if ( $options['enablexmlsitemap'] === true ) {
-	$content .= '<p>' . sprintf( esc_html__( 'You can find your XML Sitemap here: %sXML Sitemap%s', 'wordpress-seo' ), '<a target="_blank" class="button-secondary" href="' . esc_url( home_url( $base . 'sitemap_index.xml' ) ) . '">', '</a>' ) . '<br/><br/>' . __( 'You do <strong>not</strong> need to generate the XML sitemap, nor will it take up time to generate after publishing a post.', 'wordpress-seo' ) . '</p>';
+	$content .= '<p>' . sprintf( esc_html__( 'You can find your XML Sitemap here: %sXML Sitemap%s', 'wordpress-seo' ), '<a target="_blank" class="button-secondary" href="' . esc_url( wpseo_xml_sitemaps_base_url( 'sitemap_index.xml' ) ) . '">', '</a>' ) . '<br/><br/>' . __( 'You do <strong>not</strong> need to generate the XML sitemap, nor will it take up time to generate after publishing a post.', 'wordpress-seo' ) . '</p>';
 } else {
 	$content .= '<p>' . __( 'Save your settings to activate XML Sitemaps.', 'wordpress-seo' ) . '</p>';
 }
@@ -52,7 +50,7 @@ $content .= $wpseo_admin_pages->checkbox( 'disable_author_noposts', __( 'Disable
 
 $roles = wpseo_get_roles();
 if ( is_array( $roles ) && $roles !== array() ) {
-	$content .= '<p><strong>' . __( 'Exclude userroles', 'wordpress-seo' ) . '</strong><br/>';
+	$content .= '<p><strong>' . __( 'Exclude user roles', 'wordpress-seo' ) . '</strong><br/>';
 	$content .= __( 'Please check the appropriate box below if there\'s a user role that you do <strong>NOT</strong> want to include in your sitemap:', 'wordpress-seo' ) . '</p>';
 	foreach ( $roles as $role_key => $role_name ) {
 		$content .= $wpseo_admin_pages->checkbox( 'user_role-' . $role_key . '-not_in_sitemap', $role_name );
