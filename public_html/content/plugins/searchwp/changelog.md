@@ -1,5 +1,7 @@
 ### 2.4.10
 - **[Fix]** PHP 5.2 compatibility with PDF parser fallback 
+- **[Fix]** Fixed an issue where some search strings were not properly ignored
+- **[Fix]** Proper clearing of meta boxes on stats page at certain resolutions
 
 ### 2.4.9
 - **[Fix]** Fixed an issue where limiting Media results to All Documents did not apply the expected limit

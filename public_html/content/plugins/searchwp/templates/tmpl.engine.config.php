@@ -1,6 +1,8 @@
 <?php
 
-if( !defined( 'ABSPATH' ) ) die();
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 /**
  * Returns the saved weight (or a default if there's no saved data)

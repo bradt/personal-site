@@ -1,6 +1,8 @@
 <?php
 
-if( !defined( 'ABSPATH' ) ) die();
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 class SearchWPStemmer
 {

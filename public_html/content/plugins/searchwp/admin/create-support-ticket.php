@@ -12,6 +12,7 @@ if ( 'valid' !== $this->status ) {
 		<h2><?php _e( 'SearchWP Support', 'searchwp' ); ?></h2>
 		<p><?php _e( 'Support is available only to <strong>active license holders</strong>. You must activate your license to receive support. If you do not have a license you may purchase one at any time.', 'searchwp' ); ?></p>
 		<p><a class="button" href="<?php echo esc_url( admin_url( 'options-general.php?page=searchwp&amp;activate=' . wp_create_nonce( 'swpactivate' ) ) ); ?>"><?php _e( 'Activate License', 'searchwp' ); ?></a> <a class="button-primary" href="https://searchwp.com/buy/"><?php _e( 'Purchase License', 'searchwp' ); ?></a></p>
+		<p class="swpnotice"><?php echo sprintf( __( 'If you cannot activate your license please see <a href="%s">this KB article</a>' , 'searchwp' ), 'https://searchwp.com/?p=29213' ); ?></p>
 		<p class="description"><?php _e( 'If you are having difficulty activating your license or you believe you are receiving this notice in error, please <strong>include your license key</strong> in an email to' , 'searchwp' ); ?> <a href="mailto:support@searchwp.com">support@searchwp.com</a></p>
 	</div>
 <?php } else {
@@ -55,3 +56,15 @@ if ( 'valid' !== $this->status ) {
 		<?php _e( 'Support', 'searchwp' ); ?>
 	</a>
 </div>
+
+<style type="text/css">
+	.swpnotice {
+		text-align:center;
+		border:1px solid #fae985;
+		background:#FFF9D4;
+		color:#424242;
+		font-weight:bold;
+		padding:1em;
+		border-radius:1px;
+	}
+</style>

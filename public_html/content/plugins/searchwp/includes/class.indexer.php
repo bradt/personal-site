@@ -2,7 +2,7 @@
 
 global $wp_filesystem;
 
-if( ! defined( 'ABSPATH' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 

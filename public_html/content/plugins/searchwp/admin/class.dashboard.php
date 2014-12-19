@@ -1,6 +1,8 @@
 <?php
 
-if( ! defined( 'ABSPATH' ) ) die();
+if( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 /**
  * Class SearchWP_Dashboard is responsible for displaying Dashboard Widgets in the WordPress admin

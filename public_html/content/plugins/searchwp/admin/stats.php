@@ -3,7 +3,9 @@
 global $wpdb;
 
 // exit if accessed directly
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
 
 $user_id = get_current_user_id();
 
@@ -167,24 +169,43 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 	<?php
 
 	$ignored_queries = get_user_meta( get_current_user_id(), SEARCHWP_PREFIX . 'ignored_queries', true );
+
 	if ( ! is_array( $ignored_queries ) ) {
 		$ignored_queries = array();
+	}
+
+	// we might need to update the format of $ignored_queries; 2.4.10 switched to all hashes (both keys and values)
+	// to get around some edge cases of crazy search queries not being ignored
+	// to check this we'll make sure the key matches the value and if it doesn't we'll run the update routine
+	// this has to happen here because ignored queries are stored per-user
+	if ( count( $ignored_queries ) ) {
+		$ignored_queries_needs_update = true;
+		foreach ( $ignored_queries as $key => $val ) {
+			if ( $key == $val ) {
+				$ignored_queries_needs_update = false;
+				break;
+			}
+			$ignored_queries[ $key ] = md5( $val );
+		}
+		if ( $ignored_queries_needs_update ) {
+			update_user_meta( get_current_user_id(), SEARCHWP_PREFIX . 'ignored_queries', $ignored_queries );
+		}
 	}
 
 	// check to see if we need to ignore something
 	if( isset( $_GET['nonce'] ) && isset( $_GET['ignore'] ) && wp_verify_nonce( $_GET['nonce'], 'swpstatsignore' ) ) {
 		// retrieve the original query
 		$query_hash = sanitize_text_field( $_GET['ignore'] );
-		$ignore_sql = $wpdb->prepare( "SELECT {$prefix}swp_log.query  FROM {$prefix}swp_log  WHERE md5( {$prefix}swp_log.query ) = %s", $query_hash );
+		$ignore_sql = $wpdb->prepare( "SELECT {$prefix}swp_log.query, md5( {$prefix}swp_log.query ) FROM {$prefix}swp_log  WHERE md5( {$prefix}swp_log.query ) = %s", $query_hash );
 		$query_to_ignore = $wpdb->get_var( $ignore_sql );
 		if( ! empty( $query_to_ignore ) ) {
-			$ignored_queries[$query_hash] = $query_to_ignore;
+			$ignored_queries[$query_hash] = $query_hash;
 		}
 		update_user_meta( get_current_user_id(), SEARCHWP_PREFIX . 'ignored_queries', $ignored_queries );
 	}
 
 	$ignored_queries_sql = "'" . implode( "','", $ignored_queries ) . "'";
-	$ignored_queries_sql_where = empty( $ignored_queries ) ? "AND {$prefix}swp_log.query <> ''" : "AND {$prefix}swp_log.query NOT IN ({$ignored_queries_sql})";
+	$ignored_queries_sql_where = empty( $ignored_queries ) ? "AND {$prefix}swp_log.query <> ''" : "AND md5( {$prefix}swp_log.query ) NOT IN ({$ignored_queries_sql})";
 
 	// reset the nonce
 	$ignore_nonce = wp_create_nonce( 'swpstatsignore' );
@@ -235,11 +256,11 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $searchCounts as $searchCount ) : ?>
+					<?php foreach ( $searchCounts as $searchCount ) : $query_hash = md5( $searchCount->query ); ?>
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo md5( esc_attr( $searchCount->query ) ); ?>">x</a>
+									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
@@ -282,11 +303,11 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $searchCounts as $searchCount ) : ?>
+					<?php foreach ( $searchCounts as $searchCount ) : $query_hash = md5( $searchCount->query ); ?>
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo md5( esc_attr( $searchCount->query ) ); ?>">x</a>
+									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
@@ -329,11 +350,11 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $searchCounts as $searchCount ) : ?>
+					<?php foreach ( $searchCounts as $searchCount ) : $query_hash = md5( $searchCount->query ); ?>
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo md5( esc_attr( $searchCount->query ) ); ?>">x</a>
+									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
@@ -376,11 +397,11 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 					</tr>
 					</thead>
 					<tbody>
-					<?php foreach ( $searchCounts as $searchCount ) : ?>
+					<?php foreach ( $searchCounts as $searchCount ) : $query_hash = md5( $searchCount->query ); ?>
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo md5( esc_attr( $searchCount->query ) ); ?>">x</a>
+									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
@@ -430,11 +451,11 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 						</tr>
 						</thead>
 						<tbody>
-						<?php foreach ( $searchCounts as $searchCount ) : ?>
+						<?php foreach ( $searchCounts as $searchCount ) : $query_hash = md5( $searchCount->query ); ?>
 							<tr>
 								<td>
 									<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-										<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo md5( esc_attr( $searchCount->query ) ); ?>">x</a>
+										<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
 										<?php echo esc_html( $searchCount->query ); ?>
 									</div>
 								</td>
@@ -455,14 +476,14 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 		jQuery(document).ready(function ($) {
 			$('.swp-stats').each(function () {
 				var tallest = 0;
-				$(this).find('.swp-stat > .inside').each(function () {
-					if ($(this).height() > tallest) {
-						tallest = $(this).height();
+				$(this).find('.swp-stat').each(function () {
+					if ($(this).outerHeight() > tallest) {
+						tallest = $(this).outerHeight();
 					}
-				}).height(tallest);
+				}).outerHeight(tallest);
 			});
 			$('a.swp-delete').click(function(){
-				if (confirm('<?php _e( "Are you sure you want to ignore this search from all statistics?", 'searchwp' ); ?>')) {
+				if(confirm('<?php _e( "Are you sure you want to ignore this search from all statistics?", 'searchwp' ); ?>')) {
 					return true;
 				}else{
 					return false;

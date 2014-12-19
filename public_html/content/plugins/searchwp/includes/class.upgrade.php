@@ -1,6 +1,8 @@
 <?php
 
-if( !defined( 'ABSPATH' ) ) die();
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 /**
  * Class SearchWPUpgrade handles any installation or upgrade procedures that need to take place

@@ -2,7 +2,9 @@
 
 global $wp_filesystem;
 
-if( !defined( 'ABSPATH' ) ) die();
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
 
 include_once ABSPATH . 'wp-admin/includes/file.php';
 

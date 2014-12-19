@@ -1,6 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) || ! defined( 'SEARCHWP_VERSION' ) ) exit;
+if ( ! defined( 'ABSPATH' ) || ! defined( 'SEARCHWP_VERSION' ) ) {
+	exit;
+}
 
 global $wp_filesystem;
 include_once ABSPATH . 'wp-admin/includes/file.php';
