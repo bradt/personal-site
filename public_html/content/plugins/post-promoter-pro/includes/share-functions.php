@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Determine if we should share this post when it's being published
  * @param  int    $post_id The Post ID being published
@@ -40,13 +44,21 @@ function ppp_get_timestamps( $month, $day, $year, $post_id ) {
 	$offset = (int) -( get_option( 'gmt_offset' ) ); // Make the timestamp in the users' timezone, b/c that makes more sense
 
 	$ppp_post_override = get_post_meta( $post_id, '_ppp_post_override', true );
-	$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
-	$override_enabled = wp_list_pluck( $ppp_post_override_data, 'enabled' );
-	$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
+	if ( $ppp_post_override ) {
+		$ppp_post_override_data = get_post_meta( $post_id, '_ppp_post_override_data', true );
+		foreach ( $ppp_post_override_data as $key => $values ) {
+			if ( !isset( $ppp_post_override_data[$key]['enabled'] ) ) {
+				$ppp_post_override_data[$key]['enabled'] = false;
+			}
+		}
 
-	foreach ( $override_times as $key => $time ) {
-		if ( !isset( $override_enabled[$key] ) ) {
-			unset( $override_times[$key] );
+		$override_enabled = wp_list_pluck( $ppp_post_override_data, 'enabled' );
+		$override_times = wp_list_pluck( $ppp_post_override_data, 'time' );
+
+		foreach ( $override_times as $key => $time ) {
+			if ( !isset( $override_enabled[$key] ) ) {
+				unset( $override_times[$key] );
+			}
 		}
 	}
 
@@ -255,7 +267,7 @@ function ppp_post_has_media( $post_id, $network, $use_media ) {
 	$thumb_id = get_post_thumbnail_id( $post_id );
 	$thumb_url = wp_get_attachment_image_src( $thumb_id, 'ppp-' . $network . '-share-image', true );
 
-	if ( isset( $thumb_url[0] ) && ! empty( $thumb_url[0] ) ) {
+	if ( isset( $thumb_url[0] ) && ! empty( $thumb_url[0] ) && !strpos( $thumb_url[0], 'wp-includes/images/media/default.png' ) ) {
 		return $thumb_url[0];
 	}
 

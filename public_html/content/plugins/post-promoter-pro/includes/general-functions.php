@@ -1,11 +1,14 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Checks to see if a session is set and it's appropriate to start one, and starts it if necessary
  * @return void
  */
 function ppp_maybe_start_session() {
-	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) ) {
+	if ( ( is_admin() || ( defined( 'DOING_CRON' ) && DOING_CRON ) ) && !isset( $_SESSION ) && !defined( 'DOING_AJAX' ) ) {
 		session_start();
 	}
 }
@@ -76,4 +79,29 @@ function ppp_entities_and_slashes( $string ) {
  */
 function ppp_add_image_sizes() {
 	do_action( 'ppp_add_image_sizes' );
+}
+
+/**
+ * Given a Post ID and Post object, should we try and save the metabox content
+ * @param  int $post_id The Post ID being saved
+ * @param  object $post WP_Post object of the post being saved
+ * @return bool         Wether to save the metabox or not
+ */
+function ppp_should_save( $post_id, $post ) {
+	$ret = true;
+
+	if ( empty( $_POST ) ) {
+		$ret = false;
+	}
+
+	if ( wp_is_post_revision( $post_id ) ) {
+		$ret = false;
+	}
+
+	global $ppp_options;
+	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+		$ret = false;
+	}
+
+	return apply_filters( 'ppp_should_save', $ret, $post );
 }

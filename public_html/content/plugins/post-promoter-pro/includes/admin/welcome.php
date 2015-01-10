@@ -156,25 +156,25 @@ class PPP_Welcome {
 
 				<div class="feature-section">
 
-					<img src="<?php echo PPP_URL . '/includes/images/screenshots/social-settings.png'; ?>" class="ppp-welcome-screenshots"/>
+					<img src="<?php echo PPP_URL . '/includes/images/screenshots/new-account-management.jpg'; ?>" class="ppp-welcome-screenshots"/>
 
 					<h4><?php _e( 'Redesigned and Expanded', 'ppp-txt' );?></h4>
-					<p><?php _e( 'You can now setup and configure LinkedIn alongside your Twitter account.', 'ppp-txt' );?></p>
-					<p><?php _e( 'Post Promoter Pro has a redesigned settings panel for social networks for a clutter free experience.', 'ppp-txt' );?></p>
+					<p><?php _e( 'Twitter, Facebook, and LinkedIn support is built into the core plugin.', 'ppp-txt' );?></p>
+					<p><?php _e( 'We\'ve redesigned the account management screen to be more like the native WordPress experiance. Managed all your connections from one panel, no more tabs!', 'ppp-txt' );?></p>
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h3><?php _e( 'Standout in the Timeline', 'ppp-txt' );?></h3>
+				<h3><?php _e( 'Now With Facebook Support!', 'ppp-txt' );?></h3>
 
 				<div class="feature-section">
 
-					<img src="<?php echo PPP_URL . '/includes/images/screenshots/twitter-image.png'; ?>" class="ppp-welcome-screenshots"/>
+					<img src="<?php echo PPP_URL . '/includes/images/screenshots/facebook-support.jpg'; ?>" class="ppp-welcome-screenshots"/>
 
-					<h4><?php _e( 'Featured Image Support.','ppp-txt' );?></h4>
-					<p><?php _e( 'You can choose to attach a posts\' featured image to your social media publishing, to really standout amongst the competition.', 'ppp-txt' );?></p>
-					<p><?php _e( 'We\'ve created custom thumbnails specifically for each social media service, for the best results.', 'ppp-txt' );?></p>
+					<h4><?php _e( 'Expand your reach','ppp-txt' );?></h4>
+					<p><?php _e( 'It has been the #1 most requested feature, and finally it is here...Facebook Support!', 'ppp-txt' );?></p>
+					<p><?php _e( 'Share your posts to your timeline, or the timeline of a page you have publish permissions to. We have setup a beautiful thumbnail that integrates perfectly with Facebook.', 'ppp-txt' );?></p>
 
 				</div>
 			</div>
@@ -184,25 +184,22 @@ class PPP_Welcome {
 
 				<div class="feature-section col three-col">
 					<div>
-						<h4><?php _e( 'Rewritten From the Ground Up', 'ppp-txt' );?></h4>
-						<p><?php _e( 'With 10 new Actions and 5 new Filters, Version 2.0 is extremely extendibles.', 'ppp-txt' );?></p>
-						<p><?php _e( 'A grand total of 18 Actions and 23 Filters for your customization needs.', 'ppp-txt' );?></p>
+						<h4><?php _e( 'Better debugging', 'ppp-txt' );?></h4>
+						<p><?php _e( 'When you check to have debug enabled now, you will get some additional information about your social accounts on the account view.', 'ppp-txt' );?></p>
 
-						<h4><?php _e( 'Better Schedule View', 'ppp-txt' );?></h4>
-						<p><?php _e( 'Easily see when you\'ve attached a featured image to a scheduled share.', 'ppp-txt' );?></p>
+						<h4><?php _e( 'Improved LinkedIn Support', 'ppp-txt' );?></h4>
+						<p><?php _e( 'Fixed a few issues with LinkedIn token expiration. If you have issues, just disconnect and reconnect.', 'ppp-txt' );?></p>
 					</div>
 
 					<div class="last-feature">
-						<h4><?php _e( 'WP.me Support', 'ppp-txt' );?></h4>
-						<p><?php _e( 'Using the new extensibility, we\'ve got our first user addition in WP.me URL shortener support. ', 'ppp-txt' );?></p>
-						<p><?php _e( 'Simply install Jetpack and enable the shortener module and you are all set!', 'ppp-txt' );?></p>
-						<p><?php _e( 'Thanks to Dan Griffiths of <a href="http://section214.com/">Section214.com</a>', 'ppp-txt' );?></p>
+						<h4><?php _e( 'Performance Improvements', 'ppp-txt' );?></h4>
+						<p><?php _e( 'Made some improvements to the way Post Promoter Pro uses sessions, to help with overall site performance', 'ppp-txt' );?></p>
 					</div>
 				</div>
 			</div>
 
 			<div class="return-to-dashboard">
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ppp-options' ) ); ?>"><?php _e( 'Start Using Post Promoter Pro', 'ppp-txt' ); ?></a>
+				<a href="<?php echo esc_url( admin_url( 'admin.php?page=ppp-options' ) ); ?>"><?php _e( 'Start Using Post Promoter Pro!', 'ppp-txt' ); ?></a>
 			</div>
 		</div>
 		<?php

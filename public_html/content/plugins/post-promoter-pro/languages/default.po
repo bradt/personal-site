@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Post Promoter Pro\n"
-"POT-Creation-Date: 2014-09-07 11:20-0700\n"
-"PO-Revision-Date: 2014-09-07 11:20-0700\n"
-"Last-Translator: Chris Klosowski <cklosowski@gmail.com>\n"
-"Language-Team: Filament Studios <chris@filament-studios.com>\n"
-"Language: en_US\n"
+"POT-Creation-Date: 2015-01-03 20:00-0700\n"
+"PO-Revision-Date: 2015-01-03 20:01-0700\n"
+"Last-Translator: Chris Klosowski <chris@filament-studios.com>\n"
+"Language-Team: Post Promoter Pro <info@postpromoterpro.com>\n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 1.7.1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
@@ -18,157 +18,265 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: post-promoter-pro.php:150
-msgid "Settings"
-msgstr ""
-
-#: post-promoter-pro.php:163 post-promoter-pro.php:164
-msgid "Post Promoter"
-msgstr ""
-
-#: post-promoter-pro.php:170
-msgid "Social Settings"
-msgstr ""
-
-#: post-promoter-pro.php:171
-msgid "Schedule"
-msgstr ""
-
-#: post-promoter-pro.php:172
-msgid "System Info"
-msgstr ""
-
-#: post-promoter-pro.php:227
-#, php-format
-msgid ""
-"Post Promoter Pro requires your license key to work, please <a href=\"%s"
-"\">enter it now</a>."
-msgstr ""
-
-#: includes/filters.php:9
-msgid "The title of the post being shared"
-msgstr ""
-
-#: includes/filters.php:10
-msgid "The site title, from Settings > General"
-msgstr ""
-
-#: includes/wpme-functions.php:24
-msgid ""
-"The WP.me URL shortener does not support the Analytics settings listed "
-"above. No analytics tracking will be available."
-msgstr ""
-
-#: includes/linkedin-functions.php:27
-msgid "Connect to Linkedin"
-msgstr ""
-
-#: includes/linkedin-functions.php:31 includes/twitter-functions.php:34
-#: includes/bitly-functions.php:50
-msgid "Signed in as"
-msgstr ""
-
-#: includes/linkedin-functions.php:36
-msgid "Disconnect from Linkedin"
-msgstr ""
-
-#: includes/linkedin-functions.php:119
-#, php-format
-msgid ""
-"Your LinkedIn authentcation expires in within %d days. Please <a href=\"%s"
-"\">refresh access.</a>."
-msgstr ""
-
-#: includes/linkedin-functions.php:163 includes/linkedin-functions.php:192
-msgid "LinkedIn"
-msgstr ""
-
-#: includes/linkedin-functions.php:231 includes/twitter-functions.php:227
-msgid "Social Text"
-msgstr ""
-
-#: includes/linkedin-functions.php:241
-msgid "Share this post on LinkedIn at the time of publishing?"
-msgstr ""
-
-#: includes/linkedin-functions.php:246
-msgid "Link Title"
-msgstr ""
-
-#: includes/linkedin-functions.php:257
-msgid "Link Description"
-msgstr ""
-
-#: includes/linkedin-functions.php:259
-msgid "Note: If set, the Featured image will be attached to this share"
-msgstr ""
-
-#: includes/twitter-functions.php:36
-msgid "Disconnect from Twitter"
-msgstr ""
-
-#: includes/twitter-functions.php:37
-msgid "Revoke Access via Twitter"
-msgstr ""
-
-#: includes/twitter-functions.php:159 includes/twitter-functions.php:188
-msgid "Twitter"
-msgstr ""
-
-#: includes/twitter-functions.php:245
-msgid "Tweet this post at the time of publishing?"
-msgstr ""
-
-#: includes/twitter-functions.php:258 includes/twitter-functions.php:304
-msgid "Attach Featured Image In Tweet"
-msgstr ""
-
-#: includes/twitter-functions.php:262
-msgid "Do not schedule tweets for this post."
-msgstr ""
-
-#: includes/twitter-functions.php:266
-msgid "Override Default Text and Times"
-msgstr ""
-
-#: includes/twitter-functions.php:278
-#, php-format
-msgid "Day %s"
-msgstr ""
-
-#: includes/twitter-functions.php:284
-msgid "Time"
-msgstr ""
-
-#: includes/twitter-functions.php:312
-msgid "Do not include links in your text, this will be added automatically."
-msgstr ""
-
-#: includes/bitly-functions.php:39
-msgid "Invalid Login or Password"
-msgstr ""
-
-#: includes/bitly-functions.php:51
-msgid "Access Token: "
-msgstr ""
-
-#: includes/bitly-functions.php:55
-msgid "Disconnect from Bit.ly"
-msgstr ""
-
-#: includes/admin/actions.php:88 includes/admin/actions.php:110
+#: includes/admin/actions.php:90 includes/admin/actions.php:112
 #, php-format
 msgid ""
 "No social media accounts active. <a href=\"%s\">Connect with your accounts "
 "now</a>."
 msgstr ""
 
-#: includes/admin/actions.php:196
+#: includes/admin/actions.php:198
 msgid "Scheduled item has been deleted."
 msgstr ""
 
-#: includes/admin/actions.php:208
+#: includes/admin/actions.php:210
 msgid "Item has been shared."
+msgstr ""
+
+#: includes/admin/admin-pages.php:17
+msgid "Post Promoter Pro"
+msgstr ""
+
+#: includes/admin/admin-pages.php:24
+msgid "License Key"
+msgstr ""
+
+#: includes/admin/admin-pages.php:24
+msgid "Enter your license key"
+msgstr ""
+
+#: includes/admin/admin-pages.php:28
+msgid "active"
+msgstr ""
+
+#: includes/admin/admin-pages.php:35 includes/admin/admin-pages.php:43
+msgid "Activate License"
+msgstr ""
+
+#: includes/admin/admin-pages.php:40
+msgid "Deactivate License"
+msgstr ""
+
+#: includes/admin/admin-pages.php:50
+msgid "Default Share Text"
+msgstr ""
+
+#: includes/admin/admin-pages.php:51
+msgid "Default Text Tips"
+msgstr ""
+
+#: includes/admin/admin-pages.php:58
+msgid ""
+"The typical length of a link shortened on Twitter is 23 characters, so keep "
+"that in mind when writing your default text."
+msgstr ""
+
+#: includes/admin/admin-pages.php:60
+msgid "Status updates over 140 charcters will fail to post."
+msgstr ""
+
+#: includes/admin/admin-pages.php:62
+msgid "Possible Replacements:"
+msgstr ""
+
+#: includes/admin/admin-pages.php:74
+msgid "Default Share Times"
+msgstr ""
+
+#: includes/admin/admin-pages.php:75
+msgid ""
+"When would you like your posts to be shared? You can change this on a per "
+"post basis as well"
+msgstr ""
+
+#: includes/admin/admin-pages.php:77
+msgid "Days After Publish"
+msgstr ""
+
+#: includes/admin/admin-pages.php:103
+msgid "Post Types"
+msgstr ""
+
+#: includes/admin/admin-pages.php:103
+msgid "What post types do you want to schedule for?"
+msgstr ""
+
+#: includes/admin/admin-pages.php:116
+msgid "Advanced"
+msgstr ""
+
+#: includes/admin/admin-pages.php:116
+msgid "Tools for troubleshooting and advanced usage"
+msgstr ""
+
+#: includes/admin/admin-pages.php:120
+msgid "Enable Debug"
+msgstr ""
+
+#: includes/admin/admin-pages.php:124
+msgid "Delete All Data On Uninstall"
+msgstr ""
+
+#: includes/admin/admin-pages.php:136 includes/admin/admin-pages.php:242
+msgid "Save Changes"
+msgstr ""
+
+#: includes/admin/admin-pages.php:153
+msgid "Post Promoter Pro - Social Settings"
+msgstr ""
+
+#: includes/admin/admin-pages.php:156
+msgid "Social Media Accounts"
+msgstr ""
+
+#: includes/admin/admin-pages.php:169
+msgid "Analytics"
+msgstr ""
+
+#: includes/admin/admin-pages.php:178
+msgid "None"
+msgstr ""
+
+#: includes/admin/admin-pages.php:187
+msgid "Simple Tracking"
+msgstr ""
+
+#: includes/admin/admin-pages.php:188
+msgid "Appends a query string to shared links for analytics."
+msgstr ""
+
+#: includes/admin/admin-pages.php:197
+msgid "Google Analytics Tags"
+msgstr ""
+
+#: includes/admin/admin-pages.php:198
+msgid "Results can be seen in the Acquisition Menu under \"Campaigns\""
+msgstr ""
+
+#: includes/admin/admin-pages.php:203
+msgid "Here is an example of what your link will look like"
+msgstr ""
+
+#: includes/admin/admin-pages.php:208
+msgid "No posts available to generate link from."
+msgstr ""
+
+#: includes/admin/admin-pages.php:219
+msgid "URL Shortener"
+msgstr ""
+
+#: includes/admin/admin-pages.php:224
+msgid "Select a Service"
+msgstr ""
+
+#: includes/admin/admin-pages.php:267
+msgid "Post Promoter Pro - Scheduled Shares"
+msgstr ""
+
+#: includes/admin/admin-pages.php:272
+msgid ""
+"NOTICE: Schedule view does not show shortened links, they will be shortened "
+"at the time of sharing"
+msgstr ""
+
+#: includes/admin/admin-pages.php:276
+msgid ""
+"Items containing <span class=\"dashicons dashicons-format-image\"></span> "
+"indicate that the featured image will be attached when sharing to the social "
+"media account.</small>"
+msgstr ""
+
+#: includes/admin/admin-pages.php:290
+msgid "Post Promoter Pro - System Info"
+msgstr ""
+
+#: includes/admin/admin-pages.php:368
+msgid "Your server supports fsockopen."
+msgstr ""
+
+#: includes/admin/admin-pages.php:368
+msgid "Your server does not support fsockopen."
+msgstr ""
+
+#: includes/admin/class-accounts-table.php:22
+msgid "Social Media Service"
+msgstr ""
+
+#: includes/admin/class-accounts-table.php:23
+msgid "Social Media Services"
+msgstr ""
+
+#: includes/admin/class-accounts-table.php:33
+msgid "No Social Media Services Registered"
+msgstr ""
+
+#: includes/admin/class-accounts-table.php:53
+msgid "Avatar"
+msgstr ""
+
+#: includes/admin/class-accounts-table.php:54
+msgid "Connected As"
+msgstr ""
+
+#: includes/admin/class-accounts-table.php:55
+msgid "Actions"
+msgstr ""
+
+#: includes/admin/class-accounts-table.php:56
+msgid "Additional Info"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:22
+msgid "Scheduled Share"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:23
+msgid "Scheduled Shares"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:33
+#, php-format
+msgid "No shares scheduled. Go <a href=\"%s\">write something</a>!"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:65
+msgid "Post Title"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:66
+msgid "Day"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:67
+msgid "Scheduled Date"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:68
+msgid "Share Message"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:80
+#, php-format
+msgid "<a href=\"%s\">Edit</a>"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:81
+#, php-format
+msgid "<a href=\"%s\">Delete</a>"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:82
+#, php-format
+msgid "<a href=\"%s\">Share Now</a>"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:83
+#, php-format
+msgid "<a href=\"%s\">Share Now & Delete</a>"
+msgstr ""
+
+#: includes/admin/class-schedule-table.php:97
+msgid "Warning: Multiple items scheduled at this time."
 msgstr ""
 
 #: includes/admin/welcome.php:52 includes/admin/welcome.php:53
@@ -192,11 +300,11 @@ msgstr ""
 msgid "Post Promoter Pro %s"
 msgstr ""
 
-#: includes/admin/welcome.php:149 includes/admin/welcome.php:223
+#: includes/admin/welcome.php:149 includes/admin/welcome.php:220
 msgid "The most effective way to promote your WordPress content."
 msgstr ""
 
-#: includes/admin/welcome.php:150 includes/admin/welcome.php:224
+#: includes/admin/welcome.php:150 includes/admin/welcome.php:221
 #, php-format
 msgid "Version %s"
 msgstr ""
@@ -210,34 +318,35 @@ msgid "Redesigned and Expanded"
 msgstr ""
 
 #: includes/admin/welcome.php:162
-msgid ""
-"You can now setup and configure LinkedIn alongside your Twitter account."
+msgid "Twitter, Facebook, and LinkedIn support is built into the core plugin."
 msgstr ""
 
 #: includes/admin/welcome.php:163
 msgid ""
-"Post Promoter Pro has a redesigned settings panel for social networks for a "
-"clutter free experience."
+"We've redesigned the account management screen to be more like the native "
+"WordPress experiance. Managed all your connections from one panel, no more "
+"tabs!"
 msgstr ""
 
 #: includes/admin/welcome.php:169
-msgid "Standout in the Timeline"
+msgid "Now With Facebook Support!"
 msgstr ""
 
 #: includes/admin/welcome.php:175
-msgid "Featured Image Support."
+msgid "Expand your reach"
 msgstr ""
 
 #: includes/admin/welcome.php:176
 msgid ""
-"You can choose to attach a posts' featured image to your social media "
-"publishing, to really standout amongst the competition."
+"It has been the #1 most requested feature, and finally it is here...Facebook "
+"Support!"
 msgstr ""
 
 #: includes/admin/welcome.php:177
 msgid ""
-"We've created custom thumbnails specifically for each social media service, "
-"for the best results."
+"Share your posts to your timeline, or the timeline of a page you have "
+"publish permissions to. We have setup a beautiful thumbnail that integrates "
+"perfectly with Facebook."
 msgstr ""
 
 #: includes/admin/welcome.php:183
@@ -245,273 +354,233 @@ msgid "Additional Updates"
 msgstr ""
 
 #: includes/admin/welcome.php:187
-msgid "Rewritten From the Ground Up"
+msgid "Better debugging"
 msgstr ""
 
 #: includes/admin/welcome.php:188
 msgid ""
-"With 10 new Actions and 5 new Filters, Version 2.0 is extremely extendibles."
+"When you check to have debug enabled now, you will get some additional "
+"information about your social accounts on the account view."
 msgstr ""
 
-#: includes/admin/welcome.php:189
-msgid ""
-"A grand total of 18 Actions and 23 Filters for your customization needs."
+#: includes/admin/welcome.php:190
+msgid "Improved LinkedIn Support"
 msgstr ""
 
 #: includes/admin/welcome.php:191
-msgid "Better Schedule View"
+msgid ""
+"Fixed a few issues with LinkedIn token expiration. If you have issues, just "
+"disconnect and reconnect."
 msgstr ""
 
-#: includes/admin/welcome.php:192
-msgid "Easily see when you've attached a featured image to a scheduled share."
+#: includes/admin/welcome.php:195
+msgid "Performance Improvements"
 msgstr ""
 
 #: includes/admin/welcome.php:196
-msgid "WP.me Support"
-msgstr ""
-
-#: includes/admin/welcome.php:197
 msgid ""
-"Using the new extensibility, we've got our first user addition in WP.me URL "
-"shortener support. "
+"Made some improvements to the way Post Promoter Pro uses sessions, to help "
+"with overall site performance"
 msgstr ""
 
-#: includes/admin/welcome.php:198
-msgid ""
-"Simply install Jetpack and enable the shortener module and you are all set!"
+#: includes/admin/welcome.php:202
+msgid "Start Using Post Promoter Pro!"
 msgstr ""
 
-#: includes/admin/welcome.php:199
-msgid ""
-"Thanks to Dan Griffiths of <a href=\"http://section214.com/\">Section214."
-"com</a>"
-msgstr ""
-
-#: includes/admin/welcome.php:205
-msgid "Start Using Post Promoter Pro"
-msgstr ""
-
-#: includes/admin/welcome.php:222
+#: includes/admin/welcome.php:219
 #, php-format
 msgid "Welcome to Post Promoter Pro %s"
 msgstr ""
 
-#: includes/admin/welcome.php:228
+#: includes/admin/welcome.php:225
 msgid "Post Promoter Pro makes sharing your content as easy as possible."
 msgstr ""
 
-#: includes/admin/class-schedule-table.php:24
-msgid "Scheduled Share"
+#: includes/bitly-functions.php:42
+msgid "Invalid Login or Password"
 msgstr ""
 
-#: includes/admin/class-schedule-table.php:25
-msgid "Scheduled Shares"
+#: includes/bitly-functions.php:53
+msgid "Signed in as"
 msgstr ""
 
-#: includes/admin/class-schedule-table.php:35
+#: includes/bitly-functions.php:54
+msgid "Access Token: "
+msgstr ""
+
+#: includes/bitly-functions.php:58
+msgid "Disconnect from Bit.ly"
+msgstr ""
+
+#: includes/facebook-functions.php:86
+msgid "Connect to Facebook"
+msgstr ""
+
+#: includes/facebook-functions.php:88
+msgid "Disconnect from Facebook"
+msgstr ""
+
+#: includes/facebook-functions.php:108
+msgid "Publish as:"
+msgstr ""
+
+#: includes/facebook-functions.php:110
+msgid "Me"
+msgstr ""
+
+#: includes/facebook-functions.php:122 includes/linkedin-functions.php:101
 #, php-format
-msgid "No shares scheduled. Go <a href=\"%s\">write something</a>!"
+msgid "Token expires in %s days"
 msgstr ""
 
-#: includes/admin/class-schedule-table.php:67
-msgid "Post Title"
-msgstr ""
-
-#: includes/admin/class-schedule-table.php:68
-msgid "Day"
-msgstr ""
-
-#: includes/admin/class-schedule-table.php:69
-msgid "Scheduled Date"
-msgstr ""
-
-#: includes/admin/class-schedule-table.php:70
-msgid "Share Message"
-msgstr ""
-
-#: includes/admin/class-schedule-table.php:82
+#: includes/facebook-functions.php:123 includes/linkedin-functions.php:102
 #, php-format
-msgid "<a href=\"%s\">Edit</a>"
+msgid "Refresh notice in %s days"
 msgstr ""
 
-#: includes/admin/class-schedule-table.php:83
+#: includes/facebook-functions.php:220
 #, php-format
-msgid "<a href=\"%s\">Delete</a>"
-msgstr ""
-
-#: includes/admin/class-schedule-table.php:84
-#, php-format
-msgid "<a href=\"%s\">Share Now</a>"
-msgstr ""
-
-#: includes/admin/class-schedule-table.php:85
-#, php-format
-msgid "<a href=\"%s\">Share Now & Delete</a>"
-msgstr ""
-
-#: includes/admin/class-schedule-table.php:99
-msgid "Warning: Multiple items scheduled at this time."
-msgstr ""
-
-#: includes/admin/admin-pages.php:12
-msgid "Post Promoter Pro"
-msgstr ""
-
-#: includes/admin/admin-pages.php:20
-msgid "License Key"
-msgstr ""
-
-#: includes/admin/admin-pages.php:20
-msgid "Enter your license key"
-msgstr ""
-
-#: includes/admin/admin-pages.php:24
-msgid "active"
-msgstr ""
-
-#: includes/admin/admin-pages.php:31 includes/admin/admin-pages.php:39
-msgid "Activate License"
-msgstr ""
-
-#: includes/admin/admin-pages.php:36
-msgid "Deactivate License"
-msgstr ""
-
-#: includes/admin/admin-pages.php:46
-msgid "Default Share Text"
-msgstr ""
-
-#: includes/admin/admin-pages.php:47
-msgid "Default Text Tips"
-msgstr ""
-
-#: includes/admin/admin-pages.php:54
 msgid ""
-"The typical length of a link shortened on Twitter is 23 characters, so keep "
-"that in mind when writing your default text."
+"Your Facebook authentcation expires in within %d days. Please <a href=\"%s"
+"\">refresh access.</a>."
 msgstr ""
 
-#: includes/admin/admin-pages.php:56
-msgid "Status updates over 140 charcters will fail to post."
+#: includes/facebook-functions.php:257
+msgid "Facebook"
 msgstr ""
 
-#: includes/admin/admin-pages.php:58
-msgid "Possible Replacements:"
+#: includes/facebook-functions.php:287 includes/linkedin-functions.php:299
+#: includes/twitter-functions.php:280
+msgid "Social Text"
 msgstr ""
 
-#: includes/admin/admin-pages.php:70
-msgid "Default Share Times"
+#: includes/facebook-functions.php:297
+msgid "Share this post on Facebook at the time of publishing?"
 msgstr ""
 
-#: includes/admin/admin-pages.php:71
-msgid ""
-"When would you like your posts to be shared? You can change this on a per "
-"post basis as well"
+#: includes/facebook-functions.php:299
+msgid "Link Message"
 msgstr ""
 
-#: includes/admin/admin-pages.php:73
-msgid "Days After Publish"
+#: includes/facebook-functions.php:312 includes/linkedin-functions.php:327
+msgid "Note: If set, the Featured image will be attached to this share"
 msgstr ""
 
-#: includes/admin/admin-pages.php:99
-msgid "Post Types"
+#: includes/filters.php:12
+msgid "The title of the post being shared"
 msgstr ""
 
-#: includes/admin/admin-pages.php:99
-msgid "What post types do you want to schedule for?"
+#: includes/filters.php:13
+msgid "The site title, from Settings > General"
 msgstr ""
 
-#: includes/admin/admin-pages.php:112
-msgid "Advanced"
-msgstr ""
-
-#: includes/admin/admin-pages.php:112
-msgid "Tools for troubleshooting and advanced usage"
-msgstr ""
-
-#: includes/admin/admin-pages.php:116
-msgid "Enable Debug"
-msgstr ""
-
-#: includes/admin/admin-pages.php:120
-msgid "Delete All Data On Uninstall"
-msgstr ""
-
-#: includes/admin/admin-pages.php:132 includes/admin/admin-pages.php:232
-msgid "Save Changes"
-msgstr ""
-
-#: includes/admin/admin-pages.php:148
-msgid "Post Promoter Pro - Social Settings"
-msgstr ""
-
-#: includes/admin/admin-pages.php:163
-msgid "Analytics"
-msgstr ""
-
-#: includes/admin/admin-pages.php:172
-msgid "None"
-msgstr ""
-
-#: includes/admin/admin-pages.php:181
-msgid "Simple Tracking"
-msgstr ""
-
-#: includes/admin/admin-pages.php:182
-msgid "Appends a query string to shared links for analytics."
-msgstr ""
-
-#: includes/admin/admin-pages.php:191
-msgid "Google Analytics Tags"
-msgstr ""
-
-#: includes/admin/admin-pages.php:192
-msgid "Results can be seen in the Acquisition Menu under \"Campaigns\""
-msgstr ""
-
-#: includes/admin/admin-pages.php:197
-msgid "Here is an example of what your link will look like"
-msgstr ""
-
-#: includes/admin/admin-pages.php:209
-msgid "URL Shortener"
-msgstr ""
-
-#: includes/admin/admin-pages.php:214
-msgid "Select a Service"
-msgstr ""
-
-#: includes/admin/admin-pages.php:256
-msgid "Post Promoter Pro - Scheduled Shares"
-msgstr ""
-
-#: includes/admin/admin-pages.php:262
-msgid ""
-"NOTICE: Schedule view does not show shortened links, they will be shortened "
-"at the time of sharing"
-msgstr ""
-
-#: includes/admin/admin-pages.php:266
-msgid ""
-"Items containing <span class=\"dashicons dashicons-format-image\"></span> "
-"indicate that the featured image will be attached when sharing to the social "
-"media account.</small>"
-msgstr ""
-
-#: includes/admin/admin-pages.php:279
-msgid "Post Promoter Pro - System Info"
-msgstr ""
-
-#: includes/admin/admin-pages.php:358
-msgid "Your server supports fsockopen."
-msgstr ""
-
-#: includes/admin/admin-pages.php:358
-msgid "Your server does not support fsockopen."
-msgstr ""
-
-#: includes/libs/twitter.php:109
+#: includes/libs/twitter.php:107
 msgid ""
 "Post Promoter Pro has been removed from your Twitter account. Please "
 "reauthorize to continue promoting your content."
+msgstr ""
+
+#: includes/linkedin-functions.php:80
+msgid "Connect to Linkedin"
+msgstr ""
+
+#: includes/linkedin-functions.php:82
+msgid "Disconnect from Linkedin"
+msgstr ""
+
+#: includes/linkedin-functions.php:187
+#, php-format
+msgid ""
+"Your LinkedIn authentcation expires in within %d days. Please <a href=\"%s"
+"\">refresh access.</a>."
+msgstr ""
+
+#: includes/linkedin-functions.php:231 includes/linkedin-functions.php:260
+msgid "LinkedIn"
+msgstr ""
+
+#: includes/linkedin-functions.php:309
+msgid "Share this post on LinkedIn at the time of publishing?"
+msgstr ""
+
+#: includes/linkedin-functions.php:314
+msgid "Link Title"
+msgstr ""
+
+#: includes/linkedin-functions.php:325
+msgid "Link Description"
+msgstr ""
+
+#: includes/twitter-functions.php:89
+msgid "Disconnect from Twitter"
+msgstr ""
+
+#: includes/twitter-functions.php:90
+msgid "Revoke Access via Twitter"
+msgstr ""
+
+#: includes/twitter-functions.php:212 includes/twitter-functions.php:241
+msgid "Twitter"
+msgstr ""
+
+#: includes/twitter-functions.php:298
+msgid "Tweet this post at the time of publishing?"
+msgstr ""
+
+#: includes/twitter-functions.php:312 includes/twitter-functions.php:359
+msgid "Attach Featured Image In Tweet"
+msgstr ""
+
+#: includes/twitter-functions.php:317
+msgid "Do not schedule tweets for this post."
+msgstr ""
+
+#: includes/twitter-functions.php:321
+msgid "Override Default Text and Times"
+msgstr ""
+
+#: includes/twitter-functions.php:333
+#, php-format
+msgid "Day %s"
+msgstr ""
+
+#: includes/twitter-functions.php:339
+msgid "Time"
+msgstr ""
+
+#: includes/twitter-functions.php:367
+msgid "Do not include links in your text, this will be added automatically."
+msgstr ""
+
+#: includes/wpme-functions.php:27
+msgid ""
+"The WP.me URL shortener does not support the Analytics settings listed "
+"above. No analytics tracking will be available."
+msgstr ""
+
+#: post-promoter-pro.php:152
+msgid "Settings"
+msgstr ""
+
+#: post-promoter-pro.php:165 post-promoter-pro.php:166
+msgid "Post Promoter"
+msgstr ""
+
+#: post-promoter-pro.php:173 post-promoter-pro.php:174
+msgid "Social Settings"
+msgstr ""
+
+#: post-promoter-pro.php:181 post-promoter-pro.php:182
+msgid "Schedule"
+msgstr ""
+
+#: post-promoter-pro.php:189 post-promoter-pro.php:190
+msgid "System Info"
+msgstr ""
+
+#: post-promoter-pro.php:252
+#, php-format
+msgid ""
+"Post Promoter Pro requires your license key to work, please <a href=\"%s"
+"\">enter it now</a>."
 msgstr ""

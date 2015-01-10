@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Return if twitter account is found
  * @return bool If the Twitter object exists
@@ -13,33 +17,82 @@ function ppp_twitter_enabled() {
 	return false;
 }
 
-function ppp_tw_connect_display() {
-	?>
-	<div>
-		<?php
+/**
+ * Register Twitter as a servcie
+ * @param  array $services The registered services
+ * @return array           With Twitter added
+ */
+function ppp_tw_register_service( $services ) {
+	$services[] = 'tw';
+
+	return $services;
+}
+add_filter( 'ppp_register_social_service', 'ppp_tw_register_service', 10, 1 );
+
+/**
+ * The Twitter Icon
+ * @param  string $string The default icon
+ * @return string         The HTML for the Twitter Icon
+ */
+function ppp_tw_account_list_icon( $string ) {
+	return '<span class="dashicons icon-ppp-tw"></span>';
+}
+add_filter( 'ppp_account_list_icon-tw', 'ppp_tw_account_list_icon', 10, 1 );
+
+/**
+ * The avatar for the connected Twitter Account
+ * @param  string $string Default avatar string
+ * @return string         The Twitter avatar
+ */
+function ppp_tw_account_list_avatar( $string ) {
+
+	if ( ppp_twitter_enabled() ) {
+		global $ppp_social_settings;
+		$avatar_url = $ppp_social_settings['twitter']['user']->profile_image_url_https;
+		$string = '<img class="ppp-social-icon" src="' . $avatar_url . '" />';
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_avatar-tw', 'ppp_tw_account_list_avatar', 10, 1 );
+
+/**
+ * The name of the connected Twitter account for the list view
+ * @param  string $string The default name
+ * @return string         The name from Twitter
+ */
+function ppp_tw_account_list_name( $string ) {
+
+	if ( ppp_twitter_enabled() ) {
+		global $ppp_social_settings;
+		$string = $ppp_social_settings['twitter']['user']->name;
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_name-tw', 'ppp_tw_account_list_name', 10, 1 );
+
+/**
+ * The actions for the Twitter account list
+ * @param  string $string The default actions
+ * @return string         The actions buttons HTML for Twitter
+ */
+function ppp_tw_account_list_actions( $string ) {
+
+	if ( ! ppp_twitter_enabled() ) {
 		global $ppp_twitter_oauth, $ppp_social_settings;
 		$tw_auth = $ppp_twitter_oauth->ppp_verify_twitter_credentials();
+		$tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url();
 
-		if ( isset( $tw_auth['error'] ) ) {
-			?><div class="update error"><p><?php echo $tw_auth['error']; ?></p></div><?php
-		} ?>
-		<?php $ppp_social_settings = get_option( 'ppp_social_settings' ); ?>
+		$string = '<a href="' . $tw_authurl . '"><img src="' . PPP_URL . '/includes/images/sign-in-with-twitter-gray.png" /></a>';
+	} else {
+		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ) . '" >' . __( 'Disconnect from Twitter', 'ppp-txt' ) . '</a>&nbsp;';
+		$string .= '<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank">' . __( 'Revoke Access via Twitter', 'ppp-txt' ) . '</a>';
+	}
 
-		<?php if ( !ppp_twitter_enabled() ) { ?>
-			<?php $tw_authurl = $ppp_twitter_oauth->ppp_get_twitter_auth_url(); ?>
-			<a href="<?php echo $tw_authurl; ?>"><img src="<?php echo PPP_URL; ?>/includes/images/sign-in-with-twitter-gray.png" /></a>
-		<?php } else { ?>
-		<div class="ppp-social-profile ppp-twitter-profile">
-			<img class="ppp-social-icon" src="<?php echo $ppp_social_settings['twitter']['user']->profile_image_url_https; ?>" />
-			<div class="ppp-twitter-info"><?php _e( 'Signed in as', 'ppp-txt' ); ?>:<br /><?php echo $ppp_social_settings['twitter']['user']->name; ?></div>
-		</div>
-		<a class="button-primary" href="<?php echo admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=twitter' ); ?>" ><?php _e( 'Disconnect from Twitter', 'ppp-txt' ); ?></a>&nbsp;
-		<a class="button-secondary" href="https://twitter.com/settings/applications" target="blank"><?php _e( 'Revoke Access via Twitter', 'ppp-txt' ); ?></a>
-	</div>
-	<?php }
+	return $string;
 }
-add_action( 'ppp_connect_display-tw', 'ppp_tw_connect_display' );
-
+add_filter( 'ppp_account_list_actions-tw', 'ppp_tw_account_list_actions', 10, 1 );
 
 /**
  * Listen for the oAuth tokens and verifiers from Twitter when in admin
@@ -254,8 +307,10 @@ function ppp_tw_add_metabox_content( $post ) {
 						<?php if ( isset( $ppp_share_on_publish_text ) ) {?>value="<?php echo htmlspecialchars( $ppp_share_on_publish_text ); ?>"<?php ;}?>
 					/><span class="ppp-text-length"></span>
 					<br />
-					<input <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
+					<span>
+						<input class="ppp-tw-featured-image-input" <?php if ( $disabled ): ?>readonly<?php endif; ?> id="ppp-share-on-publish-image" type="checkbox" name="_ppp_share_on_publish_include_image" value="1" <?php checked( '1', $ppp_share_on_publish_include_image, true ); ?>/>
 						&nbsp;<label for="ppp-share-on-publish-image"><?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?></label>
+					</span>
 				</p>
 			</p>
 			<input type="checkbox" name="_ppp_post_exclude" id="_ppp_post_exclude" value="1" <?php checked( '1', $ppp_post_exclude, true ); ?> />&nbsp;
@@ -301,7 +356,7 @@ function ppp_tw_add_metabox_content( $post ) {
 						<br />
 						<?php $use_image = isset( $ppp_post_override_data['day' . $day]['use_image'] ) ? '1' : false; ?>
 						<span class="ppp-override-meta">
-							<input <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
+							<input class="ppp-tw-featured-image-input" <?php if ( $readonly ): ?>readonly<?php endif; ?> type="checkbox" name="_ppp_post_override_data[day<?php echo $day; ?>][use_image]" value="1" <?php checked( '1', $use_image, true ); ?> />&nbsp;<?php _e( 'Attach Featured Image In Tweet', 'ppp-txt' ); ?>
 						</span>
 						</p>
 						<?php
@@ -323,13 +378,8 @@ add_action( 'ppp_generate_metabox_content-tw', 'ppp_tw_add_metabox_content', 10,
  * @return int          The Post ID
  */
 function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
-	global $ppp_options, $post;
 
-	if ( empty ( $post ) ) { // if $post is empty, like on a brand spanking new post, just return, we're not saving
-		return;
-	}
-
-	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+	if ( ! ppp_should_save( $post_id, $post ) ) {
 		return;
 	}
 
@@ -342,18 +392,21 @@ function ppp_tw_save_post_meta_boxes( $post_id, $post ) {
 	$ppp_post_override = ( isset( $_REQUEST['_ppp_post_override'] ) ) ? $_REQUEST['_ppp_post_override'] : '0';
 	$ppp_post_override_data = isset( $_REQUEST['_ppp_post_override_data'] ) ? $_REQUEST['_ppp_post_override_data'] : array();
 
-	update_post_meta( $post->ID, '_ppp_post_exclude', $ppp_post_exclude );
+	update_post_meta( $post_id, '_ppp_post_exclude', $ppp_post_exclude );
 
-	update_post_meta( $post->ID, '_ppp_share_on_publish', $ppp_share_on_publish );
-	update_post_meta( $post->ID, '_ppp_share_on_publish_text', $ppp_share_on_publish_text );
-	update_post_meta( $post->ID, '_ppp_share_on_publish_include_image', $ppp_share_on_publish_include_image );
+	update_post_meta( $post_id, '_ppp_share_on_publish', $ppp_share_on_publish );
+	update_post_meta( $post_id, '_ppp_share_on_publish_text', $ppp_share_on_publish_text );
+	update_post_meta( $post_id, '_ppp_share_on_publish_include_image', $ppp_share_on_publish_include_image );
 
-	update_post_meta( $post->ID, '_ppp_post_override', $ppp_post_override );
 
 	// Fixes a bug when all items are unchecked from being checked, removed if statement
-	update_post_meta( $post->ID, '_ppp_post_override_data', $ppp_post_override_data );
-
-	return $post->ID;
+	if ( $ppp_post_exclude === '1' ) {
+		delete_post_meta( $post_id, '_ppp_post_override' );
+		delete_post_meta( $post_id, '_ppp_post_override_data' );
+	} else {
+		update_post_meta( $post_id, '_ppp_post_override', $ppp_post_override );
+		update_post_meta( $post_id, '_ppp_post_override_data', $ppp_post_override_data );
+	}
 }
 add_action( 'save_post', 'ppp_tw_save_post_meta_boxes', 10, 2 ); // save the custom fields
 

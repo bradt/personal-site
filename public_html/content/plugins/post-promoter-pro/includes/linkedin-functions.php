@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Return if linkedin account is found
  * @return bool If the Linkedin object exists
@@ -14,30 +18,95 @@ function ppp_linkedin_enabled() {
 }
 
 /**
- * Display the linked in Connection area
- * @return void
+ * Registers LinkedIn as a service
+ * @param  array $services The registered servcies
+ * @return array           With LinkedIn added
  */
-function ppp_li_connect_display() {
-	?>
-	<div>
-	<?php
-	global $ppp_linkedin_oauth, $ppp_social_settings;
-	if ( !ppp_linkedin_enabled() ) { ?>
-		<?php $li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] ); ?>
-		<a class="button-primary" href="<?php echo $li_authurl; ?>"><?php _e( 'Connect to Linkedin', 'ppp-txt' ); ?></a>
-	<?php } else { ?>
-		<div class="ppp-social-profile ppp-linkedin-profile">
-			<div class="ppp-linkedin-info">
-				<?php _e( 'Signed in as', 'ppp-txt' ); ?>: <?php echo $ppp_social_settings['linkedin']->firstName . ' ' . $ppp_social_settings['linkedin']->lastName; ?>
-				<br />
-				<?php echo $ppp_social_settings['linkedin']->headline; ?>
-			</div>
-		</div>
-		<a class="button-primary" href="<?php echo admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=linkedin' ); ?>" ><?php _e( 'Disconnect from Linkedin', 'ppp-txt' ); ?></a>&nbsp;
-	</div>
-	<?php }
+function ppp_li_register_service( $services ) {
+	$services[] = 'li';
+
+	return $services;
 }
-add_action( 'ppp_connect_display-li', 'ppp_li_connect_display' );
+add_filter( 'ppp_register_social_service', 'ppp_li_register_service', 10, 1 );
+
+/**
+ * The LinkedIn icon
+ * @param  string $string Default list view string for icon
+ * @return string         The LinkedIn Icon HTML
+ */
+function ppp_li_account_list_icon( $string ) {
+	return '<span class="dashicons icon-ppp-li"></span>';
+}
+add_filter( 'ppp_account_list_icon-li', 'ppp_li_account_list_icon', 10, 1 );
+
+/**
+ * The LinkedIn Avatar for the account list
+ * @param  string $string Default icon string
+ * @return string         The HTML for the LinkedIn Avatar
+ */
+function ppp_li_account_list_avatar( $string ) {
+	return $string;
+}
+add_filter( 'ppp_account_list_avatar-li', 'ppp_li_account_list_avatar', 10, 1 );
+
+/**
+ * The name for the linked LinkedIn account
+ * @param  string $string The default list name
+ * @return string         The name for the attached LinkedIn account
+ */
+function ppp_li_account_list_name( $string ) {
+
+	if ( ppp_linkedin_enabled() ) {
+		global $ppp_social_settings;
+		$string  = $ppp_social_settings['linkedin']->firstName . ' ' . $ppp_social_settings['linkedin']->lastName;
+		$string .= '<br />' . $ppp_social_settings['linkedin']->headline;
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_name-li', 'ppp_li_account_list_name', 10, 1 );
+
+/**
+ * The actions column of the accounts list for LinkedIn
+ * @param  string $string The default actions string
+ * @return string         HTML for the LinkedIn Actions
+ */
+function ppp_li_account_list_actions( $string ) {
+
+	if ( ! ppp_linkedin_enabled() ) {
+		global $ppp_linkedin_oauth, $ppp_social_settings;
+		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] );
+
+		$string = '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Linkedin', 'ppp-txt' ) . '</a>';
+	} else {
+		$string  = '<a class="button-primary" href="' . admin_url( 'admin.php?page=ppp-social-settings&ppp_social_disconnect=true&ppp_network=linkedin' ) . '" >' . __( 'Disconnect from Linkedin', 'ppp-txt' ) . '</a>&nbsp;';
+	}
+
+	return $string;
+}
+add_filter( 'ppp_account_list_actions-li', 'ppp_li_account_list_actions', 10, 1 );
+
+/**
+ * The Extras column for the account list for LinkedIn
+ * @param  string $string Default extras column string
+ * @return string         The HTML for the LinkedIn Extras column
+ */
+function ppp_li_account_list_extras( $string ) {
+	if ( ppp_linkedin_enabled() ) {
+		global $ppp_social_settings, $ppp_options;
+		if ( $ppp_options['enable_debug'] ) {
+			$days_left  = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+			$refresh_in = round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+
+			$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
+			$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
+		}
+	}
+
+	return $string;
+
+}
+add_filter( 'ppp_account_list_extras-li', 'ppp_li_account_list_extras', 10, 1 );
 
 /**
  * Capture the oauth return from linkedin
@@ -63,7 +132,7 @@ function ppp_disconnect_linkedin() {
 	if ( isset( $ppp_social_settings['linkedin'] ) ) {
 		unset( $ppp_social_settings['linkedin'] );
 		update_option( 'ppp_social_settings', $ppp_social_settings );
-		delete_option( '_ppp_li_linkedin_expires' );
+		delete_option( '_ppp_linkedin_refresh' );
 	}
 }
 add_action( 'ppp_disconnect-linkedin', 'ppp_disconnect_linkedin', 10 );
@@ -90,9 +159,9 @@ function ppp_li_execute_refresh() {
 		return;
 	}
 
-	$expiration_date = get_option( '_ppp_linkedin_refresh', true );
+	$refresh_date = (int) get_option( '_ppp_linkedin_refresh', true );
 
-	if ( current_time( 'timestamp' ) > $expiration_date ) {
+	if ( current_time( 'timestamp' ) > $refresh_date ) {
 		add_action( 'admin_notices', 'ppp_linkedin_refresh_notice' );
 	}
 }
@@ -107,7 +176,6 @@ function ppp_linkedin_refresh_notice() {
 
 	// Look for the tokens coming back
 	$ppp_linkedin_oauth->ppp_initialize_linkedin();
-	$expiration_date = get_option( '_ppp_linkedin_refresh', true );
 
 	$token = $ppp_social_settings['linkedin']->access_token;
 	$url = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
@@ -270,9 +338,8 @@ add_action( 'ppp_generate_metabox_content-li', 'ppp_li_add_metabox_content', 10,
  * @return int          The Post ID
  */
 function ppp_li_save_post_meta_boxes( $post_id, $post ) {
-	global $ppp_options;
 
-	if ( !isset( $ppp_options['post_types'] ) || !is_array( $ppp_options['post_types'] ) || !array_key_exists( $post->post_type, $ppp_options['post_types'] ) ) {
+	if ( ! ppp_should_save( $post_id, $post ) ) {
 		return;
 	}
 
@@ -280,11 +347,11 @@ function ppp_li_save_post_meta_boxes( $post_id, $post ) {
 	$ppp_share_on_publish_title = ( isset( $_REQUEST['_ppp_li_share_on_publish_title'] ) ) ? $_REQUEST['_ppp_li_share_on_publish_title'] : '';
 	$ppp_share_on_publish_desc = ( isset( $_REQUEST['_ppp_li_share_on_publish_desc'] ) ) ? $_REQUEST['_ppp_li_share_on_publish_desc'] : '';
 
-	update_post_meta( $post->ID, '_ppp_li_share_on_publish', $ppp_li_share_on_publish );
-	update_post_meta( $post->ID, '_ppp_li_share_on_publish_title', $ppp_share_on_publish_title );
-	update_post_meta( $post->ID, '_ppp_li_share_on_publish_desc', $ppp_share_on_publish_desc );
+	update_post_meta( $post_id, '_ppp_li_share_on_publish', $ppp_li_share_on_publish );
+	update_post_meta( $post_id, '_ppp_li_share_on_publish_title', $ppp_share_on_publish_title );
+	update_post_meta( $post_id, '_ppp_li_share_on_publish_desc', $ppp_share_on_publish_desc );
 
-	return $post->ID;
+	return $post_id;
 }
 add_action( 'save_post', 'ppp_li_save_post_meta_boxes', 10, 2 ); // save the custom fields
 

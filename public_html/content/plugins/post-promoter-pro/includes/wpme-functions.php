@@ -1,5 +1,8 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Adds the WP.me Shortner to the list of available shorteners
  * @param string $selected_shortener The currently selected url shortener

@@ -3,14 +3,14 @@
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
 Description: Schedule the promotion of posts for the next 6 days, with no further work.
-Version: 2.0.1
+Version: 2.1.1
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.0.1' );
+define( 'PPP_VERSION', '2.1.1' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -126,7 +126,9 @@ class PostPromoterPro {
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
 		wp_enqueue_script( 'jquery-ui-slider' );
-		wp_enqueue_script( 'ppp_timepicker_js', PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js', array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
+
+		$jquery_ui_timepicker_path = PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js';
+		wp_enqueue_script( 'ppp_timepicker_js', $jquery_ui_timepicker_path , array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
 	}
 
@@ -167,9 +169,30 @@ class PostPromoterPro {
 		               'ppp_admin_page'
 		             );
 
-		add_submenu_page( 'ppp-options', __( 'Social Settings', 'ppp-txt' ), __( 'Social Settings', 'ppp-txt' ), 'manage_options', 'ppp-social-settings', 'ppp_display_social' );
-		add_submenu_page( 'ppp-options', __( 'Schedule', 'ppp-txt' ), __( 'Schedule', 'ppp-txt' ), 'manage_options', 'ppp-schedule-info', 'ppp_display_schedule' );
-		add_submenu_page( 'ppp-options', __( 'System Info', 'ppp-txt' ), __( 'System Info', 'ppp-txt' ), 'manage_options', 'ppp-system-info', 'ppp_display_sysinfo' );
+		add_submenu_page( 'ppp-options',
+			              __( 'Social Settings', 'ppp-txt' ),
+			              __( 'Social Settings', 'ppp-txt' ),
+			              'manage_options',
+			              'ppp-social-settings',
+			              'ppp_display_social'
+			            );
+
+		add_submenu_page( 'ppp-options',
+			              __( 'Schedule', 'ppp-txt' ),
+			              __( 'Schedule', 'ppp-txt' ),
+			              'manage_options',
+			              'ppp-schedule-info',
+			              'ppp_display_schedule'
+			            );
+
+		add_submenu_page( 'ppp-options',
+			              __( 'System Info', 'ppp-txt' ),
+			              __( 'System Info', 'ppp-txt' ),
+			              'manage_options',
+			              'ppp-system-info',
+			              'ppp_display_sysinfo'
+			            );
+
 	}
 
 	/**
@@ -224,7 +247,13 @@ class PostPromoterPro {
 	public function no_license_nag() {
 		?>
 		<div class="updated">
-			<p><?php printf( __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-options' ) ); ?></p>
+			<p>
+				<?php printf(
+			         __( 'Post Promoter Pro requires your license key to work, please <a href="%s">enter it now</a>.', 'ppp-txt' ),
+			              admin_url( 'admin.php?page=ppp-options' )
+			         );
+			    ?>
+			</p>
 		</div>
 		<?php
 	}
@@ -323,4 +352,9 @@ class PostPromoterPro {
 	}
 }
 
-$ppp_loaded = PostPromoterPro::getInstance();
+function ppp_load_postpromoterpro() {
+	global $ppp_loaded;
+
+	$ppp_loaded = PostPromoterPro::getInstance();
+}
+add_action( 'plugins_loaded', 'ppp_load_postpromoterpro' );

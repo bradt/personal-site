@@ -68,10 +68,11 @@ if( !class_exists( 'PPP_Linkedin' ) ) {
 
 				$data = new stdClass();
 				$data->access_token = $_REQUEST['li_access_token'];
-				$data->expires_on = current_time( 'timestamp' ) + (int)$_REQUEST['expires_in'];
 
-				$int_expires = (int) $data->expires_on;
-				update_option( '_ppp_linkedin_refresh', current_time( 'timestamp' ) + round( $int_expires/1.25 ) );
+				$expires_in = (int) $_REQUEST['expires_in'];
+				$data->expires_on = current_time( 'timestamp' ) + $expires_in;
+
+				update_option( '_ppp_linkedin_refresh', current_time( 'timestamp' ) + round( $expires_in/1.25 ) );
 
 				$ppp_social_settings['linkedin'] = $data;
 				update_option( 'ppp_social_settings', $ppp_social_settings );

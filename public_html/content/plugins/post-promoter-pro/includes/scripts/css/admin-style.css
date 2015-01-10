@@ -2,7 +2,7 @@
 	float: left;
 }
 
-#ppp-li-image > img {
+#ppp-li-image > img, #ppp-fb-image > img {
 	padding: 5px;
 	border: 1px solid #ccc;
 	margin: 0 5px 25px 0;
@@ -76,9 +76,9 @@
 .ppp-social-icon {
 	float: left;
 	padding: 5px;
-    -webkit-border-radius: 50%;
-    -moz-border-radius: 50%;
-    border-radius: 50%;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
 }
 
 .ppp-twitter-info {
@@ -111,6 +111,30 @@
 	padding-left: 25px;
 }
 
+.fixed .column-icon {
+	width: 25px;
+}
+
+.icon.column-icon, .avatar.column-avatar, .name.column-name, .actions.column-actions, .extras.column-extras {
+	vertical-align: middle;
+}
+
+.icon.column-icon .dashicons {
+	font-size: 30px;
+}
+
+.column-avatar {
+	width: 65px;
+}
+
+.column-name {
+	width: 225px;
+}
+
+.column-actions {
+	width: 50%;
+}
+
 /* Dashicon Styles */
 @charset "UTF-8";
 
@@ -125,21 +149,8 @@
 	font-style: normal;
 }
 
-[data-icon]:before {
-	font-family: "ppp-dashicon" !important;
-	content: attr(data-icon);
-	font-style: normal !important;
-	font-weight: normal !important;
-	font-variant: normal !important;
-	text-transform: none !important;
-	speak: none;
-	line-height: 1;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
-}
-
-[class^="icon-"]:before,
-[class*=" icon-"]:before {
+[class^="icon-ppp-"]:before,
+[class*="icon-ppp-"]:before {
 	font-family: "ppp-dashicon" !important;
 	font-style: normal !important;
 	font-weight: normal !important;
@@ -157,19 +168,19 @@
 }
 
 .icon-ppp-tw:before {
-  content: "b";
+	content: "b";
 }
 .icon-ppp-fb:before {
-  content: "c";
+	content: "c";
 }
 .icon-ppp-li:before {
-  content: "d";
+	content: "d";
 }
 .icon-ppp-gp:before {
-  content: "e";
+	content: "e";
 }
 .icon-ppp-pt:before {
-  content: "f";
+	content: "f";
 }
 
 

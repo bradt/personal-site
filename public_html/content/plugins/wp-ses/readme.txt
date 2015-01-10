@@ -3,7 +3,7 @@ Contributors: SylvainDeaure
 Donate link: http://wp-ses.com/donate.html
 Tags: email,ses,amazon,webservice,delivrability,newsletter,autoresponder,mail,wp_mail,smtp,service
 Requires at least: 3.0.0
-Tested up to: 3.8.1
+Tested up to: 4.1
 Stable tag: trunk
 
 WP-SES redirects all outgoing WordPress emails through Amazon Simple Email Service (SES) for maximum email delivrability.
@@ -39,6 +39,7 @@ Roadmap
 *	Control of sending rate
 *	Notice for volume limits
 *	Bounce and blacklist management
+*       Some kind of Logging for better debug
 
 
 You can read more about Amazon SES here : http://aws.amazon.com/ses/
@@ -131,6 +132,11 @@ define('WP_SES_ENDPOINT', 'email.eu-west-1.amazonaws.com');
 1. the settings screen of WP-SES plugin.
 
 == Changelog ==
+
+= 0.3.56 =
+* fixed sender name format
+* fixed regexp for some header recognition
+* now supports comma separated emails in to: header
 
 = 0.3.54 =
 * bad ses lib include fixed

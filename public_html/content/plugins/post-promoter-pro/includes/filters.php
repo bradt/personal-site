@@ -1,5 +1,8 @@
 <?php
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Set the default array of tokens for replacement
  * @param  array $tokens The array of existing tokens
@@ -89,6 +92,9 @@ function ppp_generate_google_utm_link( $share_link, $post_id, $name ) {
 	switch( $name_parts[3] ) {
 		case 'li':
 			$network = 'LinkedIn';
+			break;
+		case 'fb':
+			$network = 'Facebook';
 			break;
 		case 'tw':
 		default:

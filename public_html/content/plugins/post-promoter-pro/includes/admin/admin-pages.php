@@ -1,4 +1,8 @@
 <?php
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Display the General settings tab
  * @return void
@@ -9,8 +13,8 @@ function ppp_admin_page() {
 	$status 	= get_option( '_ppp_license_key_status' );
 	$share_days_count = ppp_share_days_count();
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 	<div class="wrap">
+		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro', 'ppp-txt' ); ?></h2>
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-options' ); ?>
 			<table class="form-table">
@@ -145,19 +149,21 @@ function ppp_display_social() {
 
 	$ppp_share_settings = get_option( 'ppp_share_settings' );
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h2>
-		<div class="wrap">
+	<div class="wrap">
+		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Social Settings', 'ppp-txt' ); ?></h2>
 		<form method="post" action="options.php">
 			<?php wp_nonce_field( 'ppp-share-settings' ); ?>
+			<h3><?php _e( 'Social Media Accounts', 'ppp-txt' ); ?></h3>
+			<?php
+			require_once PPP_PATH . 'includes/admin/class-accounts-table.php';
+
+			$accounts_table = new PPP_Accounts_Table();
+			$accounts_table->prepare_items();
+
+			$accounts_table->display();
+			?>
 			<table class="form-table">
-
-				<?php do_action( 'ppp_social_media_tabs_display' ); ?>
-
-				<?php do_action( 'ppp_social_media_content_display' ); ?>
-
-				<?php
-				$analytics_option = isset( $ppp_share_settings['analytics'] ) ? $ppp_share_settings['analytics'] : 0;
-				?>
+				<?php $analytics_option = isset( $ppp_share_settings['analytics'] ) ? $ppp_share_settings['analytics'] : 0; ?>
 				<tr valign="top">
 					<th scope="row" valign="top">
 						<?php _e( 'Analytics', 'ppp-txt' ); ?></span>
@@ -196,7 +202,11 @@ function ppp_display_social() {
 						<hr />
 						<small><?php _e( 'Here is an example of what your link will look like', 'ppp-txt' ); ?>: <br />
 							<?php $post = wp_get_recent_posts( array( 'numberposts' => 1 ) ); ?>
-							<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
+							<?php if( count( $post ) > 0 ): ?>
+								<code><?php echo ppp_generate_link( $post[0]['ID'], 'sharedate_1_' . $post[0]['ID'], false ); ?></code></small>
+							<?php else: ?>
+								<em><?php _e( 'No posts available to generate link from.', 'ppp-txt' ); ?></em>
+							<?php endif; ?>
 						</p>
 					</td>
 				</tr>
@@ -224,7 +234,7 @@ function ppp_display_social() {
 				<?php settings_fields( 'ppp-share-settings' ); ?>
 
 				<input type="hidden" name="action" value="update" />
-				<input type="hidden" name="page_options" value="ppp_share_settings" />
+				<input type="hidden" name="page_options" value="ppp_share_settings,ppp_social_settings" />
 
 
 			</table>
@@ -253,8 +263,8 @@ function ppp_display_schedule() {
 	$schedule_table = new PPP_Schedule_Table();
 	$schedule_table->prepare_items();
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h2>
 	<div class="wrap">
+		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - Scheduled Shares', 'ppp-txt' ); ?></h2>
 		<?php $schedule_table->display() ?>
 	</div>
 	<?php if ( ppp_is_shortener_enabled() ): ?>
@@ -276,8 +286,8 @@ function ppp_display_sysinfo() {
 	global $wpdb;
 	global $ppp_options;
 	?>
-	<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - System Info', 'ppp-txt' ); ?></h2>
-		<div class="wrap">
+	<div class="wrap">
+		<div id="icon-options-general" class="icon32"></div><h2><?php _e( 'Post Promoter Pro - System Info', 'ppp-txt' ); ?></h2>
 		<textarea style="font-family: Menlo, Monaco, monospace; white-space: pre" onclick="this.focus();this.select()" readonly cols="150" rows="35">
 	SITE_URL:                 <?php echo site_url() . "\n"; ?>
 	HOME_URL:                 <?php echo home_url() . "\n"; ?>

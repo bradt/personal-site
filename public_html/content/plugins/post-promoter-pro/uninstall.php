@@ -1,5 +1,12 @@
 <?php
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * Runs whenever the 'uninstall' link is clicked in the Plugins List
+ *
+ * Removes our settings if the option to 'delete on uninstall is set'
+ */
 $options = get_option( 'ppp_options' );
 
 if ( isset( $options['delete_on_uninstall'] ) ) {

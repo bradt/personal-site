@@ -1,5 +1,7 @@
 <?php
-// vim: foldmethod=marker
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* Generic exception class
  */

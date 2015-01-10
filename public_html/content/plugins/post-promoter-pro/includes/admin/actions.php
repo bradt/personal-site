@@ -1,11 +1,13 @@
 <?php
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
  * Creates a listener for disconnecting a social media account
  *
  * Developers simply need to include the ?ppp_social_disconnect=true&ppp_network=[network_shortname]
  * in their link to disconnect and then hook ppp_disconnect-[network_shortname]
- * 
+ *
  * @return void
  */
 function ppp_disconnect_social() {
@@ -185,7 +187,7 @@ function ppp_list_view_maybe_take_action() {
 add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
 
 	// These are used by the ppp_list_view_maybe_take_action function
-	
+
 	/**
 	 * When an entry is deleted from schedule view, register a notice
 	 * @return void
