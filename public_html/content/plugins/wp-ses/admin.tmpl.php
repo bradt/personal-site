@@ -27,7 +27,7 @@
             _e("Amazon API Keys are valid", 'wpses');
         } else {
             echo('<li style="color:#f00;">');
-            _e("Amazon API Keys are not valid, or you did not finalize your Amazon SES registration.", 'wpses');
+            _e("Amazon API Keys are not valid, or you did not finalize youy Amazon SES registration.", 'wpses');
         }
         ?></li>
         <?php
@@ -62,8 +62,6 @@
             ?>
             <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
                 <?php wp_nonce_field('wpses'); ?>
-                <?php _e("Ignore sender email and force activation.", 'wpses'); ?><input  type="checkbox" name="force" value="1" /><br />
-                <small>Check this if you use IAM credentials, have validated sender emails for the SES endpoint you are using, production Email test is OK but you can't activate the plugin.</small>
                 <p class="submit">
                     <input type="submit" name="activate" value="<?php _e('Activate plugin', 'wpses') ?>" />
                 </p><?php _e('Warning: Activate only if your account is in production mode.<br />One activated, all outgoing emails will go through Amazon SES and will NOT be sent to any email while in sandbox.', 'wpses') ?>

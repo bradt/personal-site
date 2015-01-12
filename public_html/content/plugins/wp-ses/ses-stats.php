@@ -12,7 +12,7 @@ if ($wpses_options['credentials_ok'] != 1) {
     include ('error.tmpl.php');
 }
 
-require_once (WP_PLUGIN_DIR . '/wp-ses/ses.class.0.8.4.php');
+require_once (WP_PLUGIN_DIR . '/wp-ses/ses.class.php');
 $SES = new SimpleEmailService($wpses_options['access_key'], $wpses_options['secret_key']);
 
 if (!is_object($SES)) {
