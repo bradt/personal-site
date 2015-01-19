@@ -1,5 +1,13 @@
+### 2.4.11
+- **[Fix]** Fixed an issue that prevented post attribution when using explicit IDs
+- **[Fix]** Set proper flags when all search terms have been invalidated
+- **[Fix]** PHP Warning cleanup with Dashboard Widget
+- **[Improvement]** Further optimization of results pool reduction when exclusions are in place
+- **[Update]** Updated translation source files
+- **[Change]** `searchwp_term_in` filter now has a 3rd parameter with the original (e.g. unstemmed when stemming is enabled) term
+
 ### 2.4.10
-- **[Fix]** PHP 5.2 compatibility with PDF parser fallback 
+- **[Fix]** PHP 5.2 compatibility with PDF parser fallback
 - **[Fix]** Fixed an issue where some search strings were not properly ignored
 - **[Fix]** Proper clearing of meta boxes on stats page at certain resolutions
 

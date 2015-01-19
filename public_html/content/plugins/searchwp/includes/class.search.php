@@ -493,6 +493,11 @@ class SearchWPSearch {
 							)
 						);
 
+						// Media won't be published
+						if( 'attachment' == $postType ) {
+							$args['post_status'] = 'inherit';
+						}
+
 						$excludedByTerm = new WP_Query( $args );
 
 						if ( ! empty( $excludedByTerm ) ) {
@@ -993,14 +998,47 @@ class SearchWPSearch {
 	 * @return bool Whether attribution is applied anywhere given the current engine settings
 	 */
 	function maybe_attribution_anywhere() {
-		$attribution_anywhere = false;
+		$attribution_post_types = array();
+		$attributed_post_ids = array();
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true && ( ( isset( $postTypeWeights['options']['parent'] ) && ! empty( $postTypeWeights['options']['parent'] ) ) || ( isset( $postTypeWeights['options']['attribute'] ) && ! empty( $postTypeWeights['options']['attribute'] ) ) ) ) {
-				$attribution_anywhere[] = $postType;
+			if (
+				isset( $postTypeWeights['enabled'] )
+				&& $postTypeWeights['enabled'] == true
+				&&
+				(
+					(
+						isset( $postTypeWeights['options']['parent'] )
+						&& ! empty( $postTypeWeights['options']['parent'] )
+					)
+					||
+					(
+						isset( $postTypeWeights['options']['attribute'] )
+						&& ! empty( $postTypeWeights['options']['attribute'] )
+					)
+					||
+					(
+						isset( $postTypeWeights['options']['attribute_to'] )
+						&& ! empty( $postTypeWeights['options']['attribute_to'] )
+					)
+				)
+			) {
+				$attribution_post_types[] = $postType;
+
+				if ( isset( $postTypeWeights['options']['attribute_to'] )
+					&& ! empty( $postTypeWeights['options']['attribute_to'] ) ) {
+					$attributed_post_ids[] = absint( $postTypeWeights['options']['attribute_to'] );
+				}
+
+				if ( isset( $postTypeWeights['options']['attribute'] )
+				     && ! empty( $postTypeWeights['options']['attribute'] ) ) {
+					$attributed_post_ids[] = absint( $postTypeWeights['options']['attribute'] );
+				}
+
 				break;
 			}
 		}
-		return $attribution_anywhere;
+
+		return array( 'post_types' => $attribution_post_types, 'post_ids' => $attributed_post_ids );
 	}
 
 
@@ -1887,6 +1925,9 @@ class SearchWPSearch {
 		}
 		$this->sql .= " AND {$wpdb->prefix}posts.ID IN (" . substr( $end_cap_limiter, 0, strlen( $end_cap_limiter ) - 1 ) . ") ";
 
+		// also limit the wp_posts pool taking into consideration exclusions
+		$this->sql .= $this->sql_exclude;
+
 		// group the results
 		$this->sql .= "
             GROUP BY {$wpdb->prefix}posts.ID
@@ -2068,7 +2109,7 @@ class SearchWPSearch {
 		$term = array( $term );
 
 		// let extensions filter this all day
-		$term = apply_filters( 'searchwp_term_in', $term, $this->engine );
+		$term = apply_filters( 'searchwp_term_in', $term, $this->engine, $original_prepped_term );
 
 		// prepare our terms
 		if( ! is_array( $term ) || empty( $term ) ) {
@@ -2114,8 +2155,15 @@ class SearchWPSearch {
 
 			// if attribution is concerned, the post_parent likely WILL NOT have the term or stem, so we need to accommodate
 			// by adding a conditional that excuses attributed post types that do not have any terms/stems
-			if ( $post_types_with_attribution = $this->maybe_attribution_anywhere() ) {
-				$limiter_sql .= " OR ( {$this->db_prefix}terms.term NOT IN ('" . implode( "','", $this->terms_final ) . "') AND {$this->db_prefix}terms.stem NOT IN ('" . implode( "','", $this->terms_final ) . "') AND {$wpdb->posts}.post_type NOT IN ('" . implode( "','", $post_types_with_attribution ) . "') ) ";
+			$post_types_with_attribution = $this->maybe_attribution_anywhere();
+			if ( ! empty( $post_types_with_attribution['post_types'] ) ) {
+				$limiter_sql .= " OR ( {$this->db_prefix}terms.term NOT IN ('" . implode( "','", $this->terms_final ) . "') AND {$this->db_prefix}terms.stem NOT IN ('" . implode( "','", $this->terms_final ) . "') AND {$wpdb->posts}.post_type NOT IN ('" . implode( "','", $post_types_with_attribution['post_types'] ) . "') ) ";
+
+				// if we can also allow specific post IDs, do that
+				if ( count( $post_types_with_attribution['post_ids'] ) ) {
+					$attributed_post_ids = array_map( 'absint', $post_types_with_attribution['post_ids'] );
+					$limiter_sql .= " OR {$wpdb->posts}.ID IN (" . implode( ",", $attributed_post_ids ) . ") ";
+				}
 			}
 
 			// let it rip

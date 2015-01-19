@@ -3,7 +3,7 @@ Contributors: SylvainDeaure
 Donate link: http://wp-ses.com/donate.html
 Tags: email,ses,amazon,webservice,delivrability,newsletter,autoresponder,mail,wp_mail,smtp,service
 Requires at least: 3.0.0
-Tested up to: 3.8.1
+Tested up to: 4.1
 Stable tag: trunk
 
 WP-SES redirects all outgoing WordPress emails through Amazon Simple Email Service (SES) for maximum email delivrability.
@@ -27,7 +27,8 @@ Current features are:
 *	Ability to customize return path for delivery failure notifications
 *       Custom Reply-To or from Headers
 *       Default config values for centralised WPMU setups
-*       SES Endpoint selection       
+*       SES Endpoint selection     
+*       Mails with attachments (Compatible with Contact Form 7)  
 
 See full features at http://wp-ses.com/features.html
 
@@ -38,6 +39,7 @@ Roadmap
 *	Control of sending rate
 *	Notice for volume limits
 *	Bounce and blacklist management
+*       Some kind of Logging for better debug
 
 
 You can read more about Amazon SES here : http://aws.amazon.com/ses/
@@ -87,41 +89,63 @@ Then, when all works as expected, fill in the config file.
 
 Edit the wp-config.php file, and add what you want to define. Here is a complete setup, some defines are optionnal.
 
-// WP-SES defines
+// WP-SES defines  
 
-// Amazon Access Key
+// Amazon Access Key  
 define('WP_SES_ACCESS_KEY','blablablakey');
 
-// Amazon Secret Key
+// Amazon Secret Key  
 define('WP_SES_SECRET_KEY','blablablasecret');
 
-// From mail (optionnal) must be an amazon SES validated email
-// hard coded email, leave empty or comment out to allow custom setting via panel
+// From mail (optional) must be an amazon SES validated email  
+// hard coded email, leave empty or comment out to allow custom setting via panel  
 define('WP_SES_FROM','me@....');
 
-// Return path for bounced emails (optionnal)
-// hard coded email, leave empty or comment out to allow custom setting via panel
+// Return path for bounced emails (optional)  
+// hard coded email, leave empty or comment out to allow custom setting via panel  
 define('WP_SES_RETURNPATH','return@....');
 
-// ReplyTo (optionnal) - This will get the replies from the recipients.
-// hard coded email, or 'headers' for using the 'replyto' from the headers. 
-// Leave empty or comment out to allow custom setting via panel
+// ReplyTo (optional) - This will get the replies from the recipients.  
+// hard coded email, or 'headers' for using the 'replyto' from the headers.   
+// Leave empty or comment out to allow custom setting via panel  
 define('WP_SES_REPLYTO','headers');
 
-// Hide list of verified emails (optionnal)
+// Hide list of verified emails (optional)  
 define('WP_SES_HIDE_VERIFIED',true);
 
-// Hide SES Stats panel (optionnal)
+// Hide SES Stats panel (optional)  
 define('WP_SES_HIDE_STATS',true);
 
-// Auto activate the plugin for all sites (optionnal)
+// Auto activate the plugin for all sites (optional)  
 define('WP_SES_AUTOACTIVATE',true);
+
+When using defines to hardcode your setting, don't forget to define the SES endpoints, too :
+
+define('WP_SES_ENDPOINT', 'email.us-east-1.amazonaws.com');  
+OR  
+define('WP_SES_ENDPOINT', 'email.us-west-2.amazonaws.com');  
+OR  
+define('WP_SES_ENDPOINT', 'email.eu-west-1.amazonaws.com');  
 
 == Screenshots ==
 
 1. the settings screen of WP-SES plugin.
 
 == Changelog ==
+
+= 0.3.56 =
+* fixed sender name format
+* fixed regexp for some header recognition
+* now supports comma separated emails in to: header
+
+= 0.3.54 =
+* bad ses lib include fixed
+* Added "force plugin activation" for some use case with IAM credentials
+
+= 0.3.52 =
+* Warning if Curl not installed
+* Attachments support for use with Contact Form (finally !)
+* Notice fixed
 
 = 0.3.50 =
 * Notice fixed, setup documentation slightly tweaked
@@ -161,7 +185,7 @@ define('WP_SES_AUTOACTIVATE',true);
 * Various bugfixes
 
 = 0.2.2 =
-Reference Language is now English.
+Reference Language is now English.  
 WP SES est fourni avec les textes en Francais.
 
 = 0.2.1 =

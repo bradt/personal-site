@@ -2,14 +2,14 @@
 
 /*
   Plugin Name: WP SES
-  Version: 0.3.50
+  Version: 0.3.56
   Plugin URI: http://wp-ses.com
   Description: Uses Amazon Simple Email Service instead of local mail for all outgoing WP emails.
   Author: Sylvain Deaure
   Author URI: http://www.blog-expert.fr
  */
 
-define('WPSES_VERSION', 0.350);
+define('WPSES_VERSION', 0.356);
 
 // refs
 // http://aws.amazon.com/fr/
@@ -31,7 +31,8 @@ define('WPSES_VERSION', 0.350);
 // limits (check once per hour (or  faster) and stop if near limit)
 // blacklist, mail delivery handling
 // dashboard integration (main stats without extra page)
-
+// Add error display for test messages
+// add attachments (contact form 7) : see https://github.com/daniel-zahariev/php-aws-ses
 
 if (defined('WP_SES_ACCESS_KEY') and defined('WP_SES_SECRET_KEY')) {
     define('WP_SES_RESTRICTED', true);
@@ -47,7 +48,7 @@ if (is_admin()) {
     register_activation_hook(__FILE__, 'wpses_install');
     register_deactivation_hook(__FILE__, 'wpses_uninstall');
 }
-require_once (WP_PLUGIN_DIR . '/wp-ses/ses.class.php');
+require_once (WP_PLUGIN_DIR . '/wp-ses/ses.class.0.8.4.php');
 
 function wpses_init() {
     load_plugin_textdomain('wpses', false, basename(dirname(__FILE__)));
@@ -70,6 +71,7 @@ function wpses_install() {
             'credentials_ok' => 0,
             'sender_ok' => 0,
             'last_ses_check' => 0, // timestamp of last quota check
+            'force' => 0,
             'active' => 0, // reset to 0 if not pluggable or config change.
             'version' => '0' // Version of the db
                 // TODO: garder liste des ids des demandes associ�es � chaque email.
@@ -126,7 +128,7 @@ function wpses_options() {
     if ($updated) {
         update_option('wpses_senders', $senders);
     }
-    if (($wpses_options['sender_ok'] != 1) or ($wpses_options['credentials_ok'] != 1)) {
+    if ((($wpses_options['sender_ok'] != 1) and $wpses_options['force'] != 1) or ($wpses_options['credentials_ok'] != 1)) {
         $wpses_options['active'] = 0;
         update_option('wpses_options', $wpses_options);
     }
@@ -152,6 +154,12 @@ function wpses_options() {
     }
 
     if (!empty($_POST['activate'])) {
+        $wpses_options['force'] = 0;
+        if (1 == $_POST['force']) {
+            // bad hack to force plugin activation with IAM credentials
+            $wpses_options['sender_ok'] == 1;
+            $wpses_options['force'] = 1;
+        }
         if (($wpses_options['sender_ok'] == 1) and ($wpses_options['credentials_ok'] == 1)) {
             $wpses_options['active'] = 1;
             update_option('wpses_options', $wpses_options);
@@ -240,6 +248,16 @@ function wpses_uninstall() {
 
 function wpses_admin_warnings() {
     global $wpses_options;
+    if (!function_exists('curl_version')) {
+
+        function wpses_curl_warning() {
+            global $wpses_options;
+            echo "<div id='wpses-curl-warning' class='updated fade'><p><strong>" . __("WP SES - CURL extension not available. SES Won't work without Curl. Ask your host.", 'wpses') . "</strong></p></div>";
+        }
+
+        add_action('admin_notices', 'wpses_curl_warning');
+        return;
+    }
     $active = $wpses_options['active'];
     if ($active <= 0) {
 
@@ -384,10 +402,14 @@ function wpses_prod_email($mail, $subject, $content) {
 }
 
 // returns msg id
-function wpses_mail($to, $subject, $message, $headers = '') {
+function wpses_mail($to, $subject, $message, $headers = '', $attachments = '') {
     global $SES;
     global $wpses_options;
     global $wp_better_emails;
+    // headers can be sent as array, too. convert them to string to avoid further complications.
+    if (is_array($headers)) {
+        $headers = implode("\r\n", $headers);
+    }
     extract(apply_filters('wp_mail', compact('to', 'subject', 'message', 'headers')));
     wpses_check_SES();
     if (isset($wp_better_emails)) {
@@ -403,6 +425,7 @@ function wpses_mail($to, $subject, $message, $headers = '') {
         $html = apply_filters('wpbe_html_body', $wp_better_emails->template_vars_replacement($html));
     } else {
         $message = preg_replace('/<(http:.*)>/', '$1', $message);
+        $message = preg_replace('/<(https:.*)>/', '$1', $message); // bad hack - handle httpS as well.
         $html = $message;
         $txt = strip_tags($html);
         if (strlen($html) == strlen($txt)) {
@@ -413,9 +436,18 @@ function wpses_mail($to, $subject, $message, $headers = '') {
     }
     // TODO: option pour que TXT si msg html, ou les deux comme ici par défaut.
     $m = new SimpleEmailServiceMessage();
-    $m->addTo($to);
-    $m->setFrom('"' . $wpses_options['from_name'] . '" <' . $wpses_options['from_email'] . ">");
+    // To: may contain comma separated emails. If so, explode and add them all.
+    // what to do if more than 50 ? (SES limit)
+    if (preg_match('/,/im',$to)) {
+        $to=explode(',',$to);
+        foreach($to as $toline) {
+             $m->addTo($toline);
+        }
+    } else {
+        $m->addTo($to);
+    }
     $m->setReturnPath($wpses_options['return_path']);
+    $from = $wpses_options['from_name'] . ' <' . $wpses_options['from_email'] . '>';
     if ('' != $wpses_options['reply_to']) {
         if ('headers' == strtolower($wpses_options['reply_to'])) {
             // extract replyto from headers
@@ -424,16 +456,33 @@ function wpses_mail($to, $subject, $message, $headers = '') {
                 // does only support one email for now.
                 $m->addReplyTo($rto[1]);
             }
+            if (preg_match('/^From: (.*)/im', $headers, $rto)) {
+                // Uses "From:" header - was /isU which broke things, see https://wordpress.org/support/topic/gravity-forms-18205-latest-contact-form-7-403-latest-not-working
+                $from = $rto[1];
+            }
+            // Should we handle cc and bcc: from headers too ? Guess so... TODO
         } else {
             $m->addReplyTo($wpses_options['reply_to']);
         }
     }
+    $m->setFrom($from);
     $m->setSubject($subject);
     if ($html == '') { // que texte
         $m->setMessageFromString($txt);
     } else {
         $m->setMessageFromString($txt, $html);
     }
+    // Attachments
+    if ('' != $attachments) {
+        if (!is_array($attachments)) {
+            $attachments = explode("\n", $attachments);
+        }
+        // Now we got an array
+        foreach ($attachments as $afile) {
+            $m->addAttachmentFromFile(basename($afile), $afile);
+        }
+    }
+        
     $res = $SES->sendEmail($m);
     if (is_array($res)) {
         return $res['MessageId'];
@@ -445,8 +494,14 @@ function wpses_mail($to, $subject, $message, $headers = '') {
 function wpses_getoptions() {
     global $wpses_options;
     $wpses_options = get_option('wpses_options');
+    if (!is_array($wpses_options)) {
+        $wpses_options = array();
+    }
     if (!array_key_exists('reply_to', $wpses_options)) {
         $wpses_options['reply_to'] = '';
+    }
+    if (!array_key_exists('force', $wpses_options)) {
+        $wpses_options['force'] = '0';
     }
     if (defined('WP_SES_ENDPOINT')) {
         $wpses_options['endpoint'] = WP_SES_ENDPOINT;
@@ -493,9 +548,9 @@ if (!isset($wpses_options)) {
 if ($wpses_options['active'] == 1) {
     if (!function_exists('wp_mail')) {
 
-        function wp_mail($to, $subject, $message, $headers = '') {
+        function wp_mail($to, $subject, $message, $headers = '', $attachments = '') {
             global $wpses_options;
-            $id = wpses_mail($to, $subject, $message, $headers);
+            $id = wpses_mail($to, $subject, $message, $headers, $attachments);
             if ($id != '') {
                 return true;
             } else {

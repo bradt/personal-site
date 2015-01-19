@@ -66,8 +66,8 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 	$settings = $searchwp->settings;
 	$engine = sanitize_key( $engine );
 
-	if( $engine != 'default' && is_array( $settings ) && !array_key_exists( 'engines', $settings ) ) {
-		if( !array_key_exists( $engine, $settings['engines'] ) ) {
+	if ( $engine != 'default' && is_array( $settings ) && ! array_key_exists( 'engines', $settings ) ) {
+		if ( ! is_array( $settings['engines'] ) || ! array_key_exists( $engine, $settings['engines'] ) ) {
 			return false;
 		}
 	}

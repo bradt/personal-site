@@ -27,7 +27,11 @@ class SearchWP_Dashboard {
 	 * @since 2.4
 	 */
 	function add_widget() {
-		if ( apply_filters( 'searchwp_dashboard_widget', true ) && apply_filters( 'searchwp_dashboard_widget_cap', apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) {
+		if (
+			apply_filters( 'searchwp_dashboard_widget', true )
+			&& apply_filters( 'searchwp_dashboard_widget_cap',
+				apply_filters( 'searchwp_settings_cap', 'manage_options' ) )
+		) {
 			wp_add_dashboard_widget(
 				'searchwp_stats',
 				__( 'Search Statistics', 'searchwp' ),
@@ -42,7 +46,11 @@ class SearchWP_Dashboard {
 	 * @since 2.8
 	 */
 	function assets() {
-		if ( apply_filters( 'searchwp_dashboard_widget', true ) && apply_filters( 'searchwp_dashboard_widget_cap', apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) {
+		if (
+			apply_filters( 'searchwp_dashboard_widget', true )
+			&& apply_filters( 'searchwp_dashboard_widget_cap',
+				apply_filters( 'searchwp_settings_cap', 'manage_options' ) )
+		) {
 			$searchwp = SWP();
 
 			wp_enqueue_script( 'searchwp-tabs', trailingslashit( $searchwp->url ) . 'assets/js/searchwp-tabs.js', array( 'jquery' ), $searchwp->version );
@@ -65,43 +73,45 @@ class SearchWP_Dashboard {
 			?>
 			<div class="searchwp-dashboard-widget">
 				<div class="searchwp-dashboard-stats">
-					<ul class="searchwp-tabs-nav">
-						<?php foreach( $searchwp->settings['engines'] as $engine => $engineSettings ) :
-								$engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : __( 'Default', 'searchwp' ); ?>
-							<li><a href="#swp-<?php echo esc_attr( $engine ); ?>"><?php echo esc_html( $engine_label ); ?></a></li>
-						<?php endforeach; ?>
-					</ul>
-					<div class="searchwp-tabs-content">
-						<?php foreach( $searchwp->settings['engines'] as $engine => $engineSettings ) : ?>
-							<?php $engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : __( 'Default', 'searchwp' ); ?>
-							<div class="searchwp-widget-tab-wrapper ui-helper-clearfix" id="swp-<?php echo esc_attr( $engine ); ?>">
-								<?php
-									$transient_today_key = 'swp_stats_' . md5( 'searchwp_widget_stats_today_' . $engine );
-									if ( false === ( $popular_searches_today = get_transient( $transient_today_key ) ) ) {
-										$popular_searches_today = $stats->get_popular_searches( array( 'days' => 1, 'engine' => $engine ) );
-										set_transient( $transient_today_key, $popular_searches_today, 12 * HOUR_IN_SECONDS );
-									}
+					<?php if ( isset( $searchwp->settings['engines'] ) && ! empty( $searchwp->settings['engines'] ) ) : ?>
+						<ul class="searchwp-tabs-nav">
+							<?php foreach( $searchwp->settings['engines'] as $engine => $engineSettings ) :
+									$engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : __( 'Default', 'searchwp' ); ?>
+								<li><a href="#swp-<?php echo esc_attr( $engine ); ?>"><?php echo esc_html( $engine_label ); ?></a></li>
+							<?php endforeach; ?>
+						</ul>
+						<div class="searchwp-tabs-content">
+							<?php foreach( $searchwp->settings['engines'] as $engine => $engineSettings ) : ?>
+								<?php $engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : __( 'Default', 'searchwp' ); ?>
+								<div class="searchwp-widget-tab-wrapper ui-helper-clearfix" id="swp-<?php echo esc_attr( $engine ); ?>">
+									<?php
+										$transient_today_key = 'swp_stats_' . md5( 'searchwp_widget_stats_today_' . $engine );
+										if ( false === ( $popular_searches_today = get_transient( $transient_today_key ) ) ) {
+											$popular_searches_today = $stats->get_popular_searches( array( 'days' => 1, 'engine' => $engine ) );
+											set_transient( $transient_today_key, $popular_searches_today, 12 * HOUR_IN_SECONDS );
+										}
 
-									$transient_month_key = 'swp_stats_' . md5( 'searchwp_widget_stats_month_' . $engine );
-									if ( false === ( $popular_searches_month = get_transient( $transient_month_key ) ) ) {
-										$popular_searches_month = $stats->get_popular_searches( array( 'days' => 30, 'engine' => $engine ) );
-										set_transient( $transient_month_key, $popular_searches_month, 12 * HOUR_IN_SECONDS );
-									}
-								?>
-								<div class="searchwp-stats-segment searchwp-stats-today">
-									<h4><?php _e( 'Today', 'searchwp' ); ?></h4>
-									<?php $this->echo_stats( $popular_searches_today ); ?>
+										$transient_month_key = 'swp_stats_' . md5( 'searchwp_widget_stats_month_' . $engine );
+										if ( false === ( $popular_searches_month = get_transient( $transient_month_key ) ) ) {
+											$popular_searches_month = $stats->get_popular_searches( array( 'days' => 30, 'engine' => $engine ) );
+											set_transient( $transient_month_key, $popular_searches_month, 12 * HOUR_IN_SECONDS );
+										}
+									?>
+									<div class="searchwp-stats-segment searchwp-stats-today">
+										<h4><?php _e( 'Today', 'searchwp' ); ?></h4>
+										<?php $this->echo_stats( $popular_searches_today ); ?>
+									</div>
+									<div class="searchwp-stats-segment searchwp-stats-month">
+										<h4><?php _e( 'Past 30 Days', 'searchwp' ); ?></h4>
+										<?php $this->echo_stats( $popular_searches_month ); ?>
+									</div>
+									<div class="searchwp-stats-segment-next">
+										<p><a href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&amp;tab=<?php echo esc_attr( $engine ); ?>" class="button"><?php _e( 'View Full Stats', 'searchwp' ); ?></a></p>
+									</div>
 								</div>
-								<div class="searchwp-stats-segment searchwp-stats-month">
-									<h4><?php _e( 'Past 30 Days', 'searchwp' ); ?></h4>
-									<?php $this->echo_stats( $popular_searches_month ); ?>
-								</div>
-								<div class="searchwp-stats-segment-next">
-									<p><a href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&amp;tab=<?php echo esc_attr( $engine ); ?>" class="button"><?php _e( 'View Full Stats', 'searchwp' ); ?></a></p>
-								</div>
-							</div>
-						<?php endforeach; ?>
-					</div>
+							<?php endforeach; ?>
+						</div>
+					<?php endif; ?>
 				</div>
 			</div>
 		<?php }
