@@ -1,10 +1,10 @@
 === Google Analytics by Yoast ===
-Contributors: joostdevalk,PvW_NL
+Contributors: joostdevalk
 Donate link: https://yoast.com/donate/
 Tags: analytics, google analytics, statistics, tracking, stats, google, yoast
 Requires at least: 3.8
 Tested up to: 4.1
-Stable tag: 5.2.8
+Stable tag: 5.3.2
 
 Track your WordPress site easily with the latest tracking codes and lots added data for search result pages and error pages.
 
@@ -48,6 +48,53 @@ This section describes how to install the plugin and get it working.
 1. Go to the options panel under the 'Settings' menu and add your Analytics account number and set the settings you want.
 
 == Changelog ==
+
+= 5.3.2 =
+
+Release Date: February 18th, 2015
+
+* Enhancements:
+	* Throws away the GA data when a user changes his GA profile.
+	* Makes a few strings translatable that were not translatable yet.
+
+* Bugfixes:
+	* Fixes the "Missing class information" Zend error that was caused by our api-libs package.
+
+= 5.3.1 =
+
+Release Date: February 11th, 2015
+
+* Enhancements:
+	* Added a filter (`yst-ga-filter-api-end-date`) to enable our [premium plugin](https://yoast.com/wordpress/plugins/google-analytics/) to show more recent data in the dashboards.
+
+* Features:
+	* Added [Enhanced link attribution](https://support.google.com/analytics/answer/2558867) for Universal tracking.
+
+* Bugfixes
+	* [Fixes a bug](https://github.com/markoheijnen/grunt-glotpress/pull/14) in the grunt task we use for downloading translations from GlotPress, which caused the translations to no longer be loaded.
+	* Fixes a bug where the links to our submenu pages were broken in case of a locale other than `en_US` being set.
+
+= 5.3 =
+
+Release Date: January 27th, 2015
+
+* Enhancements:
+	* Added an option for entirely disabling the dashboards functionality. If a user disables the dashboard, the menu item gets moved downward since there no longer is a reason for putting it so far up.
+	* Improved performance by making sure everything is autoloaded correctly and removing class inclusion checks everywhere.
+	* Makes sure the menu items become translatable.
+	* Added a button to save the GA authentication code as an alternative to hitting the return button.
+	* Format the page views number in the hover label of dashboards.
+	* Reduced the number of results retrieved from the Google Analytics API per call from 10,000 to 1,000. This is filterable through `yst-ga-filter-api-limit`.
+
+* Bugfixes:
+    * When toggling checkbox the authentication token input was showing up.
+    * Fixed internal links that were being tracked as outbound-article- (with trailing dash).
+	* Makes sure re-authentication notice is only shown when authentication has actually failed.
+	* Introduces a notice for when authentication isn't the problem but the plugin was somehow unable to fetch data from GA.
+
+* i18n:
+	* Added translations for `da_DK`, `es_MX`, `fr_FR`, `it_IT`, `nb_NO`, `pl_PL`, `pt_BR`.
+	* Updated translations for `en_GB`, `he_IL`, `nl_NL`, `ru_RU`.
 
 = 5.2.8 =
 

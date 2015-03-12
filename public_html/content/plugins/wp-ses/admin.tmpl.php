@@ -129,22 +129,28 @@
 
                 <tr><th scope="row"><?php _e('SES Endpoint', 'wpses') ?></th>
                     <td><select name="endpoint">
-                            <option value="email.us-east-1.amazonaws.com" <?php if ('email.us-east-1.amazonaws.com' == $wpses_options['endpoint']) {
+                            <option value="email.us-east-1.amazonaws.com" <?php
+        if ('email.us-east-1.amazonaws.com' == $wpses_options['endpoint']) {
             echo 'selected';
-        } ?>>US East (N. Virginia) Region</option>
-                            <option value="email.us-west-2.amazonaws.com" <?php if ('email.us-west-2.amazonaws.com' == $wpses_options['endpoint']) {
+        }
+        ?>>US East (N. Virginia) Region</option>
+                            <option value="email.us-west-2.amazonaws.com" <?php
+        if ('email.us-west-2.amazonaws.com' == $wpses_options['endpoint']) {
             echo 'selected';
-        } ?>>US West (Oregon) Region</option>
-                            <option value="email.eu-west-1.amazonaws.com" <?php if ('email.eu-west-1.amazonaws.com' == $wpses_options['endpoint']) {
-            echo 'selected';
-        } ?>>EU (Ireland) Region</option>
+        }
+            ?>>US West (Oregon) Region</option>
+                            <option value="email.eu-west-1.amazonaws.com" <?php
+                                if ('email.eu-west-1.amazonaws.com' == $wpses_options['endpoint']) {
+                                    echo 'selected';
+                                }
+                                ?>>EU (Ireland) Region</option>
                         </select>
-                      </td></tr>
+                    </td></tr>
                 <tr><th scope="row">&nbsp;</th>
-                    <td><?php _e('You\'ll need to validate sender emails for each Endpoint you want to use','wpses') ?></td></tr>
+                    <td><?php _e('You\'ll need to validate sender emails for each Endpoint you want to use', 'wpses') ?></td></tr>
 
             </table>
-<?php } else { // restricted access   ?>
+<?php } else { // restricted access    ?>
     <?php _e('Amazon Web Services API info has already been filled in by your administrator.', 'wpses') ?>
 <?php } ?>
         <input type="hidden" name="action" value="update" />
@@ -251,6 +257,18 @@
     <br />&nbsp;
         <?php _e('Using WP SES, finding it usefull ? A donation is always welcome', 'wpses') ?> <a href="http://wp-ses.com/donate.html" target="_blank"><b><?php _e('Donate', 'wpses') ?></b></a>
     <br />&nbsp;
+    <form method="post" action="<?php echo $_SERVER['REQUEST_URI']; ?>">
+        <h3><?php _e('Logs', 'wpses') ?></h3>
+        <?php wp_nonce_field('wpses'); ?>
+        <?php if ($wpses_options['log']) { ?>
+        <?php _e('Logging is active', 'wpses') ?><br />
+            <input type="submit" name="deactivatelogs" value="<?php _e('Deactivate and clear logs', 'wpses') ?>" />
+&nbsp;     <input type="submit" name="viewlogs" value="<?php _e('View logs', 'wpses') ?>" />
+        <?php } else { ?>
+        <?php _e('Logging is inactive', 'wpses') ?><br />
+            <input type="submit" name="activatelogs" value="<?php _e('Activate logs', 'wpses') ?>" />
+        <?php } ?>
+    </form> 
     <div style="width:80%">
 <?php
 if (function_exists('sd_rss_widget')) {

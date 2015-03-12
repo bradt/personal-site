@@ -29,6 +29,7 @@ Current features are:
 *       Default config values for centralised WPMU setups
 *       SES Endpoint selection     
 *       Mails with attachments (Compatible with Contact Form 7)  
+*       File logging feature (may be verbose and unsecure, do not use as is in production for a long period of time)
 
 See full features at http://wp-ses.com/features.html
 
@@ -39,7 +40,6 @@ Roadmap
 *	Control of sending rate
 *	Notice for volume limits
 *	Bounce and blacklist management
-*       Some kind of Logging for better debug
 
 
 You can read more about Amazon SES here : http://aws.amazon.com/ses/
@@ -132,6 +132,10 @@ define('WP_SES_ENDPOINT', 'email.eu-west-1.amazonaws.com');
 1. the settings screen of WP-SES plugin.
 
 == Changelog ==
+
+= 0.3.58 =
+* Tries to always auto-activate in answer to https://wordpress.org/support/topic/the-plugin-get-inactive-after-a-few-minutes
+* small fixes
 
 = 0.3.56 =
 * fixed sender name format
