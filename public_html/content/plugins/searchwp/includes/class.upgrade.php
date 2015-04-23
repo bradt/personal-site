@@ -29,24 +29,27 @@ class SearchWPUpgrade {
 	 * @param $version string Plugin version being activated
 	 * @since 1.0
 	 */
-	public function __construct( $version ) {
-		$this->version      = $version;
-		$this->last_version = get_option( SEARCHWP_PREFIX . 'version' );
+	public function __construct( $version = false ) {
 
-		if( false == $this->last_version ) {
-			$this->last_version = 0;
-		}
+		if ( ! empty( $version ) ) {
+			$this->version      = $version;
+			$this->last_version = get_option( SEARCHWP_PREFIX . 'version' );
 
-		if( version_compare( $this->last_version, $this->version, '<' ) ) {
-			if( version_compare( $this->last_version, '0.1.0', '<' ) ) {
-				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
-				$this->install();
-			} else {
-				$this->upgrade();
+			if( false == $this->last_version ) {
+				$this->last_version = 0;
 			}
 
-			update_option( SEARCHWP_PREFIX . 'version', $this->version );
+			if( version_compare( $this->last_version, $this->version, '<' ) ) {
+				if( version_compare( $this->last_version, '0.1.0', '<' ) ) {
+					$this->install();
+				} else {
+					$this->upgrade();
+				}
+
+				update_option( SEARCHWP_PREFIX . 'version', $this->version );
+			}
 		}
+
 	}
 
 
@@ -56,7 +59,6 @@ class SearchWPUpgrade {
 	 * @since 1.0
 	 */
 	private function install() {
-		global $wpdb;
 
 		/**
 		 * Save our default settings so we have a working search engine on activation
@@ -134,10 +136,18 @@ class SearchWPUpgrade {
 
 		searchwp_generate_settings( $settings['engines'] );
 
+		$this->create_tables();
 
-		/**
-		 * Create our index tables
-		 */
+	}
+
+	/**
+	 * Create necessary custom database tables
+	 */
+	function create_tables() {
+
+		global $wpdb;
+
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 
 		// main index table
 		$sql = "
@@ -216,7 +226,6 @@ class SearchWPUpgrade {
 	            KEY engineindex (engine)
 			) DEFAULT CHARSET=utf8";
 		dbDelta( $sql );
-
 	}
 
 

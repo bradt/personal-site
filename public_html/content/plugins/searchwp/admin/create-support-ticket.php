@@ -52,7 +52,7 @@ if ( 'valid' !== $this->status ) {
 } ?>
 
 <div class="swp-btn-group swp-preload">
-	<a class="button swp-btn swp-btn-support thickbox" title="<?php _e( 'Create SearchWP Support Ticket', 'searchwp' ); ?>" href="<?php echo $ticket_create_url; ?>">
+	<a class="button swp-btn swp-btn-support thickbox" title="<?php _e( 'Create SearchWP Support Ticket', 'searchwp' ); ?>" href="<?php echo esc_url( $ticket_create_url ); ?>">
 		<?php _e( 'Support', 'searchwp' ); ?>
 	</a>
 </div>

@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package GoogleAnalytics\Frontend
+ */
 
 /**
  * This is the frontend class for the GA Universal code
@@ -14,6 +17,10 @@ class Yoast_GA_Universal extends Yoast_GA_Tracking {
 
 	/**
 	 * Function to output the GA Tracking code in the wp_head()
+	 *
+	 * @param boolean $return_array
+	 *
+	 * @return null|array
 	 */
 	public function tracking( $return_array = false ) {
 		global $wp_query;
@@ -25,8 +32,9 @@ class Yoast_GA_Universal extends Yoast_GA_Tracking {
 			do_action( 'yst_tracking' );
 
 			if ( isset( $this->options['subdomain_tracking'] ) && $this->options['subdomain_tracking'] != '' ) {
-				$domain = $this->options['subdomain_tracking'];
-			} else {
+				$domain = esc_attr( $this->options['subdomain_tracking'] );
+			}
+			else {
 				$domain = 'auto'; // Default domain value
 			}
 
@@ -36,20 +44,23 @@ class Yoast_GA_Universal extends Yoast_GA_Tracking {
 
 			$ua_code = $this->get_tracking_code();
 			if ( is_null( $ua_code ) && $return_array == false ) {
-				return;
+				return null;
 			}
 
 			// Set tracking code here
 			if ( ! empty( $ua_code ) ) {
 				if ( $this->options['add_allow_linker'] && ! $this->options['allow_anchor'] ) {
 					$gaq_push[] = "'create', '" . $ua_code . "', '" . $domain . "', {'allowLinker': true}";
-				} else {
+				}
+				else {
 					if ( $this->options['allow_anchor'] && ! $this->options['add_allow_linker'] ) {
 						$gaq_push[] = "'create', '" . $ua_code . "', '" . $domain . "', {'allowAnchor': true}";
-					} else {
+					}
+					else {
 						if ( $this->options['allow_anchor'] && $this->options['add_allow_linker'] ) {
 							$gaq_push[] = "'create', '" . $ua_code . "', '" . $domain . "', {'allowAnchor': true, 'allowLinker': true}";
-						} else {
+						}
+						else {
 							$gaq_push[] = "'create', '" . $ua_code . "', '" . $domain . "'";
 						}
 					}
@@ -83,23 +94,28 @@ class Yoast_GA_Universal extends Yoast_GA_Tracking {
 
 			if ( is_404() ) {
 				$gaq_push[] = "'send','pageview','/404.html?page=' + document.location.pathname + document.location.search + '&from=' + document.referrer";
-			} else {
+			}
+			else {
 				if ( $wp_query->is_search ) {
 					$pushstr = "'send','pageview','/?s=";
 					if ( $wp_query->found_posts == 0 ) {
 						$gaq_push[] = $pushstr . 'no-results:' . rawurlencode( $wp_query->query_vars['s'] ) . "&cat=no-results'";
-					} else {
+					}
+					else {
 						if ( $wp_query->found_posts == 1 ) {
 							$gaq_push[] = $pushstr . rawurlencode( $wp_query->query_vars['s'] ) . "&cat=1-result'";
-						} else {
+						}
+						else {
 							if ( $wp_query->found_posts > 1 && $wp_query->found_posts < 6 ) {
 								$gaq_push[] = $pushstr . rawurlencode( $wp_query->query_vars['s'] ) . "&cat=2-5-results'";
-							} else {
+							}
+							else {
 								$gaq_push[] = $pushstr . rawurlencode( $wp_query->query_vars['s'] ) . "&cat=plus-5-results'";
 							}
 						}
 					}
-				} else {
+				}
+				else {
 					$gaq_push[] = "'send','pageview'";
 				}
 			}
@@ -120,10 +136,12 @@ class Yoast_GA_Universal extends Yoast_GA_Tracking {
 			// Include the tracking view
 			if ( $this->options['debug_mode'] == 1 ) {
 				require( 'views/tracking-debug.php' );
-			} else {
+			}
+			else {
 				require( 'views/tracking-universal.php' );
 			}
-		} else {
+		}
+		else {
 			require( 'views/tracking-usergroup.php' );
 		}
 	}
@@ -150,25 +168,26 @@ class Yoast_GA_Universal extends Yoast_GA_Tracking {
 		switch ( $link['type'] ) {
 			case 'download':
 				if ( $this->options['track_download_as'] == 'pageview' ) {
-					$onclick = "__gaTracker('send', 'pageview', '" . esc_attr( $full_url ) . "');";
-				} else {
-					$onclick = "__gaTracker('send', 'event', 'download', '" . esc_attr( $full_url ) . "');";
+					$onclick = "__gaTracker('send', 'pageview', '" . esc_js( $full_url ) . "');";
+				}
+				else {
+					$onclick = "__gaTracker('send', 'event', 'download', '" . esc_js( $full_url ) . "');";
 				}
 
 				break;
 			case 'email':
-				$onclick = "__gaTracker('send', 'event', 'mailto', '" . esc_attr( $link['original_url'] ) . "');";
+				$onclick = "__gaTracker('send', 'event', 'mailto', '" . esc_js( $link['original_url'] ) . "');";
 
 				break;
 			case 'internal-as-outbound':
 				$label = $this->sanitize_internal_label();
 
-				$onclick = "__gaTracker('send', '" . $this->options['track_download_as'] . "', '" . esc_attr( $link['category'] ) . '-' . esc_attr( $label ) . "', '" . esc_attr( $full_url ) . "', '" . esc_attr( strip_tags( $link['link_text'] ) ) . "');";
+				$onclick = "__gaTracker('send', '" . $this->options['track_download_as'] . "', '" . esc_js( $link['category'] ) . '-' . esc_js( $label ) . "', '" . esc_js( $full_url ) . "', '" . esc_js( strip_tags( $link['link_text'] ) ) . "');";
 
 				break;
 			case 'outbound':
 				if ( $this->options['track_outbound'] == 1 ) {
-					$onclick = "__gaTracker('send', 'event', '" . esc_attr( $link['category'] ) . "', '" . esc_attr( $full_url ) . "', '" . esc_attr( strip_tags( $link['link_text'] ) ) . "');";
+					$onclick = "__gaTracker('send', 'event', '" . esc_js( $link['category'] ) . "', '" . esc_js( $full_url ) . "', '" . esc_js( strip_tags( $link['link_text'] ) ) . "');";
 				}
 
 				break;
@@ -176,7 +195,7 @@ class Yoast_GA_Universal extends Yoast_GA_Tracking {
 
 		$link['link_attributes'] = $this->output_add_onclick( $link['link_attributes'], $onclick );
 
-		if( !empty( $link['link_attributes'] ) ) {
+		if ( ! empty( $link['link_attributes'] ) ) {
 			return '<a href="' . $full_url . '" ' . trim( $link['link_attributes'] ) . '>' . $link['link_text'] . '</a>';
 		}
 

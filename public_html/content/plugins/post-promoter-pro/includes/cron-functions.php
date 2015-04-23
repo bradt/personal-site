@@ -18,14 +18,10 @@ function ppp_schedule_share( $post_id, $post ) {
 		return;
 	}
 
-	$ppp_post_exclude = get_post_meta( $post_id, '_ppp_post_exclude', true );
-	if ( $ppp_post_exclude ) { // If the post meta says to exclude from social media posts, delete all scheduled and return
-		ppp_remove_scheduled_shares( $post_id );
-		return;
-	}
+	ppp_remove_scheduled_shares( $post_id );
 
 	if ( ( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ||
-	     ( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
+		 ( $_POST['post_status'] == 'future' && $_POST['original_post_status'] == 'future' ) ) {
 		// Be sure to clear any currently scheduled tweets so we aren't creating multiple instances
 		// This will stop something from moving between draft and post and continuing to schedule tweets
 		ppp_remove_scheduled_shares( $post_id );
@@ -36,7 +32,7 @@ function ppp_schedule_share( $post_id, $post ) {
 		( $_POST['post_status'] == 'publish' && $_POST['original_post_status'] == 'publish' ) ) { // Updating an already published post
 		global $ppp_options, $ppp_social_settings;
 
-		$timestamps = ppp_get_timestamps( $_POST['mm'], $_POST['jj'], $_POST['aa'], $post_id );
+		$timestamps = ppp_get_timestamps( $post_id );
 
 		foreach ( $timestamps as $timestamp => $name ) {
 			wp_schedule_single_event( $timestamp, 'ppp_share_post_event', array( $post_id, $name ) );
@@ -53,13 +49,15 @@ add_action( 'ppp_share_post_event', 'ppp_share_post', 10, 2 );
  */
 function ppp_remove_scheduled_shares( $post_id ) {
 	do_action( 'ppp_pre_remove_scheduled_shares', $post_id );
-	$days_ahead = 1;
-	while ( $days_ahead <= ppp_share_days_count() ) {
-		$name = 'sharedate_' . $days_ahead . '_' . $post_id;
-		wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
 
-		$days_ahead++;
+	$current_shares = get_post_meta( $post_id, '_ppp_tweets', true );
+
+	foreach ( $current_shares as $key => $share ) {
+			$name = 'sharedate_' . $key . '_' . $post_id;
+			wp_clear_scheduled_hook( 'ppp_share_post_event', array( $post_id, $name ) );
+
 	}
+
 	do_action( 'ppp_post_remove_scheduled_shares', $post_id );
 }
 

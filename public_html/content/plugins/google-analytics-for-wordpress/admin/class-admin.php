@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package GoogleAnalytics\Admin
+ */
 
 /**
  * This class is for the backend, extendable for all child classes
@@ -6,12 +9,13 @@
 class Yoast_GA_Admin extends Yoast_GA_Options {
 
 	/**
-	 * Store the API instance
-	 *
-	 * @var
+	 * @var boolean $api Store the API instance
 	 */
 	public $api;
 
+	/**
+	 * Constructor
+	 */
 	public function __construct() {
 		parent::__construct();
 
@@ -68,7 +72,7 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	/**
 	 * This function saves the settings in the option field and returns a wp success message on success
 	 *
-	 * @param $data
+	 * @param array $data
 	 */
 	public function save_settings( $data ) {
 
@@ -79,18 +83,35 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 				if ( $key != 'custom_code' && is_string( $value ) ) {
 					$value = strip_tags( $value );
 				}
-				$this->options[$key] = $value;
+				$this->options[ $key ] = $value;
 			}
 		}
 
 		// Check checkboxes, on a uncheck they won't be posted to this function
 		$defaults = $this->default_ga_values();
-		foreach ( $defaults[$this->option_prefix] as $option_name => $value ) {
+		foreach ( $defaults[ $this->option_prefix ] as $option_name => $value ) {
 			$this->handle_default_setting( $data, $option_name, $value );
 		}
 
 		if ( ! empty( $this->options['analytics_profile'] ) ) {
 			$this->options['analytics_profile_code'] = $this->get_ua_code_from_profile( $this->options['analytics_profile'] );
+		}
+
+		if ( ! empty( $this->options['manual_ua_code_field'] ) ) {
+			$this->options['manual_ua_code_field'] = trim( $this->options['manual_ua_code_field'] );
+			// en dash to minus, prevents issue with code copied from web with "fancy" dash
+			$this->options['manual_ua_code_field'] = str_replace( '–', '-', $this->options['manual_ua_code_field'] );
+
+			if ( ! preg_match( '|^UA-\d{4,}-\d+$|', $this->options['manual_ua_code_field'] ) ) {
+
+				$this->add_notification( 'ga_notifications', array(
+					'type'        => 'error',
+					'description' => __( 'The UA code needs to follow UA-XXXXXXXX-X format.', 'google-analytics-for-wordpress' ),
+				) );
+
+				wp_redirect( admin_url( 'admin.php' ) . '?page=yst_ga_settings#top#' . $data['return_tab'], 301 );
+				exit;
+			}
 		}
 
 		if ( $this->update_option( $this->options ) ) {
@@ -99,8 +120,8 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 				'type'        => 'success',
 				'description' => __( 'Settings saved.', 'google-analytics-for-wordpress' ),
 			) );
-
-		} else {
+		}
+		else {
 			// Fail, add a new notification
 			$this->add_notification( 'ga_notifications', array(
 				'type'        => 'error',
@@ -108,7 +129,7 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 			) );
 		}
 
-		#redirect
+		// redirect
 		wp_redirect( admin_url( 'admin.php' ) . '?page=yst_ga_settings#top#' . $data['return_tab'], 301 );
 		exit;
 	}
@@ -118,30 +139,26 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	 * remove the options for the profiles and the refresh token.
 	 */
 	public static function ga_deactivation_hook() {
-		// Remove the refresh token
-		delete_option( 'yoast-ga-refresh_token' );
-
-		// Remove the ga accounts and response
-		delete_option( 'yst_ga_accounts' );
-		delete_option( 'yst_ga_response' );
-
+		// Remove the refresh token and other API settings
+		self::analytics_api_clean_up();
 	}
 
 	/**
 	 * Handle a default setting in GA
 	 *
-	 * @param $data
-	 * @param $option_name
-	 * @param $value
+	 * @param array  $data
+	 * @param string $option_name
+	 * @param mixed  $value
 	 */
 	private function handle_default_setting( $data, $option_name, $value ) {
-		if ( ! isset( $data[$option_name] ) ) {
+		if ( ! isset( $data[ $option_name ] ) ) {
 			// If no data was passed in, set it to the default.
 			if ( $value === 1 ) {
 				// Disable the checkbox for now, use value 0
-				$this->options[$option_name] = 0;
-			} else {
-				$this->options[$option_name] = $value;
+				$this->options[ $option_name ] = 0;
+			}
+			else {
+				$this->options[ $option_name ] = $value;
 			}
 		}
 	}
@@ -149,7 +166,7 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	/**
 	 * Handle the post requests in the admin form of the GA plugin
 	 *
-	 * @param $dashboards
+	 * @param Yoast_GA_Dashboards $dashboards
 	 */
 	private function handle_ga_post_request( $dashboards ) {
 		if ( ! function_exists( 'wp_verify_nonce' ) ) {
@@ -175,7 +192,7 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	/**
 	 * Is there selected an other property in the settings post? Returns true or false.
 	 *
-	 * @param $post
+	 * @param array $post
 	 *
 	 * @return bool
 	 */
@@ -210,7 +227,7 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	/**
 	 * Transform the Profile ID into an helpful UA code
 	 *
-	 * @param $profile_id
+	 * @param integer $profile_id
 	 *
 	 * @return null
 	 */
@@ -275,10 +292,10 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 				'project_slug'   => 'google-analytics-for-wordpress',
 				'plugin_name'    => 'Google Analytics by Yoast',
 				'hook'           => 'yoast_ga_admin_footer',
-				'glotpress_url'  => 'http://translate.yoast.com',
+				'glotpress_url'  => 'https://translate.yoast.com',
 				'glotpress_name' => 'Yoast Translate',
 				'glotpress_logo' => 'https://cdn.yoast.com/wp-content/uploads/i18n-images/Yoast_Translate.svg',
-				'register_url '  => 'http://translate.yoast.com/projects#utm_source=plugin&utm_medium=promo-box&utm_campaign=yoast-ga-i18n-promo',
+				'register_url '  => 'https://translate.yoast.com/projects#utm_source=plugin&utm_medium=promo-box&utm_campaign=yoast-ga-i18n-promo',
 			)
 		);
 
@@ -300,19 +317,17 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 			add_action( 'yst_ga_custom_dimension_add-dashboards-tab', array( $this, 'premium_promo' ) );
 		}
 
-		if ( isset( $_GET['page'] ) ) {
-			switch ( $_GET['page'] ) {
-				case 'yst_ga_settings':
-					require_once( $this->plugin_path . 'admin/pages/settings.php' );
-					break;
-				case 'yst_ga_extensions':
-					require_once( $this->plugin_path . 'admin/pages/extensions.php' );
-					break;
-				case 'yst_ga_dashboard':
-				default:
-					require_once( $this->plugin_path . 'admin/pages/dashboard.php' );
-					break;
-			}
+		switch ( filter_input( INPUT_GET, 'page' ) ) {
+			case 'yst_ga_settings':
+				require_once( $this->plugin_path . 'admin/pages/settings.php' );
+				break;
+			case 'yst_ga_extensions':
+				require_once( $this->plugin_path . 'admin/pages/extensions.php' );
+				break;
+			case 'yst_ga_dashboard':
+			default:
+				require_once( $this->plugin_path . 'admin/pages/dashboard.php' );
+				break;
 		}
 	}
 
@@ -329,23 +344,25 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	}
 
 	/**
-	 * Checks if there is a callback or reauth to get token from Google Analytics api
+	 * Checks if there is a callback to get token from Google Analytics API
 	 */
 	private function google_analytics_listener() {
+		$google_auth_code = filter_input( INPUT_POST, 'google_auth_code' );
+		if ( $google_auth_code && current_user_can( 'manage_options' ) && wp_verify_nonce( filter_input( INPUT_POST, 'yoast_ga_nonce' ), 'save_settings' ) ) {
+			self::analytics_api_clean_up();
 
-		if ( ! empty( $_POST['google_auth_code'] ) ) {
-			Yoast_Google_Analytics::get_instance()->authenticate( trim( $_POST['google_auth_code'] ) );
+			Yoast_Google_Analytics::get_instance()->authenticate( trim( $google_auth_code ) );
 		}
+	}
 
-
-		if ( ! empty ( $_GET['reauth'] ) ) {
-
-			delete_option( 'yst_ga_accounts' );
-			delete_option( 'yst_ga_response' );
-
-			Yoast_Google_Analytics::get_instance()->authenticate();
-		}
-
+	/**
+	 * Clean up the Analytics API settings
+	 */
+	public static function analytics_api_clean_up() {
+		delete_option( 'yoast-ga-refresh_token' );
+		delete_option( 'yst_ga_api_call_fail' );
+		delete_option( 'yst_ga_last_wp_run' );
+		delete_option( 'yst_ga_api' );
 	}
 
 	/**
@@ -356,9 +373,9 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	private function get_current_profile() {
 		if ( ! empty( $this->options['analytics_profile'] ) ) {
 			return $this->options['analytics_profile'];
-		} else {
-			return null;
 		}
+
+		return null;
 	}
 
 	/**
@@ -382,7 +399,7 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 		foreach ( $editable_roles as $id => $name ) {
 			$roles[] = array(
 				'id'   => $id,
-				'name' => translate_user_role($name['name']),
+				'name' => translate_user_role( $name['name'] ),
 			);
 		}
 
@@ -408,8 +425,8 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	 */
 	public function get_track_full_url() {
 		return array(
-			0 => array( 'id' => 'domain', 'name' => __( 'Just the domain', 'google-analytics-for-wordpress' )  ),
-			1 => array( 'id' => 'full_links', 'name' => __( 'Full links', 'google-analytics-for-wordpress' )  ),
+			0 => array( 'id' => 'domain', 'name' => __( 'Just the domain', 'google-analytics-for-wordpress' ) ),
+			1 => array( 'id' => 'full_links', 'name' => __( 'Full links', 'google-analytics-for-wordpress' ) ),
 		);
 	}
 
@@ -498,8 +515,8 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 	/**
 	 * Add a notification to the notification transient
 	 *
-	 * @param $transient_name
-	 * @param $settings
+	 * @param string $transient_name
+	 * @param array  $settings
 	 */
 	private function add_notification( $transient_name, $settings ) {
 		set_transient( $transient_name, $settings, MINUTE_IN_SECONDS );
@@ -521,7 +538,8 @@ class Yoast_GA_Admin extends Yoast_GA_Options {
 					$transient['description'],
 					'updated'
 				);
-			} else {
+			}
+			else {
 				add_settings_error(
 					'yoast_google_analytics',
 					'yoast_google_analytics',

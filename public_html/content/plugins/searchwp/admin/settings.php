@@ -13,7 +13,10 @@ $searchwp = SWP(); ?>
 
 <div class="postbox swp-meta-box swp-default-engine metabox-holder swp-jqueryui">
 
-	<h3 class="hndle"><span><?php _e( 'Default Search Engine', 'searchwp' ); ?></span> <a class="swp-engine-stats" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=default"><?php _e( 'Statistics', 'searchwp' ); ?> &raquo;</a></h3>
+	<?php
+		$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=default';
+	?>
+	<h3 class="hndle"><span><?php _e( 'Default Search Engine', 'searchwp' ); ?></span> <a class="swp-engine-stats" href="<?php echo esc_url( $the_link ); ?>"><?php _e( 'Statistics', 'searchwp' ); ?> &raquo;</a></h3>
 
 	<div class="inside">
 
@@ -37,7 +40,8 @@ $searchwp = SWP(); ?>
 		if ( isset( $searchwp->settings['engines'] ) && is_array( $searchwp->settings['engines'] ) && count( $searchwp->settings['engines'] ) ) {
 			foreach ( $searchwp->settings['engines'] as $engineFlag => $engine ) {
 				if ( isset( $engine['searchwp_engine_label'] ) && ! empty( $engine['searchwp_engine_label'] ) ) {
-					$supplemental_stats_link = '<a class="swp-engine-stats" href="' . get_admin_url() . 'index.php?page=searchwp-stats&tab=' . urlencode( sanitize_text_field( $engineFlag ) ) . '">' . __( 'Statistics', 'searchwp' ) . ' &raquo;</a>';
+					$link_url = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engineFlag );
+					$supplemental_stats_link = '<a class="swp-engine-stats" href="' . esc_url( $link_url ) . '">' . __( 'Statistics', 'searchwp' ) . ' &raquo;</a>';
 					break;
 				}
 			}
@@ -84,7 +88,10 @@ $searchwp = SWP(); ?>
 <div class="swp-settings-footer swp-group">
 	<?php if ( current_user_can( apply_filters( 'searchwp_settings_cap', 'manage_options' ) ) ) : ?>
 		<p class="swp-settings-advanced">
-			<a href="options-general.php?page=searchwp&amp;nonce=<?php echo wp_create_nonce( 'swpadvanced' ); ?>"><?php _e( 'Advanced', 'searchwp' ); ?></a>
+			<?php
+				$the_link = admin_url( 'options-general.php?page=searchwp' ) . '&nonce=' . esc_attr( wp_create_nonce( 'swpadvanced' ) );
+			?>
+			<a href="<?php echo esc_url( $the_link ); ?>"><?php _e( 'Advanced', 'searchwp' ); ?></a>
 		</p>
 	<?php endif; ?>
 	<?php submit_button(); ?>

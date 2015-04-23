@@ -42,13 +42,16 @@ class PPP_Schedule_Table extends WP_List_Table {
 	public function column_default( $item, $column_name ) {
 		switch ( $column_name ) {
 		case 'date':
-		case 'day':
 		case 'post_title':
 			return $item[ $column_name ];
 		case 'content':
 			$content = $item[ $column_name ];
-			if ( $item['uses_media'] ) {
-				$content = '<span class="dashicons dashicons-format-image"></span>&nbsp;' . $content;
+			return $content;
+		case 'image':
+			if ( ! empty( $item['image_url'] ) ) {
+				$content = '<img src="' . $item['image_url'] . '" />';
+			} else {
+				$content = __( 'None', 'ppp-txt' );
 			}
 			return $content;
 		default:
@@ -63,9 +66,9 @@ class PPP_Schedule_Table extends WP_List_Table {
 	public function get_columns() {
 		$columns = array(
 			'post_title'     => __( 'Post Title', 'ppp-txt' ),
-			'day'            => __( 'Day', 'ppp-txt' ),
 			'date'           => __( 'Scheduled Date', 'ppp-txt' ),
-			'content'        => __( 'Share Message', 'ppp-txt' )
+			'content'        => __( 'Share Message', 'ppp-txt' ),
+			'image'          => __( 'Image', 'ppp-txt' )
 		);
 
 		return $columns;
@@ -78,9 +81,9 @@ class PPP_Schedule_Table extends WP_List_Table {
 	 */
 	public function column_post_title( $item ) {
 		$actions = array( 'edit'          => sprintf( __( '<a href="%s">Edit</a>', 'ppp-txt' ), admin_url( 'post.php?post=' . $item['post_id'] . '&action=edit#ppp_schedule_metabox' ) ),
-		                  'delete'        => sprintf( __( '<a href="%s">Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=delete_item&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&day=' . $item['day'] ) ),
+		                  'delete'        => sprintf( __( '<a href="%s">Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=delete_item&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] ) ),
 		                  'share'         => sprintf( __( '<a href="%s">Share Now</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] ) ),
-		                  'share_delete'  => sprintf( __( '<a href="%s">Share Now & Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&day=' . $item['day'] . '&delete_too=true' ) )
+		                  'share_delete'  => sprintf( __( '<a href="%s">Share Now & Delete</a>', 'ppp-txt' ), admin_url( 'admin.php?page=ppp-schedule-info&action=share_now&post_id=' . $item['post_id'] . '&name=' . $item['name'] . '&index=' . $item['index'] . '&delete_too=true' ) )
 		                );
 
 		return sprintf( '<span class="dashicons icon-ppp-' . $item['service'] . '"></span>&nbsp;%1$s %2$s', $item['post_title'], $this->row_actions( $actions ) );
@@ -123,31 +126,32 @@ class PPP_Schedule_Table extends WP_List_Table {
 			$cron_tally[$timestamp] = isset( $cron_tally[$timestamp] ) ? $cron_tally[$timestamp] + 1 : 1;
 
 			$name_parts = explode( '_', $ppp_data['args'][1] );
-			$day        = $name_parts[1];
+			$index      = $name_parts[1];
 			$service    = isset( $name_parts[3] ) ? $name_pargs[3] : 'tw';
 			$builder    = 'ppp_' . $service . '_build_share_message';
+			$post_meta  = get_post_meta( $ppp_data['args'][0], '_ppp_tweets', true );
+			$image_url  = '';
+			if ( ! empty( $post_meta[$index]['attachment_id'] ) ) {
+				$image_url = ppp_post_has_media( $ppp_data['args'][0], 'tw', true, $post_meta[$index]['attachment_id'] );
+			} elseif ( ! empty( $post_meta[$index]['image'] ) ) {
+				$image_url = $post_meta[$index]['image'];
+			}
 
 			$conflict   = $cron_tally[$timestamp] > 1 ? true : false;
 
-			$data[$key] = array(  'post_id'      => $ppp_data['args'][0],
-				                       'post_title'   => get_the_title( $ppp_data['args'][0] ),
-				                       'service'      => $service,
-			                           'day'          => $day,
-			                           'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
-			                           'content'      => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ),
-			                           'name'         => 'sharedate_' . $day . '_' . $ppp_data['args'][0],
-			                           'conflict'     => $conflict );
+			$data[$key] = array( 'post_id'      => $ppp_data['args'][0],
+			                     'post_title'   => get_the_title( $ppp_data['args'][0] ),
+			                     'service'      => $service,
+			                     'index'        => $index,
+			                     'date'         => $timestamp + ( get_option( 'gmt_offset' ) * 3600 ),
+			                     'content'      => $builder( $ppp_data['args'][0], $ppp_data['args'][1], false ),
+			                     'name'         => 'sharedate_' . $index . '_' . $ppp_data['args'][0],
+			                     'conflict'     => $conflict
+			);
 
-			switch( $service ) {
-				case 'tw':
-					$has_media = ppp_tw_use_media( $ppp_data['args'][0], $day );
-					break;
-				default:
-					$has_media = true;
-					break;
+			if ( ! empty( $image_url ) ) {
+				$data[$key]['image_url'] = $image_url;
 			}
-
-			$data[$key]['uses_media'] = $has_media;
 
 		}
 

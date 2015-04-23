@@ -105,3 +105,56 @@ function ppp_should_save( $post_id, $post ) {
 
 	return apply_filters( 'ppp_should_save', $ret, $post );
 }
+
+/**
+ * Verifies our directory exists, and it's protected
+ *
+ * @since  2.2
+ * @return void
+ */
+function ppp_set_uploads_dir() {
+	$upload_path = ppp_get_upload_path();
+
+	if ( false === get_transient( 'ppp_check_protection_files' ) ) {
+
+		// Make sure the /ppp folder is created
+		wp_mkdir_p( $upload_path );
+
+		// Prevent directory browsing and direct access to all files
+		$rules  = "Options -Indexes\n";
+		$rules .= "deny from all\n";
+
+		$htaccess_exists = file_exists( $upload_path . '/.htaccess' );
+
+		if ( $htaccess_exists ) {
+			$contents = @file_get_contents( $upload_path . '/.htaccess' );
+			if ( $contents !== $rules || ! $contents ) {
+				// Update the .htaccess rules if they don't match
+				@file_put_contents( $upload_path . '/.htaccess', $rules );
+			}
+		} elseif( wp_is_writable( $upload_path ) ) {
+			// Create the file if it doesn't exist
+			@file_put_contents( $upload_path . '/.htaccess', $rules );
+		}
+
+		// Top level blank index.php
+		if ( ! file_exists( $upload_path . '/index.php' ) && wp_is_writable( $upload_path ) ) {
+			@file_put_contents( $upload_path . '/index.php', '<?php' . PHP_EOL . '// Silence is golden.' );
+		}
+
+		// Check for the files once per day
+		set_transient( 'ppp_check_protection_files', true, 3600 * 24 );
+	}
+}
+add_action( 'admin_init', 'ppp_set_uploads_dir' );
+
+/**
+ * The location of where we store our files for Local tokens
+ *
+ * @since  2.2
+ * @return string The path to the /ppp folder in the uploads dir
+ */
+function ppp_get_upload_path() {
+	$wp_upload_dir = wp_upload_dir();
+	return $wp_upload_dir['basedir'] . '/ppp';
+}

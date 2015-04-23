@@ -1,0 +1,21 @@
+{
+    "twitter": {
+        "consumer_token": "",
+        "consumer_secret": ""
+    },
+    "bitly": {
+        "client_id": "",
+        "client_secret": ""
+    },
+    "facebook": {
+        "app_id": "",
+        "app_secret": ""
+    },
+    "linkedin": {
+        "api_key": "",
+        "secret_key": ""
+    },
+    "options": {
+        "NO_AUTO_UPDATE": true
+    }
+}

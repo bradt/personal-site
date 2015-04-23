@@ -76,9 +76,9 @@
 .ppp-social-icon {
 	float: left;
 	padding: 5px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
-    border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+	border-radius: 8px;
 }
 
 .ppp-twitter-info {
@@ -111,29 +111,56 @@
 	padding-left: 25px;
 }
 
-.fixed .column-icon {
+.socialmediaservices .fixed .column-icon {
 	width: 25px;
 }
 
-.icon.column-icon, .avatar.column-avatar, .name.column-name, .actions.column-actions, .extras.column-extras {
+.socialmediaservices .icon.column-icon, .avatar.column-avatar, .name.column-name, .actions.column-actions, .extras.column-extras {
 	vertical-align: middle;
 }
 
-.icon.column-icon .dashicons {
+.socialmediaservices .icon.column-icon .dashicons {
 	font-size: 30px;
 }
 
-.column-avatar {
+.socialmediaservices .column-avatar {
 	width: 65px;
 }
 
-.column-name {
+.socialmediaservices .column-name {
 	width: 225px;
 }
 
-.column-actions {
-	width: 50%;
+.socialmediaservices .column-actions {
+	width: 40%;
 }
+
+.column-image, .manage-column.column-image {
+	width: 18%;
+	text-align: center;
+}
+
+.column-image img {
+	width: 100%
+}
+
+.ppp-add-repeatable { display: inline-block; }
+.ppp-repeatable-row td { vertical-align: middle }
+.ppp-meta-table-wrap table input,
+.ppp-meta-table-wrap table select,
+.ppp-meta-table-wrap table textarea { margin: 4px 0; width: 100%; }
+.ppp-meta-table-wrap table .submit input { width: auto; }
+.ppp-repeatable-upload-wrapper .ppp-repeatable-upload-field-container { position: relative; }
+.ppp-upload-file { position: absolute; top: 6px; right: 1px; padding: 2px 8px 2px; display: block; background: #fff; }
+.ppp-upload-field { padding-right: 8em; }
+.ppp-remove-repeatable { margin: 8px 0 0 0; cursor: pointer; width: 10px; height: 10px; display: inline-block; text-indent: -9999px; overflow: hidden; }
+.ppp-remove-repeatable:active, .ppp-remove-repeatable:hover { background-position: -10px 0!important }
+textarea#ppp-payment-note { width: 100%; height: 4em; margin: 0; }
+.ppp-price-field { width: 80px; }
+.ppp-repeatable-upload-wrapper .pricing select, .ppp-repeatable-product-wrapper .ppp-select { min-width: 100%; }
+#ppp-product-notes-field { width: 98%; margin: 0; height: 4em; }
+.ppp-repeatable-default-wrapper { text-align: center; width: 25px; }
+
 
 /* Dashicon Styles */
 @charset "UTF-8";
@@ -164,7 +191,7 @@
 
 #adminmenu #toplevel_page_ppp-options.menu-icon-generic div.wp-menu-image:before {
 	font-family: "ppp-dashicon" !important;
- 	content: "a";
+	content: "a";
 }
 
 .icon-ppp-tw:before {

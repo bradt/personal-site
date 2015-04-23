@@ -128,31 +128,31 @@ add_action( 'ppp_social_media_content_display', 'ppp_generate_social_account_con
  * @return void
  */
 function ppp_list_view_maybe_take_action() {
-	if ( !isset( $_GET['page'] ) || $_GET['page'] !== 'ppp-schedule-info' ) {
+	if ( ! isset( $_GET['page'] ) || $_GET['page'] !== 'ppp-schedule-info' ) {
 		return;
 	}
 
-	if ( !isset( $_GET['action'] ) ) {
+	if ( ! isset( $_GET['action'] ) ) {
 		return;
 	}
 
 	// Get the necessary info for the actions
 	$post_id = isset( $_GET['post_id'] ) ? $_GET['post_id'] : 0;
 	$name    = isset( $_GET['name'] ) ? $_GET['name'] : '';
-	$day     = isset( $_GET['day'] ) ? $_GET['day'] : 0;
+	$index   = isset( $_GET['index'] ) ? $_GET['index'] : 0;
 	$delete  = isset( $_GET['delete_too'] ) ? true : false;
 
 	switch( $_GET['action'] ) {
 		case 'delete_item':
-			if ( !empty( $post_id ) && !empty( $name ) || empty( $day ) ) {
+			if ( ! empty( $post_id ) && ! empty( $name ) || empty( $index ) ) {
 				ppp_remove_scheduled_share( array( (int)$post_id, $name ) ); // Remove the item in cron
 
 				// Remove the item from postmeta if it exists.
-				$current_post_meta = get_post_meta( $post_id, '_ppp_post_override_data', true );
+				$current_post_meta = get_post_meta( $post_id, '_ppp_tweets', true );
 
-				if ( isset( $current_post_meta['day'.$day] ) ) {
-					unset( $current_post_meta['day'.$day ] );
-					update_post_meta( $post_id, '_ppp_post_override_data', $current_post_meta );
+				if ( isset( $current_post_meta[$index] ) ) {
+					unset( $current_post_meta[$index] );
+					update_post_meta( $post_id, '_ppp_tweets', $current_post_meta );
 				}
 
 				// Display the notice
@@ -160,24 +160,25 @@ function ppp_list_view_maybe_take_action() {
 			}
 			break;
 		case 'share_now':
-			if ( !empty( $post_id ) && !empty( $name ) ) {
+			if ( ! empty( $post_id ) && ! empty( $name ) ) {
 				ppp_share_post( $post_id, $name );
 
-				if ( $delete && !empty( $day ) ) {
+				if ( $delete && ! empty( $index ) ) {
 					ppp_remove_scheduled_share( array( (int)$post_id, $name ) ); // Remove the item in cron
 
 					// Remove the item from postmeta if it exists.
-					$current_post_meta = get_post_meta( $post_id, '_ppp_post_override_data', true );
+					$current_post_meta = get_post_meta( $post_id, '_ppp_tweets', true );
 
-					if ( isset( $current_post_meta['day'.$day] ) ) {
-						unset( $current_post_meta['day'.$day ] );
-						update_post_meta( $post_id, '_ppp_post_override_data', $current_post_meta );
+					if ( isset( $current_post_meta[$index] ) ) {
+						unset( $current_post_meta[$index] );
+						update_post_meta( $post_id, '_ppp_tweets', $current_post_meta );
 					}
 
 					// Display the notice
-					add_action( 'admin_notices', 'ppp_item_deleted_notice' );
+					add_action( 'admin_notices', 'ppp_item_shared_and_deleted_notice' );
+				} else {
+					add_action( 'admin_notices', 'ppp_item_posted_notice' );
 				}
-				add_action( 'admin_notices', 'ppp_item_posted_notice' );
 			}
 			break;
 		default:
@@ -208,6 +209,18 @@ add_action( 'admin_head', 'ppp_list_view_maybe_take_action', 10 );
 		?>
 		<div class="updated">
 			<p><?php _e( 'Item has been shared.', 'ppp-txt' ); ?></p>
+		</div>
+		<?php
+	}
+
+	/**
+	 * When an entry is shared and deleted from schedule view, register a notice
+	 * @return void
+	 */
+	function ppp_item_shared_and_deleted_notice() {
+		?>
+		<div class="updated">
+			<p><?php _e( 'Item has been shared and deleted.', 'ppp-txt' ); ?></p>
 		</div>
 		<?php
 	}

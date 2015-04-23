@@ -1,7 +1,70 @@
+### 2.5.6
+- **[Improved]** Better settings standardization
+
+### 2.5.5
+- **[Security Fix]** XSS prevention for authenticated users in the admin with add_query_arg
+- **[Improved]** Security improvements: additional/redundant escaping/preparing/casting so as to harden the codebase and improve readability
+- **[Improved]** More accurate Today stats
+- **[Improved]** Better translation support
+- **[Improved]** Better exception handling with PDF parsing
+- **[Fix]** Better handling of misconfiguration when attributing an excluded post
+- **[New]** Added French translation
+
+### 2.5.4
+- **[Fix]** Fixed an issue with regex whitelist term duplication in some cases
+- **[Fix]** Fixed an issue when limiting AND fields to one field
+- **[Fix]** Fixed inconsistent default parameter for `searchwp_indexed_post_types` filter
+- **[Fix]** PHP Warning cleanup with filter conflict detection when debugging is enabled
+
+### 2.5.3
+- **[Fix]** Fixed an issue that may have prevented taxonomy searches from returning results
+- **[Fix]** Fixed a regression introduced in 2.5 that aimed to optimize the main search query by omitting taxonomies with a weight of zero
+- **[Fix]** Fixed an issue that may have prevented supplemental search results from appearing
+
+### 2.5
+- **[New]** Alternate, browser based indexer for cases where background indexing doesn't work
+- **[New]** Front end Admin Bar entry that calls out any search modifications put in place (e.g. minimum word length, common words, maximum search length)
+- **[New]** New filter: `searchwp_alternate_indexer` to trigger the new browser-based indexer
+- **[New]** New filter: `searchwp_log_search` to allow prevention of search logging on a per-case basis
+- **[New]** New filter: `searchwp_init` to allow for dynamic initialization of SearchWP
+- **[New]** New filter: `searchwp_max_delta_attempts` to catch edge cases causing repeated delta updates
+- **[New]** New filter: `searchwp_indexer_taxonomies` allows developers to customize which taxonomies are indexed
+- **[New]** New filter: `searchwp_indexer_unindexed_args` to customize `WP_Query` arguments used to locate unindexed posts
+- **[New]** New filter: `searchwp_indexer_unindexed_media_args` to customize `WP_Query` arguments used to locate unindexed Media
+- **[New]** New filter: `searchwp_failed_index_notice` to customize who can see the notice about unindexed posts
+- **[New]** New filter: `searchwp_remove_pre_get_posts` to define whether all hooks to `pre_get_posts` are removed during indexing (a very common conflict)
+- **[New]** New filter: `searchwp_indexer_pre_process_content` allows developers to customize the content being indexed before it is processed and indexed
+- **[New]** Set default array of excluded IDs to the main search query's `post__not_in`
+- **[New]** Set default array of included IDs to the main search query's `post__in`
+- **[New]** PDF metadata is now indexed
+- **[Change]** Use `get_query_var()` instead of directly grabbing `$wp_query` attributes
+- **[Change]** Add `index.php` to default loopback endpoint to avoid false positives with WAFs
+- **[Change]** Use `debug.txt` instead of `debug.log`
+- **[Change]** PDF text extraction abstracted to it's own method `SWP()->extract_pdf_text( $post_id )`
+- **[Fix]** Fixed an issue that prevented limiting Media results for an engine to more than one MIME type group
+- **[Fix]** Fixed an off-by-one issue that prevented single terms from being indexed when using the `searchwp_process_term_limit` filter
+- **[Fix]** Fixed an issue that interfered with pagination in the WP admin when `searchwp_in_admin` was set to true
+- **[Fix]** PHP Warning cleanup in Dashboard Widget
+- **[Fix]** Only output Dashboard Widget assets on the Dashboard
+- **[Fix]** Fixed an overflow issue in Dashboard Widget when collapsed on load
+- **[Fix]** Fixed an issue where Dashboard Widget stats transients were not cleared when stats were reset
+- **[Improvement]** Better minimum height for statistics graph
+- **[Improvement]** Better width restriction on settings screen for post type tabs
+- **[Improvement]** Better detection of database environment change that may interfere with indexing
+- **[Improvement]** Weights of less than 0 are now called out to ensure intention of excluding results
+- **[Improvement]** Better checks against `searchwp_indexed_post_types` when displaying settings screen
+- **[Improvement]** Main search algorithm optimizations
+- **[Improvement]** Indexer now checks for excluded posts before reindexing them after a purge
+- **[Improvement]** Optimizations to search algorithm when weights of zero are used
+- **[Improvement]** UI improvements on the settings screen
+- **[Update]** Updated translation files
+- **[Update]** Updated updater
+
 ### 2.4.11
 - **[Fix]** Fixed an issue that prevented post attribution when using explicit IDs
 - **[Fix]** Set proper flags when all search terms have been invalidated
 - **[Fix]** PHP Warning cleanup with Dashboard Widget
+- **[Fix]** Better support for plugin-enabled Media categories when setting excluded categories
 - **[Improvement]** Further optimization of results pool reduction when exclusions are in place
 - **[Update]** Updated translation source files
 - **[Change]** `searchwp_term_in` filter now has a 3rd parameter with the original (e.g. unstemmed when stemming is enabled) term
@@ -284,7 +347,7 @@
 - **[New]** Term Whitelisting: you can now define regex patterns and in doing so better retain specially formatted terms (e.g. dates, phone numbers, function names) in the index that otherwise would have been stripped of punctuation
 - **[New]** New Filter: `searchwp_query_orderby` allows open-ended customization of the `ORDER BY` clause of the main search query
 - **[New]** New Filter: `searchwp_force_run` allows developers the ability to force SearchWP to run no matter what
-- **[New]** New Filter: `searchwp_leinant_accents` allowing for 'lazy' quotes (e.g. searches without quotes will find terms with quotes)
+- **[New]** New Filter: `searchwp_lenient_accents` allowing for 'lazy' quotes (e.g. searches without quotes will find terms with quotes)
 - **[Improvement]** PHP Error cleanup
 - **[Improvement]** Revisited index table indices, they're now better optimized which should result in noticeable performance improvements
 - **[Improvement]** Load monitoring has been removed as it proved to be holding back the indexer resulting in delayed index times

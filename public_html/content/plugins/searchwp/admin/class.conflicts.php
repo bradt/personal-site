@@ -12,6 +12,12 @@ class SearchWP_Conflicts {
 
 	public $filter_conflicts = array();
 
+	// the filters we want to check for conflicts and their associated Knowledge Base resources
+	public $filter_checklist = array(
+		'pre_get_posts'     => 'https://searchwp.com/?p=10370',
+		'the_posts'         => 'https://searchwp.com/?p=10370',
+	);
+
 	function __construct() {
 		$this->search_template = locate_template( 'search.php' ) ? locate_template( 'search.php' ) : locate_template( 'index.php' );
 		$this->check_search_template();
@@ -23,7 +29,7 @@ class SearchWP_Conflicts {
 		include_once ABSPATH . 'wp-admin/includes/file.php';
 		WP_Filesystem();
 		$potential_conflicts = array( 'new WP_Query', 'query_posts' );
-		$search_template_content = $wp_filesystem->get_contents_array( $this->search_template );
+		$search_template_content = ! empty( $this->search_template ) ? $wp_filesystem->get_contents_array( $this->search_template ) : '';
 		if ( ! empty( $search_template_content ) ) {
 			while ( list( $key, $line ) = each( $search_template_content ) ) {
 				$line = trim( $line );
@@ -31,7 +37,7 @@ class SearchWP_Conflicts {
 					if ( false !== strpos( $line, $potential_conflict ) ) {
 						// make sure the line isn't commented out
 						if ( '//' != substr( $line, 0, 2 ) ) {
-							$this->search_template_conflicts[$key + 1][] = $potential_conflict;
+							$this->search_template_conflicts[ $key + 1 ][] = $potential_conflict;
 						}
 					}
 				}
@@ -50,13 +56,7 @@ class SearchWP_Conflicts {
 					'SearchWP::checkForMainQuery',      // SearchWP main query check
 				);
 
-				// the filters we want to check for conflicts and their associated Knowledge Base resources
-				$filter_checklist = array(
-					'pre_get_posts'     => 'https://searchwp.com/?p=10370',
-					'the_posts'         => 'https://searchwp.com/?p=10370',
-				);
-
-				foreach ( $filter_checklist as $filter_name => $filter_resolution_url ) {
+				foreach ( $this->filter_checklist as $filter_name => $filter_resolution_url ) {
 					if ( isset( $GLOBALS['wp_filter'][$filter_name] ) ) {
 						foreach ( $GLOBALS['wp_filter'][$filter_name] as $filter_priority ) {
 							foreach ( $filter_priority as $filter_hook ) {

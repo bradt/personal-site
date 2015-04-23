@@ -2,15 +2,15 @@
 /*
 Plugin Name: Post Promoter Pro
 Plugin URI: https://postpromoterpro.com
-Description: Schedule the promotion of posts for the next 6 days, with no further work.
-Version: 2.1.1
+Description: Maximize your social media presence on Twitter, Facebook, and LinkedIn.
+Version: 2.2.2
 Author: Post Promoter Pro
 Author URI: https://postpromoterpro.com
 License: GPLv2
 */
 
 define( 'PPP_PATH', plugin_dir_path( __FILE__ ) );
-define( 'PPP_VERSION', '2.1.1' );
+define( 'PPP_VERSION', '2.2.2' );
 define( 'PPP_FILE', plugin_basename( __FILE__ ) );
 define( 'PPP_URL', plugins_url( '/', PPP_FILE ) );
 
@@ -26,45 +26,53 @@ class PostPromoterPro {
 
 	private function __construct() {
 		add_action( 'init', array( $this, 'ppp_loaddomain' ), 1 );
-		register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
 
-		global $ppp_options, $ppp_social_settings, $ppp_share_settings;
-		$ppp_options         = get_option( 'ppp_options' );
-		$ppp_social_settings = get_option( 'ppp_social_settings' );
-		$ppp_share_settings  = get_option( 'ppp_share_settings' );
+		if ( ! is_callable( 'curl_init' ) ) {
+			add_action( 'admin_notices', array( $this, 'no_curl' ) );
+		} else {
+			register_activation_hook( PPP_FILE, array( $this, 'activation_setup' ) );
 
-		include PPP_PATH . '/includes/general-functions.php';
-		include PPP_PATH . '/includes/share-functions.php';
-		include PPP_PATH . '/includes/cron-functions.php';
-		include PPP_PATH . '/includes/libs/social-loader.php';
-		include PPP_PATH . '/includes/filters.php';
+			global $ppp_options, $ppp_social_settings, $ppp_share_settings;
+			$ppp_options         = get_option( 'ppp_options' );
+			$ppp_social_settings = get_option( 'ppp_social_settings' );
+			$ppp_share_settings  = get_option( 'ppp_share_settings' );
 
-		if ( is_admin() ) {
-			include PPP_PATH . '/includes/admin/upgrades.php';
-			include PPP_PATH . '/includes/admin/actions.php';
-			include PPP_PATH . '/includes/admin/admin-pages.php';
-			include PPP_PATH . '/includes/admin/admin-ajax.php';
-			include PPP_PATH . '/includes/admin/meta-boxes.php';
-			include PPP_PATH . '/includes/admin/welcome.php';
+			include PPP_PATH . '/includes/general-functions.php';
+			include PPP_PATH . '/includes/share-functions.php';
+			include PPP_PATH . '/includes/cron-functions.php';
+			include PPP_PATH . '/includes/filters.php';
+			include PPP_PATH . '/includes/libs/social-loader.php';
 
-			add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
-			add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
+			if ( is_admin() ) {
+				include PPP_PATH . '/includes/admin/upgrades.php';
+				include PPP_PATH . '/includes/admin/do-upgrades.php';
+				include PPP_PATH . '/includes/admin/actions.php';
+				include PPP_PATH . '/includes/admin/admin-pages.php';
+				include PPP_PATH . '/includes/admin/admin-ajax.php';
+				include PPP_PATH . '/includes/admin/meta-boxes.php';
+				include PPP_PATH . '/includes/admin/welcome.php';
 
-			// Handle licenses
-			add_action( 'admin_init', array( $this, 'plugin_updater' ) );
-			add_action( 'admin_init', array( $this, 'activate_license' ) );
-			add_action( 'admin_init', array( $this, 'deactivate_license' ) );
+				add_action( 'admin_init', array( $this, 'ppp_register_settings' ) );
+				add_action( 'admin_init', 'ppp_upgrade_plugin', 1 );
 
-			add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
-			add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
-			add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ) );
-			add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+				// Handle licenses
+				add_action( 'admin_init', array( $this, 'plugin_updater' ) );
+				add_action( 'admin_init', array( $this, 'activate_license' ) );
+				add_action( 'admin_init', array( $this, 'deactivate_license' ) );
+
+				add_action( 'admin_menu', array( $this, 'ppp_setup_admin_menu' ), 1000, 0 );
+				add_filter( 'plugin_action_links', array( $this, 'plugin_settings_links' ), 10, 2 );
+				add_action( 'admin_enqueue_scripts', array( $this, 'load_custom_scripts' ), 99 );
+				add_action( 'admin_enqueue_scripts', array( $this, 'load_styles' ), PHP_INT_MAX );
+				add_action( 'wp_trash_post', 'ppp_remove_scheduled_shares', 10, 1 );
+			}
+
+			add_action( 'init', array( $this, 'get_actions' ) );
+			add_action( 'save_post', 'ppp_schedule_share', 99, 2);
+			add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
+			add_action( 'init', 'ppp_add_image_sizes' );
 		}
 
-		add_action( 'save_post', 'ppp_schedule_share', 99, 2);
-		add_action( 'transition_post_status', 'ppp_share_on_publish', 99, 3);
-		add_action( 'init', 'ppp_add_image_sizes' );
 	}
 
 	/**
@@ -81,6 +89,18 @@ class PostPromoterPro {
 	}
 
 	/**
+	 * Nag if cURL is disabled
+	 * @return void
+	 */
+	public function no_curl() {
+		?>
+		<div class="no-curl">
+			<p><?php _e( 'Post Promoter Pro requires cURL to be enabled. Please enable it to continue using the plugin.', 'ppp-txt' ); ?></p>
+		</div>
+		<?php
+	}
+
+	/**
 	 * On activation, setup the default options
 	 * @return void
 	 */
@@ -91,20 +111,6 @@ class PostPromoterPro {
 		}
 
 		$default_settings['post_types']['post'] = '1';
-		$default_settings['times']['day1']      = '8:00am';
-		$default_settings['days']['day1']       = 'on';
-		$default_settings['times']['day2']      = '10:00am';
-		$default_settings['days']['day2']       = 'on';
-		$default_settings['times']['day3']      = '12:00pm';
-		$default_settings['days']['day3']       = 'on';
-		$default_settings['times']['day4']      = '4:00pm';
-		$default_settings['days']['day4']       = 'on';
-		$default_settings['times']['day5']      = '10:30am';
-		$default_settings['days']['day5']       = 'on';
-		$default_settings['times']['day6']      = '8:00pm';
-		$default_settings['days']['day6']       = 'on';
-
-
 
 		update_option( 'ppp_options', $default_settings );
 		set_transient( '_ppp_activation_redirect', 'true', 30 );
@@ -125,16 +131,21 @@ class PostPromoterPro {
 
 		wp_enqueue_script( 'jquery-ui-core' );
 		wp_enqueue_script( 'jquery-ui-datepicker' );
-		wp_enqueue_script( 'jquery-ui-slider' );
 
 		$jquery_ui_timepicker_path = PPP_URL . 'includes/scripts/libs/jquery-ui-timepicker-addon.js';
 		wp_enqueue_script( 'ppp_timepicker_js', $jquery_ui_timepicker_path , array( 'jquery', 'jquery-ui-core' ), PPP_VERSION, true );
 		wp_enqueue_script( 'ppp_core_custom_js', PPP_URL.'includes/scripts/js/ppp_custom.js', 'jquery', PPP_VERSION, true );
 	}
 
-	public function load_styles() {
+	public function load_styles( $hook ) {
 		wp_register_style( 'ppp_admin_css', PPP_URL . 'includes/scripts/css/admin-style.css', false, PPP_VERSION );
 		wp_enqueue_style( 'ppp_admin_css' );
+
+		// List of people who make it impossible to override their jQuery UI as it's in their core CSS...so only
+		// load ours if they don't exist
+		if ( ! wp_style_is( 'ot-admin-css' ) && ! wp_style_is( 'jquery-ui-css' ) ) {
+			wp_enqueue_style( 'jquery-ui-css', '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/themes/flick/jquery-ui.css' );
+		}
 	}
 
 	/**
@@ -193,6 +204,14 @@ class PostPromoterPro {
 			              'ppp_display_sysinfo'
 			            );
 
+		add_submenu_page( null,
+			              __( 'PPP Upgrades', 'ppp-txt' ),
+			              __( 'PPP Upgrades', 'ppp-txt' ),
+			              'manage_options',
+			              'ppp-upgrades',
+			              'ppp_upgrades_screen'
+			            );
+
 	}
 
 	/**
@@ -223,6 +242,11 @@ class PostPromoterPro {
 	 * @return void
 	 */
 	public function plugin_updater() {
+
+		if ( defined( 'NO_AUTO_UPDATE' ) && true === NO_AUTO_UPDATE ) {
+			return;
+		}
+
 		$license_key = trim( get_option( '_ppp_license_key' ) );
 
 		if ( empty( $license_key ) ) {
@@ -349,6 +373,12 @@ class PostPromoterPro {
 			delete_option( '_ppp_license_key_status' ); // new license has been entered, so must reactivate
 		}
 		return $new;
+	}
+
+	public function get_actions() {
+		if ( isset( $_GET['ppp_action'] ) ) {
+			do_action( 'ppp_' . $_GET['ppp_action'], $_GET );
+		}
 	}
 }
 

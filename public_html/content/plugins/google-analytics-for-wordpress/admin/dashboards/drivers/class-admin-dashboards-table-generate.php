@@ -1,5 +1,11 @@
 <?php
+/**
+ * @package GoogleAnalytics\Admin
+ */
 
+/**
+ * Dashboards table inherited class.
+ */
 class Yoast_GA_Dashboards_Table_Generate extends Yoast_GA_Dashboards_Driver_Generate {
 
 	/**
@@ -25,7 +31,7 @@ class Yoast_GA_Dashboards_Table_Generate extends Yoast_GA_Dashboards_Driver_Gene
 	 */
 	public function get_json() {
 		$return = array(
-			'data' => $this->data,
+			'data' => $this->escape_strings_array( $this->data ),
 		);
 
 		return json_encode( $return );
@@ -51,7 +57,8 @@ class Yoast_GA_Dashboards_Table_Generate extends Yoast_GA_Dashboards_Driver_Gene
 
 		if ( ! empty( $this->dimension_id ) ) {
 			$this->graph_type = 'ga:dimension' . $this->dimension_id;
-		} else {
+		}
+		else {
 			$this->graph_type = $this->graph_type;
 		}
 	}
@@ -61,7 +68,7 @@ class Yoast_GA_Dashboards_Table_Generate extends Yoast_GA_Dashboards_Driver_Gene
 	 */
 	private function generate() {
 		$google_data = $this->get_google_data();
-		$this->data  = array_values( $google_data );
+		$this->data  = is_array( $google_data ) ? array_values( $google_data ) : array();
 	}
 
 }

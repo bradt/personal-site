@@ -22,7 +22,7 @@ class SearchWPDebug {
 		global $wp_filesystem;
 
 		$this->active = true;
-		$this->logfile = trailingslashit( $dir ) . 'debug.log';
+		$this->logfile = trailingslashit( $dir ) . 'debug.txt';
 
 		// init environment
 		if( ! file_exists( $this->logfile ) ) {

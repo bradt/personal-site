@@ -1,3 +1,8 @@
+<?php
+	if ( ! defined( 'ABSPATH' ) || ! function_exists( 'SWP' ) ) {
+		exit;
+	}
+?>
 <hr />
 <div class="searchwp-export-settings">
 	<h3><?php _e( 'Settings Export', 'searchwp' ); ?></h3>
@@ -63,7 +68,7 @@
 		});
 
 		$('#searchwp-form-import').submit(function () {
-			if(confirm('<?php _e( "Are you SURE you want to import these settings? This cannot be undone.", 'searchwp' ); ?>')) {
+			if(confirm('<?php echo esc_js( __( "Are you SURE you want to import these settings? This cannot be undone.", 'searchwp' ) ); ?>')) {
 				return true;
 			}
 			return false;

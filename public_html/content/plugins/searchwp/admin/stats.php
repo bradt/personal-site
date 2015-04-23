@@ -13,10 +13,17 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 	wp_die( __( 'Invalid request', 'searchwp' ) );
 }
 
+if ( isset( $_GET['tab'] ) ) {
+	$engine = sanitize_text_field( $_GET['tab'] );
+	if ( ! isset( $this->settings['engines'][ $engine ] ) ) {
+		wp_die( __( 'Invalid request', 'searchwp' ) );
+	}
+}
+
 ?><div class="wrap">
 
 	<div id="icon-searchwp" class="icon32">
-		<img src="<?php echo trailingslashit( $this->url ); ?>assets/images/searchwp@2x.png" alt="SearchWP" width="21" height="32" />
+		<img src="<?php echo trailingslashit( esc_url( $this->url ) ); ?>assets/images/searchwp@2x.png" alt="SearchWP" width="21" height="32" />
 	</div>
 
 	<h2><?php _e( 'Search Statistics', 'searchwp' ); ?></h2>
@@ -32,7 +39,10 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 				$active_tab = ' nav-tab-active';
 			}
 			?>
-			<a href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&amp;tab=<?php echo esc_attr( $engine ); ?>" class="nav-tab<?php echo $active_tab; ?>"><?php echo $engine_label; ?></a>
+			<?php
+				$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine );
+			?>
+			<a href="<?php echo esc_url( $the_link ); ?>" class="nav-tab<?php echo esc_attr( $active_tab ); ?>"><?php echo esc_html( $engine_label ); ?></a>
 		<?php endforeach; ?>
 	</h2>
 
@@ -51,8 +61,8 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 				$prefix = $wpdb->prefix;
 				$engine = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'default';
 
-				if( isset( $this->settings['engines'][$engine] ) ) {
-					$engineSettings = $this->settings['engines'][$engine];
+				if ( isset( $this->settings['engines'][ $engine ] ) ) {
+					$engineSettings = $this->settings['engines'][ $engine ];
 					$searchCounts = array();
 
 					// retrieve our counts for the past 30 days
@@ -73,20 +83,20 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 
 					// key our array
 					$searchesPerDay = array();
-					for($i = 0; $i <= 30; $i++) {
-						$searchesPerDay[strtoupper(date( 'Md', strtotime( '-'. ( $i ) .' days' ) ))] = 0;
+					for ( $i = 0; $i <= 30; $i++ ) {
+						$searchesPerDay[ strtoupper( date( 'Md', strtotime( '-'. ( $i ) .' days' ) ) ) ] = 0;
 					}
 
-					if( is_array( $searchCounts ) && count( $searchCounts ) ) {
-						foreach( $searchCounts as $searchCount ) {
-							$count 		= intval( $searchCount->searches );
-							$day 		= ( intval( $searchCount->day ) ) < 10 ? 0 . $searchCount->day : $searchCount->day;
-							$month 		= ( intval( $searchCount->month ) ) < 10 ? 0 . $searchCount->month : $searchCount->month;
+					if ( is_array( $searchCounts ) && count( $searchCounts ) ) {
+						foreach ( $searchCounts as $searchCount ) {
+							$count 		= absint( $searchCount->searches );
+							$day 		= ( intval( $searchCount->day ) ) < 10 ? 0 . absint( $searchCount->day ) : absint( $searchCount->day );
+							$month 		= ( intval( $searchCount->month ) ) < 10 ? 0 . absint( $searchCount->month ) : absint( $searchCount->month );
 							$refdate 	= $month . '/01/' . date( 'Y' );
 							$month 		= date( 'M', strtotime( $refdate ) );
 							$key 		= strtoupper( $month . $day );
 
-							$searchesPerDay[$key] = $count;
+							$searchesPerDay[ $key ] = absint( $count );
 						}
 					}
 
@@ -99,13 +109,13 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 						$x_axis_labels[] = intval( substr( $day_key, 3, 5 ) );
 					}
 
-					$engineLabel = isset( $engineSettings['searchwp_engine_label'] ) ? $engineSettings['searchwp_engine_label'] : esc_attr__( 'Default', 'searchwp' );
+					$engineLabel = isset( $engineSettings['searchwp_engine_label'] ) ? esc_attr( $engineSettings['searchwp_engine_label'] ) : esc_attr__( 'Default', 'searchwp' );
 
 					// dump out the necessary JavaScript vars
 					?>
 					var chart_data = {
-						labels: [<?php echo implode( ',', $x_axis_labels ); ?>],
-						series: [[<?php echo implode( ',', $searchesPerDay ); ?>]]
+						labels: [<?php echo esc_js( implode( ',', $x_axis_labels ) ); ?>],
+						series: [[<?php echo esc_js( implode( ',', $searchesPerDay ) ); ?>]]
 					};
 					var chart_options = {
 						low: 0,
@@ -193,15 +203,18 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 	}
 
 	// check to see if we need to ignore something
-	if( isset( $_GET['nonce'] ) && isset( $_GET['ignore'] ) && wp_verify_nonce( $_GET['nonce'], 'swpstatsignore' ) ) {
+	if ( isset( $_GET['nonce'] ) && isset( $_GET['ignore'] ) && wp_verify_nonce( $_GET['nonce'], 'swpstatsignore' ) ) {
 		// retrieve the original query
 		$query_hash = sanitize_text_field( $_GET['ignore'] );
 		$ignore_sql = $wpdb->prepare( "SELECT {$prefix}swp_log.query, md5( {$prefix}swp_log.query ) FROM {$prefix}swp_log  WHERE md5( {$prefix}swp_log.query ) = %s", $query_hash );
 		$query_to_ignore = $wpdb->get_var( $ignore_sql );
-		if( ! empty( $query_to_ignore ) ) {
+
+		if ( ! empty( $query_to_ignore ) ) {
 			$ignored_queries[$query_hash] = $query_hash;
 		}
+
 		update_user_meta( get_current_user_id(), SEARCHWP_PREFIX . 'ignored_queries', $ignored_queries );
+		$this->reset_dashboard_stats_transients();
 	}
 
 	$ignored_queries_sql = "'" . implode( "','", $ignored_queries ) . "'";
@@ -232,7 +245,7 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 
 		<div class="inside">
 			<?php
-			$today = date( 'Y-m-d' ) . ' 00:00:00';
+			$today = date( 'Y-m-d', strtotime( current_time( 'mysql' ) ) ) . ' 00:00:00';
 			$sql = $wpdb->prepare( "
 					SELECT {$prefix}swp_log.query, count({$prefix}swp_log.query) AS searchcount
 					FROM {$prefix}swp_log
@@ -260,11 +273,14 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
+									<?php
+										$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine ) . '&nonce=' . esc_attr( $ignore_nonce ) . '&ignore=' . esc_attr( $query_hash );
+									?>
+									<a class="swp-delete" href="<?php echo esc_url( $the_link ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
-							<td><?php echo $searchCount->searchcount; ?></td>
+							<td><?php echo absint( $searchCount->searchcount ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -307,11 +323,14 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
+									<?php
+										$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine ) . '&nonce=' . esc_attr( $ignore_nonce ) . '&ignore=' . esc_attr( $query_hash );
+									?>
+									<a class="swp-delete" href="<?php echo esc_url( $the_link ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
-							<td><?php echo $searchCount->searchcount; ?></td>
+							<td><?php echo absint( $searchCount->searchcount ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -354,11 +373,14 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
+									<?php
+										$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine ) . '&nonce=' . esc_attr( $ignore_nonce ) . '&ignore=' . esc_attr( $query_hash );
+									?>
+									<a class="swp-delete" href="<?php echo esc_url( $the_link ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
-							<td><?php echo $searchCount->searchcount; ?></td>
+							<td><?php echo absint( $searchCount->searchcount ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -401,11 +423,14 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 						<tr>
 							<td>
 								<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-									<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
+									<?php
+										$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine ) . '&nonce=' . esc_attr( $ignore_nonce ) . '&ignore=' . esc_attr( $query_hash );
+									?>
+									<a class="swp-delete" href="<?php echo esc_url( $the_link ); ?>">x</a>
 									<?php echo esc_html( $searchCount->query ); ?>
 								</div>
 							</td>
-							<td><?php echo $searchCount->searchcount; ?></td>
+							<td><?php echo absint( $searchCount->searchcount ); ?></td>
 						</tr>
 					<?php endforeach; ?>
 					</tbody>
@@ -455,11 +480,14 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 							<tr>
 								<td>
 									<div title="<?php echo esc_attr( $searchCount->query ); ?>">
-										<a class="swp-delete" href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&tab=<?php echo urlencode( $engine ); ?>&nonce=<?php echo $ignore_nonce; ?>&ignore=<?php echo esc_attr( $query_hash ); ?>">x</a>
+										<?php
+											$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine ) . '&nonce=' . esc_attr( $ignore_nonce ) . '&ignore=' . esc_attr( $query_hash );
+										?>
+										<a class="swp-delete" href="<?php echo esc_url( $the_link ); ?>">x</a>
 										<?php echo esc_html( $searchCount->query ); ?>
 									</div>
 								</td>
-								<td><?php echo $searchCount->searchcount; ?></td>
+								<td><?php echo absint( $searchCount->searchcount ); ?></td>
 							</tr>
 						<?php endforeach; ?>
 						</tbody>
@@ -483,7 +511,7 @@ if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap'
 				}).outerHeight(tallest);
 			});
 			$('a.swp-delete').click(function(){
-				if(confirm('<?php _e( "Are you sure you want to ignore this search from all statistics?", 'searchwp' ); ?>')) {
+				if(confirm('<?php echo esc_js( __( "Are you sure you want to ignore this search from all statistics?", 'searchwp' ) ); ?>')) {
 					return true;
 				}else{
 					return false;

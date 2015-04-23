@@ -1,4 +1,7 @@
 <?php
+/**
+ * @package GoogleAnalytics\Frontend
+ */
 
 /**
  * The basic frontend tracking class for the GA plugin, extendable for the children
@@ -9,7 +12,7 @@ abstract class Yoast_GA_Tracking {
 	 * Regular expression for Ga.js and universal tracking to detect links
 	 * @var string
 	 */
-	protected $link_regex = '/<a\s+([^>]*?)href=[\'\"](.*?):(\/\/)?([^\'\"]+?)[\'\"]\s?(.*?)>(.*?)<\/a>/i';
+	protected $link_regex = '/<a([^>]*)\shref=([\'\"])([a-zA-Z]+):(?:\/){2}?(.*)\2([^>]*)>(.*)<\/a>/isU';
 
 	/**
 	 * Storage for the currently set options
@@ -18,8 +21,7 @@ abstract class Yoast_GA_Tracking {
 	public $options;
 
 	/**
-	 * Should the tracking code be added
-	 * @var bool
+	 * @var boolean $do_tracking Should the tracking code be added
 	 */
 	protected $do_tracking = null;
 
@@ -35,8 +37,8 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Output tracking link
 	 *
-	 * @param $label
-	 * @param $matches
+	 * @param string $label
+	 * @param array  $matches
 	 *
 	 * @return mixed
 	 */
@@ -86,7 +88,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse article link
 	 *
-	 * @param $matches
+	 * @param array $matches
 	 *
 	 * @return mixed
 	 */
@@ -97,7 +99,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse comment link
 	 *
-	 * @param $matches
+	 * @param array $matches
 	 *
 	 * @return mixed
 	 */
@@ -108,7 +110,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse widget link
 	 *
-	 * @param $matches
+	 * @param array $matches
 	 *
 	 * @return mixed
 	 */
@@ -119,7 +121,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse menu link
 	 *
-	 * @param $matches
+	 * @param array $matches
 	 *
 	 * @return mixed
 	 */
@@ -130,7 +132,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse the_content or the_excerpt for links
 	 *
-	 * @param $text
+	 * @param string $text
 	 *
 	 * @return mixed
 	 */
@@ -149,7 +151,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse the widget content for links
 	 *
-	 * @param $text
+	 * @param string $text
 	 *
 	 * @return mixed
 	 */
@@ -165,7 +167,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse the nav menu for links
 	 *
-	 * @param $text
+	 * @param string $text
 	 *
 	 * @return mixed
 	 */
@@ -184,7 +186,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse comment text for links
 	 *
-	 * @param $text
+	 * @param string $text
 	 *
 	 * @return mixed
 	 */
@@ -203,7 +205,7 @@ abstract class Yoast_GA_Tracking {
 	/**
 	 * Parse the domain
 	 *
-	 * @param $uri
+	 * @param string $uri
 	 *
 	 * @return array|bool
 	 */
@@ -217,7 +219,8 @@ abstract class Yoast_GA_Tracking {
 			$host = $matches[2];
 			if ( preg_match( '/.*\..*\..*\..*$/', $host ) ) {
 				preg_match( $domainPatternUK, $host, $matches );
-			} else {
+			}
+			else {
 				preg_match( $domainPatternUS, $host, $matches );
 			}
 
@@ -246,10 +249,12 @@ abstract class Yoast_GA_Tracking {
 			$link_attribute = str_replace( "onclick='" . $matches[1] . "'", $js_snippet_single, $link_attribute );
 
 			return $link_attribute;
-		} else {
+		}
+		else {
 			if ( ! is_null( $onclick ) ) {
 				return 'onclick="' . $onclick . '" ' . $link_attribute;
-			} else {
+			}
+			else {
 				return $link_attribute;
 			}
 		}
@@ -307,6 +312,16 @@ abstract class Yoast_GA_Tracking {
 					$this->do_tracking = false;
 				}
 			}
+
+			/**
+			 * Filter: 'yst_ga_track_super_admin' - Allows filtering if the Super admin should be tracked in a multi-site setup
+			 *
+			 * @api array $all_roles
+			 */
+			$track_super_admin = apply_filters( 'yst_ga_track_super_admin', true );
+			if ( $track_super_admin === false && is_super_admin() ) {
+				$this->do_tracking = false;
+			}
 		}
 
 		return $this->do_tracking;
@@ -321,7 +336,7 @@ abstract class Yoast_GA_Tracking {
 	 * @return array
 	 */
 	protected function get_target( $category, $matches ) {
-		$protocol     = $matches[2];
+		$protocol     = $matches[3];
 		$original_url = $matches[4];
 		$domain       = $this->yoast_ga_get_domain( $matches[4] );
 		$origin       = $this->yoast_ga_get_domain( $_SERVER['HTTP_HOST'] );
@@ -337,7 +352,7 @@ abstract class Yoast_GA_Tracking {
 			'origin_domain'   => $origin['domain'],
 			'origin_host'     => $origin['host'],
 			'extension'       => $extension,
-			'link_attributes' => rtrim( $matches[1] . ' ' . $matches[5] ),
+			'link_attributes' => trim( $matches[1] . ' ' . $matches[5] ),
 			'link_text'       => $matches[6],
 			'original_url'    => $original_url,
 		);
@@ -356,19 +371,22 @@ abstract class Yoast_GA_Tracking {
 	protected function get_target_type( $extension, $domain, $origin, $matches ) {
 		$download_extensions = explode( ',', str_replace( '.', '', $this->options['extensions_of_files'] ) );
 		$download_extensions = array_map( 'trim', $download_extensions );
-		$protocol            = $matches[2];
+		$protocol            = $matches[3];
 		$original_url        = $matches[4];
 
 		// Break out immediately if the link is not an http or https link.
 		$type = null;
 		if ( $protocol !== 'http' && $protocol !== 'https' && $protocol !== 'mailto' ) {
 			$type = null;
-		} else {
+		}
+		else {
 			if ( ( $protocol == 'mailto' ) ) {
 				$type = 'email';
-			} elseif ( in_array( $extension, $download_extensions ) ) {
+			}
+			elseif ( in_array( $extension, $download_extensions ) ) {
 				$type = 'download';
-			} else {
+			}
+			else {
 				$type = $this->parse_outbound_type( $domain, $origin, $original_url );
 			}
 		}
@@ -403,7 +421,8 @@ abstract class Yoast_GA_Tracking {
 			if ( ! isset( $type ) ) {
 				$type = 'internal';
 			}
-		} elseif ( $domain['domain'] != $origin['domain'] ) {
+		}
+		elseif ( $domain['domain'] != $origin['domain'] ) {
 			$type = 'outbound';
 		}
 

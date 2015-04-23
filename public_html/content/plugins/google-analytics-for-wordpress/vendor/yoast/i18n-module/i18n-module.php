@@ -146,7 +146,7 @@ class yoast_i18n {
 	private function hide_promo() {
 		$hide_promo = get_transient( 'yoast_i18n_' . $this->project_slug . '_promo_hide' );
 		if ( ! $hide_promo ) {
-			if ( filter_input( INPUT_GET, 'remove_i18n_promo', FILTER_NULL_ON_FAILURE ) ) {
+			if ( filter_input( INPUT_GET, 'remove_i18n_promo', FILTER_VALIDATE_INT ) === 1 ) {
 				// No expiration time, so this would normally not expire, but it wouldn't be copied to other sites etc.
 				set_transient( 'yoast_i18n_' . $this->project_slug . '_promo_hide', true );
 				$hide_promo = true;
@@ -190,7 +190,7 @@ class yoast_i18n {
 
 		if ( $message ) {
 			echo '<div id="i18n_promo_box" style="border:1px solid #ccc;background-color:#fff;padding:10px;max-width:650px;">';
-			echo '<a href="' . add_query_arg( array( 'remove_i18n_promo' => '1' ) ) . '" style="color:#333;text-decoration:none;font-weight:bold;font-size:16px;border:1px solid #ccc;padding:1px 4px;" class="alignright">X</a>';
+			echo '<a href="' . esc_url( add_query_arg( array( 'remove_i18n_promo' => '1' ) ) ) . '" style="color:#333;text-decoration:none;font-weight:bold;font-size:16px;border:1px solid #ccc;padding:1px 4px;" class="alignright">X</a>';
 			echo '<h2>' . sprintf( __( 'Translation of %s', $this->textdomain ), $this->plugin_name ) . '</h2>';
 			if ( isset( $this->glotpress_logo ) && '' != $this->glotpress_logo ) {
 				echo '<a href="' . $this->register_url . '"><img class="alignright" style="margin:15px 5px 5px 5px;width:200px;" src="' . $this->glotpress_logo . '" alt="' . $this->glotpress_name . '"/></a>';
@@ -209,11 +209,11 @@ class yoast_i18n {
 	 * @return object|null
 	 */
 	private function find_or_initialize_translation_details() {
-		$set = get_transient( 'yoast_i18n_' . $this->project_slug );
+		$set = get_transient( 'yoast_i18n_' . $this->project_slug . '_' . $this->locale );
 
 		if ( ! $set ) {
 			$set = $this->retrieve_translation_details();
-			set_transient( 'yoast_i18n_' . $this->project_slug, $set, DAY_IN_SECONDS );
+			set_transient( 'yoast_i18n_' . $this->project_slug . '_' . $this->locale, $set, DAY_IN_SECONDS );
 		}
 
 		return $set;

@@ -75,7 +75,7 @@ function ppp_li_account_list_actions( $string ) {
 
 	if ( ! ppp_linkedin_enabled() ) {
 		global $ppp_linkedin_oauth, $ppp_social_settings;
-		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( get_bloginfo( 'url' ) . $_SERVER['REQUEST_URI'] );
+		$li_authurl = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 
 		$string = '<a class="button-primary" href="' . $li_authurl . '">' . __( 'Connect to Linkedin', 'ppp-txt' ) . '</a>';
 	} else {
@@ -95,8 +95,8 @@ function ppp_li_account_list_extras( $string ) {
 	if ( ppp_linkedin_enabled() ) {
 		global $ppp_social_settings, $ppp_options;
 		if ( $ppp_options['enable_debug'] ) {
-			$days_left  = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
-			$refresh_in = round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+			$days_left  = absint( round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
+			$refresh_in = absint( round( ( get_option( '_ppp_linkedin_refresh' ) - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 
 			$string .= '<br />' . sprintf( __( 'Token expires in %s days' , 'ppp-txt' ), $days_left );
 			$string .= '<br />' . sprintf( __( 'Refresh notice in %s days', 'ppp-txt' ), $refresh_in );
@@ -113,7 +113,19 @@ add_filter( 'ppp_account_list_extras-li', 'ppp_li_account_list_extras', 10, 1 );
  * @return void
  */
 function ppp_capture_linkedin_oauth() {
-	if ( isset( $_REQUEST['li_access_token'] ) && ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == 'ppp-social-settings' ) ) {
+	$should_capture = false;
+
+	if ( isset( $_GET['state'] ) && strpos( $_GET['state'], 'ppp-local-keys-li' ) !== false ) {
+		// Local config
+		$should_capture = true;
+	}
+
+	if ( isset( $_REQUEST['li_access_token'] ) ) {
+		// Returning from remote config
+		$should_capture = true;
+	}
+
+	if ( $should_capture && ( isset( $_REQUEST['page'] ) && $_REQUEST['page'] == 'ppp-social-settings' ) ) {
 		global $ppp_linkedin_oauth;
 		$ppp_linkedin_oauth->ppp_initialize_linkedin();
 		wp_redirect( admin_url( 'admin.php?page=ppp-social-settings' ) );
@@ -155,7 +167,8 @@ add_filter( 'query_vars', 'ppp_li_query_vars' );
  * @return void
  */
 function ppp_li_execute_refresh() {
-	if ( !ppp_linkedin_enabled() ) {
+
+	if ( ! ppp_linkedin_enabled() ) {
 		return;
 	}
 
@@ -172,6 +185,11 @@ add_action( 'admin_init', 'ppp_li_execute_refresh' );
  * @return void
  */
 function ppp_linkedin_refresh_notice() {
+
+	if ( ! ppp_linkedin_enabled() ) {
+		return;
+	}
+
 	global $ppp_linkedin_oauth, $ppp_social_settings;
 
 	// Look for the tokens coming back
@@ -181,10 +199,14 @@ function ppp_linkedin_refresh_notice() {
 	$url = $ppp_linkedin_oauth->ppp_get_linkedin_auth_url( admin_url( 'admin.php?page=ppp-social-settings' ) );
 	$url = str_replace( '?ppp-social-auth', '?ppp-social-auth&ppp-refresh=true&access_token=' . $token, $url );
 
-	$days_left = round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS );
+	$days_left = absint( round( ( $ppp_social_settings['linkedin']->expires_on - current_time( 'timestamp' ) ) / DAY_IN_SECONDS ) );
 	?>
 	<div class="update-nag">
-		<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentcation expires in within %d days. Please <a href="%s">refresh access.</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+		<?php if ( $days_left > 0 ): ?>
+			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentication expires in within %d days. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $days_left, $url ); ?></p>
+		<?php elseif ( $days_left < 1 ): ?>
+			<p><strong>Post Promoter Pro: </strong><?php printf( __( 'Your LinkedIn authentication has expired. Please <a href="%s">refresh access</a>.', 'ppp-txt' ), $url ); ?></p>
+		<?php endif; ?>
 	</div>
 	<?php
 }
@@ -213,8 +235,8 @@ add_action( 'ppp_set_social_token_constants', 'ppp_set_li_token_constants', 10, 
 function ppp_li_share( $title, $description, $link, $media ) {
 	global $ppp_linkedin_oauth;
 	$args = array (
-		'title' => $title,
-		'description' => $description,
+		'title' => ppp_entities_and_slashes( $title ),
+		'description' => ppp_entities_and_slashes( $description ),
 		'submitted-url' => $link,
 		'submitted-image-url' => $media
 		);
@@ -362,7 +384,7 @@ add_action( 'save_post', 'ppp_li_save_post_meta_boxes', 10, 2 ); // save the cus
  * @param  object $post       The Post object
  * @return void
  */
-function ppp_li_share_on_publish( $old_status, $new_status, $post ) {
+function ppp_li_share_on_publish( $new_status, $old_status, $post ) {
 	global $ppp_options;
 	$from_meta = get_post_meta( $post->ID, '_ppp_li_share_on_publish', true );
 	$from_post = isset( $_POST['_ppp_li_share_on_publish'] );

@@ -125,11 +125,6 @@ class PPP_Welcome {
 			<a class="nav-tab <?php echo $selected == 'ppp-about' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'ppp-about' ), 'index.php' ) ) ); ?>">
 				<?php _e( "What's New", 'ppp-txt' ); ?>
 			</a>
-			<!--
-			<a class="nav-tab <?php echo $selected == 'ppp-getting-started' ? 'nav-tab-active' : ''; ?>" href="<?php echo esc_url( admin_url( add_query_arg( array( 'page' => 'ppp-getting-started' ), 'index.php' ) ) ); ?>">
-				<?php _e( 'Getting Started', 'ppp-txt' ); ?>
-			</a>
-			-->
 		</h2>
 		<?php
 	}
@@ -152,29 +147,40 @@ class PPP_Welcome {
 			<?php $this->tabs(); ?>
 
 			<div class="changelog">
-				<h3><?php _e( 'Improved Social Network Integration', 'ppp-txt' );?></h3>
+				<h3><?php _e( 'Free Form Tweet Scheduling', 'ppp-txt' );?></h3>
 
 				<div class="feature-section">
 
-					<img src="<?php echo PPP_URL . '/includes/images/screenshots/new-account-management.jpg'; ?>" class="ppp-welcome-screenshots"/>
+					<img src="<?php echo PPP_URL . '/includes/images/screenshots/free-form-tweets.jpg'; ?>" class="ppp-welcome-screenshots"/>
 
-					<h4><?php _e( 'Redesigned and Expanded', 'ppp-txt' );?></h4>
-					<p><?php _e( 'Twitter, Facebook, and LinkedIn support is built into the core plugin.', 'ppp-txt' );?></p>
-					<p><?php _e( 'We\'ve redesigned the account management screen to be more like the native WordPress experiance. Managed all your connections from one panel, no more tabs!', 'ppp-txt' );?></p>
+					<h4><?php _e( 'More effective, and user friendly.', 'ppp-txt' );?></h4>
+					<p><?php _e( 'No longer do you have to figure out what "Day 1" means. With free form scheduling, you can now create Tweets, days, weeks, or months in the future. Even multiples a day.', 'ppp-txt' );?></p>
+					<p><?php _e( 'Have an old post that you want to promote again? No problem, just go back and add another Scheduled Tweet to the list!', 'ppp-txt' );?></p>
 
 				</div>
 			</div>
 
 			<div class="changelog">
-				<h3><?php _e( 'Now With Facebook Support!', 'ppp-txt' );?></h3>
+				<h3><?php _e( 'Twitter Cards Support', 'ppp-txt' );?></h3>
 
 				<div class="feature-section">
 
-					<img src="<?php echo PPP_URL . '/includes/images/screenshots/facebook-support.jpg'; ?>" class="ppp-welcome-screenshots"/>
+					<img src="<?php echo PPP_URL . '/includes/images/screenshots/twitter-cards.jpg'; ?>" class="ppp-welcome-screenshots"/>
 
-					<h4><?php _e( 'Expand your reach','ppp-txt' );?></h4>
-					<p><?php _e( 'It has been the #1 most requested feature, and finally it is here...Facebook Support!', 'ppp-txt' );?></p>
-					<p><?php _e( 'Share your posts to your timeline, or the timeline of a page you have publish permissions to. We have setup a beautiful thumbnail that integrates perfectly with Facebook.', 'ppp-txt' );?></p>
+					<h4><?php _e( 'Increased visibility on Twitter','ppp-txt' );?></h4>
+					<p><?php _e( 'Enable this feature if you want your Tweets to look the best they can.', 'ppp-txt' );?></p>
+					<p><?php _e( 'This is an opt-in setting, so if you have a plugin that already does this, no conflicts will arise upon upgrade.', 'ppp-txt' );?></p>
+
+				</div>
+			</div>
+
+			<div class="changelog">
+				<h3><?php _e( 'Variable Twitter Images', 'ppp-txt' );?></h3>
+
+				<div class="feature-section">
+
+					<h4><?php _e( 'Change the image attached to each Tweet','ppp-txt' );?></h4>
+					<p><?php _e( 'Have a few rotating images you want to use for your scheduled Tweets? No problem, Version 2.2 supports changing this for every scheduled Tweet.', 'ppp-txt' );?></p>
 
 				</div>
 			</div>
@@ -184,16 +190,16 @@ class PPP_Welcome {
 
 				<div class="feature-section col three-col">
 					<div>
-						<h4><?php _e( 'Better debugging', 'ppp-txt' );?></h4>
-						<p><?php _e( 'When you check to have debug enabled now, you will get some additional information about your social accounts on the account view.', 'ppp-txt' );?></p>
+						<h4><?php _e( 'Updated image sizes', 'ppp-txt' );?></h4>
+						<p><?php _e( 'Changed the optimal thumbnail image sizes to meet the 2015 network standards.', 'ppp-txt' );?></p>
 
-						<h4><?php _e( 'Improved LinkedIn Support', 'ppp-txt' );?></h4>
-						<p><?php _e( 'Fixed a few issues with LinkedIn token expiration. If you have issues, just disconnect and reconnect.', 'ppp-txt' );?></p>
+						<h4><?php _e( 'CSS Updates', 'ppp-txt' );?></h4>
+						<p><?php _e( 'Fixed a conflict in the media library CSS.', 'ppp-txt' );?></p>
 					</div>
 
 					<div class="last-feature">
-						<h4><?php _e( 'Performance Improvements', 'ppp-txt' );?></h4>
-						<p><?php _e( 'Made some improvements to the way Post Promoter Pro uses sessions, to help with overall site performance', 'ppp-txt' );?></p>
+						<h4><?php _e( 'Improved Facebook Token Refresh', 'ppp-txt' );?></h4>
+						<p><?php _e( 'Fixed a bug with the Facebook token refresh resetting the "Post As", dropdown.', 'ppp-txt' );?></p>
 					</div>
 				</div>
 			</div>
@@ -238,16 +244,23 @@ class PPP_Welcome {
 	 */
 	public function welcome() {
 
-		// Bail if no activation redirect
-		if ( ! get_transient( '_ppp_activation_redirect' ) )
+		$version_level = explode( '.', PPP_VERSION );
+		if ( count( $version_level > 2 ) ) {
 			return;
+		}
+
+		// Bail if no activation redirect
+		if ( ! get_transient( '_ppp_activation_redirect' ) ) {
+			return;
+		}
 
 		// Delete the redirect transient
 		delete_transient( '_ppp_activation_redirect' );
 
 		// Bail if activating from network, or bulk
-		if ( is_network_admin() || isset( $_GET['activate-multi'] ) )
+		if ( is_network_admin() || isset( $_GET['activate-multi'] ) ) {
 			return;
+		}
 
 		wp_safe_redirect( admin_url( 'index.php?page=ppp-about' ) ); exit;
 	}

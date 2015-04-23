@@ -37,41 +37,41 @@ class SearchWP_System_Info {
 
 Multisite:                <?php echo is_multisite() ? 'Yes' . "\n" : 'No' . "\n" ?>
 
-SITE_URL:                 <?php echo site_url() . "\n"; ?>
-HOME_URL:                 <?php echo home_url() . "\n"; ?>
+SITE_URL:                 <?php echo esc_url( site_url() ) . "\n"; ?>
+HOME_URL:                 <?php echo esc_url( home_url() ) . "\n"; ?>
 
-SearchWP Version:         <?php echo $this->searchwp->version . "\n"; ?>
-WordPress Version:        <?php echo get_bloginfo( 'version' ) . "\n"; ?>
-Permalink Structure:      <?php echo get_option( 'permalink_structure' ) . "\n"; ?>
-Active Theme:             <?php echo $theme . "\n"; ?>
+SearchWP Version:         <?php echo esc_textarea( $this->searchwp->version ) . "\n"; ?>
+WordPress Version:        <?php echo esc_textarea( get_bloginfo( 'version' ) ) . "\n"; ?>
+Permalink Structure:      <?php echo esc_textarea( get_option( 'permalink_structure' ) ) . "\n"; ?>
+Active Theme:             <?php echo esc_textarea( $theme ) . "\n"; ?>
 <?php if( $host ) : ?>
-Host:                     <?php echo $host . "\n"; ?>
+Host:                     <?php echo esc_textarea( $host ) . "\n"; ?>
 <?php endif; ?>
 
-Registered Post Stati:    <?php echo implode( ', ', get_post_stati() ) . "\n\n"; ?>
+Registered Post Stati:    <?php echo esc_textarea( implode( ', ', get_post_stati() ) ) . "\n\n"; ?>
 
-PHP Version:              <?php echo PHP_VERSION . "\n"; ?>
-MySQL Version:            <?php echo $wpdb->db_version() . "\n"; ?>
-Web Server Info:          <?php echo $_SERVER['SERVER_SOFTWARE'] . "\n"; ?>
+PHP Version:              <?php echo esc_textarea( PHP_VERSION ) . "\n"; ?>
+MySQL Version:            <?php echo esc_textarea( $wpdb->db_version() ) . "\n"; ?>
+Web Server Info:          <?php echo esc_textarea( $_SERVER['SERVER_SOFTWARE'] ) . "\n"; ?>
 
-WordPress Memory Limit:   <?php echo WP_MEMORY_LIMIT; ?><?php echo "\n"; ?>
+WordPress Memory Limit:   <?php echo esc_textarea( WP_MEMORY_LIMIT ); ?><?php echo "\n"; ?>
 PHP Safe Mode:            <?php echo ini_get( 'safe_mode' ) ? "Yes" : "No\n"; ?>
-PHP Memory Limit:         <?php echo ini_get( 'memory_limit' ) . "\n"; ?>
-PHP Upload Max Size:      <?php echo ini_get( 'upload_max_filesize' ) . "\n"; ?>
-PHP Post Max Size:        <?php echo ini_get( 'post_max_size' ) . "\n"; ?>
-PHP Upload Max Filesize:  <?php echo ini_get( 'upload_max_filesize' ) . "\n"; ?>
-PHP Time Limit:           <?php echo ini_get( 'max_execution_time' ) . "\n"; ?>
-PHP Max Input Vars:       <?php echo ini_get( 'max_input_vars' ) . "\n"; ?>
-PHP Arg Separator:        <?php echo ini_get( 'arg_separator.output' ) . "\n"; ?>
+PHP Memory Limit:         <?php echo esc_textarea( ini_get( 'memory_limit' ) ) . "\n"; ?>
+PHP Upload Max Size:      <?php echo esc_textarea( ini_get( 'upload_max_filesize' ) ) . "\n"; ?>
+PHP Post Max Size:        <?php echo esc_textarea( ini_get( 'post_max_size' ) ) . "\n"; ?>
+PHP Upload Max Filesize:  <?php echo esc_textarea( ini_get( 'upload_max_filesize' ) ) . "\n"; ?>
+PHP Time Limit:           <?php echo esc_textarea( ini_get( 'max_execution_time' ) ) . "\n"; ?>
+PHP Max Input Vars:       <?php echo esc_textarea( ini_get( 'max_input_vars' ) ) . "\n"; ?>
+PHP Arg Separator:        <?php echo esc_textarea( ini_get( 'arg_separator.output' ) ) . "\n"; ?>
 PHP Allow URL File Open:  <?php echo ini_get( 'allow_url_fopen' ) ? "Yes" : "No\n"; ?>
 
 WP_DEBUG:                 <?php echo defined( 'WP_DEBUG' ) ? WP_DEBUG ? 'Enabled' . "\n" : 'Disabled' . "\n" : 'Not set' . "\n" ?>
 
-WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long";} else {echo " Acceptable";} echo "\n"; ?>
+WP Table Prefix:          <?php echo "Length: ". strlen( $wpdb->prefix ); echo " Status:"; if ( strlen( $wpdb->prefix )>16 ) {echo " ERROR: Too Long"; } else { echo " Acceptable";} echo "\n"; ?>
 
-Show On Front:            <?php echo get_option( 'show_on_front' ) . "\n" ?>
-Page On Front:            <?php $id = get_option( 'page_on_front' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
-Page For Posts:           <?php $id = get_option( 'page_for_posts' ); echo get_the_title( $id ) . ' (#' . $id . ')' . "\n" ?>
+Show On Front:            <?php echo esc_textarea( get_option( 'show_on_front' ) ) . "\n" ?>
+Page On Front:            <?php $id = get_option( 'page_on_front' ); echo esc_textarea( get_the_title( $id ) . ' (#' . $id . ')' ) . "\n" ?>
+Page For Posts:           <?php $id = get_option( 'page_for_posts' ); echo esc_textarea( get_the_title( $id ) . ' (#' . $id . ')' ) . "\n" ?>
 
 <?php
 $request['cmd'] = '_notify-validate';
@@ -91,7 +91,7 @@ if ( ! is_wp_error( $response ) && $response['response']['code'] >= 200 && $resp
 	$WP_REMOTE_POST =  'wp_remote_post() does not work' . "\n";
 }
 ?>
-WP Remote Post:           <?php echo $WP_REMOTE_POST; ?>
+WP Remote Post:           <?php echo esc_textarea( $WP_REMOTE_POST ); ?>
 
 Session:                  <?php echo isset( $_SESSION ) ? 'Enabled' : 'Disabled'; ?><?php echo "\n"; ?>
 Session Name:             <?php echo esc_html( ini_get( 'session.name' ) ); ?><?php echo "\n"; ?>
@@ -146,10 +146,11 @@ $active_plugins = get_option( 'active_plugins', array() );
 
 foreach ( $plugins as $plugin_path => $plugin ) {
 	// if the plugin isn't active, don't show it.
-	if ( ! in_array( $plugin_path, $active_plugins ) )
+	if ( ! in_array( $plugin_path, $active_plugins ) ) {
 		continue;
+	}
 
-	echo $plugin['Name'] . ': ' . $plugin['Version'] ."\n";
+	echo esc_textarea( $plugin['Name'] . ': ' . $plugin['Version'] ) . "\n";
 }
 
 if ( is_multisite() ) :
@@ -165,12 +166,13 @@ if ( is_multisite() ) :
 		$plugin_base = plugin_basename( $plugin_path );
 
 		// If the plugin isn't active, don't show it.
-		if ( ! array_key_exists( $plugin_base, $active_plugins ) )
+		if ( ! array_key_exists( $plugin_base, $active_plugins ) ) {
 			continue;
+		}
 
 		$plugin = get_plugin_data( $plugin_path );
 
-		echo $plugin['Name'] . ' :' . $plugin['Version'] ."\n";
+		echo esc_textarea( $plugin['Name'] . ' :' . $plugin['Version'] ) . "\n";
 	}
 
 endif; ?>

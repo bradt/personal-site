@@ -369,5 +369,17 @@ var searchwp_settings_handler = function(){
 
 		$('.swp-dropdown-toggle').dropdown();
 
+		// call out weights of -1 because they're usually unintended
+		var maybe_weight_warning = function($el){
+			if(parseFloat($el.val(),10)<0){
+				$el.addClass('searchwp-weight-warning');
+			}else{
+				$el.removeClass('searchwp-weight-warning');
+			}
+		};
+		$body.on('change keyup', '.swp-engine-weights input', function(){
+			maybe_weight_warning($(this));
+		});
+
 	})(jQuery);
 };

@@ -191,7 +191,7 @@ class SearchWPAdminNotices extends SearchWP {
 				$integration    = $integration_extensions[$missing_integration]['integration']['name'];
 				?>
 				<div class="error" id="searchwp-missing-integrations-notice">
-					<p><strong><?php _e( 'Missing SearchWP integration', 'searchwp' ); ?>:</strong> <?php echo sprintf( __( 'In order for SearchWP to work with %s you will need to install and activate the <a href="%s">%s</a> Extension', 'searchwp' ), $plugin, $url, $integration ); ?></p>
+					<p><strong><?php _e( 'Missing SearchWP integration', 'searchwp' ); ?>:</strong> <?php echo sprintf( __( 'In order for SearchWP to work with %s you will need to install and activate the <a href="%s">%s</a> Extension.', 'searchwp' ), esc_html( $plugin ), esc_url( $url ), esc_html( $integration ) ); ?> <?php echo sprintf( __( 'To dismiss this notice please see <a href="%s">these docs</a>.', 'searchwp' ), 'https://searchwp.com/?p=31517' ); ?></p>
 				</div>
 			<?php endforeach; ?>
 		<?php }
@@ -233,9 +233,12 @@ class SearchWPAdminNotices extends SearchWP {
 
 		$erroneousPosts = get_posts( $args );
 
-		if( ! empty( $erroneousPosts ) ) : ?>
+		if ( ! empty( $erroneousPosts ) && apply_filters( 'searchwp_failed_index_notice', true, $erroneousPosts ) ) : ?>
 			<div class="error" id="searchwp-index-errors-notice">
-				<p><?php _e( 'SearchWP failed to index', 'searchwp' ); ?> <strong><?php echo count( $erroneousPosts ); ?></strong> <?php if( count( $erroneousPosts ) == 1 ) { _e( 'post', 'searchwp' ); } else { _e( 'posts', 'searchwp' ); } ?>. <a href="options-general.php?page=searchwp&amp;nonce=<?php echo urlencode( wp_create_nonce( 'swperroneous' ) ); ?>"><?php _e( 'View details', 'searchwp' ); ?> &raquo;</a></p>
+				<?php
+					$the_link = admin_url( 'options-general.php?page=searchwp' ) . '&nonce=' . esc_attr( wp_create_nonce( 'swperroneous' ) );
+				?>
+				<p><?php _e( 'SearchWP failed to index', 'searchwp' ); ?> <strong><?php echo count( $erroneousPosts ); ?></strong> <?php if( count( $erroneousPosts ) == 1 ) { _e( 'post', 'searchwp' ); } else { _e( 'posts', 'searchwp' ); } ?>. <a href="<?php echo esc_url( $the_link ); ?>"><?php _e( 'View details', 'searchwp' ); ?> &raquo;</a></p>
 			</div>
 		<?php endif;
 	}
@@ -245,7 +248,7 @@ class SearchWPAdminNotices extends SearchWP {
 	 */
 	function indexer_disabled() {
 		$paused = searchwp_get_option( 'paused' );
-		if( $paused ) {
+		if ( $paused ) {
 			?>
 			<div class="updated">
 				<p><?php _e( 'The SearchWP indexer is currently <strong>disabled</strong>', 'searchwp' ); ?></p>
@@ -263,16 +266,16 @@ class SearchWPAdminNotices extends SearchWP {
 		?>
 		<script type="text/javascript" >
 			jQuery(document).ready(function($) {
-				var data = { action: 'swp_conflict' };
-				$('body').on('click','a.swp-dismiss-conflict',function(){
+				var data = { action: 'swp_conflict'},
+					$body = $('body');
+				$body.on('click','a.swp-dismiss-conflict',function(){
 					data.swphash = $(this).data('hash');
 					data.swpnonce = $(this).data('nonce');
 					data.swpfilter = $(this).data('filter');
 					$.post(ajaxurl, data, function(response) {});
 					$(this).parents('.updated').remove();
 					return false;
-				});
-				$('body').on('click','.swp-conflict-toggle',function(){
+				}).on('click','.swp-conflict-toggle',function(){
 					var $target = $($(this).attr('href'));
 					if($target.is(':visible')){
 						$target.hide();
@@ -319,7 +322,8 @@ class SearchWPAdminNotices extends SearchWP {
 							<strong><?php _e( 'File location', 'searchwp' ); ?>:</strong>
 							<code><?php echo esc_html( $conflicts->search_template ); ?></code>
 						</p>
-						<?php foreach( $conflicts->search_template_conflicts as $line_number => $conflicts ) : ?>
+						<?php foreach ( $conflicts->search_template_conflicts as $line_number => $conflicts ) : ?>
+							<?php $conflicts = array_map( 'esc_html', $conflicts ); ?>
 							<p>
 								<strong><?php _e( 'Line', 'searchwp' ); ?>: <?php echo absint( $line_number ); ?></strong>
 								<code><?php echo implode( '</code>, <code>', $conflicts ); ?></code>
@@ -362,25 +366,31 @@ class SearchWPAdminNotices extends SearchWP {
 					}
 					?>
 					<div class="updated">
-						<p><?php echo sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), $filter_name ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
+						<p><?php echo sprintf( __( 'SearchWP has detected a <strong>potential (<em>not guaranteed</em>)</strong> action/filter conflict with <code>%s</code> caused by an active plugin or the active theme.', 'searchwp' ), esc_html( $filter_name ) ); ?> <a class="swp-conflict-toggle swp-filter-conflict-show" href="#searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'More info &raquo;', 'searchwp' ); ?></a></p>
 						<div id="searchwp-conflict-<?php echo esc_attr( $filter_name ); ?>" style="background:#fafafa;border:1px solid #eaeaea;padding:0.6em 1.2em;border-radius:2px;margin-bottom:1em;display:none;">
 							<p><?php _e( '<strong>This is simply a <em>preliminary</em> detection of a <em>possible</em> conflict.</strong> Many times these detections can be <strong>safely dismissed</strong>', 'searchwp' ); ?></p>
 							<p><?php _e( '<em>If (and only if) you are experiencing issues</em> with search results not changing or not appearing, the following Hooks (put in place by other plugins or your active theme) <em>may be</em> contributing to the problem:', 'searchwp' ); ?></p>
 							<ol>
-								<?php foreach( $potential_conflict as $conflict ) : ?>
+								<?php foreach ( $potential_conflict as $conflict ) : ?>
 									<?php
 									// if it was class based we'll break out the class
-									if( strpos( $conflict, '::' ) ) {
+									if ( strpos( $conflict, '::' ) ) {
 										$conflict = explode( '::', $conflict );
-										$conflict = '<code>' . $conflict[1] . '</code> ' . __( '(method) in', 'searchwp' ) . ' <code>' . $conflict[0] . '</code>' . __( ' (class)', 'searchwp' );
+										$conflict = '<code>' . esc_html( $conflict[1] ) . '</code> ' . __( '(method) in', 'searchwp' ) . ' <code>' . esc_html( $conflict[0] ) . '</code>' . __( ' (class)', 'searchwp' );
 									} else {
-										$conflict = '<code>' . $conflict . '</code> ' . __( '(function)', 'searchwp' );
+										$conflict = '<code>' . esc_html( $conflict ) . '</code> ' . __( '(function)', 'searchwp' );
 									}
 									?>
 									<li><?php echo $conflict; ?></li>
 								<?php endforeach; ?>
 							</ol>
-							<p><?php echo sprintf( __( '<strong>If you believe there to be a conflict (e.g. search results not showing up):</strong> use this information you can determine how to best disable this interference. For more information please see <a href="%s">this Knowledge Base article</a>.', 'searchwp' ), $filter_resolution_url ); ?></p>
+							<?php
+								$filter_resolution_url = '#';
+								if ( is_array( $conflicts->filter_checklist ) && array_key_exists( $filter_name, $conflicts->filter_checklist ) ) {
+									$filter_resolution_url = esc_url( $conflicts->filter_checklist[ $filter_name ] );
+								}
+							?>
+							<p><?php echo sprintf( __( '<strong>If you believe there to be a conflict (e.g. search results not showing up):</strong> use this information you can determine how to best disable this interference. For more information please see <a href="%s">this Knowledge Base article</a>.', 'searchwp' ), esc_url( $filter_resolution_url ) ); ?></p>
 							<p><a class="button swp-dismiss-conflict" href="#" data-hash="<?php echo esc_attr( $conflict_hash ); ?>" data-nonce="<?php echo esc_attr( $conflict_nonce ); ?>" data-filter="<?php echo esc_attr( $filter_name ); ?>"><?php _e( 'Dismiss this message', 'searchwp' ); ?></a></p>
 						</div>
 					</div>

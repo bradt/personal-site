@@ -16,14 +16,14 @@ function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engine
 		<div class="swp-supplemental-engine-controls swp-group">
 			<div class="swp-supplemental-engine-name">
 				<a href="#" class="swp-supplemental-engine-edit-trigger"><?php
-					if( is_null( $engineLabel ) ) {
+					if ( is_null( $engineLabel ) ) {
 						echo '{{swp.engineLabel}}';
 					} else {
 						echo esc_html( $engineLabel ) . ' <code>' . esc_html( $engineName ) . '</code>';
 					}
 					?></a>
-				<input type="text" name="<?php echo SEARCHWP_PREFIX; ?>settings[engines][<?php if( is_null( $engineName ) ) { ?>{{swp.engine}}<?php } { echo esc_attr( $engineName ); } ?>][searchwp_engine_label]" value="<?php
-				if( is_null( $engineLabel ) ) {
+				<input type="text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php if ( is_null( $engineName ) ) { ?>{{swp.engine}}<?php } { echo esc_attr( $engineName ); } ?>][searchwp_engine_label]" value="<?php
+				if ( is_null( $engineLabel ) ) {
 					echo '{{swp.engineLabel}}';
 				} else {
 					echo esc_attr( $engineLabel );
@@ -35,7 +35,7 @@ function searchwpSupplementalEngineSettingsTemplate( $engineName = null, $engine
 			</div>
 		</div>
 		<div class="swp-supplemental-engine-settings"><?php
-			if( is_null( $engineName ) ) {
+			if ( is_null( $engineName ) ) {
 				echo '{{swp.engineSettings}}';
 			} else {
 				searchwpEngineSettingsTemplate( $engineName );

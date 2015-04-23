@@ -69,36 +69,6 @@ function ppp_admin_page() {
 					</td>
 				</tr>
 
-				<?php $day = 1; ?>
-				<tr valign="top">
-					<th scope="row"><?php _e( 'Default Share Times', 'ppp-txt' ); ?><br />
-						<span style="font-size: x-small;"><?php _e( 'When would you like your posts to be shared? You can change this on a per post basis as well', 'ppp-txt' ); ?></span></th>
-					<td>
-						<strong><?php _e( 'Days After Publish', 'ppp-txt' ); ?></strong>
-						<table id="ppp-days-table">
-							<tr>
-								<?php while( $day <= $share_days_count ): ?>
-									<td><label for="ppp_options[days][day<?php echo $day; ?>]"><?php echo $day; ?></label>
-									<input id="day<?php echo $day; ?>"
-										       type="checkbox"
-										       name="ppp_options[days][day<?php echo $day; ?>]"
-										       value="on"
-										       <?php checked( true, ppp_is_day_enabled( $day ), true ); ?>/></td>
-									<?php $day++; ?>
-								<?php endwhile; ?>
-							</tr>
-							<tr>
-								<?php $day = 1; ?>
-								<?php while( $day <= $share_days_count ): ?>
-								<td><input id="day<?php echo $day; ?>" type="text" name="ppp_options[times][day<?php echo $day; ?>]" class="share-time-selector"
-									value="<?php echo htmlspecialchars( ppp_get_day_default_time( $day ) ); ?>" size="8" /></td>
-									<?php $day++; ?>
-								<?php endwhile; ?>
-							</tr>
-						</table>
-					</td>
-				</tr>
-
 				<tr valign="top">
 					<th scope="row"><?php _e( 'Post Types', 'ppp-txt' ); ?><br /><span style="font-size: x-small;"><?php _e( 'What post types do you want to schedule for?', 'ppp-txt' ); ?></span></th>
 					<td>
@@ -207,6 +177,23 @@ function ppp_display_social() {
 							<?php else: ?>
 								<em><?php _e( 'No posts available to generate link from.', 'ppp-txt' ); ?></em>
 							<?php endif; ?>
+						</p>
+					</td>
+				</tr>
+
+				<?php $twitter_cards_enabled = ppp_tw_cards_enabled(); ?>
+				<tr valign="top">
+					<th scope="row" valign="top">
+						<?php _e( 'Twitter Settings', 'ppp-txt' ); ?></span>
+					</th>
+					<td id="ppp-twitter-cards-wrapper">
+						<p>
+							<input id="ppp-twitter-cards"
+							       name="ppp_share_settings[twitter][cards_enabled]"
+							       type="checkbox"
+							       value="1"
+							       <?php checked( true, $twitter_cards_enabled, true ); ?>
+							/>&nbsp<label for="ppp-twitter-cards"><?php _e( 'Enable Twitter Cards', 'ppp-txt' ); ?></label>
 						</p>
 					</td>
 				</tr>

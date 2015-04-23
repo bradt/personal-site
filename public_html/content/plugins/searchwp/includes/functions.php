@@ -1,5 +1,9 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {
+	die();
+}
+
 /**
  * Remove an option from the database
  *
@@ -310,5 +314,29 @@ if ( ! function_exists( 'searchwp_check_for_stalled_indexer' ) ) {
 				}
 			}
 		}
+	}
+}
+
+/**
+ * Extracts PDF content from a PDF within the Media library
+ *
+ * @since 2.5
+ */
+if ( ! function_exists( 'searchwp_extract_pdf_text' ) && class_exists( 'SearchWPIndexer' ) ) {
+	function searchwp_extract_pdf_text( $post_id ) {
+		$indexer = new SearchWPIndexer();
+		return $indexer->extract_pdf_text( absint( $post_id ) );
+	}
+}
+
+/**
+ * Extracts PDF metadata from a PDF within the Media library
+ *
+ * @since 2.5
+ */
+if ( ! function_exists( 'searchwp_extract_pdf_metadata' ) && class_exists( 'SearchWPIndexer' ) ) {
+	function searchwp_extract_pdf_metadata( $post_id ) {
+		$indexer = new SearchWPIndexer();
+		return $indexer->extract_pdf_metadata( absint( $post_id ) );
 	}
 }

@@ -9,8 +9,14 @@
 	clear:both;
 }
 
-#swp-searches-chart {
+#swp-searches-chart,
+.swp-searches-chart {
 	width:100%;
+	min-height:265px;
+}
+
+.swp-searches-chart svg {
+	min-height:265px;
 }
 
 .swp-stats {

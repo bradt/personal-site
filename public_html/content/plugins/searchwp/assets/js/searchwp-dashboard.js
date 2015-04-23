@@ -8,7 +8,14 @@ jQuery(document).ready(function($){
 		$('.searchwp-stats-segment td div').css('max-width',Math.floor(searchwp_stat_width/2) - 10 );
 	};
 	searchwp_resize_columns();
-	jQuery(window).resize(function(){
+	$(window).resize(function(){
 		searchwp_resize_columns();
-	})
+	}).load(function(){
+		// prevent inaccurate search stats heights if the Widget was collapsed on load
+		$(document).on('postbox-toggled',function(el){
+			$('.searchwp-tabs-content').css('height','');
+			$('.searchwp-dashboard-stats').searchwpTabs();
+			searchwp_resize_columns();
+		});
+	});
 });

@@ -45,9 +45,10 @@ class SearchWP_Dashboard {
 	 *
 	 * @since 2.8
 	 */
-	function assets() {
+	function assets( $hook ) {
 		if (
-			apply_filters( 'searchwp_dashboard_widget', true )
+			is_admin() && 'index.php' == $hook // only on the Dashboard
+			&& apply_filters( 'searchwp_dashboard_widget', true )
 			&& apply_filters( 'searchwp_dashboard_widget_cap',
 				apply_filters( 'searchwp_settings_cap', 'manage_options' ) )
 		) {
@@ -106,7 +107,10 @@ class SearchWP_Dashboard {
 										<?php $this->echo_stats( $popular_searches_month ); ?>
 									</div>
 									<div class="searchwp-stats-segment-next">
-										<p><a href="<?php echo get_admin_url(); ?>index.php?page=searchwp-stats&amp;tab=<?php echo esc_attr( $engine ); ?>" class="button"><?php _e( 'View Full Stats', 'searchwp' ); ?></a></p>
+										<?php
+											$the_link = admin_url( 'index.php?page=searchwp-stats' ) . '&tab=' . esc_attr( $engine );
+										?>
+										<p><a href="<?php echo esc_url( $the_link ); ?>" class="button"><?php _e( 'View Full Stats', 'searchwp' ); ?></a></p>
 									</div>
 								</div>
 							<?php endforeach; ?>
