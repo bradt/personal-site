@@ -1,0 +1,15 @@
+- .sass-cache
+- .DS_Store
+- /.travis.yml
+- /.scrutinizer.yml
+- /.git
+- /.gitignore
+- /build
+- /debug.log
+- /mirror
+- /composer.json
+- /composer.lock
+- /phpunit.xml
+- /vendor
+- /bin
+- /tests
