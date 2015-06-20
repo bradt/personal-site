@@ -29,15 +29,17 @@ class SearchWP_Conflicts {
 		include_once ABSPATH . 'wp-admin/includes/file.php';
 		WP_Filesystem();
 		$potential_conflicts = array( 'new WP_Query', 'query_posts' );
-		$search_template_content = ! empty( $this->search_template ) ? $wp_filesystem->get_contents_array( $this->search_template ) : '';
-		if ( ! empty( $search_template_content ) ) {
-			while ( list( $key, $line ) = each( $search_template_content ) ) {
-				$line = trim( $line );
-				foreach ( $potential_conflicts as $potential_conflict ) {
-					if ( false !== strpos( $line, $potential_conflict ) ) {
-						// make sure the line isn't commented out
-						if ( '//' != substr( $line, 0, 2 ) ) {
-							$this->search_template_conflicts[ $key + 1 ][] = $potential_conflict;
+		if ( method_exists( $wp_filesystem, 'get_contents_array' ) ) {
+			$search_template_content = ! empty( $this->search_template ) ? $wp_filesystem->get_contents_array( $this->search_template ) : '';
+			if ( ! empty( $search_template_content ) ) {
+				while ( list( $key, $line ) = each( $search_template_content ) ) {
+					$line = trim( $line );
+					foreach ( $potential_conflicts as $potential_conflict ) {
+						if ( false !== strpos( $line, $potential_conflict ) ) {
+							// make sure the line isn't commented out
+							if ( '//' != substr( $line, 0, 2 ) ) {
+								$this->search_template_conflicts[ $key + 1 ][] = $potential_conflict;
+							}
 						}
 					}
 				}
@@ -52,13 +54,13 @@ class SearchWP_Conflicts {
 				// whitelist which functions are acceptable
 				$function_whitelist = array(
 					'_close_comments_for_old_posts',    // WordPress core
-					'SearchWP::wpSearch',               // SearchWP search hijack
-					'SearchWP::checkForMainQuery',      // SearchWP main query check
+					'SearchWP::wp_search',               // SearchWP search hijack
+					'SearchWP::check_for_main_query',      // SearchWP main query check
 				);
 
 				foreach ( $this->filter_checklist as $filter_name => $filter_resolution_url ) {
-					if ( isset( $GLOBALS['wp_filter'][$filter_name] ) ) {
-						foreach ( $GLOBALS['wp_filter'][$filter_name] as $filter_priority ) {
+					if ( isset( $GLOBALS['wp_filter'][ $filter_name ] ) ) {
+						foreach ( $GLOBALS['wp_filter'][ $filter_name ] as $filter_priority ) {
 							foreach ( $filter_priority as $filter_hook ) {
 								if ( isset( $filter_hook['function'] ) ) {
 
@@ -69,7 +71,7 @@ class SearchWP_Conflicts {
 									if ( is_object( $function ) && ( $function instanceof Closure ) ) {
 										$function_name = 'Anonymous Function (Closure)';
 									} elseif ( is_array( $function ) ) {
-										if( is_object( $filter_hook['function'][0] ) ) {
+										if ( is_object( $filter_hook['function'][0] ) ) {
 											$function_name = get_class( $filter_hook['function'][0] ) . '::' . $filter_hook['function'][1];
 										} else {
 											$function_name = (string) $filter_hook['function'][0] . '::' . $filter_hook['function'][1];
@@ -90,7 +92,6 @@ class SearchWP_Conflicts {
 						}
 					}
 				}
-
 			}
 		}
 	}

@@ -29,16 +29,18 @@ jQuery(document).ready(function($){
 						}
 
 					}
+                    $('.swp-label > span').text(response.progress+'%');
+                    $('.swp-progress-bar').css('width',response.progress+'%');
 					if(response.progress==100) {
 						// indexing is complete, hide the progress bar
 						setTimeout(function(){
-							$('.swp-in-progress').addClass('swp-in-progress-done').removeClass('swp-waiting');
+							$('.swp-in-progress')
+                                .addClass('swp-in-progress-complete')
+                                .removeClass('swp-waiting');
 						},1000);
 					} else {
 						// update progress bar and label
-						$('.swp-in-progress').removeClass('swp-in-progress-done');
-						$('.swp-label > span').text(response.progress+'%');
-						$('.swp-progress-bar').css('width',response.progress+'%');
+						$('.swp-in-progress').removeClass('swp-in-progress-done').removeClass('swp-in-progress-complete');
 
 						// if the indexer is waiting, call that out so users don't think it's stalled
 						if(response.waiting){

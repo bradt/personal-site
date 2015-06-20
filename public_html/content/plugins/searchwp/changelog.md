@@ -1,3 +1,32 @@
+### 2.6
+- **[New]** New class: `SWP_Query` which aims to mirror `WP_Query` in many ways, but with a SearchWP twist
+- **[New]** Settings UI has been revamped
+- **[New]** New filter: `searchwp_swp_query_args` to filter SWP_Query args at runtime
+- **[New]** New action: `searchwp_settings_init` fires when the settings utility has been initialized
+- **[New]** New action: `searchwp_load` fires when SearchWP has loaded 
+- **[New]** New action: `searchwp_settings_before_header` fires before the settings header is output
+- **[New]** New action: `searchwp_settings_nav_tab` to implement settings tabs
+- **[New]** New action: `searchwp_settings_after_header` fires after the settings header is output
+- **[New]** New action: `searchwp_settings_before\my_view` where `my_view` is the name of the settings view for that tab
+- **[New]** New action: `searchwp_settings_view\my_view` where `my_view` is the name of the settings view for that tab
+- **[New]** New action: `searchwp_settings_after\my_view` where `my_view` is the name of the settings view for that tab
+- **[New]** New action: `searchwp_settings_footer` fires after each settings view has been displayed
+- **[New]** Results weights are included in HTML comment block when debugging is enabled
+- **[New]** New filter: `searchwp_debug_append_weights_to_titles` whether weights should be included in HTML comment block debug information
+- **[New]** New filter: `searchwp_show_filter_conflict_notices` whether filter conflicts should be shown when debugging is enabled (defaults to `false`)
+- **[Improvement]** Better license activation UX 
+- **[Improvement]** Reduction of index overhead by way of pairing to engine settings
+- **[Improvement]** Refined list of default common (stop) words
+- **[Fix]** Clear out delta ceiling update check when waking up the indexer
+- **[Fix]** Fixed an issue that may have caused the indexer to loop when a post has no content to index after tokenizing/processing
+- **[Fix]** Fixed an issue where the settings screen spinner would not display
+- **[Fix]** Fixed an issue that prevented loading of some assets if the plugin directory was renamed
+- **[Update]** Updated translation files
+
+### 2.5.7
+- **[Fix]** Fixed an issue with `utf8mb4` (e.g. emoji) support (NOTE: only *new* installations will support `utf8mb4`) — more information at [https://searchwp.com/releases/](https://searchwp.com/releases/)
+- **[Change]** All camelCase function and method names have been deprecated (not removed (yet)) in favor of underscores
+
 ### 2.5.6
 - **[Improved]** Better settings standardization
 

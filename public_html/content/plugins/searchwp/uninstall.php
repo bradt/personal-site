@@ -6,7 +6,9 @@
 
 global $wpdb;
 
-if( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) exit;
+if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+	exit;
+}
 
 include_once( 'searchwp.php' );
 
@@ -18,23 +20,26 @@ function searchwp_maybe_nuke() {
 	$swp_nuke_on_delete = isset( $swp_live_settings['nuke_on_delete'] ) ? $swp_live_settings['nuke_on_delete'] : false;
 	$swp_multisite = is_multisite() && function_exists( 'get_current_site' ) ? get_current_site() : null;
 
-	if( ! empty( $swp_nuke_on_delete ) || get_option( SEARCHWP_PREFIX . 'nuke_on_delete' ) || apply_filters( 'searchwp_nuke_on_delete', false, $swp_multisite ) ) {
+	if ( ! empty( $swp_nuke_on_delete ) || get_option( SEARCHWP_PREFIX . 'nuke_on_delete' ) || apply_filters( 'searchwp_nuke_on_delete', false, $swp_multisite ) ) {
 
 		// purge the index including all post meta
 		$searchwp = new SearchWP();
-		$searchwp->purgeIndex();
+		$searchwp->purge_index();
 
 		// deactivate the license
-		$searchwp->deactivateLicense();
+		if ( class_exists( 'SearchWP_Settings_Implementation_License' ) ) {
+			$license_manager = new SearchWP_Settings_Implementation_License();
+			$license_manager->deactivate_license();
+		}
 
 		// drop all custom database tables
 		$tables = array( 'cf', 'index', 'log', 'media', 'tax', 'terms' );
 
-		foreach( $tables as $table ){
+		foreach ( $tables as $table ){
 			$tableName = $wpdb->prefix . SEARCHWP_DBPREFIX . $table;
 
 			// make sure the table exists
-			if( $wpdb->get_var( "SHOW TABLES LIKE '$tableName'") == $tableName ) {
+			if ( $tableName == $wpdb->get_var( "SHOW TABLES LIKE '$tableName'" ) ) {
 				// drop it
 				$sql = "DROP TABLE $tableName";
 				$wpdb->query( $sql );

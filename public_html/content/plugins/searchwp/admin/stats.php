@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $user_id = get_current_user_id();
 
-if( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap', 'publish_posts' ) ) || empty( $user_id ) ) {
+if ( ! is_admin() || ! current_user_can( apply_filters( 'searchwp_statistics_cap', 'publish_posts' ) ) || empty( $user_id ) ) {
 	wp_die( __( 'Invalid request', 'searchwp' ) );
 }
 
@@ -31,11 +31,11 @@ if ( isset( $_GET['tab'] ) ) {
 	<br />
 
 	<h2 class="nav-tab-wrapper woo-nav-tab-wrapper">
-		<?php foreach( $this->settings['engines'] as $engine => $engineSettings ) : ?>
+		<?php foreach ( $this->settings['engines'] as $engine => $engineSettings ) : ?>
 			<?php
 			$active_tab = '';
 			$engine_label = isset( $engineSettings['searchwp_engine_label'] ) ? sanitize_text_field( $engineSettings['searchwp_engine_label'] ) : __( 'Default', 'searchwp' );
-			if( ( isset( $_GET['tab'] ) && $engine == $_GET['tab'] ) || ( ! isset( $_GET['tab'] ) && 'default' == $engine ) ) {
+			if ( ( isset( $_GET['tab'] ) && $engine == $_GET['tab'] ) || ( ! isset( $_GET['tab'] ) && 'default' == $engine ) ) {
 				$active_tab = ' nav-tab-active';
 			}
 			?>
@@ -53,123 +53,123 @@ if ( isset( $_GET['tab'] ) ) {
 		<div class="swp-searches-chart ct-chart"></div>
 	</div>
 
+	<!--suppress JSUnusedLocalSymbols -->
 	<script type="text/javascript">
-		jQuery(document).ready(function ($) {
+		jQuery(document).ready(function($) {
 
 			<?php
-				// generate stats for the past 30 days for each search engine
-				$prefix = $wpdb->prefix;
-				$engine = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'default';
+			// generate stats for the past 30 days for each search engine
+			$prefix = $wpdb->prefix;
+			$engine = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'default';
 
-				if ( isset( $this->settings['engines'][ $engine ] ) ) {
-					$engineSettings = $this->settings['engines'][ $engine ];
-					$searchCounts = array();
+			if ( isset( $this->settings['engines'][ $engine ] ) ) {
+				$engineSettings = $this->settings['engines'][ $engine ];
+				$searchCounts = array();
 
-					// retrieve our counts for the past 30 days
-					$sql = $wpdb->prepare( "
-							SELECT DAY({$prefix}swp_log.tstamp) AS day, MONTH({$prefix}swp_log.tstamp) AS month, count({$prefix}swp_log.tstamp) AS searches
-							FROM {$prefix}swp_log
-							WHERE tstamp > DATE_SUB(NOW(), INTERVAL 30 day)
-							AND {$prefix}swp_log.event = 'search'
-							AND {$prefix}swp_log.engine = %s
-							AND {$prefix}swp_log.query <> ''
-							GROUP BY TO_DAYS({$prefix}swp_log.tstamp)
-							ORDER BY {$prefix}swp_log.tstamp DESC
-							", $engine );
+				// retrieve our counts for the past 30 days
+				$sql = $wpdb->prepare( "-- noinspection SqlDialectInspection
+					SELECT DAY({$prefix}swp_log.tstamp) AS day, MONTH({$prefix}swp_log.tstamp) AS month, count({$prefix}swp_log.tstamp) AS searches
+					FROM {$prefix}swp_log
+					WHERE tstamp > DATE_SUB(NOW(), INTERVAL 30 day)
+					AND {$prefix}swp_log.event = 'search'
+					AND {$prefix}swp_log.engine = %s
+					AND {$prefix}swp_log.query <> ''
+					GROUP BY TO_DAYS({$prefix}swp_log.tstamp)
+					ORDER BY {$prefix}swp_log.tstamp DESC", $engine );
 
-						$searchCounts = $wpdb->get_results(
-							$sql, 'OBJECT_K'
-						);
+				$searchCounts = $wpdb->get_results(
+					$sql, 'OBJECT_K'
+				);
 
-					// key our array
-					$searchesPerDay = array();
-					for ( $i = 0; $i <= 30; $i++ ) {
-						$searchesPerDay[ strtoupper( date( 'Md', strtotime( '-'. ( $i ) .' days' ) ) ) ] = 0;
-					}
-
-					if ( is_array( $searchCounts ) && count( $searchCounts ) ) {
-						foreach ( $searchCounts as $searchCount ) {
-							$count 		= absint( $searchCount->searches );
-							$day 		= ( intval( $searchCount->day ) ) < 10 ? 0 . absint( $searchCount->day ) : absint( $searchCount->day );
-							$month 		= ( intval( $searchCount->month ) ) < 10 ? 0 . absint( $searchCount->month ) : absint( $searchCount->month );
-							$refdate 	= $month . '/01/' . date( 'Y' );
-							$month 		= date( 'M', strtotime( $refdate ) );
-							$key 		= strtoupper( $month . $day );
-
-							$searchesPerDay[ $key ] = absint( $count );
-						}
-					}
-
-					$searchesPerDay = array_reverse( $searchesPerDay );
-
-					// generate the x-axis labels
-					$x_axis_labels = array();
-					foreach( $searchesPerDay as $day_key => $day_value ) {
-						// keys are stored as 'Md' date format so we'll "decode"
-						$x_axis_labels[] = intval( substr( $day_key, 3, 5 ) );
-					}
-
-					$engineLabel = isset( $engineSettings['searchwp_engine_label'] ) ? esc_attr( $engineSettings['searchwp_engine_label'] ) : esc_attr__( 'Default', 'searchwp' );
-
-					// dump out the necessary JavaScript vars
-					?>
-					var chart_data = {
-						labels: [<?php echo esc_js( implode( ',', $x_axis_labels ) ); ?>],
-						series: [[<?php echo esc_js( implode( ',', $searchesPerDay ) ); ?>]]
-					};
-					var chart_options = {
-						low: 0,
-						showArea: true
-					};
-
-					function ordinal_suffix_of(i) {
-						var j = i % 10,
-							k = i % 100;
-						if (j == 1 && k != 11) {
-							return i + "st";
-						}
-						if (j == 2 && k != 12) {
-							return i + "nd";
-						}
-						if (j == 3 && k != 13) {
-							return i + "rd";
-						}
-						return i + "th";
-					}
-
-					var chart_responsive_options = [
-						['screen and (min-width: 1251px)', {
-							axisX: {
-								labelInterpolationFnc: function(value) {
-									value = ordinal_suffix_of(value);
-									return value;
-								}
-							}
-						}],
-						['screen and (min-width: 751px) and (max-width: 1250px)', {
-							axisX: {
-								labelInterpolationFnc: function(value) {
-									// only show every other day
-									if(value%2){
-										value = '';
-									}else{
-										value = ordinal_suffix_of(value);
-									}
-									return value;
-								}
-							}
-						}],
-						['screen and (max-width: 750px)', {
-							axisX: {
-								labelInterpolationFnc: function(value) {
-									// hide the x axis labels
-									return '';
-								}
-							}
-						}]];
-					Chartist.Line('.swp-searches-chart', chart_data, chart_options, chart_responsive_options );
-					<?php
+				// key our array
+				$searchesPerDay = array();
+				for ( $i = 0; $i <= 30; $i++ ) {
+					$searchesPerDay[ strtoupper( date( 'Md', strtotime( '-'. ( $i ) .' days' ) ) ) ] = 0;
 				}
+
+				if ( is_array( $searchCounts ) && count( $searchCounts ) ) {
+					foreach ( $searchCounts as $searchCount ) {
+						$count 		= absint( $searchCount->searches );
+						$day 		= ( intval( $searchCount->day ) ) < 10 ? 0 . absint( $searchCount->day ) : absint( $searchCount->day );
+						$month 		= ( intval( $searchCount->month ) ) < 10 ? 0 . absint( $searchCount->month ) : absint( $searchCount->month );
+						$refdate 	= $month . '/01/' . date( 'Y' );
+						$month 		= date( 'M', strtotime( $refdate ) );
+						$key 		= strtoupper( $month . $day );
+
+						$searchesPerDay[ $key ] = absint( $count );
+					}
+				}
+
+				$searchesPerDay = array_reverse( $searchesPerDay );
+
+				// generate the x-axis labels
+				$x_axis_labels = array();
+				foreach ( $searchesPerDay as $day_key => $day_value ) {
+					// keys are stored as 'Md' date format so we'll "decode"
+					$x_axis_labels[] = intval( substr( $day_key, 3, 5 ) );
+				}
+
+				$engineLabel = isset( $engineSettings['searchwp_engine_label'] ) ? esc_attr( $engineSettings['searchwp_engine_label'] ) : esc_attr__( 'Default', 'searchwp' );
+
+				// dump out the necessary JavaScript vars
+				?>
+				var chart_data = {
+					labels: [<?php echo esc_js( implode( ',', $x_axis_labels ) ); ?>],
+					series: [[<?php echo esc_js( implode( ',', $searchesPerDay ) ); ?>]]
+				};
+				var chart_options = {
+					low: 0,
+					showArea: true
+				};
+
+				function ordinal_suffix_of(i) {
+					var j = i % 10,
+						k = i % 100;
+					if (j == 1 && k != 11) {
+						return i + "st";
+					}
+					if (j == 2 && k != 12) {
+						return i + "nd";
+					}
+					if (j == 3 && k != 13) {
+						return i + "rd";
+					}
+					return i + "th";
+				}
+
+				var chart_responsive_options = [
+					['screen and (min-width: 1251px)', {
+						axisX: {
+							labelInterpolationFnc: function(value) {
+								value = ordinal_suffix_of(value);
+								return value;
+							}
+						}
+					}],
+					['screen and (min-width: 751px) and (max-width: 1250px)', {
+						axisX: {
+							labelInterpolationFnc: function(value) {
+								// only show every other day
+								if(value%2){
+									value = '';
+								}else{
+									value = ordinal_suffix_of(value);
+								}
+								return value;
+							}
+						}
+					}],
+					['screen and (max-width: 750px)', {
+						axisX: {
+							labelInterpolationFnc: function(value) {
+								// hide the x axis labels
+								return '';
+							}
+						}
+					}]];
+				Chartist.Line('.swp-searches-chart', chart_data, chart_options, chart_responsive_options );
+				<?php
+			}
 			?>
 		});
 	</script>
@@ -210,7 +210,7 @@ if ( isset( $_GET['tab'] ) ) {
 		$query_to_ignore = $wpdb->get_var( $ignore_sql );
 
 		if ( ! empty( $query_to_ignore ) ) {
-			$ignored_queries[$query_hash] = $query_hash;
+			$ignored_queries[ $query_hash ] = $query_hash;
 		}
 
 		update_user_meta( get_current_user_id(), SEARCHWP_PREFIX . 'ignored_queries', $ignored_queries );
@@ -285,7 +285,7 @@ if ( isset( $_GET['tab'] ) ) {
 					<?php endforeach; ?>
 					</tbody>
 				</table>
-			<?php else: ?>
+			<?php else : ?>
 				<p><?php _e( 'There have been no searches today.', 'searchwp' ); ?></p>
 			<?php endif; ?>
 		</div>
@@ -335,7 +335,7 @@ if ( isset( $_GET['tab'] ) ) {
 					<?php endforeach; ?>
 					</tbody>
 				</table>
-			<?php else: ?>
+			<?php else : ?>
 				<p><?php _e( 'There have been no searches within the past 7 days.', 'searchwp' ); ?></p>
 			<?php endif; ?>
 		</div>
@@ -385,7 +385,7 @@ if ( isset( $_GET['tab'] ) ) {
 					<?php endforeach; ?>
 					</tbody>
 				</table>
-			<?php else: ?>
+			<?php else : ?>
 				<p><?php _e( 'There have been no searches within the past 30 days.', 'searchwp' ); ?></p>
 			<?php endif; ?>
 		</div>
@@ -435,7 +435,7 @@ if ( isset( $_GET['tab'] ) ) {
 					<?php endforeach; ?>
 					</tbody>
 				</table>
-			<?php else: ?>
+			<?php else : ?>
 				<p><?php _e( 'There have been no searches within the past year.', 'searchwp' ); ?></p>
 			<?php endif; ?>
 		</div>
@@ -492,7 +492,7 @@ if ( isset( $_GET['tab'] ) ) {
 						<?php endforeach; ?>
 						</tbody>
 					</table>
-				<?php else: ?>
+				<?php else : ?>
 					<p><?php _e( 'There have been no failed searches within the past 30 days.', 'searchwp' ); ?></p>
 				<?php endif; ?>
 			</div>
@@ -511,11 +511,7 @@ if ( isset( $_GET['tab'] ) ) {
 				}).outerHeight(tallest);
 			});
 			$('a.swp-delete').click(function(){
-				if(confirm('<?php echo esc_js( __( "Are you sure you want to ignore this search from all statistics?", 'searchwp' ) ); ?>')) {
-					return true;
-				}else{
-					return false;
-				}
+				return !!confirm('<?php echo esc_js( __( 'Are you sure you want to ignore this search from all statistics?', 'searchwp' ) ); ?>');
 			});
 		});
 	</script>

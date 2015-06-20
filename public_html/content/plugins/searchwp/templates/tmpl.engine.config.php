@@ -13,14 +13,14 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return int
  * @since 1.0
  */
-function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype = null )
-{
+function searchwp_get_engine_weight( $weights = array(), $type = 'title', $subtype = null )  {
 	$weight = 1;
+
 	if ( ! is_array( $weights ) ) {
 		$weights = array();
 	}
 
-	switch( $type ) {
+	switch ( $type ) {
 		case 'title':
 			$weight = isset( $weights['title'] ) ? floatval( $weights['title'] ) : 20;
 			break;
@@ -35,8 +35,8 @@ function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype 
 
 		case 'tax':
 			$weight = 5;
-			if( is_string( $subtype ) && isset( $weights['tax'][$subtype] ) ) {
-				$weight = floatval( $weights['tax'][$subtype] );
+			if ( is_string( $subtype ) && isset( $weights['tax'][ $subtype ] ) ) {
+				$weight = floatval( $weights['tax'][ $subtype ] );
 			}
 			break;
 
@@ -60,20 +60,20 @@ function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype 
  * @return bool
  * @since 1.0
  */
-function searchwpEngineSettingsTemplate( $engine = 'default' ) {
+function searchwp_engine_settings_template( $engine = 'default' ) {
 
 	$searchwp = SWP();
 
 	$settings = $searchwp->settings;
 	$engine = sanitize_key( $engine );
 
-	if ( $engine != 'default' && is_array( $settings ) && ! array_key_exists( 'engines', $settings ) ) {
+	if ( 'default' != $engine && is_array( $settings ) && ! array_key_exists( 'engines', $settings ) ) {
 		if ( ! is_array( $settings['engines'] ) || ! array_key_exists( $engine, $settings['engines'] ) ) {
 			return false;
 		}
 	}
 
-	$engineSettings = isset( $settings['engines'] ) && isset( $settings['engines'][$engine] ) ? $settings['engines'][$engine] : false;
+	$engineSettings = isset( $settings['engines'] ) && isset( $settings['engines'][ $engine ] ) ? $settings['engines'][ $engine ] : false;
 
 	// retrieve list of all post types
 	$post_types = array_merge(
@@ -85,7 +85,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 		get_post_types(
 			array(
 				'exclude_from_search'   => false,
-				'_builtin'              => false
+				'_builtin'              => false,
 			)
 		)
 	);
@@ -101,7 +101,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 		$post_types = $indexed_post_types;
 	}
 
-	if( 'swpengine' == $engine ) {
+	if ( 'swpengine' == $engine ) {
 		$engine = '{{ swp.engine }}';
 	}
 
@@ -110,7 +110,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 <div class="swp-tabbable swp-group">
 	<ul class="swp-nav swp-tabs">
 		<?php foreach ( $post_types as $post_type ) : $post_type = get_post_type_object( $post_type ); ?>
-			<?php if ( $post_type->name != 'attachment' ) : ?>
+			<?php if ( 'attachment' != $post_type->name ) : ?>
 				<?php
 					$engine = esc_attr( $engine );
 					$post_type->name = esc_attr( $post_type->name );
@@ -127,6 +127,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 		<li data-swp-engine="swp-engine-<?php echo esc_attr( $engine ); ?>-attachment" class="">
 			<span>
 				<?php $enabled = ! empty( $engineSettings['attachment']['enabled'] ); ?>
+				<!--suppress HtmlFormInputWithoutLabel -->
 				<input type="checkbox" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][attachment][enabled]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_attachment" value="1" <?php checked( $enabled ); ?>/>
 				<label for="swp_engine_<?php echo esc_attr( $engine ); ?>_posts"><?php _e( 'Media', 'searchwp' ); ?></label>
 			</span>
@@ -162,74 +163,74 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 							<?php if ( post_type_supports( $post_type->name, 'title' ) ) : ?>
 								<tr>
 									<td><label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_title"><?php _e( 'Title', 'searchwp' ); ?></label></td>
-									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][title]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_title" value="<?php echo searchwpGetEngineWeight( $weights, 'title' ); ?>" /></td>
+									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][title]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_title" value="<?php echo searchwp_get_engine_weight( $weights, 'title' ); ?>" /></td>
 								</tr>
 							<?php endif; ?>
-							<?php if ( post_type_supports( $post_type->name, 'editor' ) || $post_type->name == 'attachment' ) : ?>
+							<?php if ( post_type_supports( $post_type->name, 'editor' ) || 'attachment' == $post_type->name ) : ?>
 								<tr>
-									<td><label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_content"><?php if( $post_type->name != 'attachment' ) { _e( 'Content', 'searchwp' ); } else { _e( 'Description', 'searchwp' ); } ?></label></td>
-									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][content]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_content" value="<?php echo searchwpGetEngineWeight( $weights, 'content' ); ?>" /></td>
+									<td><label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_content"><?php if ( 'attachment' != $post_type->name ) { _e( 'Content', 'searchwp' ); } else { _e( 'Description', 'searchwp' ); } ?></label></td>
+									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][content]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_content" value="<?php echo searchwp_get_engine_weight( $weights, 'content' ); ?>" /></td>
 								</tr>
 							<?php endif; ?>
-							<?php if ( $post_type->name == 'page' || $post_type->publicly_queryable ) : ?>
+							<?php if ( 'page' == $post_type->name || $post_type->publicly_queryable ) : ?>
 								<tr>
 									<td><label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_slug"><?php _e( 'Slug', 'searchwp' ); ?></label></td>
-									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][slug]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_slug" value="<?php echo searchwpGetEngineWeight( $weights, 'slug' ); ?>" /></td>
+									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][slug]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_slug" value="<?php echo searchwp_get_engine_weight( $weights, 'slug' ); ?>" /></td>
 								</tr>
 							<?php endif; ?>
 							<?php
-								$taxonomies = apply_filters( 'searchwp_lightweight_settings', false ) ? array() : get_object_taxonomies( $post_type->name );
-								if ( is_array( $taxonomies ) && count( $taxonomies ) ) {
-									foreach ( $taxonomies as $taxonomy ) {
-										if ( $taxonomy != 'post_format' ) { // we don't want Post Formats here
-											$taxonomy  = get_taxonomy( $taxonomy );
-											$tax_label = ! empty( $taxonomy->labels->name ) ? $taxonomy->labels->name : $taxonomy->name;
-											?>
-											<tr>
-												<td><label
-														for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_tax_<?php echo esc_attr( $taxonomy->name ); ?>"><?php echo esc_html( $tax_label ); ?></label>
-												</td>
-												<td><input type="number" min="-1" step="0.1" class="small-text"
-												           name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][tax][<?php echo esc_attr( $taxonomy->name ); ?>]"
-												           id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_tax_<?php echo esc_attr( $taxonomy->name ); ?>"
-												           value="<?php echo searchwpGetEngineWeight( $weights, 'tax', $taxonomy->name ); ?>"/>
-												</td>
-											</tr>
-										<?php }
-									}
+							$taxonomies = apply_filters( 'searchwp_lightweight_settings', false ) ? array() : get_object_taxonomies( $post_type->name );
+							if ( is_array( $taxonomies ) && count( $taxonomies ) ) {
+								foreach ( $taxonomies as $taxonomy ) {
+									if ( 'post_format' != $taxonomy ) { // we don't want Post Formats here
+										$taxonomy  = get_taxonomy( $taxonomy );
+										$tax_label = ! empty( $taxonomy->labels->name ) ? $taxonomy->labels->name : $taxonomy->name;
+										?>
+										<tr>
+											<td><label
+													for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_tax_<?php echo esc_attr( $taxonomy->name ); ?>"><?php echo esc_html( $tax_label ); ?></label>
+											</td>
+											<td><input type="number" min="-1" step="0.1" class="small-text"
+											           name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][tax][<?php echo esc_attr( $taxonomy->name ); ?>]"
+											           id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_tax_<?php echo esc_attr( $taxonomy->name ); ?>"
+											           value="<?php echo searchwp_get_engine_weight( $weights, 'tax', $taxonomy->name ); ?>"/>
+											</td>
+										</tr>
+									<?php }
 								}
+							}
 							?>
-							<?php if ( post_type_supports( $post_type->name, 'excerpt' ) || $post_type->name == 'attachment' ) : ?>
+							<?php if ( post_type_supports( $post_type->name, 'excerpt' ) || 'attachment' == $post_type->name ) : ?>
 								<tr>
-									<td><label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_excerpt"><?php if( $post_type->name != 'attachment' ) { _e( 'Excerpt', 'searchwp' ); } else { _e( 'Caption', 'searchwp' ); } ?></label></td>
-									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][excerpt]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_excerpt" value="<?php echo searchwpGetEngineWeight( $weights, 'excerpt' ); ?>" /></td>
+									<td><label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_excerpt"><?php if ( 'attachment' != $post_type->name ) { _e( 'Excerpt', 'searchwp' ); } else { _e( 'Caption', 'searchwp' ); } ?></label></td>
+									<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][excerpt]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_excerpt" value="<?php echo searchwp_get_engine_weight( $weights, 'excerpt' ); ?>" /></td>
 								</tr>
 							<?php endif; ?>
-							<?php if ( post_type_supports( $post_type->name, 'comments' ) && $post_type->name != 'attachment' ) : ?>
+							<?php if ( post_type_supports( $post_type->name, 'comments' ) && 'attachment' != $post_type->name ) : ?>
 								<?php if ( apply_filters( 'searchwp_index_comments', true ) ) : ?>
 									<tr>
 										<td><label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_comment"><?php _e( 'Comments', 'searchwp' ); ?></label></td>
-										<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][comment]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_comment" value="<?php echo searchwpGetEngineWeight( $weights, 'comment' ); ?>" /></td>
+										<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][comment]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_weights_comment" value="<?php echo searchwp_get_engine_weight( $weights, 'comment' ); ?>" /></td>
 									</tr>
 								<?php endif; ?>
 							<?php endif; ?>
 
 							<?php if ( 'attachment' == $post_type->name ) : ?>
 								<?php
-									// check to see if the PDF weight has already been stored
-									// if not, use default content weight
-									$pdfweight = searchwpGetEngineWeight( $weights, 'content' );
-									if ( isset( $engineSettings[ $post_type->name ]['weights']['cf'] ) && is_array( $engineSettings[ $post_type->name ]['weights']['cf'] ) && ! empty( $engineSettings[ $post_type->name ]['weights']['cf'] ) ) {
-										$cfWeights = $engineSettings[ $post_type->name ]['weights']['cf'];
-										foreach ( $cfWeights as $cfFlag => $cfWeight ) {
-											if ( $cfWeight['metakey'] == SEARCHWP_PREFIX . 'content' ) {
-												$pdfweight = floatval( $cfWeight['weight'] );
-												break;
-											}
+								// check to see if the PDF weight has already been stored
+								// if not, use default content weight
+								$pdfweight = searchwp_get_engine_weight( $weights, 'content' );
+								if ( isset( $engineSettings[ $post_type->name ]['weights']['cf'] ) && is_array( $engineSettings[ $post_type->name ]['weights']['cf'] ) && ! empty( $engineSettings[ $post_type->name ]['weights']['cf'] ) ) {
+									$cfWeights = $engineSettings[ $post_type->name ]['weights']['cf'];
+									foreach ( $cfWeights as $cfFlag => $cfWeight ) {
+										if ( $cfWeight['metakey'] == SEARCHWP_PREFIX . 'content' ) {
+											$pdfweight = floatval( $cfWeight['weight'] );
+											break;
 										}
 									}
+								}
 
-									$arrayFlag = uniqid( 'swpp' );
+								$arrayFlag = uniqid( 'swpp' );
 								?>
 								<tr class="swp-custom-field">
 									<td class="swp-custom-field-select">
@@ -241,20 +242,20 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 									</td>
 								</tr>
 								<?php
-									// check to see if the PDF weight has already been stored
-									// if not, use default content weight
-									$pdf_meta_weight = searchwpGetEngineWeight( $weights, 'content' );
-									if ( isset( $engineSettings[ $post_type->name ]['weights']['cf'] ) && is_array( $engineSettings[ $post_type->name ]['weights']['cf'] ) && ! empty( $engineSettings[ $post_type->name ]['weights']['cf'] ) ) {
-										$cfWeights = $engineSettings[ $post_type->name ]['weights']['cf'];
-										foreach ( $cfWeights as $cfFlag => $cfWeight ) {
-											if ( $cfWeight['metakey'] == SEARCHWP_PREFIX . 'pdf_metadata' ) {
-												$pdf_meta_weight = floatval( $cfWeight['weight'] );
-												break;
-											}
+								// check to see if the PDF weight has already been stored
+								// if not, use default content weight
+								$pdf_meta_weight = searchwp_get_engine_weight( $weights, 'content' );
+								if ( isset( $engineSettings[ $post_type->name ]['weights']['cf'] ) && is_array( $engineSettings[ $post_type->name ]['weights']['cf'] ) && ! empty( $engineSettings[ $post_type->name ]['weights']['cf'] ) ) {
+									$cfWeights = $engineSettings[ $post_type->name ]['weights']['cf'];
+									foreach ( $cfWeights as $cfFlag => $cfWeight ) {
+										if ( $cfWeight['metakey'] == SEARCHWP_PREFIX . 'pdf_metadata' ) {
+											$pdf_meta_weight = floatval( $cfWeight['weight'] );
+											break;
 										}
 									}
+								}
 
-									$arrayFlag = uniqid( 'swpp' );
+								$arrayFlag = uniqid( 'swpp' );
 								?>
 								<tr class="swp-custom-field">
 									<td class="swp-custom-field-select">
@@ -278,9 +279,10 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 								<?php if ( $cfWeight['metakey'] != SEARCHWP_PREFIX . 'content' && $cfWeight['metakey'] != SEARCHWP_PREFIX . 'pdf_metadata' ) : /* handled elsewhere specifically */ ?>
 									<tr class="swp-custom-field">
 										<td class="swp-custom-field-select">
+											<!--suppress HtmlFormInputWithoutLabel -->
 											<select name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][cf][<?php echo esc_attr( $arrayFlag ); ?>][metakey]" style="width:80%;">
 												<option value="searchwpcfdefault" <?php selected( $cfWeight['metakey'], 'searchwpcfdefault' ); ?>><?php _e( 'Any', 'searchwp' ); ?></option>
-												<?php if( ! empty( $searchwp->keys ) ) : foreach( $searchwp->keys as $key ) : ?>
+												<?php if ( ! empty( $searchwp->keys ) ) : foreach ( $searchwp->keys as $key ) : ?>
 													<?php
 														$meta_key_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $cfWeight['metakey'] ) : strtolower( $cfWeight['metakey'] );
 														$this_key_lower = function_exists( 'mb_strtolower' ) ? mb_strtolower( $key ) : strtolower( $key );
@@ -290,7 +292,10 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 											</select>
 											<a class="swp-delete" href="#">x</a>
 										</td>
-										<td><input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][cf][<?php echo esc_attr( $arrayFlag ); ?>][weight]" value="<?php echo esc_attr( $cfWeight['weight'] ); ?>" /></td>
+										<td>
+											<!--suppress HtmlFormInputWithoutLabel -->
+											<input type="number" min="-1" step="0.1" class="small-text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][weights][cf][<?php echo esc_attr( $arrayFlag ); ?>][weight]" value="<?php echo esc_attr( $cfWeight['weight'] ); ?>" />
+										</td>
 									</tr>
 								<?php endif; ?>
 							<?php endforeach; endif; ?>
@@ -318,10 +323,10 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 								</td>
 								<td>
 									<?php
-										$options['exclude'] = (string) $options['exclude'];
+										$options['exclude'] = isset( $options['exclude'] ) ? (string) $options['exclude'] : '0';
 										$options['exclude'] = SWP()->get_integer_csv_string_from_string_or_array( $options['exclude'] );
 									?>
-									<input type="text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][options][exclude]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_exclude" placeholder="<?php _e( 'Comma separated IDs', 'searchwp' ); ?>" value="<?php if ( ! empty( $options['exclude'] ) ) echo esc_attr( $options['exclude'] ); ?>" /> <a class="swp-tooltip" href="#swp-tooltip-exclude-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">?</a>
+									<input type="text" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][options][exclude]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_exclude" placeholder="<?php _e( 'Comma separated IDs', 'searchwp' ); ?>" value="<?php if ( ! empty( $options['exclude'] ) ) { echo esc_attr( $options['exclude'] ); } ?>" /> <a class="swp-tooltip" href="#swp-tooltip-exclude-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">?</a>
 									<div class="swp-tooltip-content" id="swp-tooltip-exclude-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
 										<?php _e( 'Comma separated post IDs. Will be excluded entirely, even if attributed to.', 'searchwp' ); ?>
 									</div>
@@ -329,13 +334,13 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 							</tr>
 							<?php
 							if ( is_array( $taxonomies ) && count( $taxonomies ) ) :
-								foreach( $taxonomies as $taxonomy ) {
+								foreach ( $taxonomies as $taxonomy ) {
 									$taxonomy = get_taxonomy( $taxonomy );
 									$taxonomy_args = array(
 										'hide_empty' => false,
 									);
 									$terms = get_terms( $taxonomy->name, $taxonomy_args );
-									if( ! empty( $terms ) ) :
+									if ( ! empty( $terms ) ) :
 									?>
 									<tr>
 										<td>
@@ -345,11 +350,11 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 										</td>
 										<td>
 											<?php
-												// retrieve our stored exclusions
-												$excluded = isset( $options['exclude_' . $taxonomy->name] ) ? explode( ',', $options['exclude_' . $taxonomy->name] ) : array();
-												if ( ! empty( $excluded ) ) {
-													$excluded = array_map( 'absint', $excluded );
-												}
+											// retrieve our stored exclusions
+											$excluded = isset( $options[ 'exclude_' . $taxonomy->name ] ) ? explode( ',', $options[ 'exclude_' . $taxonomy->name ] ) : array();
+											if ( ! empty( $excluded ) ) {
+												$excluded = array_map( 'absint', $excluded );
+											}
 											?>
 											<select class="swp-exclude-select" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][options][exclude_<?php echo esc_attr( $taxonomy->name ); ?>][]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_exclude_<?php echo esc_attr( $taxonomy->name ); ?>" multiple data-placeholder="<?php _e( 'Leave blank to omit', 'searchwp' ); ?>" style="width:170px;">
 												<?php foreach ( $terms as $term ) : ?>
@@ -365,7 +370,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 									</tr>
 								<?php endif; }
 							endif; ?>
-							<?php if( $post_type->name == 'attachment' ) : ?>
+							<?php if ( 'attachment' == $post_type->name ) : ?>
 								<tr>
 									<td>
 										<label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_mimes">
@@ -390,9 +395,9 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 										}
 										?>
 										<select class="swp-exclude-select" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][options][mimes][]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_mimes" multiple data-placeholder="<?php _e( 'Leave blank to omit', 'searchwp' ); ?>" style="width:170px;">
-											<?php for( $i = 0; $i < count( $mimes ); $i++ ) : ?>
+											<?php for ( $i = 0; $i < count( $mimes ); $i++ ) : ?>
 												<?php $selected = in_array( $i, $limitedMimes ) ? ' selected="selected"' : ''; ?>
-												<option value="<?php echo esc_attr( $i ); ?>" <?php echo $selected; ?>><?php echo esc_html( $mimes[$i] ); ?></option>
+												<option value="<?php echo esc_attr( $i ); ?>" <?php echo $selected; ?>><?php echo esc_html( $mimes[ $i ] ); ?></option>
 											<?php endfor; ?>
 										</select>
 										<a class="swp-tooltip" href="#swp-tooltip-limit-<?php echo esc_attr( $post_type->name ); ?>-mime-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">?</a>
@@ -402,7 +407,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 									</td>
 								</tr>
 							<?php endif; ?>
-							<?php if ( $post_type->name == 'attachment' || apply_filters( "searchwp_enable_parent_attribution_{$post_type->name}", false ) ) : ?>
+							<?php if ( 'attachment' == $post_type->name || apply_filters( "searchwp_enable_parent_attribution_{$post_type->name}", false ) ) : ?>
 								<tr>
 									<td><?php _e( 'Attribute post parent', 'searchwp' ); ?></td>
 									<td>
@@ -411,7 +416,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 										<label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_parent"><?php _e( 'Enabled', 'searchwp' ); ?></label>
 										<a class="swp-tooltip" href="#swp-tooltip-parent-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">?</a>
 										<div class="swp-tooltip-content" id="swp-tooltip-parent-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
-											<?php _e( "When enabled, search weights will be applied to the post parent, not the post GUID", 'searchwp' ); ?>
+											<?php _e( 'When enabled, search weights will be applied to the post parent, not the post GUID', 'searchwp' ); ?>
 										</div>
 									</td>
 								</tr>
@@ -421,7 +426,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 										<label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_attribute"><?php _e( 'Attribute search results to ', 'searchwp' ); ?></label>
 									</td>
 									<td>
-										<input type="number" min="1" step="1" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][options][attribute_to]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_attribute_to" value="<?php if ( ! empty( $options['attribute_to'] ) ) echo esc_attr( absint( $options['attribute_to'] ) ); ?>" placeholder="<?php _e( 'Single post ID', 'searchwp' ); ?>" />
+										<input type="number" min="1" step="1" name="<?php echo esc_attr( SEARCHWP_PREFIX ); ?>settings[engines][<?php echo esc_attr( $engine ); ?>][<?php echo esc_attr( $post_type->name ); ?>][options][attribute_to]" id="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_attribute_to" value="<?php if ( ! empty( $options['attribute_to'] ) ) { echo esc_attr( absint( $options['attribute_to'] ) ); } ?>" placeholder="<?php _e( 'Single post ID', 'searchwp' ); ?>" />
 										<a class="swp-tooltip" href="#swp-tooltip-attribute-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">?</a>
 										<div class="swp-tooltip-content" id="swp-tooltip-attribute-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
 											<?php _e( "<strong>Expects single post ID</strong><br/>If permalinks for this post type should not be included in search results, you can have it's search weight count toward another post ID.", 'searchwp' ); ?>
@@ -437,7 +442,7 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 									<label for="swp_engine_<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>_stem"><?php _e( 'Enabled', 'searchwp' ); ?></label>
 									<a class="swp-tooltip" href="#swp-tooltip-stem-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">?</a>
 									<div class="swp-tooltip-content" id="swp-tooltip-stem-<?php echo esc_attr( $engine ); ?>_<?php echo esc_attr( $post_type->name ); ?>">
-										<?php _e( "<em>May increase search latency</em><br />For example: when enabled, searches for <strong>run</strong> and <strong>running</strong> will generate the same results. When disabled, results may be different.", 'searchwp' ); ?>
+										<?php _e( '<em>May increase search latency</em><br />For example: when enabled, searches for <strong>fishing</strong> and <strong>fished</strong> will generate the same results. When disabled, results may be different.', 'searchwp' ); ?>
 									</div>
 								</td>
 							</tr>
@@ -447,6 +452,33 @@ function searchwpEngineSettingsTemplate( $engine = 'default' ) {
 			</div>
 		<?php endforeach; ?>
 	</div>
-</div>
+</div><?php
 
-<?php }
+	return true;
+}
+
+// @codingStandardsIgnoreStart
+/**
+ * @deprecated as of 2.5.7
+ *
+ * @param array $weights
+ * @param string $type
+ * @param null $subtype
+ *
+ * @return int
+ */
+function searchwpGetEngineWeight( $weights = array(), $type = 'title', $subtype = null ) {
+	return searchwp_get_engine_weight( $weights, $type, $subtype );
+}
+
+/**
+ * @deprecated as of 2.5.7
+ *
+ * @param string $engine
+ *
+ * @return bool
+ */
+function searchwpEngineSettingsTemplate( $engine = 'default' ) {
+	return searchwp_engine_settings_template( $engine );
+}
+// @codingStandardsIgnoreEnd

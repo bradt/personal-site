@@ -1,0 +1,89 @@
+.searchwp-logo {
+	margin:0.45em 0.9em 0 0.2em;
+	padding:0;
+	width:32px;
+	height:32px;
+	float:left;
+	background:transparent url(../images/searchwp-logo-2x.png) 50% 50% no-repeat;
+	background-size:19px;
+}
+
+.searchwp-create-support-ticket {
+	padding:0.25em 0 1em;
+}
+
+.searchwp-ticket-create-wrapper {
+	background:#fff;
+	border:1px solid #d7d7d7;
+	margin:0.8em 0 0.2em;
+}
+
+.searchwp-ticket-create-wrapper iframe {
+	display:block;
+	width:100%;
+	height:400px;
+}
+
+.searchwp-settings-action .inside p:last-of-type {
+	margin-bottom:0;
+	padding-bottom:0;
+}
+
+.searchwp-show-less-common-actions {
+	margin-bottom:2em;
+	display:none;
+	text-align:center;
+}
+
+.js .searchwp-show-less-common-actions {
+	display:block;
+}
+
+.js .searchwp-less-common-actions {
+	display:none;
+}
+
+.searchwp-advanced-settings-actions {
+	width:58%;
+	float:left;
+}
+
+.searchwp-advanced-settings-stats {
+	width:40%;
+	float:right;
+}
+
+.searchwp-data-vis {
+	text-align:left;
+	width:100%;
+	margin:1em 0;
+}
+
+.searchwp-data-vis th {
+	text-align:left;
+	font-weight:bold;
+}
+
+.searchwp-data-vis th,
+.searchwp-data-vis td {
+	padding:0.95em 0.5em 0.8em;
+	border-bottom:1px solid #dfdfdf;
+	border-collapse: collapse;
+	line-height:1;
+}
+
+.searchwp-data-vis th {
+	padding-left:0;
+}
+
+.searchwp-data-vis tr:last-of-type th,
+.searchwp-data-vis tr:last-of-type td {
+	border-bottom:0;
+}
+
+.searchwp-settings-stats {
+	background-color:transparent !important;
+	border-color:transparent !important;
+	-webkit-box-shadow:none !important;
+	box-shadow:none !important;
+}

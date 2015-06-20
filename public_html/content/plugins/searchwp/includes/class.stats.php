@@ -41,23 +41,23 @@ class SearchWP_Stats {
 		// prepare the excludes if there are any
 		if ( ! empty ( $args['exclude'] ) ) {
 			foreach ( $args['exclude'] as $excluded_query_key => $excluded_query ) {
-				$args['exclude'][$excluded_query_key] = $wpdb->prepare( "%s", $excluded_query );
+				$args['exclude'][ $excluded_query_key ] = $wpdb->prepare( '%s', $excluded_query );
 			}
 			$excluded_sql = implode( ',', $args['exclude'] );
 			$exclude_sql = "AND {$prefix}swp_log.query NOT IN ({$excluded_sql})";
 		}
 
 		$sql = $wpdb->prepare( "
-					SELECT {$prefix}swp_log.query, count({$prefix}swp_log.query) AS searchcount
-					FROM {$prefix}swp_log
-					WHERE tstamp > DATE_SUB(NOW(), INTERVAL {$days} DAY)
-					AND {$prefix}swp_log.event = 'search'
-					AND {$prefix}swp_log.engine = %s
-					{$exclude_sql}
-					GROUP BY {$prefix}swp_log.query
-					ORDER BY searchcount DESC
-					LIMIT {$limit}
-				", $args['engine'] );
+			SELECT {$prefix}swp_log.query, count({$prefix}swp_log.query) AS searchcount
+			FROM {$prefix}swp_log
+			WHERE tstamp > DATE_SUB(NOW(), INTERVAL {$days} DAY)
+			AND {$prefix}swp_log.event = 'search'
+			AND {$prefix}swp_log.engine = %s
+			{$exclude_sql}
+			GROUP BY {$prefix}swp_log.query
+			ORDER BY searchcount DESC
+			LIMIT {$limit}
+		", $args['engine'] );
 
 		return $wpdb->get_results( $sql );
 	}

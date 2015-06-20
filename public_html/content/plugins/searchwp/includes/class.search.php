@@ -209,7 +209,7 @@ class SearchWPSearch {
 		do_action( 'searchwp_log', '$args = ' . var_export( $args, true ) );
 
 		// if we have a valid engine, perform the query
-		if( $this->searchwp->isValidEngine( $args['engine'] ) ) {
+		if ( $this->searchwp->is_valid_engine( $args['engine'] ) ) {
 			// this filter is also applied in the SearchWP class search methods
 			// TODO: should this be applied in both places? which?
 			$sanitizeTerms = apply_filters( 'searchwp_sanitize_terms', true, $args['engine'] );
@@ -234,7 +234,7 @@ class SearchWPSearch {
 			}
 
 			if ( $sanitizeTerms ) {
-				$terms = $this->searchwp->sanitizeTerms( $args['terms'] );
+				$terms = $this->searchwp->sanitize_terms( $args['terms'] );
 			} else {
 				$terms = $args['terms'];
 				do_action( 'searchwp_log', 'Opted out of internal sanitization' );
@@ -252,7 +252,7 @@ class SearchWPSearch {
 			}
 
 			// make sure the terms are unique, especially after whitelist matching
-			if( is_array( $terms ) ) {
+			if ( is_array( $terms ) ) {
 				$terms = array_unique( $terms );
 				$terms = array_filter( $terms, 'strlen' );
 			}
@@ -267,7 +267,7 @@ class SearchWPSearch {
 
 			do_action( 'searchwp_log', '$terms = ' . var_export( $terms, true ) );
 
-			if ( strtoupper( apply_filters( 'searchwp_search_query_order', $args['order'] ) ) != 'DESC' && strtoupper( $args['order'] ) != 'ASC' ) {
+			if ( 'DESC' != strtoupper( apply_filters( 'searchwp_search_query_order', $args['order'] ) ) && 'ASC' != strtoupper( $args['order'] ) ) {
 				$args['order'] = 'DESC';
 			}
 
@@ -299,7 +299,13 @@ class SearchWPSearch {
 				$pre_search_original_terms = sanitize_text_field( $pre_search_original_terms );
 				$pre_search_original_terms = trim( $pre_search_original_terms );
 
+				// respect database schema
+				if ( 200 < strlen( $pre_search_original_terms ) ) {
+					$pre_search_original_terms = substr( $pre_search_original_terms, 0, 199 );
+				}
+
 				if ( ! empty( $pre_search_original_terms ) ) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					$log_result = $wpdb->insert(
 						$this->db_prefix . 'log',
 						array(
@@ -307,14 +313,14 @@ class SearchWPSearch {
 							'query'    => $pre_search_original_terms,
 							'hits'     => count( $this->posts ),
 							'engine'   => $engine,
-							'wpsearch' => 0
+							'wpsearch' => 0,
 						),
 						array(
 							'%s',
 							'%s',
 							'%d',
 							'%s',
-							'%d'
+							'%d',
 						)
 					);
 				}
@@ -365,17 +371,17 @@ class SearchWPSearch {
 				'engine'    => $this->engine,
 				'settings'  => $this->settings,
 				'page'      => $this->page,
-				'postsPer'  => $this->postsPer
+				'postsPer'  => $this->postsPer,
 			) );
 
-		$this->queryForPostIDs();
+		$this->query_for_post_ids();
 
 		$swpargs = array(
 			'terms'     => $this->terms,
 			'engine'    => $this->engine,
 			'settings'  => $this->settings,
 			'page'      => $this->page,
-			'postsPer'  => $this->postsPer
+			'postsPer'  => $this->postsPer,
 		);
 
 		do_action( 'searchwp_after_query_index', $swpargs );
@@ -394,7 +400,7 @@ class SearchWPSearch {
 			'post_type'         => 'any',
 			'post_status'       => 'any',   // we've already filtered our post statuses in the original query
 			'post__in'          => $this->postIDs,
-			'orderby'           => 'post__in'
+			'orderby'           => 'post__in',
 		);
 
 		// we want ints all the time
@@ -443,7 +449,7 @@ class SearchWPSearch {
 		// check to make sure that at least one post type is enabled for this engine
 		if ( is_array( $this->engineSettings ) ) {
 			foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-				if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+				if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
 					$enabled_post_type = true;
 					break;
 				}
@@ -516,9 +522,9 @@ class SearchWPSearch {
 
 					$taxonomy = get_taxonomy( $taxonomy );
 
-					if ( isset( $postTypeWeights['options']['exclude_' . $taxonomy->name ] ) ) {
+					if ( isset( $postTypeWeights['options'][ 'exclude_' . $taxonomy->name ] ) ) {
 
-						$excludedTerms = explode( ',', $postTypeWeights['options']['exclude_' . $taxonomy->name ] );
+						$excludedTerms = explode( ',', $postTypeWeights['options'][ 'exclude_' . $taxonomy->name ] );
 
 						if ( ! is_array( $excludedTerms ) ) {
 							$excludedTerms = array( intval( $excludedTerms ) );
@@ -540,8 +546,8 @@ class SearchWPSearch {
 								array(
 									'taxonomy'  => $taxonomy->name,
 									'field'     => 'id',
-									'terms'     => $excludedTerms
-								)
+									'terms'     => $excludedTerms,
+								),
 							)
 						);
 
@@ -634,7 +640,7 @@ class SearchWPSearch {
 		// all three will be UNIONed but all three are also filterable so we need to build this query carefully
 		// and completely based on $andFields (which is an array of fields to consider)
 
-		$andTermSQL = "";
+		$andTermSQL = '';
 
 		// first SQL segment is against the index table
 		if ( ! empty( $andFieldsCoalesce ) ) {
@@ -656,7 +662,7 @@ class SearchWPSearch {
 		if ( in_array( 'meta', $andFields ) ) {
 
 			if ( ! empty( $andTermSQL ) ) {
-				$andTermSQL .= " UNION ";
+				$andTermSQL .= ' UNION ';
 			}
 
 			// we want to apply AND logic to the cf table
@@ -675,7 +681,7 @@ class SearchWPSearch {
 		if ( in_array( 'tax', $andFields ) ) {
 
 			if ( ! empty( $andTermSQL ) ) {
-				$andTermSQL .= " UNION ";
+				$andTermSQL .= ' UNION ';
 			}
 
 			// we want to apply AND logic to the cf table
@@ -726,8 +732,8 @@ class SearchWPSearch {
 		$coalesceFields = array();
 
 		// we're going to utilize $andFields to build our query based on what the dev wants to count for AND queries
-		foreach( $andFields as $andField ) {
-			switch( $andField ) {
+		foreach ( $andFields as $andField ) {
+			switch ( $andField ) {
 				case 'tax':
 					// taxonomy has been broken out into UNION as of version 2.0.5
 					break;
@@ -790,7 +796,6 @@ class SearchWPSearch {
 			if ( $applicableAndResults ) {
 				$relevantPostIds = call_user_func_array( 'array_intersect', $andTerms );
 			}
-
 		}
 
 		// we want ints, always
@@ -809,7 +814,7 @@ class SearchWPSearch {
 		// we need to check for exclusions at this point (weights of < zero)
 		$andTerms = array();
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
 				foreach ( $postTypeWeights['weights'] as $type => $weight ) {
 					foreach ( $this->terms as $andTerm ) {
 						$applicableExclusion = false;
@@ -830,28 +835,28 @@ class SearchWPSearch {
 						}
 
 						$andInternalSQL = "
-                                    SELECT {$this->db_prefix}index.post_id
-                                    FROM {$this->db_prefix}index
-                                    LEFT JOIN {$this->db_prefix}terms
-                                    ON {$this->db_prefix}index.term = {$this->db_prefix}terms.id
-                                    LEFT JOIN {$this->db_prefix}cf
-                                    ON {$this->db_prefix}index.post_id = {$this->db_prefix}cf.post_id
-                                    LEFT JOIN {$this->db_prefix}tax
-                                    ON {$this->db_prefix}index.post_id = {$this->db_prefix}tax.post_id
-                                    WHERE {$relavantTermWhere} ";
+                            SELECT {$this->db_prefix}index.post_id
+                            FROM {$this->db_prefix}index
+                            LEFT JOIN {$this->db_prefix}terms
+                            ON {$this->db_prefix}index.term = {$this->db_prefix}terms.id
+                            LEFT JOIN {$this->db_prefix}cf
+                            ON {$this->db_prefix}index.post_id = {$this->db_prefix}cf.post_id
+                            LEFT JOIN {$this->db_prefix}tax
+                            ON {$this->db_prefix}index.post_id = {$this->db_prefix}tax.post_id
+                            WHERE {$relavantTermWhere} ";
 
 						if ( ! empty( $this->relevant_post_ids ) ) {
 							$this->relevant_post_ids = array_map( 'absint', $this->relevant_post_ids );
-							$relevantIDsSQL = implode( ",", $this->relevant_post_ids );
+							$relevantIDsSQL = implode( ',', $this->relevant_post_ids );
 							$andInternalSQL .= " AND {$this->db_prefix}index.post_id IN ({$relevantIDsSQL}) ";
 						}
 
-						$andInternalSQL .= " AND ( ";
+						$andInternalSQL .= ' AND ( ';
 
 						// $weight will sometimes be an array (taxonomies and custom fields)
 						if ( ! is_array( $weight ) && intval( $weight ) < 0 ) {
 							$applicableExclusion = true;
-							switch( $type ) {
+							switch ( $type ) {
 								case 'title':
 									$andInternalSQL .= " {$this->db_prefix}index.title > 0  OR ";
 									break;
@@ -870,7 +875,7 @@ class SearchWPSearch {
 							}
 						} else {
 							// it's either a taxonomy or custom field, so we need to handle it a bit differently
-							if ( $type == 'tax' ) {
+							if ( 'tax' == $type ) {
 								foreach ( $weight as $postTypeTax => $postTypeTaxWeight ) {
 									if ( intval( $postTypeTaxWeight ) < 0 ) {
 										$applicableExclusion = true;
@@ -884,7 +889,7 @@ class SearchWPSearch {
 										$andInternalSQL .= " ( {$this->db_prefix}tax.taxonomy = {$postTypeTax} AND {$this->db_prefix}tax.count > 0 )  OR ";
 									}
 								}
-							} elseif ( $type == 'cf' ) {
+							} elseif ( 'cf' == $type ) {
 								foreach ( $weight as $postTypeCustomField ) {
 									foreach ( $postTypeCustomField as $postTypeCustomFieldKey => $postTypeCustomFieldWeight ) {
 										if ( intval( $postTypeCustomFieldWeight ) < 0 ) {
@@ -951,8 +956,8 @@ class SearchWPSearch {
 			$this->excluded = array_map( 'absint', $this->excluded );
 		}
 
-		$intermediateIncludeSQL = ( ! empty( $this->relevant_post_ids ) ) ? " AND {$this->db_prefix}index.post_id IN (" . implode( ',', $this->relevant_post_ids ) . ") " : '';
-		$intermediateExcludeSQL = ( ! empty( $this->excluded ) ) ? " AND {$this->db_prefix}index.post_id NOT IN (" . implode( ',', $this->excluded ) . ") " : '';
+		$intermediateIncludeSQL = ( ! empty( $this->relevant_post_ids ) ) ? " AND {$this->db_prefix}index.post_id IN (" . implode( ',', $this->relevant_post_ids ) . ') ' : '';
+		$intermediateExcludeSQL = ( ! empty( $this->excluded ) ) ? " AND {$this->db_prefix}index.post_id NOT IN (" . implode( ',', $this->excluded ) . ') ' : '';
 
 		// grab posts with each term in the title
 		foreach ( $this->terms as $andTerm ) {
@@ -1019,15 +1024,17 @@ class SearchWPSearch {
 	private function query_sum_post_type_weights() {
 		// sum our final weights per post type
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
 				$termCounter = 1;
 				if ( empty( $postTypeWeights['options']['attribute_to'] ) ) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					foreach ( $this->terms as $term ) {
 						$this->sql .= "COALESCE(term{$termCounter}.`{$postType}weight`,0) + ";
 						$termCounter++;
 					}
 				} else {
-					foreach( $this->terms as $term ) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
+					foreach ( $this->terms as $term ) {
 						$this->sql .= "COALESCE(term{$termCounter}.`{$postType}attr`,0) + ";
 						$termCounter++;
 					}
@@ -1048,14 +1055,16 @@ class SearchWPSearch {
 		global $wpdb;
 		// build our final, overall weight
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
 				$termCounter = 1;
 				if ( empty( $postTypeWeights['options']['attribute_to'] ) ) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					foreach ( $this->terms as $term ) {
 						$this->sql .= "COALESCE(term{$termCounter}.`{$postType}weight`,0) + ";
 						$termCounter++;
 					}
 				} else {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					foreach ( $this->terms as $term ) {
 						$this->sql .= "COALESCE(term{$termCounter}.`{$postType}attr`,0) + ";
 						$termCounter++;
@@ -1083,7 +1092,7 @@ class SearchWPSearch {
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
 			if (
 				isset( $postTypeWeights['enabled'] )
-				&& $postTypeWeights['enabled'] == true
+				&& true == $postTypeWeights['enabled']
 				&&
 				(
 					(
@@ -1129,7 +1138,7 @@ class SearchWPSearch {
 	 */
 	private function query_post_type_weight() {
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true && empty( $postTypeWeights['options']['attribute_to'] ) ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] && empty( $postTypeWeights['options']['attribute_to'] ) ) {
 				$this->sql .= ", COALESCE(`{$postType}weight`,0) AS `{$postType}weight` ";
 			}
 		}
@@ -1143,7 +1152,7 @@ class SearchWPSearch {
 	 */
 	private function query_post_type_attributed() {
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true && ! empty( $postTypeWeights['options']['attribute_to'] ) ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] && ! empty( $postTypeWeights['options']['attribute_to'] ) ) {
 				$attributedTo = absint( $postTypeWeights['options']['attribute_to'] );
 				// make sure we're not excluding the attributed post id
 				if ( ! in_array( $attributedTo, $this->excluded ) ) {
@@ -1163,7 +1172,7 @@ class SearchWPSearch {
 	 */
 	private function query_post_type_weight_total() {
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true && empty( $postTypeWeights['options']['attribute_to'] ) ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] && empty( $postTypeWeights['options']['attribute_to'] ) ) {
 				$this->sql .= " COALESCE(`{$postType}weight`,0) +";
 			}
 		}
@@ -1177,7 +1186,7 @@ class SearchWPSearch {
 	 */
 	private function query_post_type_attributed_total() {
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true && !empty( $postTypeWeights['options']['attribute_to'] ) ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] && ! empty( $postTypeWeights['options']['attribute_to'] ) ) {
 				$attributedTo = absint( $postTypeWeights['options']['attribute_to'] );
 				// make sure we're not excluding the attributed post id
 				if ( ! in_array( $attributedTo, $this->excluded ) ) {
@@ -1196,7 +1205,7 @@ class SearchWPSearch {
 	private function query_open_term() {
 		global $wpdb;
 
-		$this->sql .= "LEFT JOIN ( ";
+		$this->sql .= 'LEFT JOIN ( ';
 
 		// our final query cap
 		$this->sql .= "SELECT {$wpdb->prefix}posts.ID AS post_id ";
@@ -1207,7 +1216,7 @@ class SearchWPSearch {
 		// implement our post type attributed weight column
 		$this->query_post_type_attributed();
 
-		$this->sql .= " , ";
+		$this->sql .= ' , ';
 
 		// concatenate our total weight with post type weight
 		$this->query_post_type_weight_total();
@@ -1217,7 +1226,7 @@ class SearchWPSearch {
 
 		$this->sql = substr( $this->sql, 0, strlen( $this->sql ) - 2 ); // trim off the extra +
 
-		$this->sql .= " AS weight ";
+		$this->sql .= ' AS weight ';
 		$this->sql .= " FROM {$wpdb->prefix}posts ";
 		$this->sql .= " LEFT JOIN {$this->db_prefix}index ON {$this->db_prefix}index.post_id = {$wpdb->prefix}posts.ID ";
 		$this->sql .= " LEFT JOIN {$this->db_prefix}terms ON {$this->db_prefix}terms.id = {$this->db_prefix}index.term ";
@@ -1378,14 +1387,14 @@ class SearchWPSearch {
 		}
 
 		// we have an array of keys that match MIME types (not subtypes) that we can limit to by appending this condition
-		$this->sql_status .= " AND {$wpdb->prefix}posts.post_type = 'attachment' AND {$wpdb->prefix}posts.post_mime_type IN ( " . implode( ",", $targetedMimes ) . " ) ";
+		$this->sql_status .= " AND {$wpdb->prefix}posts.post_type = 'attachment' AND {$wpdb->prefix}posts.post_mime_type IN ( " . implode( ',', $targetedMimes ) . ' ) ';
 	}
 
 
 	/**
 	 * Generate the SQL that totals Custom Field weight
 	 *
-	 * @param $weights array Custom Field weights from SearchWP settings
+	 * @param $weights array|int Custom Field weights from SearchWP settings
 	 *
 	 * @return string SQL to use in the main query
 	 * @since 1.8
@@ -1407,7 +1416,7 @@ class SearchWPSearch {
 				} else {
 					$like_weights[] = array(
 						'metakey'   => $post_type_custom_field_key,
-						'weight'    => $custom_field_weight
+						'weight'    => $custom_field_weight,
 					);
 				}
 			}
@@ -1415,10 +1424,10 @@ class SearchWPSearch {
 			$totalCustomFields = count( $optimized_weights ) + count( $like_weights );
 
 			for ( $i = 0; $i < $totalCustomFields; $i++ ) {
-				$coalesceCustomFields .= " COALESCE(cfweight" . $i . ",0) + ";
+				$coalesceCustomFields .= ' COALESCE(cfweight' . $i . ',0) + ';
 			}
 		}
-		$coalesceCustomFields = substr( $coalesceCustomFields, 0, strlen( $coalesceCustomFields) - 2 );
+		$coalesceCustomFields = substr( $coalesceCustomFields, 0, strlen( $coalesceCustomFields ) - 2 );
 
 		return $coalesceCustomFields;
 	}
@@ -1427,7 +1436,7 @@ class SearchWPSearch {
 	/**
 	 * Generate the SQL that totals taxonomy weight
 	 *
-	 * @param $weights array Taxonomy weights from SearchWP settings
+	 * @param $weights array|int Taxonomy weights from SearchWP settings
 	 *
 	 * @return string SQL to use in the main query
 	 * @since 1.8
@@ -1445,12 +1454,12 @@ class SearchWPSearch {
 
 			$totalTaxonomies = count( $optimized_weights );
 
-			for( $i = 0; $i < $totalTaxonomies; $i++ ) {
-				$coalesceTaxonomies .= " COALESCE(taxweight" . $i . ",0) + ";
+			for ( $i = 0; $i < $totalTaxonomies; $i++ ) {
+				$coalesceTaxonomies .= ' COALESCE(taxweight' . $i . ',0) + ';
 			}
 		}
 
-		$coalesceTaxonomies = substr( $coalesceTaxonomies, 0, strlen( $coalesceTaxonomies) - 2 );
+		$coalesceTaxonomies = substr( $coalesceTaxonomies, 0, strlen( $coalesceTaxonomies ) - 2 );
 
 		return $coalesceTaxonomies;
 	}
@@ -1468,11 +1477,11 @@ class SearchWPSearch {
 		$defaults = array(
 			'post_type'         => 'post',
 			'post_column'       => 'ID',
-			'title_weight'      => function_exists( 'searchwpGetEngineWeight' ) ? searchwpGetEngineWeight( 'title' ) : 20,
-			'slug_weight'       => function_exists( 'searchwpGetEngineWeight' ) ? searchwpGetEngineWeight( 'slug' ) : 10,
-			'content_weight'    => function_exists( 'searchwpGetEngineWeight' ) ? searchwpGetEngineWeight( 'content' ) : 2,
-			'comment_weight'    => function_exists( 'searchwpGetEngineWeight' ) ? searchwpGetEngineWeight( 'comment' ) : 1,
-			'excerpt_weight'    => function_exists( 'searchwpGetEngineWeight' ) ? searchwpGetEngineWeight( 'excerpt' ) : 6,
+			'title_weight'      => function_exists( 'searchwp_get_engine_weight' ) ? searchwp_get_engine_weight( 'title' ) : 20,
+			'slug_weight'       => function_exists( 'searchwp_get_engine_weight' ) ? searchwp_get_engine_weight( 'slug' ) : 10,
+			'content_weight'    => function_exists( 'searchwp_get_engine_weight' ) ? searchwp_get_engine_weight( 'content' ) : 2,
+			'comment_weight'    => function_exists( 'searchwp_get_engine_weight' ) ? searchwp_get_engine_weight( 'comment' ) : 1,
+			'excerpt_weight'    => function_exists( 'searchwp_get_engine_weight' ) ? searchwp_get_engine_weight( 'excerpt' ) : 6,
 			'custom_fields'     => 0,
 			'taxonomies'        => 0,
 			'attributed_to'     => false,
@@ -1545,7 +1554,7 @@ class SearchWPSearch {
 			} else {
 				$like_weights[] = array(
 					'metakey'   => $post_type_custom_field_key,
-					'weight'    => $custom_field_weight
+					'weight'    => $custom_field_weight,
 				);
 			}
 		}
@@ -1564,7 +1573,7 @@ class SearchWPSearch {
 					}
 				}
 
-				$post_meta_clause = " AND " . $this->db_prefix . "cf.metakey IN (" . implode( ",", $meta_keys_for_weight ) . ")";
+				$post_meta_clause = ' AND ' . $this->db_prefix . 'cf.metakey IN (' . implode( ',', $meta_keys_for_weight ) . ')';
 			}
 			$weight_key = floatval( $weight_key );
 			$this->sql .= "
@@ -1591,7 +1600,7 @@ class SearchWPSearch {
 			foreach ( $like_weights as $like_weight ) {
 				$like_weight['metakey'] = $wpdb->prepare( '%s', $like_weight['metakey'] );
 				$like_weight['weight'] = floatval( $like_weight['weight'] );
-				$post_meta_clause = " AND " . $this->db_prefix . "cf.metakey LIKE " . $like_weight['metakey'];
+				$post_meta_clause = ' AND ' . $this->db_prefix . 'cf.metakey LIKE ' . $like_weight['metakey'];
 				$this->sql .= "
                 LEFT JOIN (
                     SELECT {$wpdb->prefix}posts.{$column} as post_id, ( SUM( {$this->db_prefix}cf.count ) * {$like_weight['weight']} ) AS cfweight{$i}
@@ -1656,7 +1665,7 @@ class SearchWPSearch {
                     AND {$wpdb->prefix}posts.post_type = '{$postType}'
                     {$this->sql_exclude}
                     {$this->sql_include}
-                    AND {$this->db_prefix}tax.taxonomy IN (" . implode( ",", $postTypeTaxonomies ) . ")
+                    AND {$this->db_prefix}tax.taxonomy IN (" . implode( ',', $postTypeTaxonomies ) . ")
                     {$this->sql_conditions}
                     GROUP BY {$this->db_prefix}tax.post_id
                 ) taxweights{$i} USING(post_id)";
@@ -1706,16 +1715,16 @@ class SearchWPSearch {
 	 * @since 1.8
 	 */
 	private function query_limit_post_type_to_weight() {
-		$this->sql .= " WHERE ";
+		$this->sql .= ' WHERE ';
 
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true && empty( $postTypeWeights['options']['attribute_to'] ) ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] && empty( $postTypeWeights['options']['attribute_to'] ) ) {
 				$this->sql .= " COALESCE(`{$postType}weight`,0) +";
 			}
 		}
 
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true && ! empty( $postTypeWeights['options']['attribute_to'] ) ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] && ! empty( $postTypeWeights['options']['attribute_to'] ) ) {
 				$attributedTo = absint( $postTypeWeights['options']['attribute_to'] );
 				// make sure we're not excluding the attributed post id
 				if ( ! in_array( $attributedTo, $this->excluded ) ) {
@@ -1725,7 +1734,7 @@ class SearchWPSearch {
 		}
 
 		$this->sql = substr( $this->sql, 0, strlen( $this->sql ) - 2 ); // trim off the extra +
-		$this->sql .= " > " . absint( apply_filters( 'searchwp_weight_threshold', 0 ) ) . " ";
+		$this->sql .= ' > ' . absint( apply_filters( 'searchwp_weight_threshold', 0 ) ) . ' ';
 	}
 
 
@@ -1735,17 +1744,19 @@ class SearchWPSearch {
 	 * @since 1.8
 	 */
 	private function query_limit_to_weight() {
-		$this->sql .= " WHERE   ";
+		$this->sql .= ' WHERE   ';
 
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
 				$termCounter = 1;
 				if ( empty( $postTypeWeights['options']['attribute_to'] ) ) {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					foreach ( $this->terms as $term ) {
 						$this->sql .= "COALESCE(term{$termCounter}.`{$postType}weight`,0) + ";
 						$termCounter++;
 					}
 				} else {
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					foreach ( $this->terms as $term ) {
 						$this->sql .= "COALESCE(term{$termCounter}.`{$postType}attr`,0) + ";
 						$termCounter++;
@@ -1755,7 +1766,7 @@ class SearchWPSearch {
 		}
 
 		$this->sql = substr( $this->sql, 0, strlen( $this->sql ) - 2 ); // trim off the extra +
-		$this->sql .= " > " . absint( apply_filters( 'searchwp_weight_threshold', 0 ) ) . " ";
+		$this->sql .= ' > ' . absint( apply_filters( 'searchwp_weight_threshold', 0 ) ) . ' ';
 	}
 
 
@@ -1765,13 +1776,13 @@ class SearchWPSearch {
 	 * @return bool|array Post IDs found in the index
 	 * @since 1.0
 	 */
-	function queryForPostIDs() {
+	function query_for_post_ids() {
 		global $wpdb;
 
-		do_action( 'searchwp_log', 'queryForPostIDs()' );
+		do_action( 'searchwp_log', 'query_for_post_ids()' );
 
 		// check to make sure there are settings for the current engine
-		if ( ! isset( $this->settings['engines'][$this->engine] ) && is_array( $this->settings['engines'][$this->engine] ) ) {
+		if ( ! isset( $this->settings['engines'][ $this->engine ] ) && is_array( $this->settings['engines'][ $this->engine ] ) ) {
 			return false;
 		}
 
@@ -1786,7 +1797,7 @@ class SearchWPSearch {
 		}
 
 		// pull out our engine-specific settings
-		$all_settings = SWP()->validateSettings( $this->settings );
+		$all_settings = SWP()->validate_settings( $this->settings );
 		if ( ! isset( $all_settings['engines'] ) || ! isset( $all_settings['engines'][ $this->engine ] ) ) {
 			wp_die( __( 'Engine settings not found', 'searchwp' ) );
 		}
@@ -1823,7 +1834,7 @@ class SearchWPSearch {
 		if ( is_array( $this->excluded ) ) {
 			$this->excluded = array_map( 'absint', $this->excluded );
 		}
-		$this->sql_exclude = ( ! empty( $this->excluded ) ) ? " AND {$wpdb->prefix}posts.ID NOT IN (" . implode( ',', $this->excluded ) . ") " : '';
+		$this->sql_exclude = ( ! empty( $this->excluded ) ) ? " AND {$wpdb->prefix}posts.ID NOT IN (" . implode( ',', $this->excluded ) . ') ' : '';
 
 		// if there's an insane number of posts returned, we're dealing with a site with a lot of similar content
 		// so we need to trim out the initial results by relevance before proceeding else we'll have a wicked slow query
@@ -1831,7 +1842,7 @@ class SearchWPSearch {
 		// NOTE: this only applies if titles have weights for all enabled post types, so we must check that first
 		$able_to_refine_results = true;
 		foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
 				$title_weight = isset( $postTypeWeights['weights']['title'] ) ? absint( $postTypeWeights['weights']['title'] ) : 0;
 				if ( 0 == $title_weight ) {
 					// at least one title weight is zero so we are NOT ABLE to refine results any
@@ -1851,7 +1862,7 @@ class SearchWPSearch {
 				$parity > 1
 				&& $able_to_refine_results
 				&& apply_filters( 'searchwp_refine_and_results', true )
-				&& count( $this->relevant_post_ids) > $maxNumAndResults ) {
+				&& count( $this->relevant_post_ids ) > $maxNumAndResults ) {
 				$this->relevant_post_ids = $this->get_post_ids_via_and_in_title();
 			}
 
@@ -1878,7 +1889,7 @@ class SearchWPSearch {
 			$this->included = array_map( 'absint', $this->included );
 		}
 
-		$this->sql_include = ( ( is_array( $this->included ) && ! empty( $this->included ) ) || $forceAnd ) ? " AND {$wpdb->prefix}posts.ID IN (" . implode( ',', $this->included ) . ") " : '';
+		$this->sql_include = ( ( is_array( $this->included ) && ! empty( $this->included ) ) || $forceAnd ) ? " AND {$wpdb->prefix}posts.ID IN (" . implode( ',', $this->included ) . ') ' : '';
 
 		/**
 		 * Build the search query
@@ -1909,7 +1920,7 @@ class SearchWPSearch {
 
 			// build our post type queries
 			foreach ( $this->engineSettings as $postType => $postTypeWeights ) {
-				if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
+				if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
 					// TODO: store our post format clause and integrate
 					// TODO: store our post status clause and integrate
 
@@ -1924,7 +1935,8 @@ class SearchWPSearch {
 					if ( ! in_array( $term_or_stem, array( 'term', 'stem' ) ) ) {
 						wp_die( 'Invalid request', 'searchwp' );
 					}
-					$this->sql_term_where = " {$this->db_prefix}terms." . $term_or_stem . " IN (" . implode( ',', $term ) . ")";
+					$this->sql_term_where = " {$this->db_prefix}terms." . $term_or_stem . ' IN (' . implode( ',', $term ) . ')';
+					/** @noinspection PhpUnusedLocalVariableInspection */
 					$last_term = $term;
 
 					// if it's an attachment we need to force 'inherit'
@@ -1936,7 +1948,7 @@ class SearchWPSearch {
 						}
 					}
 
-					$this->sql_status = "AND {$wpdb->prefix}posts.post_status IN ( " . implode( ",", $post_statuses ) . " ) ";
+					$this->sql_status = "AND {$wpdb->prefix}posts.post_status IN ( " . implode( ',', $post_statuses ) . ' ) ';
 
 					// determine whether we need to limit to a mime type
 					if ( isset( $postTypeWeights['options']['mimes'] ) ) {
@@ -2014,12 +2026,12 @@ class SearchWPSearch {
 						$this->query_post_type_open( $post_type_params );
 
 						// handle custom field weights
-						if ( isset( $postTypeWeights['weights']['cf'] ) && is_array( $postTypeWeights['weights']['cf'] ) && !empty( $postTypeWeights['weights']['cf'] ) ) {
+						if ( isset( $postTypeWeights['weights']['cf'] ) && is_array( $postTypeWeights['weights']['cf'] ) && ! empty( $postTypeWeights['weights']['cf'] ) ) {
 							$this->query_post_type_custom_field_weights( $postType, $postTypeWeights['weights']['cf'] );
 						}
 
 						// handle taxonomy weights
-						if ( isset( $postTypeWeights['weights']['tax'] ) && is_array( $postTypeWeights['weights']['tax'] ) && !empty( $postTypeWeights['weights']['tax'] ) ) {
+						if ( isset( $postTypeWeights['weights']['tax'] ) && is_array( $postTypeWeights['weights']['tax'] ) && ! empty( $postTypeWeights['weights']['tax'] ) ) {
 							$this->query_post_type_taxonomy_weights( $postType, $postTypeWeights['weights']['tax'] );
 						}
 
@@ -2027,7 +2039,6 @@ class SearchWPSearch {
 						$attribute_to = isset( $postTypeWeights['options']['attribute_to'] ) ? absint( $postTypeWeights['options']['attribute_to'] ) : false;
 						$this->query_post_type_close( $postType, $attribute_to );
 					}
-
 				}
 			}
 
@@ -2036,9 +2047,9 @@ class SearchWPSearch {
 
 			$this->sql .= $this->query_limit_pool_by_stem();
 
-			$this->sql .= $this->postStatusLimiterSQL( $this->engineSettings );
+			$this->sql .= $this->post_status_limiter_sql( $this->engineSettings );
 
-			$this->sql .= " GROUP BY post_id";
+			$this->sql .= ' GROUP BY post_id';
 
 			$this->sql .= " ) AS term{$termCounter} ON term{$termCounter}.post_id = {$wpdb->prefix}posts.ID ";
 
@@ -2052,7 +2063,7 @@ class SearchWPSearch {
 		// make sure we're only getting posts with actual weight
 		$this->query_limit_to_weight();
 
-		$this->sql .= $this->postStatusLimiterSQL( $this->engineSettings );
+		$this->sql .= $this->post_status_limiter_sql( $this->engineSettings );
 
 		$modifier = ( $this->postsPer < 1 ) ? 1 : $this->postsPer; // if posts_per_page is -1 there's no offset
 		$start = ! empty( $this->offset ) ? $this->offset : intval( ( $this->page - 1 ) * $modifier );
@@ -2064,7 +2075,7 @@ class SearchWPSearch {
 		$total = absint( apply_filters( 'searchwp_query_limit_total', $total, $this->page, $this->engine ) );
 
 		$extraWhere = apply_filters( 'searchwp_where', '', $this->engine );
-		$this->sql .= " " . $extraWhere . " ";
+		$this->sql .= ' ' . $extraWhere . ' ';
 
 		// allow developers to order by date
 		$orderByDate = apply_filters( 'searchwp_return_orderby_date', false, $this->engine );
@@ -2072,7 +2083,7 @@ class SearchWPSearch {
 
 		// allow developers to return completely random results that meet the minumum weight
 		if ( apply_filters( 'searchwp_return_orderby_random', false, $this->engine ) ) {
-			$finalOrderBySQL = " ORDER BY RAND() ";
+			$finalOrderBySQL = ' ORDER BY RAND() ';
 		}
 
 		// allow for arbitrary ORDER BY filtration
@@ -2081,9 +2092,9 @@ class SearchWPSearch {
 		// make sure we limit the overall wp_posts pool to what was returned in the subqueries
 		$end_cap_limiter = '';
 		for ( $i = 1; $i <= count( $this->terms ); $i++ ) {
-			$end_cap_limiter .= "term" . $i . ".post_id,";
+			$end_cap_limiter .= 'term' . $i . '.post_id,';
 		}
-		$this->sql .= " AND {$wpdb->prefix}posts.ID IN (" . substr( $end_cap_limiter, 0, strlen( $end_cap_limiter ) - 1 ) . ") ";
+		$this->sql .= " AND {$wpdb->prefix}posts.ID IN (" . substr( $end_cap_limiter, 0, strlen( $end_cap_limiter ) - 1 ) . ') ';
 
 		// also limit the wp_posts pool taking into consideration exclusions
 		$this->sql .= $this->sql_exclude;
@@ -2094,16 +2105,16 @@ class SearchWPSearch {
             {$finalOrderBySQL}
         ";
 
-		if( $this->postsPer > 0 ) {
+		if ( $this->postsPer > 0 ) {
 			$this->sql .= "LIMIT {$start}, {$total}";
 		}
 
-		$this->sql = str_replace( "\n", " ", $this->sql );
-		$this->sql = str_replace( "\t", " ", $this->sql );
+		$this->sql = str_replace( "\n", ' ', $this->sql );
+		$this->sql = str_replace( "\t", ' ', $this->sql );
 
 		// allow BIG_SELECTS
 		$bigSelects = apply_filters( 'searchwp_big_selects', false );
-		if( $bigSelects ) {
+		if ( $bigSelects ) {
 			$wpdb->query( 'SET SQL_BIG_SELECTS=1' );
 		}
 
@@ -2126,7 +2137,7 @@ class SearchWPSearch {
 		$postIDs = array(); // going to store all of the returned post IDs
 		$this->results_weights = array(); // store all of the specific weights
 		if ( ! empty( $searchwp_query_results ) ) {
-			foreach( $searchwp_query_results as $searchwp_query_result ) {
+			foreach ( $searchwp_query_results as $searchwp_query_result ) {
 
 				// store the weights for this post
 				$weights = array(
@@ -2136,7 +2147,7 @@ class SearchWPSearch {
 				);
 
 				// the results returned are just the table results from the query, let's format them a bit
-				foreach( $searchwp_query_result as $searchwp_query_result_key => $searchwp_query_result_value ) {
+				foreach ( $searchwp_query_result as $searchwp_query_result_key => $searchwp_query_result_value ) {
 					switch ( $searchwp_query_result_key ) {
 						case 'post_id' :
 							$postIDs[] = absint( $searchwp_query_result->post_id );
@@ -2201,19 +2212,22 @@ class SearchWPSearch {
 	function admin_bar_sql_big_selects_notice() {
 		global $wp_admin_bar;
 
-		$args = array(
-			'id'     => 'searchwp-sql-big-selects-notice',
-			'title'  => __( 'SearchWP Error', 'searchwp' ),
-			'href'   => 'https://searchwp.com/docs/hooks/searchwp_big_selects/',
-		);
-		$wp_admin_bar->add_menu( $args );
+		if ( method_exists( $wp_admin_bar, 'add_menu' ) ) {
+			$args = array(
+				'id'     => 'searchwp-sql-big-selects-notice',
+				'title'  => __( 'SearchWP Error', 'searchwp' ),
+				'href'   => 'https://searchwp.com/docs/hooks/searchwp_big_selects/',
+			);
 
-		$wp_admin_bar->add_menu( array(
+			$wp_admin_bar->add_menu( $args );
+
+			$wp_admin_bar->add_menu( array(
 				'parent'  => 'searchwp-sql-big-selects-notice',
 				'id'      => 'searchwp-sql-big-selects-notice-sub',
 				'title'   => __( 'View SQL_BIG_SELECTS Fix', 'searchwp' ),
 				'href'    => 'https://searchwp.com/docs/hooks/searchwp_big_selects/',
 			) );
+		}
 	}
 
 
@@ -2234,6 +2248,8 @@ class SearchWPSearch {
 
 	/**
 	 * @param $term
+	 *
+	 * @param $postTypeWeights
 	 *
 	 * @return array|mixed|string|void
 	 */
@@ -2279,8 +2295,8 @@ class SearchWPSearch {
 		$term = array_unique( $term );
 
 		// hopefully the developer sanitized their terms, but they might have prepared them (i.e. they're wrapped in single quotes)
-		foreach( $term as $raw_term_key => $raw_term ) {
-			if( "'" == substr( $raw_term, 0, 1 ) && "'" == substr( $raw_term, strlen( $raw_term ) - 1 ) ) {
+		foreach ( $term as $raw_term_key => $raw_term ) {
+			if ( "'" == substr( $raw_term, 0, 1 ) && "'" == substr( $raw_term, strlen( $raw_term ) - 1 ) ) {
 				$raw_term = substr( $raw_term, 1, strlen( $raw_term ) - 2 );
 			}
 			$raw_term = trim( sanitize_text_field( $raw_term ) );
@@ -2307,10 +2323,10 @@ class SearchWPSearch {
 		$sql = '';
 
 		// limit the full pool to search term(s) stem
-		if ( is_array( $this->terms_final ) && count ( $this->terms_final ) ) {
+		if ( is_array( $this->terms_final ) && count( $this->terms_final ) ) {
 
 			// if stemming was enabled, the terms have already been stemmed
-			$limiter_sql = " ( {$this->db_prefix}terms.term IN (" . implode( ",", $this->terms_final ) . ") OR {$this->db_prefix}terms.stem IN (" . implode( ",", $this->terms_final ) . ") ) ";
+			$limiter_sql = " ( {$this->db_prefix}terms.term IN (" . implode( ',', $this->terms_final ) . ") OR {$this->db_prefix}terms.stem IN (" . implode( ',', $this->terms_final ) . ') ) ';
 
 			// if attribution is concerned, the post_parent likely WILL NOT have the term or stem, so we need to accommodate
 			// by adding a conditional that excuses attributed post types that do not have any terms/stems
@@ -2323,17 +2339,17 @@ class SearchWPSearch {
 			}
 
 			if ( ! empty( $post_types_with_attribution['post_types'] ) ) {
-				$limiter_sql .= " OR ( {$this->db_prefix}terms.term NOT IN (" . implode( ",", $this->terms_final ) . ") AND {$this->db_prefix}terms.stem NOT IN (" . implode( ",", $this->terms_final ) . ") AND {$wpdb->posts}.post_type NOT IN (" . implode( ",", $post_types_with_attribution['post_types'] ) . ") ) ";
+				$limiter_sql .= " OR ( {$this->db_prefix}terms.term NOT IN (" . implode( ',', $this->terms_final ) . ") AND {$this->db_prefix}terms.stem NOT IN (" . implode( ',', $this->terms_final ) . ") AND {$wpdb->posts}.post_type NOT IN (" . implode( ',', $post_types_with_attribution['post_types'] ) . ') ) ';
 
 				// if we can also allow specific post IDs, do that
 				if ( count( $post_types_with_attribution['post_ids'] ) ) {
 					$attributed_post_ids = array_map( 'absint', $post_types_with_attribution['post_ids'] );
-					$limiter_sql .= " OR {$wpdb->posts}.ID IN (" . implode( ",", $attributed_post_ids ) . ") ";
+					$limiter_sql .= " OR {$wpdb->posts}.ID IN (" . implode( ',', $attributed_post_ids ) . ') ';
 				}
 			}
 
 			// let it rip
-			$this->sql .= " AND ( " . $limiter_sql . " ) ";
+			$this->sql .= ' AND ( ' . $limiter_sql . ' ) ';
 		}
 
 		return $sql;
@@ -2347,7 +2363,7 @@ class SearchWPSearch {
 	 *
 	 * @return string
 	 */
-	private function postStatusLimiterSQL( $engineSettings ) {
+	private function post_status_limiter_sql( $engineSettings ) {
 		global $wpdb;
 
 		$prefix = $wpdb->prefix;
@@ -2357,8 +2373,8 @@ class SearchWPSearch {
 		$finalPostTypes = array();
 		$finalPostTypesIncludesAttachments = false;
 		foreach ( $engineSettings as $postType => $postTypeWeights ) {
-			if ( isset( $postTypeWeights['enabled'] ) && $postTypeWeights['enabled'] == true ) {
-				if ( $postType == 'attachment' ) {
+			if ( isset( $postTypeWeights['enabled'] ) && true == $postTypeWeights['enabled'] ) {
+				if ( 'attachment' == $postType ) {
 					$finalPostTypesIncludesAttachments = true;
 				} else {
 					$finalPostTypes[] = $postType;
@@ -2366,7 +2382,7 @@ class SearchWPSearch {
 			}
 		}
 
-		$sql .= " AND ( ";
+		$sql .= ' AND ( ';
 
 		// based on whether attachments are the ONLY enabled post type, we'll build out this statement
 		if ( ! empty( $finalPostTypes ) ) {
@@ -2384,19 +2400,19 @@ class SearchWPSearch {
 				}
 			}
 
-			$sql .= " ( {$prefix}posts.post_status  IN (" . implode( ",", $post_statuses ) . ")  AND {$prefix}posts.post_type IN (" . implode( ",", $finalPostTypes ) . ") ) ";
+			$sql .= " ( {$prefix}posts.post_status  IN (" . implode( ',', $post_statuses ) . ")  AND {$prefix}posts.post_type IN (" . implode( ',', $finalPostTypes ) . ') ) ';
 
 			// this OR should be put in place only if there are other enabled post types, else the limiter will get picked up 6 lines down
-			if( $finalPostTypesIncludesAttachments ) {
+			if ( $finalPostTypesIncludesAttachments ) {
 				$sql .= ' OR ';
 			}
 		}
 
-		if( $finalPostTypesIncludesAttachments ) {
+		if ( $finalPostTypesIncludesAttachments ) {
 			$sql .= "{$prefix}posts.post_type = 'attachment' ";
 		}
 
-		$sql .= " ) ";
+		$sql .= ' ) ';
 
 		return $sql;
 	}
@@ -2408,7 +2424,7 @@ class SearchWPSearch {
 	 * @return int The total number of pages
 	 * @since 1.0.5
 	 */
-	function getMaxNumPages() {
+	function get_max_num_pages() {
 		return $this->maxNumPages;
 	}
 
@@ -2419,7 +2435,7 @@ class SearchWPSearch {
 	 * @return int The total number of posts
 	 * @since 1.0.5
 	 */
-	function getFoundPosts() {
+	function get_found_posts() {
 		return $this->foundPosts;
 	}
 
@@ -2430,8 +2446,59 @@ class SearchWPSearch {
 	 * @return int The current page
 	 * @since 1.0.5
 	 */
-	function getPage() {
+	function get_page() {
 		return $this->page;
 	}
+
+	/**
+	 * Returns the SQL being used to get search results
+	 *
+	 * @return string The SQL in use
+	 * @since 2.6
+	 */
+	function get_sql() {
+		return $this->sql;
+	}
+
+	// @codingStandardsIgnoreStart
+	/**
+	 * @deprecated as of 2.5.7
+	 */
+	function queryForPostIDs() {
+		return $this->query_for_post_ids();
+	}
+
+	/**
+	 * @deprecated as of 2.5.7
+	 *
+	 * @param $settings
+	 *
+	 * @return string
+	 */
+	function postStatusLimiterSQL( $settings ) {
+		return $this->post_status_limiter_sql( $settings );
+	}
+
+	/**
+	 * @deprecated as of 2.5.7
+	 */
+	function getMaxNumPages() {
+		return $this->get_max_num_pages();
+	}
+
+	/**
+	 * @deprecated as of 2.5.7
+	 */
+	function getFoundPosts() {
+		return $this->get_found_posts();
+	}
+
+	/**
+	 * @deprecated as of 2.5.7
+	 */
+	function getPage() {
+		return $this->get_page();
+	}
+	// @codingStandardsIgnoreEnd
 
 }

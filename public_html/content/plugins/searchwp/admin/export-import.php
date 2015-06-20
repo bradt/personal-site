@@ -1,7 +1,11 @@
 <?php
-	if ( ! defined( 'ABSPATH' ) || ! function_exists( 'SWP' ) ) {
-		exit;
-	}
+if ( ! defined( 'ABSPATH' ) || ! function_exists( 'SWP' ) ) {
+	exit;
+}
+
+// hook the import action
+
+
 ?>
 <hr />
 <div class="searchwp-export-settings">
@@ -15,6 +19,7 @@
 		<div class="swp-group">
 			<div class="swp-json">
 				<h4><?php _e( 'Export Data', 'searchwp' ); ?></h4>
+				<!--suppress HtmlFormInputWithoutLabel -->
 				<textarea onclick="this.focus();this.select()" name="searchwp_export_source" id="searchwp_export_source" cols="30" rows="10" readonly="readonly"><?php echo esc_textarea( $export_sources_json ); ?></textarea>
 			</div>
 			<div class="swp-import-export-sources">
@@ -39,13 +44,14 @@
 	<p><?php _e( 'Paste the JSON from a SearchWP settings export below to import search engine configuration(s).', 'searchwp' ); ?></p>
 	<p><?php _e( '<strong>NOTE:</strong> Existing configurations with matching labels <em>will be overwritten!</em> This cannot be undone.', 'searchwp' ); ?></p>
 
-	<form method="post" id="searchwp-form-import" action="<?php echo esc_url( admin_url( 'options-general.php?page=searchwp' ) ); ?>">
+	<form method="post" id="searchwp-form-import" action="<?php echo esc_url( admin_url( 'options-general.php?page=searchwp&tab=advanced' ) ); ?>">
 		<div style="display:none;">
 			<?php wp_nonce_field( 'searchwp_import_engine_config' ); ?>
 			<input type="hidden" name="searchwp_action" value="import_engine_config" />
 		</div>
 		<div class="swp-group">
 			<div class="swp-json">
+				<!--suppress HtmlFormInputWithoutLabel -->
 				<textarea name="searchwp_import_source" id="searchwp_import_source" cols="30" rows="10"></textarea>
 			</div>
 			<div class="swp-import-export-sources">
@@ -68,7 +74,7 @@
 		});
 
 		$('#searchwp-form-import').submit(function () {
-			if(confirm('<?php echo esc_js( __( "Are you SURE you want to import these settings? This cannot be undone.", 'searchwp' ) ); ?>')) {
+			if(confirm('<?php echo esc_js( __( 'Are you SURE you want to import these settings? This cannot be undone.', 'searchwp' ) ); ?>')) {
 				return true;
 			}
 			return false;

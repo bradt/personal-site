@@ -15,8 +15,6 @@ class SearchWPDebug {
 
 	public $active;
 	private $logfile;
-	private $remoteMeta;
-	private $apiPrefix = 'swpapi';
 
 	function init( $dir ) {
 		global $wp_filesystem;
@@ -25,15 +23,17 @@ class SearchWPDebug {
 		$this->logfile = trailingslashit( $dir ) . 'debug.txt';
 
 		// init environment
-		if( ! file_exists( $this->logfile ) ) {
+		if ( ! file_exists( $this->logfile ) ) {
 			WP_Filesystem();
-			if( ! $wp_filesystem->put_contents( $this->logfile, '' ) ); {
-				$this->active = false;
+			if ( method_exists( $wp_filesystem, 'put_contents' ) ) {
+				if ( ! $wp_filesystem->put_contents( $this->logfile, '' ) ) {
+					$this->active = false;
+				}
 			}
 		}
 
 		// after determining whether we can write to the logfile, add our action
-		if( $this->active ) {
+		if ( $this->active ) {
 			add_action( 'searchwp_log', array( $this, 'log' ), 1, 2 );
 		}
 	}
@@ -47,6 +47,14 @@ class SearchWPDebug {
 			return false;
 		}
 
+		if ( ! method_exists( $wp_filesystem, 'get_contents' ) ) {
+			return false;
+		}
+
+		if ( ! method_exists( $wp_filesystem, 'put_contents' ) ) {
+			return false;
+		}
+
 		// get the existing log
 		$existing = $wp_filesystem->get_contents( $this->logfile );
 
@@ -54,7 +62,7 @@ class SearchWPDebug {
 		$entry = '[' . date( 'Y-d-m G:i:s', current_time( 'timestamp' ) ) . '][' . sanitize_text_field( $type ) . ']';
 
 		// flag it with the process ID
-		$entry .= '[' . SearchWP::instance()->getPid() . ']';
+		$entry .= '[' . SearchWP::instance()->get_pid() . ']';
 
 		// sanitize the message
 		$message = sanitize_text_field( esc_html( $message ) );
@@ -70,6 +78,8 @@ class SearchWPDebug {
 
 		// write log
 		$wp_filesystem->put_contents( $this->logfile, $log );
+
+		return true;
 	}
 
 }

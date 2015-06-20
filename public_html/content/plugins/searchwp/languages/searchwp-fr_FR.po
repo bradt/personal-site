@@ -2,15 +2,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: SearchWP\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/searchwp\n"
-"POT-Creation-Date: 2015-04-22 08:22-0500\n"
-"PO-Revision-Date: 2015-04-22 08:22-0500\n"
+"POT-Creation-Date: 2015-06-17 10:46-0500\n"
+"PO-Revision-Date: 2015-06-17 10:46-0500\n"
 "Last-Translator: fxbenard | FxB <fx@fxbenard.com>\n"
 "Language-Team: fxbenard | FxB <fx@fxbenard.com>\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.7.5\n"
+"X-Generator: Poedit 1.8.1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
@@ -19,39 +19,104 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: admin/class.dashboard.php:37 admin/stats.php:29 searchwp.php:2079
+#: admin/class.admin-settings.php:127
+msgid "Help"
+msgstr ""
+
+#: admin/class.admin-settings.php:176
+msgid ""
+"Initial index has been built, the progress bar will be hidden until it is "
+"needed again."
+msgstr ""
+
+#: admin/class.admin-settings.php:225 searchwp.php:745 searchwp.php:935
+msgid "Settings"
+msgstr "Réglages"
+
+#: admin/class.dashboard.php:37 admin/stats.php:29 searchwp.php:2181
 msgid "Search Statistics"
 msgstr "Statistiques des recherches"
 
-#: admin/class.dashboard.php:80 admin/class.dashboard.php:86
-#: admin/export-import.php:24 admin/stats.php:37 admin/stats.php:112
+#: admin/class.dashboard.php:82 admin/class.dashboard.php:90
+#: admin/export-import.php:29 admin/stats.php:37 admin/stats.php:112
 msgid "Default"
 msgstr "Par défaut"
 
-#: admin/class.dashboard.php:102 admin/stats.php:244
+#: admin/class.dashboard.php:109 admin/stats.php:244
 msgid "Today"
 msgstr "Aujourd'hui"
 
-#: admin/class.dashboard.php:106 admin/stats.php:451
+#: admin/class.dashboard.php:113 admin/stats.php:451
 msgid "Past 30 Days"
 msgstr "Sur les 30 derniers jours"
 
-#: admin/class.dashboard.php:113
+#: admin/class.dashboard.php:120
 msgid "View Full Stats"
 msgstr "Afficher les stats complètes"
 
-#: admin/class.dashboard.php:136 admin/stats.php:267 admin/stats.php:317
+#: admin/class.dashboard.php:143 admin/stats.php:267 admin/stats.php:317
 #: admin/stats.php:367 admin/stats.php:417 admin/stats.php:474
 msgid "Query"
 msgstr "Requête"
 
-#: admin/class.dashboard.php:137
+#: admin/class.dashboard.php:144
 msgid "Count"
 msgstr "Compte"
 
-#: admin/class.dashboard.php:150
+#: admin/class.dashboard.php:157
 msgid "No searches for this time period."
 msgstr "Aucune recherche pour cette période de temps."
+
+#: admin/class.extensions.php:29
+msgid "Extensions"
+msgstr "Extensions"
+
+#: admin/class.extensions.php:44
+msgid "SearchWP"
+msgstr "SearchWP"
+
+#: admin/class.extensions.php:48 searchwp.php:2487
+msgid "Back to SearchWP Settings"
+msgstr "Retour aux réglages de SearchWP"
+
+#: admin/class.nags.php:97
+#, php-format
+msgid ""
+"The SearchWP indexer runs as fast as it can without overloading your server; "
+"there are filters to customize it's aggressiveness. <a href=\"%s\">Find out "
+"more &raquo;</a> <a class=\"swp-dismiss\" href=\"%s\">Dismiss</a>"
+msgstr ""
+
+#: admin/class.nags.php:115
+msgid ""
+"In order to receive updates and support, you must have an active license."
+msgstr ""
+"Afin de recevoir les mises à jour et avoir accès au support, vous devez "
+"avoir une licence activée."
+
+#: admin/class.nags.php:115 admin/settings-impl-license.php:49
+msgid "Manage License"
+msgstr "Gérer la licence"
+
+#: admin/class.nags.php:115 admin/view-settings-help.php:15
+msgid "Purchase License"
+msgstr "Acheter une licence"
+
+#: admin/class.nags.php:115 admin/class.nags.php:130
+msgid "Dismiss"
+msgstr "Fermer"
+
+#: admin/class.nags.php:130
+#, php-format
+msgid ""
+"Your server is running MySQL version %1$s which may prevent search results "
+"from appearing due to <a href=\"http://bugs.mysql.com/bug.php?id=41156\">bug "
+"41156</a>. Please update MySQL to a more recent version (at least 5.2)."
+msgstr ""
+"Votre serveur fonctionne avec MySQL en version%1$s ce qui peut empêcher à "
+"certains résultats de la recherche d&#39;apparaître en raison du <a href="
+"\"http://bugs.mysql.com/bug.php?id=41156\">bogue 41156</a>. Veuillez mettre "
+"à jour MySQL en une version plus récente (au moins en v.5.2)."
 
 #: admin/class.notices.php:53
 #, php-format
@@ -112,22 +177,22 @@ msgstr "articles"
 msgid "View details"
 msgstr "Afficher les détails"
 
-#: admin/class.notices.php:254
+#: admin/class.notices.php:254 admin/settings-impl-advanced.php:363
 msgid "The SearchWP indexer is currently <strong>disabled</strong>"
 msgstr "L'indexeur de SearchWP est actuellement <strong>désactivé</strong>"
 
-#: admin/class.notices.php:318
+#: admin/class.notices.php:317
 msgid ""
 "SearchWP has detected a <strong>theme conflict</strong> with the active "
 "theme."
 msgstr ""
 "SearchWP a détecté un <strong>conflit de thème</strong> avec le thème actif."
 
-#: admin/class.notices.php:318 admin/class.notices.php:369
+#: admin/class.notices.php:317 admin/class.notices.php:369
 msgid "More info &raquo;"
 msgstr "Plus d&#39;infos &raquo;"
 
-#: admin/class.notices.php:320
+#: admin/class.notices.php:319
 msgid ""
 "In order for SearchWP to display it's results, occurrences of <code>new "
 "WP_Query</code> and <code>query_posts()</code> must be removed from your "
@@ -137,15 +202,15 @@ msgstr ""
 "WP_Query</code> et de <code>query_posts()</code> doivent être retirées de "
 "votre modèle de résultats de recherche."
 
-#: admin/class.notices.php:322
+#: admin/class.notices.php:321
 msgid "File location"
 msgstr "Emplacement du fichier"
 
-#: admin/class.notices.php:328
+#: admin/class.notices.php:327
 msgid "Line"
 msgstr "Ligne"
 
-#: admin/class.notices.php:332
+#: admin/class.notices.php:331
 msgid ""
 "Please ensure the offending lines are removed from the theme template to "
 "avoid conflicts with SearchWP. When removed, this notice will disappear. You "
@@ -156,7 +221,7 @@ msgstr ""
 "notification disparaîtra. Vous pouvez également rejeter ce message en "
 "utilisant"
 
-#: admin/class.notices.php:333
+#: admin/class.notices.php:332
 msgid ""
 "You may dismiss this (and all like this) message by adding "
 "<code>add_filter( 'searchwp_show_conflict_notices', '__return_false' );</"
@@ -246,7 +311,7 @@ msgstr ""
 "progression sur l&#39;écran des réglages de SearchWP, confirmant que tous "
 "les médias sont correctement indexés."
 
-#: admin/class.systeminfo.php:33
+#: admin/class.systeminfo.php:39
 msgid ""
 "To copy the system info, click below then press CTRL + C (PC) or CMD + C "
 "(Mac)."
@@ -254,61 +319,11 @@ msgstr ""
 "Pour copier les informations système, cliquez ci-dessous puis appuyez sur "
 "Ctrl + C (PC) ou Cmd  + C (Mac)."
 
-#: admin/create-support-ticket.php:12
-msgid "SearchWP Support"
-msgstr "Support de SearchWP"
-
-#: admin/create-support-ticket.php:13
-msgid ""
-"Support is available only to <strong>active license holders</strong>. You "
-"must activate your license to receive support. If you do not have a license "
-"you may purchase one at any time."
-msgstr ""
-"L'accès au support n'est disponible que pour les <strong>détenteurs d'une "
-"licence active</strong>. Vous devez activer votre licence pour y accéder. Si "
-"vous n'avez pas une licence, vous pouvez en acheter une à tout moment."
-
-#: admin/create-support-ticket.php:14 searchwp.php:2489 searchwp.php:2500
-#: searchwp.php:3224
-msgid "Activate License"
-msgstr "Activer la licence"
-
-#: admin/create-support-ticket.php:14 searchwp.php:3301
-msgid "Purchase License"
-msgstr "Acheter une licence"
-
-#: admin/create-support-ticket.php:15
-#, php-format
-msgid ""
-"If you cannot activate your license please see <a href=\"%s\">this KB "
-"article</a>"
-msgstr ""
-"Si vous ne pouvez pas activer votre licence veuillez vous référer à <a href="
-"\"%s\">cet article</a>"
-
-#: admin/create-support-ticket.php:16
-msgid ""
-"If you are having difficulty activating your license or you believe you are "
-"receiving this notice in error, please <strong>include your license key</"
-"strong> in an email to"
-msgstr ""
-"Si vous avez des difficultés pour activer votre licence ou pensez que vous "
-"recevez cette notification par erreur, veuillez <strong>inclure votre clé de "
-"licence</strong> dans un message à"
-
-#: admin/create-support-ticket.php:55
-msgid "Create SearchWP Support Ticket"
-msgstr "Créer un ticket de support SearchWP"
-
-#: admin/create-support-ticket.php:56
-msgid "Support"
-msgstr "Support"
-
-#: admin/export-import.php:8
+#: admin/export-import.php:12
 msgid "Settings Export"
 msgstr "Exportation des réglages"
 
-#: admin/export-import.php:9
+#: admin/export-import.php:13
 msgid ""
 "Export SearchWP the configuration(s) for SearchWP search engines as JSON. "
 "This allows you to easily import your settings into another site."
@@ -317,27 +332,27 @@ msgstr ""
 "que fichier .JSON. Cela vous permettra de les importer facilement dans un "
 "autre site."
 
-#: admin/export-import.php:17
+#: admin/export-import.php:21
 msgid "Export Data"
 msgstr "Exportation de données"
 
-#: admin/export-import.php:21
+#: admin/export-import.php:26
 msgid "Search Engines"
 msgstr "Moteurs de recherche"
 
-#: admin/export-import.php:22
+#: admin/export-import.php:27
 msgid "Checked search engines will be included in the export"
 msgstr "Les moteurs de recherche cochés seront inclus lors de l'exportation."
 
-#: admin/export-import.php:33
+#: admin/export-import.php:38
 msgid "ERROR: No SearchWP engines found!"
 msgstr "ERREUR : Aucun moteur SearchWP n'a été trouvé !"
 
-#: admin/export-import.php:38
+#: admin/export-import.php:43
 msgid "Settings Import"
 msgstr "Importation des réglages"
 
-#: admin/export-import.php:39
+#: admin/export-import.php:44
 msgid ""
 "Paste the JSON from a SearchWP settings export below to import search engine "
 "configuration(s)."
@@ -345,7 +360,7 @@ msgstr ""
 "Collez le JSON de l'exportation des réglages de SearchWP ci-dessous pour "
 "importer les configurations du moteur recherche."
 
-#: admin/export-import.php:40
+#: admin/export-import.php:45
 msgid ""
 "<strong>NOTE:</strong> Existing configurations with matching labels <em>will "
 "be overwritten!</em> This cannot be undone."
@@ -353,21 +368,286 @@ msgstr ""
 "<strong>Remarque :</strong> Les configurations existantes avec des libélés "
 "identiques <em>seront écrasées !</em> Cela ne peut pas être annulée."
 
-#: admin/export-import.php:52
+#: admin/export-import.php:58
 msgid "Import"
 msgstr "Importer"
 
-#: admin/export-import.php:71
+#: admin/export-import.php:77
 msgid "Are you SURE you want to import these settings? This cannot be undone."
 msgstr ""
 "Êtes-vous certain(e) de vouloir importer ces réglages ? Cela ne pourra pas "
 "être annulé."
 
+#: admin/settings-impl-advanced.php:41
+msgid "Database tables missing! Recreate them on the Advanced Settings screen."
+msgstr ""
+
+#: admin/settings-impl-advanced.php:55
+msgid "Advanced"
+msgstr "Avancé"
+
+#: admin/settings-impl-advanced.php:84
+msgid "Done"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:109 admin/stats.php:13 admin/stats.php:19
+#: searchwp.php:2532 searchwp.php:2551
+msgid "Invalid request"
+msgstr "Requête non valide"
+
+#: admin/settings-impl-advanced.php:156
+msgid "Recreate Database Tables"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:157
+msgid ""
+"SearchWP's database tables cannot be found. This may happen if a site "
+"migration was incomplete. Recreate the tables and initiate an index build."
+msgstr ""
+"Les tables de la base de données de SearchWP sont introuvables. Cela peut "
+"arriver si une migration du site n'a pas été terminée. Recréez les tables et "
+"relancez une construction de l'ndex."
+
+#: admin/settings-impl-advanced.php:158
+#, php-format
+msgid "Database tables created! <a href=\"%s\">Rebuild index &raquo;</a>"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:168
+msgid "Reset Index"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:169
+msgid ""
+"<strong>Completely</strong> empty the index. <em>Search statistics will be "
+"left as is.</em>"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:170
+#, php-format
+msgid ""
+"The index <strong>has been reset</strong>. <a href=\"%s\">Rebuild index "
+"&raquo;</a>"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:175
+msgid "Wake Up Indexer"
+msgstr "Réveiller l'indexeur"
+
+#: admin/settings-impl-advanced.php:176
+msgid "If the indexer appears to have stalled, try waking it up."
+msgstr ""
+
+#: admin/settings-impl-advanced.php:177
+#, php-format
+msgid ""
+"Attempted to wake up the indexer. <a href=\"%s\">View progress &raquo;</a>"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:182
+msgid "Show More"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:188
+msgid "Reset Statistics"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:189
+msgid ""
+"<strong>Completely</strong> reset your Search Statistics. <em>Existing index "
+"will be left as is.</em>"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:190
+msgid "Search statistics reset"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:195
+msgid "Toggle Indexer"
+msgstr "Désactiver l'indexeur"
+
+#: admin/settings-impl-advanced.php:196
+msgid ""
+"Toggle the indexer status. It will pick up where it left off when re-enabled."
+msgstr ""
+
+#: admin/settings-impl-advanced.php:202
+msgid "Restore Conflict Notices"
+msgstr "Restaurer les notifications de conflit"
+
+#: admin/settings-impl-advanced.php:203
+msgid "Restore all dismissed conflict notifications."
+msgstr ""
+
+#: admin/settings-impl-advanced.php:204
+msgid "Conflict notices restored"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:211
+msgid "Toggle Nuke on Delete"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:212
+msgid "Nuke on Delete"
+msgstr "Nuker à la suppression"
+
+#: admin/settings-impl-advanced.php:212 templates/tmpl.engine.config.php:416
+#: templates/tmpl.engine.config.php:442
+msgid "Enabled"
+msgstr "Activé"
+
+#: admin/settings-impl-advanced.php:213
+msgid ""
+"Remove <strong>all traces</strong> of SearchWP upon plugin deletion "
+"(including index)."
+msgstr ""
+
+#: admin/settings-impl-advanced.php:222
+msgid "Index Statistics"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:226
+#, php-format
+msgid ""
+"The indexer reacts to edits made and will apply updates accordingly. <a href="
+"\"%s\" target=\"_BLANK\">More information &raquo;</a>"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:231
+msgid "Last Activity"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:240
+msgid "Indexed"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:241 admin/settings-impl-advanced.php:247
+msgid "entry"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:241 admin/settings-impl-advanced.php:247
+msgid "entries"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:246
+msgid "Unindexed"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:255
+msgid "Main row count"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:256
+msgid "row"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:256
+msgid "rows"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:260
+msgid "Note: the index is always kept as small as posisble."
+msgstr ""
+
+#: admin/settings-impl-advanced.php:275
+msgid "Are you SURE you want to delete the entire SearchWP index?"
+msgstr ""
+"Êtes-vous sûr de vouloir supprimer l&#39;ensemble de l'index de SearchWP ?"
+
+#: admin/settings-impl-advanced.php:276 admin/settings-impl-advanced.php:282
+msgid "Are you completely sure? THIS CAN NOT BE UNDONE!"
+msgstr ""
+"Êtes-vous tout à fait sûr ? CETTE ACTION NE PEUT &Egrave;TRE ANNUL&Eacute;E !"
+
+#: admin/settings-impl-advanced.php:281
+msgid "Are you SURE you want to completely reset your Search Stats?"
+msgstr ""
+"Êtes-vous sûr de vouloir complètement réinitialiser les stats de vos "
+"recherches ?"
+
+#: admin/settings-impl-advanced.php:384
+msgid "Nuke on Delete <strong>enabled</strong>"
+msgstr ""
+
+#: admin/settings-impl-advanced.php:419
+msgid "There was an error recreating the database tables."
+msgstr ""
+
+#: admin/settings-impl-advanced.php:439
+msgid "Settings imported"
+msgstr "Réglages importés"
+
+#: admin/settings-impl-license.php:36
+msgid "License"
+msgstr "Licence"
+
+#: admin/settings-impl-license.php:49
+msgid ""
+"A license key was found, but it is <strong>inactive</strong>. Automatic "
+"updates <em>will not be available</em> until your license is activated."
+msgstr ""
+"Une clé de licence a été trouvée, mais elle est <strong>inactive</strong>. "
+"Les mises à jour automatiques <em>ne seront pas disponibles</em> jusqu'à ce "
+"que votre licence soit activée."
+
+#: admin/settings-impl-license.php:50
+#, php-format
+msgid ""
+"Having trouble activating your license? Please see <a href=\"%s\">this KB "
+"article &raquo;</a>"
+msgstr ""
+
+#: admin/settings-impl-license.php:63
+msgid "License not active"
+msgstr ""
+
+#: admin/settings-impl-license.php:79
+msgid "Manage Your SearchWP License"
+msgstr ""
+
+#: admin/settings-impl-license.php:80
+msgid "Active"
+msgstr "Activé"
+
+#: admin/settings-impl-license.php:80
+msgid "Inactive"
+msgstr ""
+
+#: admin/settings-impl-license.php:84
+msgid "Your SearchWP license is currently active."
+msgstr ""
+
+#: admin/settings-impl-license.php:86
+msgid ""
+"SearchWP requires an active license to receive automatic upates and support. "
+"Enter your license key to activate it."
+msgstr ""
+
+#: admin/settings-impl-license.php:95
+msgid "Deactivate"
+msgstr ""
+
+#: admin/settings-impl-license.php:98
+msgid "Activate"
+msgstr ""
+
+#: admin/settings-impl-license.php:103
+#, php-format
+msgid "Active for another %s"
+msgstr ""
+
+#: admin/settings-impl-license.php:105
+#, php-format
+msgid ""
+"Your license key is available both on your payment receipt and in your <a "
+"href=\"%s\">Account</a>"
+msgstr ""
+
 #: admin/settings.php:19
 msgid "Default Search Engine"
 msgstr "Moteur de recherche par défaut"
 
-#: admin/settings.php:19 admin/settings.php:44 searchwp.php:953
+#: admin/settings.php:19 admin/settings.php:44 searchwp.php:1016
 msgid "Statistics"
 msgstr "Statistiques"
 
@@ -410,15 +690,6 @@ msgstr ""
 #: admin/settings.php:80
 msgid "Add New Supplemental Engine"
 msgstr "Ajouter un nouveau moteur supplémentaire"
-
-#: admin/settings.php:94
-msgid "Advanced"
-msgstr "Avancé"
-
-#: admin/stats.php:13 admin/stats.php:19 searchwp.php:3023 searchwp.php:3042
-#: searchwp.php:3355
-msgid "Invalid request"
-msgstr "Requête non valide"
 
 #: admin/stats.php:52
 msgid "Searches over the past 30 days"
@@ -475,15 +746,93 @@ msgstr ""
 "Êtes-vous certain(e) de vouloir ignorer cette recherche de toutes les "
 "statistiques ?"
 
-#: includes/class.search.php:1767
+#: admin/view-settings-engines.php:20
+msgid "Indexing is"
+msgstr "L'indexation est"
+
+#: admin/view-settings-engines.php:21
+msgid "almost"
+msgstr "presque"
+
+#: admin/view-settings-engines.php:21
+msgid "complete"
+msgstr "terminé à"
+
+#: admin/view-settings-engines.php:25
+msgid ""
+"This process is running in the background. You can leave this page and the "
+"index will continue to be built until completion."
+msgstr ""
+"Ce processus est en cours d&#39;exécution en arrière-plan. Vous pouvez "
+"quitter cette page et l&#39;indexation continuerez à se construire "
+"entièrement."
+
+#: admin/view-settings-engines.php:30
+#, php-format
+msgid ""
+"The indexer has been <strong>temporarily scaled back</strong> to reduce "
+"server load. This is monitored automatically. <a href=\"%s\">More "
+"information &raquo;</a>"
+msgstr ""
+"L&#39;indexeur a été <strong>temporairement ralenti</strong> pour ne pas "
+"surcharger le serveur. Cela est contrôlé automatiquement. <a href=\"%s"
+"\">Pour plus d&#39;informations  &raquo;</a>"
+
+#: admin/view-settings-engines.php:44 templates/tmpl.engine.config.php:284
+msgid "Any"
+msgstr "Tout"
+
+#: admin/view-settings-help.php:12
+msgid "SearchWP Help"
+msgstr ""
+
+#: admin/view-settings-help.php:14
+msgid ""
+"Support is available only to <strong>active license holders</strong>. You "
+"must activate your license to receive support. If you do not have a license "
+"you may purchase one at any time."
+msgstr ""
+"L'accès au support n'est disponible que pour les <strong>détenteurs d'une "
+"licence active</strong>. Vous devez activer votre licence pour y accéder. Si "
+"vous n'avez pas une licence, vous pouvez en acheter une à tout moment."
+
+#: admin/view-settings-help.php:15
+msgid "Activate License"
+msgstr "Activer la licence"
+
+#: admin/view-settings-help.php:67
+msgid "System Information"
+msgstr "Informations système"
+
+#: admin/view-settings-help.php:69
+#, php-format
+msgid ""
+"When submitting this information to support staff it will also be helpful if "
+"you can create a <a href=\"%s\">Gist</a> of your search results template "
+"which is found here:"
+msgstr ""
+"Lors de l'envoi de ces informations au support, il sera également utile si "
+"vous pouviez créer un <a href=\"%s\">Gist</a> des résultats de recherche qui "
+"se trouvent ici:"
+
+#: admin/view-settings-help.php:71
+#, php-format
+msgid ""
+"Please provide this information (ideally as a link to a <a href=\"%s\">Gist</"
+"a>) when requested by support staff"
+msgstr ""
+"Veuillez fournir ces informations (idéalement sous forme de lien à un <a "
+"href=\"%s\">Gist</a> ) si demandé par l'équipe du support."
+
+#: includes/class.search.php:1802
 msgid "Engine settings not found"
 msgstr "Réglages du moteur introuvables"
 
-#: includes/class.search.php:2182
+#: includes/class.search.php:2218
 msgid "SearchWP Error"
 msgstr "Erreur de SearchWP"
 
-#: includes/class.search.php:2190
+#: includes/class.search.php:2227
 msgid "View SQL_BIG_SELECTS Fix"
 msgstr "Voir la réparation du SQL_BIG_SELECTS"
 
@@ -495,51 +844,47 @@ msgstr ""
 "L'extension <strong>SearchWP</strong> nécessite WordPress en version 3.5 ou "
 "supérieure. Veuillez faire la mise à jour avant d'activer l'extension."
 
-#: searchwp.php:711 searchwp.php:872 searchwp.php:3222
-msgid "Settings"
-msgstr "Réglages"
-
-#: searchwp.php:837
+#: searchwp.php:900
 msgid " ago"
 msgstr "il y a"
 
-#: searchwp.php:881
+#: searchwp.php:944
 msgid "Enable Indexer"
 msgstr "Activer l'indexeur"
 
-#: searchwp.php:881 searchwp.php:2911
+#: searchwp.php:944
 msgid "Disable Indexer"
 msgstr "Désactiver l'indexeur"
 
-#: searchwp.php:903
+#: searchwp.php:966
 msgid "In index queue"
 msgstr "Dans la file d&#39;attente de l&#39;index"
 
-#: searchwp.php:916
+#: searchwp.php:979
 msgid "This entry is being indexed"
 msgstr "Cette entrée est en cours d'indexation"
 
-#: searchwp.php:918
+#: searchwp.php:981
 msgid "This entry is indexed"
 msgstr "Cette entrée est indexée"
 
-#: searchwp.php:925
+#: searchwp.php:988
 msgid "Not indexed "
 msgstr "Non indéxé"
 
-#: searchwp.php:925
+#: searchwp.php:988
 msgid "status is"
 msgstr "L'état est"
 
-#: searchwp.php:928
+#: searchwp.php:991
 msgid "Not indexed"
 msgstr "Non indexé"
 
-#: searchwp.php:932 searchwp.php:2169
+#: searchwp.php:995 searchwp.php:2238
 msgid "Last indexed"
 msgstr "Dernière indéxation"
 
-#: searchwp.php:1049
+#: searchwp.php:1114
 msgid ""
 "<p>SearchWP <strong>has been automatically deactivated</strong> because it "
 "failed to create necessary database table(s):</p>"
@@ -548,7 +893,7 @@ msgstr ""
 "parce qu'elle n'a pas pu créer une ou plusieurs tables de base de données "
 "nécessaires :</p>"
 
-#: searchwp.php:1051
+#: searchwp.php:1116
 msgid ""
 "<p>Please ensure the applicable MySQL user has <code>CREATE</code> "
 "permissions and try activating again.</p>"
@@ -556,81 +901,51 @@ msgstr ""
 "<p>Veuillez vous assurer que votre utilisateur MySQL possède l'autorisation "
 "<code>CREATE</code> et essayez de l'activer à nouveau.</p>"
 
-#: searchwp.php:1052
+#: searchwp.php:1117
 msgid "Back to Plugins"
 msgstr "Retour aux extensions"
 
-#: searchwp.php:1332
+#: searchwp.php:1371
 msgid "SearchWP must be updated to the latest version to work with "
 msgstr ""
 "SearchWP doit être mis à jour vers la dernière version pour fonctionner avec "
 
-#: searchwp.php:1457
+#: searchwp.php:1495
 msgid "Invalid SearchWP Engine: "
 msgstr "Moteur de SearchWP non valide:"
 
-#: searchwp.php:1817
+#: searchwp.php:1920
 msgid "Minimum word length triggered"
 msgstr "Longueur minimale du mot visé"
 
-#: searchwp.php:1824
+#: searchwp.php:1927
 msgid "Common word (stopword) removed"
 msgstr "Mot commun (mot d'arrêt) supprimé"
 
-#: searchwp.php:1831
+#: searchwp.php:1934
 msgid "Search query length too long"
 msgstr "La requête de recherche dure trop longtemps"
 
-#: searchwp.php:2079
+#: searchwp.php:2181
 msgid "Search Stats"
 msgstr "Stats des recherches"
 
-#: searchwp.php:2461
-msgid "License"
-msgstr "Licence"
-
-#: searchwp.php:2465 searchwp.php:3258
-msgid ""
-"A license key was found, but it is <strong>inactive</strong>. Automatic "
-"updates <em>will not be available</em> until your license is activated."
-msgstr ""
-"Une clé de licence a été trouvée, mais elle est <strong>inactive</strong>. "
-"Les mises à jour automatiques <em>ne seront pas disponibles</em> jusqu'à ce "
-"que votre licence soit activée."
-
-#: searchwp.php:2469 searchwp.php:2479
-msgid "License Key"
-msgstr "Clé de licence"
-
-#: searchwp.php:2471
-msgid "Your license key was included in your purchase receipt."
-msgstr "Votre clé de licence est incluse dans votre reçu d'achat."
-
-#: searchwp.php:2483
-msgid "Enter your license key"
-msgstr "Entrez votre clé de licence"
-
-#: searchwp.php:2493
-msgid "Active"
-msgstr "Activé"
-
-#: searchwp.php:2495
-msgid "Deactivate License"
-msgstr "Désactiver la licence"
-
-#: searchwp.php:2509 searchwp.php:2620 searchwp.php:3136
-msgid "Back to SearchWP Settings"
-msgstr "Retour aux réglages de SearchWP"
-
-#: searchwp.php:2578
+#: searchwp.php:2441
 msgid "Outstanding Index Issues"
 msgstr "Problèmes non résolus d'indexation"
 
-#: searchwp.php:2580
+#: searchwp.php:2443
 msgid "Nothing is currently excluded from the indexer."
 msgstr "Actuellement, rien n'est exclu de l'indexeur."
 
-#: searchwp.php:2586
+#: searchwp.php:2447
+msgid ""
+"SearchWP was unable to fully implement <code>utf8mb4</code> (Emoji) support "
+"which may prevent indexing some content. Please open a support ticket for "
+"more assistance."
+msgstr ""
+
+#: searchwp.php:2454
 msgid ""
 "SearchWP was unable to index the following content, and it is actively being "
 "excluded from subsequent index runs."
@@ -638,279 +953,35 @@ msgstr ""
 "SearchWP n'a pas réussi à indexer le contenu suivant, il a donc été "
 "activement exclu des indexations futures."
 
-#: searchwp.php:2586
+#: searchwp.php:2454
 msgid "Reintroduce All"
 msgstr "Tout réintroduire"
 
-#: searchwp.php:2594 templates/tmpl.engine.config.php:164
+#: searchwp.php:2462 templates/tmpl.engine.config.php:165
 msgid "Title"
 msgstr "Titre"
 
-#: searchwp.php:2595
+#: searchwp.php:2463
 msgid "Reintroduce to indexer"
 msgstr "Réintroduire dans l'indexeur"
 
-#: searchwp.php:2607
+#: searchwp.php:2474
 msgid "Manually populate PDF content if reintroduction fails"
 msgstr "Remplir manuellement le contenu des PDFs si la réintroduction échoue"
 
-#: searchwp.php:2613
+#: searchwp.php:2480
 msgid "Reintroduce"
 msgstr "Réintroduction"
 
-#: searchwp.php:2815
-msgid "SearchWP Advanced Settings"
-msgstr "Réglages avancés de SearchWP"
-
-#: searchwp.php:2819
-msgid ""
-"Index purged. <strong>The index will not be rebuilt until you initiate a "
-"reindex</strong>."
-msgstr ""
-"L'ndex à été purgé. <strong>L'index ne sera pas reconstruit jusqu'à ce que "
-"vous relanciez une réindexation</strong>."
-
-#: searchwp.php:2820 searchwp.php:2857
-msgid "Initiate reindex"
-msgstr "Relancer la réindexation"
-
-#: searchwp.php:2826
-msgid "Search Stats have been reset"
-msgstr "Les statistiques de recherches ont été réinitialisées"
-
-#: searchwp.php:2832
-msgid "Attempted to wake up the indexer."
-msgstr "Tentative de réveil de l'indexeur."
-
-#: searchwp.php:2833
-msgid "View indexer progress"
-msgstr "Afficher la progression de l'indexeur"
-
-#: searchwp.php:2839
-msgid "Remote Debugging is <strong>enabled</strong> with key"
-msgstr "Le débogage à distance est <strong>activé</strong> avec la clé"
-
-#: searchwp.php:2845
-msgid "Nuke on Delete is <strong>enabled</strong>"
-msgstr "Le nuke à la suppression est <strong>activé</strong>"
-
-#: searchwp.php:2851
-msgid "Database tables missing! Recreate them below."
-msgstr ""
-"Les tables de la base de données sont absentes ! Recréez-les ci-dessous.."
-
-#: searchwp.php:2857
-msgid "Database tables created!"
-msgstr "Tables de la base de données créées !"
-
-#: searchwp.php:2863
-#, php-format
-msgid ""
-"Conflict notifications have been restored, they will be visible on the <a "
-"href=\"%s\">settings screen</a>"
-msgstr ""
-
-#: searchwp.php:2868
-msgid "Back to Settings"
-msgstr "Retour aux réglages"
-
-#: searchwp.php:2872
-msgid "Recreate database tables"
-msgstr "Recréer les tables de la base de données"
-
-#: searchwp.php:2874
-msgid ""
-"SearchWP's database tables cannot be found. This may happen if a site "
-"migration was incomplete. Recreate the tables and initiate an index build."
-msgstr ""
-"Les tables de la base de données de SearchWP sont introuvables. Cela peut "
-"arriver si une migration du site n'a pas été terminée. Recréez les tables et "
-"relancez une construction de l'ndex."
-
-#: searchwp.php:2878
-msgid "Recreate Tables"
-msgstr "Recréer les tables"
-
-#: searchwp.php:2882
-msgid "Purge index"
-msgstr "Purger l'index"
-
-#: searchwp.php:2884
-msgid ""
-"If you would like to <strong>completely wipe out the index and start fresh</"
-"strong>, you can do so."
-msgstr ""
-"Si vous souhaitez <strong>effacer complètement l'index et recommencer</"
-"strong>, vous pouvez le faire."
-
-#: searchwp.php:2885
-msgid "Search statistics will be left as is"
-msgstr "Les statistiques de la recherche seront laissées dans l'état"
-
-#: searchwp.php:2889
-msgid "Purge Index"
-msgstr "Purger l'index"
-
-#: searchwp.php:2892
-msgid "Reset search stats"
-msgstr "Réinitialiser les statistiques de recherche"
-
-#: searchwp.php:2894
-msgid ""
-"If you would like to <strong>completely reset your Search Stats</strong>, "
-"you can do so."
-msgstr ""
-"Si vous souhaitez <strong>réinitialiser complètement vos statistiques de "
-"recherche</strong>, vous pouvez le faire."
-
-#: searchwp.php:2895
-msgid "Existing index will be left as is"
-msgstr "L'index existant restera tel qu'il est"
-
-#: searchwp.php:2899
-msgid "Reset Stats"
-msgstr "Réinitialiser les stats"
-
-#: searchwp.php:2902
-msgid "Restore conflict notifications"
-msgstr "Restaurer les notifications de conflit"
-
-#: searchwp.php:2904
-msgid ""
-"If you would like to reset all conflict notifications, you can restore them "
-"all at once."
-msgstr ""
-"Si vous souhaitez réinitialiser toutes les notifications de conflit, vous "
-"pouvez les restaurer en une seule fois."
-
-#: searchwp.php:2908
-msgid "Restore Conflict Notices"
-msgstr "Restaurer les notifications de conflit"
-
-#: searchwp.php:2913
-msgid "Disable the indexer. It will pick up where it left off when re-enabled."
-msgstr ""
-"Désactiver l'indexeur. Il repartira d'où il s'est arrêtée quand il sera ré-"
-"activé."
-
-#: searchwp.php:2917
-msgid "Toggle Indexer"
-msgstr "Désactiver l'indexeur"
-
-#: searchwp.php:2920 searchwp.php:2926
-msgid "Wake Up Indexer"
-msgstr "Réveiller l'indexeur"
-
-#: searchwp.php:2922
-msgid "If you believe the indexer has stalled, you can try to wake it up."
-msgstr ""
-"Si vous pensez que l'indexeur est au point mort, vous pouvez essayer de le "
-"réveiller."
-
-#: searchwp.php:2930
-msgid "Remote Debugging"
-msgstr "Débogage à distance"
-
-#: searchwp.php:2930
-msgid "REQUIRES that this install to be publicly accessible"
-msgstr "NECESSITE que cette installation soit publiquement accessible"
-
-#: searchwp.php:2932
-msgid ""
-"To better assist with support requests, SearchWP facilitates remote "
-"debugging."
-msgstr ""
-"Pour faciliter les demandes de support, SearchWP utilise le débogage à "
-"distance."
-
-#: searchwp.php:2936
-msgid "Toggle Remote Debugging"
-msgstr "Basculer en mode débogage à distance"
-
-#: searchwp.php:2940
-msgid "Nuke on Delete"
-msgstr "Nuker à la suppression"
-
-#: searchwp.php:2940
-msgid ""
-"Completely remove all traces of SearchWP when deleted via WordPress admin"
-msgstr ""
-"Retirer toute trace de SearchWP lorsque l'extension est supprimée via "
-"l'admin de WordPress"
-
-#: searchwp.php:2943
-msgid ""
-"SearchWP can completely remove all traces of itself when you choose to "
-"Delete it using the Plugin menu."
-msgstr ""
-"L'extension SearchWP peut complètement retirer toute trace d'elle-même "
-"lorsque vous choisissez de la supprimer via le menu Extension."
-
-#: searchwp.php:2944
-msgid "Enable Nuke on Delete"
-msgstr "Activer le Nuke lors de la suppression"
-
-#: searchwp.php:2946
-msgid ""
-"SearchWP has been configured to completely remove all traces of itself when "
-"you choose to Delete it using the Plugin menu."
-msgstr ""
-"SearchWP a été configurée pour retirer complètement toute trace d'elle même "
-"lorsque vous choisissez de la supprimer en utilisant le menu Extension."
-
-#: searchwp.php:2947
-msgid "Disable Nuke on Delete"
-msgstr "Désactiver le Nuke lors de la suppression"
-
-#: searchwp.php:2960
-msgid "Are you SURE you want to delete the entire SearchWP index?"
-msgstr ""
-"Êtes-vous sûr de vouloir supprimer l&#39;ensemble de l'index de SearchWP ?"
-
-#: searchwp.php:2961 searchwp.php:2967
-msgid "Are you completely sure? THIS CAN NOT BE UNDONE!"
-msgstr ""
-"Êtes-vous tout à fait sûr ? CETTE ACTION NE PEUT &Egrave;TRE ANNUL&Eacute;E !"
-
-#: searchwp.php:2966
-msgid "Are you SURE you want to completely reset your Search Stats?"
-msgstr ""
-"Êtes-vous sûr de vouloir complètement réinitialiser les stats de vos "
-"recherches ?"
-
-#: searchwp.php:2978
-msgid "System Information"
-msgstr "Informations système"
-
-#: searchwp.php:2980
-#, php-format
-msgid ""
-"When submitting this information to support staff it will also be helpful if "
-"you can create a <a href=\"%s\">Gist</a> of your search results template "
-"which is found here:"
-msgstr ""
-"Lors de l'envoi de ces informations au support, il sera également utile si "
-"vous pouviez créer un <a href=\"%s\">Gist</a> des résultats de recherche qui "
-"se trouvent ici:"
-
-#: searchwp.php:2982
-#, php-format
-msgid ""
-"Please provide this information (ideally as a link to a <a href=\"%s\">Gist</"
-"a>) when requested by support staff"
-msgstr ""
-"Veuillez fournir ces informations (idéalement sous forme de lien à un <a "
-"href=\"%s\">Gist</a> ) si demandé par l'équipe du support."
-
-#: searchwp.php:3054
+#: searchwp.php:2564 searchwp.php:2612
 msgid "SearchWP Alternate Indexer"
 msgstr "Indexeur SearchWP alternatif "
 
-#: searchwp.php:3057
+#: searchwp.php:2566
 msgid "Current progress:"
 msgstr "Progression actuelle :"
 
-#: searchwp.php:3058
+#: searchwp.php:2567
 msgid ""
 "If the percentage is not increasing it <strong>does not necessarily mean</"
 "strong> there is a problem. SearchWP takes multiple passes when indexing, "
@@ -921,15 +992,15 @@ msgstr ""
 "multiples passes lors de l&#39;indexation, veuillez-lui laisser suffisamment "
 "de temps pour que l&#39;indexeur s'exécute."
 
-#: searchwp.php:3060
+#: searchwp.php:2570
 msgid "Triggering next index chunk, please wait..."
 msgstr "Déclenchement du morceau suivant de l&#39;index, veuillez patienter..."
 
-#: searchwp.php:3077
+#: searchwp.php:2591
 msgid "Index built!"
 msgstr "Index créé !"
 
-#: searchwp.php:3089
+#: searchwp.php:2613
 #, php-format
 msgid ""
 "There are <strong>%d</strong> entries left to index. <strong>YOU MUST LEAVE "
@@ -939,119 +1010,36 @@ msgstr ""
 "LAISSER CETTE FENÊTRE DE VOTRE NAVIGATEUR OUVERTE</strong> lors de l&#39;"
 "indexation."
 
-#: searchwp.php:3094
-msgid "Trigger Indexer"
-msgstr "Déclencher l'indexeur"
-
-#: searchwp.php:3132
-msgid "SearchWP"
-msgstr "SearchWP"
-
-#: searchwp.php:3176
-msgid "Indexing is"
-msgstr "L'indexation est"
-
-#: searchwp.php:3177
-msgid "almost"
-msgstr "presque"
-
-#: searchwp.php:3177
-msgid "complete"
-msgstr "terminé à"
-
-#: searchwp.php:3181
-msgid ""
-"This process is running in the background. You can leave this page and the "
-"index will continue to be built until completion."
-msgstr ""
-"Ce processus est en cours d&#39;exécution en arrière-plan. Vous pouvez "
-"quitter cette page et l&#39;indexation continuerez à se construire "
-"entièrement."
-
-#: searchwp.php:3186
-#, php-format
-msgid ""
-"The indexer has been <strong>temporarily scaled back</strong> to reduce "
-"server load. This is monitored automatically. <a href=\"%s\">More "
-"information &raquo;</a>"
-msgstr ""
-"L&#39;indexeur a été <strong>temporairement ralenti</strong> pour ne pas "
-"surcharger le serveur. Cela est contrôlé automatiquement. <a href=\"%s"
-"\">Pour plus d&#39;informations  &raquo;</a>"
-
-#: searchwp.php:3213
-#, php-format
-msgid ""
-"The SearchWP indexer runs as fast as it can without overloading your server; "
-"there are filters to customize it's aggressiveness. <a href=\"%s\">Find out "
-"more &raquo;</a> <a class=\"swp-dismiss\" href=\"%s\">Dismiss</a>"
+#: searchwp.php:2614
+msgid "This action builds the initial index and only needs to be run once."
 msgstr ""
 
-#: searchwp.php:3226 searchwp.php:3258 searchwp.php:3301
-msgid "Manage License"
-msgstr "Gérer la licence"
-
-#: searchwp.php:3234
-msgid "Extensions"
-msgstr "Extensions"
-
-#: searchwp.php:3267
-msgid "Initial index has been built"
-msgstr "L'index de base à été construit"
-
-#: searchwp.php:3301
-msgid ""
-"In order to receive updates and support, you must have an active license."
+#: searchwp.php:2619
+msgid "Build Initial Index"
 msgstr ""
-"Afin de recevoir les mises à jour et avoir accès au support, vous devez "
-"avoir une licence activée."
 
-#: searchwp.php:3301 searchwp.php:3330
-msgid "Dismiss"
-msgstr "Fermer"
-
-#: searchwp.php:3330
-#, php-format
-msgid ""
-"Your server is running MySQL version %1$s which may prevent search results "
-"from appearing due to <a href=\"http://bugs.mysql.com/bug.php?id=41156\">bug "
-"41156</a>. Please update MySQL to a more recent version (at least 5.2)."
-msgstr ""
-"Votre serveur fonctionne avec MySQL en version%1$s ce qui peut empêcher à "
-"certains résultats de la recherche d&#39;apparaître en raison du <a href="
-"\"http://bugs.mysql.com/bug.php?id=41156\">bogue 41156</a>. Veuillez mettre "
-"à jour MySQL en une version plus récente (au moins en v.5.2)."
-
-#: searchwp.php:3347
-msgid "Settings imported"
-msgstr "Réglages importés"
-
-#: searchwp.php:3375 templates/tmpl.engine.config.php:282
-msgid "Any"
-msgstr "Tout"
-
-#: searchwp.php:3480
+#: searchwp.php:2759
 msgid "Invalid settings."
 msgstr "Réglages non valides."
 
-#: searchwp.php:3632
+#: searchwp.php:2904
 msgid "SearchWP Frequent (Every five minutes until initial index is built)"
 msgstr ""
 "Fréquence de SearchWP (toutes les cinq minutes jusqu&#39;à ce que l'index de "
 "base soit construit)"
 
-#: searchwp.php:4145
+#: searchwp.php:3407
 #, php-format
 msgid ""
 "SearchWP has been activated and the index is now being built. <a href=\"%s"
 "\">View progress and settings</a>"
 msgstr ""
 
-#: searchwp.php:4164
+#: searchwp.php:3426
 msgid "SearchWP File Content"
 msgstr "Contenu du fichier SearchWP "
 
-#: searchwp.php:4232
+#: searchwp.php:3494
 msgid ""
 "The content below will be indexed for this file. If you are experiencing "
 "unexpected search results, ensure accuracy here."
@@ -1059,30 +1047,30 @@ msgstr ""
 "Le contenu ci-dessous sera indexé pour ce fichier. Si vous rencontrez des "
 "résultats de recherche inattendus, vérifier leur exactitude ici."
 
-#: searchwp.php:4243
+#: searchwp.php:3507
 msgid ""
 "Only plain text files, PDFs, and office documents are supported at this time."
 msgstr ""
 "Uniquement les fichiers au format texte, PDFs, et documents office sont pris "
 "en charge pour le moment."
 
-#: searchwp.php:4257
+#: searchwp.php:3521
 msgid "Indexed PDF Metadata"
 msgstr "Métadonnées PDF indéxées"
 
-#: searchwp.php:4261
+#: searchwp.php:3525
 msgid "Key"
 msgstr "Clé"
 
-#: searchwp.php:4262
+#: searchwp.php:3526
 msgid "Value"
 msgstr "Valeur"
 
-#: templates/tmpl.engine.config.php:131
+#: templates/tmpl.engine.config.php:132
 msgid "Media"
 msgstr "Média"
 
-#: templates/tmpl.engine.config.php:145
+#: templates/tmpl.engine.config.php:146
 msgid ""
 "These values add weight to results.<br /><br />A weight of 1 is neutral<br /"
 ">Between 0 &amp; 1 lowers result weight<br />Over 1 increases result "
@@ -1094,59 +1082,59 @@ msgstr ""
 "augmente le poids du résultat<br />Zéro omet le résultat<br /> <span class="
 "\"searchwp-weight-warning\">-1 Exclut les correspondances</span>"
 
-#: templates/tmpl.engine.config.php:147
+#: templates/tmpl.engine.config.php:148
 msgid "Applicable entries"
 msgstr "Entrées en vigueur"
 
-#: templates/tmpl.engine.config.php:156
+#: templates/tmpl.engine.config.php:157
 msgid "Content Type"
 msgstr "Type de contenu"
 
-#: templates/tmpl.engine.config.php:157
+#: templates/tmpl.engine.config.php:158
 msgid "Weight"
 msgstr "Poids"
 
-#: templates/tmpl.engine.config.php:170
+#: templates/tmpl.engine.config.php:171
 msgid "Content"
 msgstr "Contenu"
 
-#: templates/tmpl.engine.config.php:170
+#: templates/tmpl.engine.config.php:171
 msgid "Description"
 msgstr "Description"
 
-#: templates/tmpl.engine.config.php:176
+#: templates/tmpl.engine.config.php:177
 msgid "Slug"
 msgstr "Identifiant"
 
-#: templates/tmpl.engine.config.php:204
+#: templates/tmpl.engine.config.php:205
 msgid "Excerpt"
 msgstr "Extrait"
 
-#: templates/tmpl.engine.config.php:204
+#: templates/tmpl.engine.config.php:205
 msgid "Caption"
 msgstr "Légende"
 
-#: templates/tmpl.engine.config.php:211
+#: templates/tmpl.engine.config.php:212
 msgid "Comments"
 msgstr "Commentaires"
 
-#: templates/tmpl.engine.config.php:236
+#: templates/tmpl.engine.config.php:237
 msgid "Document (PDF) content (when applicable)"
 msgstr "Contenu de document (PDF) (lorsque applicable)"
 
-#: templates/tmpl.engine.config.php:261
+#: templates/tmpl.engine.config.php:262
 msgid "PDF metadata (when applicable)"
 msgstr "Métadonnées PDF (lorsque applicable)"
 
-#: templates/tmpl.engine.config.php:272
+#: templates/tmpl.engine.config.php:273
 msgid "Custom Fields"
 msgstr "Champs personnalisés"
 
-#: templates/tmpl.engine.config.php:300
+#: templates/tmpl.engine.config.php:305
 msgid "Add Custom Field"
 msgstr "Ajouter un champ personnalisé"
 
-#: templates/tmpl.engine.config.php:303
+#: templates/tmpl.engine.config.php:308
 msgid ""
 "Include Custom Field data in search results. Meta values do not need to be "
 "plain strings, available keywords in metadata are extracted and indexed."
@@ -1155,78 +1143,74 @@ msgstr ""
 "recherche. Les valeurs des méta ne doivent pas être des chaînes simples, les "
 "mots-clés disponibles dans les métadonnées sont extraits et indexés."
 
-#: templates/tmpl.engine.config.php:317
+#: templates/tmpl.engine.config.php:322
 msgid "Exclude IDs: "
 msgstr "IDs exclues :"
 
-#: templates/tmpl.engine.config.php:331
+#: templates/tmpl.engine.config.php:329
 msgid "Comma separated IDs"
 msgstr "IDs séparées par des virgules"
 
-#: templates/tmpl.engine.config.php:333
+#: templates/tmpl.engine.config.php:331
 msgid ""
 "Comma separated post IDs. Will be excluded entirely, even if attributed to."
 msgstr ""
 "IDs des articles séparées par des virgules. Seront entièrement exclus, même "
 "s'ils sont attribués."
 
-#: templates/tmpl.engine.config.php:350
+#: templates/tmpl.engine.config.php:348
 #, php-format
 msgid "Exclude %s:"
 msgstr "Exclure %s :"
 
-#: templates/tmpl.engine.config.php:361 templates/tmpl.engine.config.php:399
+#: templates/tmpl.engine.config.php:359 templates/tmpl.engine.config.php:397
 msgid "Leave blank to omit"
 msgstr "Laissez vide pour passer"
 
-#: templates/tmpl.engine.config.php:369
+#: templates/tmpl.engine.config.php:367
 msgid "Entries with these will be excluded entirely, even if attributed to."
 msgstr ""
 "Les entrées saisies ici seront totalement excluses, même si elles sont "
 "attribuées."
 
-#: templates/tmpl.engine.config.php:379
+#: templates/tmpl.engine.config.php:377
 msgid "Limit File Type(s) to"
 msgstr "Limiter les types de fichier à"
 
-#: templates/tmpl.engine.config.php:386
+#: templates/tmpl.engine.config.php:384
 msgid "All Documents"
 msgstr "Tous les documents"
 
-#: templates/tmpl.engine.config.php:387
+#: templates/tmpl.engine.config.php:385
 msgid "PDFs"
 msgstr "PDFs"
 
-#: templates/tmpl.engine.config.php:388
+#: templates/tmpl.engine.config.php:386
 msgid "Plain Text"
 msgstr "Texte brut"
 
-#: templates/tmpl.engine.config.php:389
+#: templates/tmpl.engine.config.php:387
 msgid "Images"
 msgstr "Images"
 
-#: templates/tmpl.engine.config.php:390
+#: templates/tmpl.engine.config.php:388
 msgid "Video"
 msgstr "Vidéo"
 
-#: templates/tmpl.engine.config.php:391
+#: templates/tmpl.engine.config.php:389
 msgid "Audio"
 msgstr "Audio"
 
-#: templates/tmpl.engine.config.php:407
+#: templates/tmpl.engine.config.php:405
 msgid "If populated, Media results will be limited to these Media types"
 msgstr ""
 "Si rempli, les résultats des médias seront limités à ces types de médias."
 
-#: templates/tmpl.engine.config.php:414
+#: templates/tmpl.engine.config.php:412
 msgid "Attribute post parent"
 msgstr "Attribut de l'article parent"
 
-#: templates/tmpl.engine.config.php:418 templates/tmpl.engine.config.php:444
-msgid "Enabled"
-msgstr "Activé"
-
-#: templates/tmpl.engine.config.php:421
+#: templates/tmpl.engine.config.php:419
 msgid ""
 "When enabled, search weights will be applied to the post parent, not the "
 "post GUID"
@@ -1234,15 +1218,15 @@ msgstr ""
 "Si activé, le poids de la recherche sera appliqué à l'article parent, pas à "
 "l'article GUID"
 
-#: templates/tmpl.engine.config.php:428
+#: templates/tmpl.engine.config.php:426
 msgid "Attribute search results to "
 msgstr "Attribuer les résultats de recherche à "
 
-#: templates/tmpl.engine.config.php:431
+#: templates/tmpl.engine.config.php:429
 msgid "Single post ID"
 msgstr "ID d'article unique"
 
-#: templates/tmpl.engine.config.php:434
+#: templates/tmpl.engine.config.php:432
 msgid ""
 "<strong>Expects single post ID</strong><br/>If permalinks for this post type "
 "should not be included in search results, you can have it's search weight "
@@ -1252,26 +1236,22 @@ msgstr ""
 "ce type d'article ne doivent pas être inclus dans les résultats des "
 "recherches, vous pouvez modifier son poids de recherche."
 
-#: templates/tmpl.engine.config.php:440
+#: templates/tmpl.engine.config.php:438
 msgid "Use keyword stem"
 msgstr "Utiliser la racine du mot-clé"
 
-#: templates/tmpl.engine.config.php:447
+#: templates/tmpl.engine.config.php:445
 msgid ""
 "<em>May increase search latency</em><br />For example: when enabled, "
-"searches for <strong>run</strong> and <strong>running</strong> will generate "
-"the same results. When disabled, results may be different."
+"searches for <strong>fishing</strong> and <strong>fished</strong> will "
+"generate the same results. When disabled, results may be different."
 msgstr ""
-"<em>Cela peut augmenter la latence de la recherche</em><br>Par exemple : "
-"lorsque activé, les recherches pour <strong>courir</strong> et "
-"<strong>course</strong> produiront les mêmes résultats. Lorsque désactivé, "
-"les résultats peuvent être différents."
 
-#: templates/tmpl.supplemental.config.php:34
+#: templates/tmpl.supplemental.config.php:35
 msgid "Remove"
 msgstr "Supprimer"
 
-#: vendor/EDD_SL_Plugin_Updater.php:177
+#: vendor/EDD_SL_Plugin_Updater.php:176
 #, php-format
 msgid ""
 "There is a new version of %1$s available. <a target=\"_blank\" class="
@@ -1280,7 +1260,7 @@ msgstr ""
 "Une nouvelle version de %1$s est disponible. <a target=\"_blank\" class="
 "\"thickbox\" href=\"%2$s\">Afficher les détails de la version %3$s</a>."
 
-#: vendor/EDD_SL_Plugin_Updater.php:184
+#: vendor/EDD_SL_Plugin_Updater.php:183
 #, php-format
 msgid ""
 "There is a new version of %1$s available. <a target=\"_blank\" class="
@@ -1291,15 +1271,208 @@ msgstr ""
 "\"thickbox\" href=\"%2$s\">Afficher les détails de la version %3$s</a> ou <a "
 "href=\"%4$s\">mettre à jour automatiquement</a>."
 
-#: vendor/EDD_SL_Plugin_Updater.php:324
+#: vendor/EDD_SL_Plugin_Updater.php:323
 msgid "You do not have permission to install plugin updates"
 msgstr ""
 "Vous n&rsquo;avez pas les droits suffisants pour installer les mises à jour "
 "de l'extension."
 
-#: vendor/EDD_SL_Plugin_Updater.php:324
+#: vendor/EDD_SL_Plugin_Updater.php:323
 msgid "Error"
 msgstr "Erreur"
+
+#~ msgid "SearchWP Support"
+#~ msgstr "Support de SearchWP"
+
+#~ msgid ""
+#~ "If you cannot activate your license please see <a href=\"%s\">this KB "
+#~ "article</a>"
+#~ msgstr ""
+#~ "Si vous ne pouvez pas activer votre licence veuillez vous référer à <a "
+#~ "href=\"%s\">cet article</a>"
+
+#~ msgid ""
+#~ "If you are having difficulty activating your license or you believe you "
+#~ "are receiving this notice in error, please <strong>include your license "
+#~ "key</strong> in an email to"
+#~ msgstr ""
+#~ "Si vous avez des difficultés pour activer votre licence ou pensez que "
+#~ "vous recevez cette notification par erreur, veuillez <strong>inclure "
+#~ "votre clé de licence</strong> dans un message à"
+
+#~ msgid "Create SearchWP Support Ticket"
+#~ msgstr "Créer un ticket de support SearchWP"
+
+#~ msgid "Support"
+#~ msgstr "Support"
+
+#~ msgid "License Key"
+#~ msgstr "Clé de licence"
+
+#~ msgid "Your license key was included in your purchase receipt."
+#~ msgstr "Votre clé de licence est incluse dans votre reçu d'achat."
+
+#~ msgid "Enter your license key"
+#~ msgstr "Entrez votre clé de licence"
+
+#~ msgid "Deactivate License"
+#~ msgstr "Désactiver la licence"
+
+#~ msgid "SearchWP Advanced Settings"
+#~ msgstr "Réglages avancés de SearchWP"
+
+#~ msgid ""
+#~ "Index purged. <strong>The index will not be rebuilt until you initiate a "
+#~ "reindex</strong>."
+#~ msgstr ""
+#~ "L'ndex à été purgé. <strong>L'index ne sera pas reconstruit jusqu'à ce "
+#~ "que vous relanciez une réindexation</strong>."
+
+#~ msgid "Initiate reindex"
+#~ msgstr "Relancer la réindexation"
+
+#~ msgid "Search Stats have been reset"
+#~ msgstr "Les statistiques de recherches ont été réinitialisées"
+
+#~ msgid "Attempted to wake up the indexer."
+#~ msgstr "Tentative de réveil de l'indexeur."
+
+#~ msgid "View indexer progress"
+#~ msgstr "Afficher la progression de l'indexeur"
+
+#~ msgid "Remote Debugging is <strong>enabled</strong> with key"
+#~ msgstr "Le débogage à distance est <strong>activé</strong> avec la clé"
+
+#~ msgid "Nuke on Delete is <strong>enabled</strong>"
+#~ msgstr "Le nuke à la suppression est <strong>activé</strong>"
+
+#~ msgid "Database tables missing! Recreate them below."
+#~ msgstr ""
+#~ "Les tables de la base de données sont absentes ! Recréez-les ci-dessous.."
+
+#~ msgid "Database tables created!"
+#~ msgstr "Tables de la base de données créées !"
+
+#~ msgid "Back to Settings"
+#~ msgstr "Retour aux réglages"
+
+#~ msgid "Recreate database tables"
+#~ msgstr "Recréer les tables de la base de données"
+
+#~ msgid "Recreate Tables"
+#~ msgstr "Recréer les tables"
+
+#~ msgid "Purge index"
+#~ msgstr "Purger l'index"
+
+#~ msgid ""
+#~ "If you would like to <strong>completely wipe out the index and start "
+#~ "fresh</strong>, you can do so."
+#~ msgstr ""
+#~ "Si vous souhaitez <strong>effacer complètement l'index et recommencer</"
+#~ "strong>, vous pouvez le faire."
+
+#~ msgid "Search statistics will be left as is"
+#~ msgstr "Les statistiques de la recherche seront laissées dans l'état"
+
+#~ msgid "Purge Index"
+#~ msgstr "Purger l'index"
+
+#~ msgid "Reset search stats"
+#~ msgstr "Réinitialiser les statistiques de recherche"
+
+#~ msgid ""
+#~ "If you would like to <strong>completely reset your Search Stats</strong>, "
+#~ "you can do so."
+#~ msgstr ""
+#~ "Si vous souhaitez <strong>réinitialiser complètement vos statistiques de "
+#~ "recherche</strong>, vous pouvez le faire."
+
+#~ msgid "Existing index will be left as is"
+#~ msgstr "L'index existant restera tel qu'il est"
+
+#~ msgid "Reset Stats"
+#~ msgstr "Réinitialiser les stats"
+
+#~ msgid "Restore conflict notifications"
+#~ msgstr "Restaurer les notifications de conflit"
+
+#~ msgid ""
+#~ "If you would like to reset all conflict notifications, you can restore "
+#~ "them all at once."
+#~ msgstr ""
+#~ "Si vous souhaitez réinitialiser toutes les notifications de conflit, vous "
+#~ "pouvez les restaurer en une seule fois."
+
+#~ msgid ""
+#~ "Disable the indexer. It will pick up where it left off when re-enabled."
+#~ msgstr ""
+#~ "Désactiver l'indexeur. Il repartira d'où il s'est arrêtée quand il sera "
+#~ "ré-activé."
+
+#~ msgid "If you believe the indexer has stalled, you can try to wake it up."
+#~ msgstr ""
+#~ "Si vous pensez que l'indexeur est au point mort, vous pouvez essayer de "
+#~ "le réveiller."
+
+#~ msgid "Remote Debugging"
+#~ msgstr "Débogage à distance"
+
+#~ msgid "REQUIRES that this install to be publicly accessible"
+#~ msgstr "NECESSITE que cette installation soit publiquement accessible"
+
+#~ msgid ""
+#~ "To better assist with support requests, SearchWP facilitates remote "
+#~ "debugging."
+#~ msgstr ""
+#~ "Pour faciliter les demandes de support, SearchWP utilise le débogage à "
+#~ "distance."
+
+#~ msgid "Toggle Remote Debugging"
+#~ msgstr "Basculer en mode débogage à distance"
+
+#~ msgid ""
+#~ "Completely remove all traces of SearchWP when deleted via WordPress admin"
+#~ msgstr ""
+#~ "Retirer toute trace de SearchWP lorsque l'extension est supprimée via "
+#~ "l'admin de WordPress"
+
+#~ msgid ""
+#~ "SearchWP can completely remove all traces of itself when you choose to "
+#~ "Delete it using the Plugin menu."
+#~ msgstr ""
+#~ "L'extension SearchWP peut complètement retirer toute trace d'elle-même "
+#~ "lorsque vous choisissez de la supprimer via le menu Extension."
+
+#~ msgid "Enable Nuke on Delete"
+#~ msgstr "Activer le Nuke lors de la suppression"
+
+#~ msgid ""
+#~ "SearchWP has been configured to completely remove all traces of itself "
+#~ "when you choose to Delete it using the Plugin menu."
+#~ msgstr ""
+#~ "SearchWP a été configurée pour retirer complètement toute trace d'elle "
+#~ "même lorsque vous choisissez de la supprimer en utilisant le menu "
+#~ "Extension."
+
+#~ msgid "Disable Nuke on Delete"
+#~ msgstr "Désactiver le Nuke lors de la suppression"
+
+#~ msgid "Trigger Indexer"
+#~ msgstr "Déclencher l'indexeur"
+
+#~ msgid "Initial index has been built"
+#~ msgstr "L'index de base à été construit"
+
+#~ msgid ""
+#~ "<em>May increase search latency</em><br />For example: when enabled, "
+#~ "searches for <strong>run</strong> and <strong>running</strong> will "
+#~ "generate the same results. When disabled, results may be different."
+#~ msgstr ""
+#~ "<em>Cela peut augmenter la latence de la recherche</em><br>Par exemple : "
+#~ "lorsque activé, les recherches pour <strong>courir</strong> et "
+#~ "<strong>course</strong> produiront les mêmes résultats. Lorsque "
+#~ "désactivé, les résultats peuvent être différents."
 
 #~ msgid ""
 #~ "Conflict notifications have been restored, they will be visible on the <a "

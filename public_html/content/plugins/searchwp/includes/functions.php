@@ -101,18 +101,18 @@ function searchwp_get_setting( $setting, $group = false ) {
 
 	// get the setting
 	if ( false !== $group ) {
-		if ( ! isset( $searchwp->settings[$group][$setting] ) ) {
+		if ( ! isset( $searchwp->settings[ $group ][ $setting ] ) ) {
 			searchwp_set_setting( $setting, false, $group );
 			return false;
 		} else {
-			return $searchwp->settings[$group][$setting];
+			return $searchwp->settings[ $group ][ $setting ];
 		}
 	} else {
-		if ( ! isset( $searchwp->settings[$setting] ) ) {
+		if ( ! isset( $searchwp->settings[ $setting ] ) ) {
 			searchwp_set_setting( $setting, false );
 			return false;
 		} else {
-			return $searchwp->settings[$setting];
+			return $searchwp->settings[ $setting ];
 		}
 	}
 }
@@ -165,7 +165,7 @@ function searchwp_set_setting( $setting, $value, $group = false ) {
 	);
 
 	// check the setting name to see whether we need to retrieve a searchwp setting or an indexer setting
-	if( in_array( $setting, $indexer_names ) || in_array( $group, $indexer_names ) ) {
+	if ( in_array( $setting, $indexer_names ) || in_array( $group, $indexer_names ) ) {
 
 		// it's an indexer setting
 		$indexer_settings = get_option( SEARCHWP_PREFIX . 'indexer' );
@@ -173,13 +173,17 @@ function searchwp_set_setting( $setting, $value, $group = false ) {
 		// set the setting locally and in the singleton
 		if ( false !== $group ) {
 			// make sure the group exists
-			if( ! isset( $indexer_settings[$group] ) ) { $indexer_settings[$group] = array(); }
-			if( ! isset( $searchwp->settings[$group] ) ) { $searchwp->settings[$group] = array(); }
-			$indexer_settings[$group][$setting] = $value;   // database record
-			$searchwp->settings[$group][$setting] = $value; // singleton
+			if ( ! isset( $indexer_settings[ $group ] ) ) {
+				$indexer_settings[ $group ] = array();
+			}
+			if ( ! isset( $searchwp->settings[ $group ] ) ) {
+				$searchwp->settings[ $group ] = array();
+			}
+			$indexer_settings[ $group ][ $setting ] = $value;   // database record
+			$searchwp->settings[ $group ][ $setting ] = $value; // singleton
 		} else {
-			$indexer_settings[$setting] = $value;   // database record
-			$searchwp->settings[$setting] = $value; // singleton
+			$indexer_settings[ $setting ] = $value;   // database record
+			$searchwp->settings[ $setting ] = $value; // singleton
 		}
 
 		// update the database record
@@ -193,13 +197,17 @@ function searchwp_set_setting( $setting, $value, $group = false ) {
 		// set the setting locally and in the singleton
 		if ( false !== $group ) {
 			// make sure the group exists
-			if( ! isset( $searchwp_settings[$group] ) ) { $searchwp_settings[$group] = array(); }
-			if( ! isset( $searchwp->settings[$group] ) ) { $searchwp->settings[$group] = array(); }
-			$searchwp_settings[$group][$setting] = $value;  // database record
-			$searchwp->settings[$group][$setting] = $value; // singleton
+			if ( ! isset( $searchwp_settings[ $group ] ) ) {
+				$searchwp_settings[ $group ] = array();
+			}
+			if ( ! isset( $searchwp->settings[ $group ] ) ) {
+				$searchwp->settings[ $group ] = array();
+			}
+			$searchwp_settings[ $group ][ $setting ] = $value;  // database record
+			$searchwp->settings[ $group ][ $setting ] = $value; // singleton
 		} else {
-			$searchwp_settings[$setting] = $value;   // database record
-			$searchwp->settings[$setting] = $value; // singleton
+			$searchwp_settings[ $setting ] = $value;   // database record
+			$searchwp->settings[ $setting ] = $value; // singleton
 		}
 
 		// update the database record
@@ -216,18 +224,18 @@ function searchwp_set_setting( $setting, $value, $group = false ) {
  *
  * @since 1.8
  */
-if( ! function_exists( 'swp_dismiss_filter_conflict' ) ) {
+if ( ! function_exists( 'swp_dismiss_filter_conflict' ) ) {
 	function swp_dismiss_filter_conflict() {
 		// verify the request
 		if ( isset( $_REQUEST['swphash'] ) && isset( $_REQUEST['swpnonce'] ) && isset( $_REQUEST['swpfilter'] ) ) {
-			if( wp_verify_nonce( $_REQUEST['swpnonce'], 'swpconflict_' . $_REQUEST['swpfilter'] ) ) {
+			if ( wp_verify_nonce( $_REQUEST['swpnonce'], 'swpconflict_' . $_REQUEST['swpfilter'] ) ) {
 
 				// grab our existing dismissals and make sure our array key is set up
 				$existing_dismissals = searchwp_get_setting( 'dismissed' );
-				if( ! is_array( $existing_dismissals ) ) {
+				if ( ! is_array( $existing_dismissals ) ) {
 					$existing_dismissals = array();
 				}
-				if( ! isset( $existing_dismissals['filter_conflicts'] ) ) {
+				if ( ! isset( $existing_dismissals['filter_conflicts'] ) ) {
 					$existing_dismissals['filter_conflicts'] = array();
 				}
 
@@ -246,7 +254,7 @@ if( ! function_exists( 'swp_dismiss_filter_conflict' ) ) {
 /**
  * Reset all the flags related to an active indexer
  */
-if( ! function_exists( 'searchwp_wake_up_indexer' ) ) {
+if ( ! function_exists( 'searchwp_wake_up_indexer' ) ) {
 	function searchwp_wake_up_indexer() {
 		// reset all the flags used when indexing
 		searchwp_set_setting( 'stats', array() );
@@ -254,6 +262,7 @@ if( ! function_exists( 'searchwp_wake_up_indexer' ) ) {
 		searchwp_update_option( 'busy', false );
 		searchwp_update_option( 'doing_delta', false );
 		searchwp_update_option( 'waiting', false );
+		searchwp_update_option( 'delta_attempts', 0 );
 	}
 }
 
@@ -263,7 +272,7 @@ if( ! function_exists( 'searchwp_wake_up_indexer' ) ) {
  *
  * @since 1.0
  */
-if( ! function_exists( 'searchwp_get_indexer_progress' ) ) {
+if ( ! function_exists( 'searchwp_get_indexer_progress' ) ) {
 	function searchwp_get_indexer_progress() {
 		$progress   = searchwp_get_option( 'progress' );
 		$waiting    = searchwp_get_option( 'waiting' );
@@ -287,8 +296,8 @@ if ( ! function_exists( 'searchwp_check_for_stalled_indexer' ) ) {
 		$running        = searchwp_get_setting( 'running' );
 		$doing_delta    = searchwp_get_option( 'doing_delta' );
 		$busy           = searchwp_get_option( 'busy' );
-		if( ! is_null( $last_activity ) && false !== $last_activity ) {
-			if(
+		if ( ! is_null( $last_activity ) && false !== $last_activity ) {
+			if (
 				( current_time( 'timestamp' ) > $last_activity + absint( $threshold ) )
 				&& ( $running || $doing_delta || $busy )
 				) {
@@ -304,7 +313,7 @@ if ( ! function_exists( 'searchwp_check_for_stalled_indexer' ) ) {
 			if ( ! empty( $purge_queue ) ) {
 				searchwp_wake_up_indexer();
 			} else {
-				if(
+				if (
 					( current_time( 'timestamp' ) > $last_activity + absint( $threshold ) )
 					&& ( $running || $doing_delta || $busy )
 				) {

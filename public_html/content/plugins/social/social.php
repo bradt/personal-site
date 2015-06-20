@@ -3,7 +3,7 @@
 Plugin Name: Social
 Plugin URI: http://mailchimp.com/social-plugin-for-wordpress/
 Description: Broadcast newly published posts and pull in discussions using integrations with Twitter and Facebook. Brought to you by <a href="http://mailchimp.com">MailChimp</a>.
-Version: 3.0
+Version: 3.1.1
 Author: Crowd Favorite
 Author URI: http://crowdfavorite.com/
 */
@@ -25,7 +25,7 @@ final class Social {
 	/**
 	 * @var  string  version number
 	 */
-	public static $version = '3.0';
+	public static $version = '3.1.1';
 
 	/**
 	 * @var  string  CRON lock directory.
@@ -1766,7 +1766,7 @@ final class Social {
 				'title' => __('Add Tweet by URL', 'social')
 					.'<form class="social-add-tweet" style="display: none;" method="get" action="'.esc_url(Social::wp39_nonce_url(admin_url('options-general.php?social_controller=import&social_action=from_url&social_service=twitter&post_id='.$current_object->ID), 'from_url')).'">
 						<input type="text" size="20" name="url" value="" autocomplete="off" />
-						<input type="submit" name="social-add-tweet-button" name="social-add-tweet-button" value="'.__('Add Tweet by URL', 'social').'" />
+						<input type="submit" name="social-add-tweet-button" value="'.__('Add Tweet by URL', 'social').'" />
 					</form>',
 				'href' => esc_url(get_edit_post_link($current_object->ID)),
 			));
