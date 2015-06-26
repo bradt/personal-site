@@ -16,3 +16,6 @@ public_html/content/plugins/wp-migrate-db-pro-tweaks/
 public_html/content/themes/bradtca/assets/.sass-cache/
 public_html/content/themes/bradtca/assets/node_modules
 public_html/content/plugins/grunt-livereload
+public_html/content/mu-plugins/allow-unsafe-urls.php
+public_html/content/mu-plugins/custom-debug-log-path.php
+
