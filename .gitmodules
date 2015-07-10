@@ -1,6 +1,3 @@
 [submodule "public_html/content/plugins/better-wp-varnish"]
 	path = public_html/content/plugins/better-wp-varnish
 	url = git@github.com:bradt/Better-WP-Varnish.git
-[submodule "public_html/content/plugins/twitter-tools"]
-	path = public_html/content/plugins/twitter-tools
-	url = git@github.com:bradt/wp-twitter-tools.git
