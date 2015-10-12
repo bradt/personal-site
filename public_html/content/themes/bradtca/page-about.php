@@ -31,8 +31,8 @@ get_header();
 		Eastern Europe.</p>
 
 		<p>I grew up in <a title="Photo: My Backyard"
-		href="http://dev.bradt.ca/photo-set/cape-breton/ol-backyard-cape-
-		breton-ns-2/">beautiful, rural Cape Breton, Canada</a>. But I love
+		href="<?php echo home_url( '/photo-set/cape-breton/ol-backyard-cape-breton-ns-2/' ); ?>">
+		beautiful, rural Cape Breton, Canada</a>. But I love
 		<strong>cities</strong>. I've lived in both Vancouver and Melbourne. They
 		truly are <a
 		href="http://en.wikipedia.org/wiki/World's_most_livable_cities">the
