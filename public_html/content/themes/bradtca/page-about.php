@@ -17,7 +17,7 @@ get_header();
 		a database migration plugin for WordPress.</p>
 
 		<p>Before that, I built web sites for a living. Working as an
-		independent web developer, I collaborated with creative agencies and
+		independent web developer, collaborating with creative agencies and
 		independent web designers. I did frontend and backend development,
 		working with SilverStripe CMS and WordPress. Check out my
 		<a href="/portfolio/">portfolio</a>	and
@@ -37,17 +37,17 @@ get_header();
 		truly are <a
 		href="http://en.wikipedia.org/wiki/World's_most_livable_cities">the
 		most liveable cities</a> on the planet. I miss them both. Today, my
-		wife Carolyn and our two sons call Truro, Canada home.</p>
+		wife Carolyn and our two sons call Nova Scotia, Canada home.</p>
 
-		<p>I love <strong>sports</strong>. I play rec league hockey in the
-		winter, tennis and <a
-		href="http://redcircus.brokenultimate.com">competitive ultimate
-		frisbee</a> in the summer.</p>
+		<p>I love <strong>sports</strong>. I play hockey, tennis, and
+		ultimate frisbee.</p>
 
 		<p>I've had a personal web site since 1996 but only started blogging
 		in 2004. This site is now mainly geared toward my professional career,
 		showcasing my work and publishing my original writings about the
-		business of building the web. I also share short thoughts on <a
+		business of building the web. Posts are few and far between here as I now
+		write mainly on <a href="https://deliciousbrains.com/author/bradt/">my
+		company blog</a>. I also share short thoughts on <a
 		href="http://twitter.com/bradt">Twitter</a> and
 		<a href="https://plus.google.com/103798016457548612622">Google+</a>
 		and post code to <a href="https://github.com/bradt">GitHub</a> and
