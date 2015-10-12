@@ -69,18 +69,18 @@
 	</section>
 
 	<?php if ( function_exists( 'tla_ads' ) ) : ?>
-	
+
 	<section class="sponsors">
 
 		<h1 class="section-title icon-default">Sponsors</h1>
-		
+
 		<?php tla_ads(); ?>
 
 	</section>
 
 	<?php endif; ?>
 
-	<?php 
+	<?php
 	$tweets = array();
 	$twitter_url = 'https://twitter.com/bradt';
 
@@ -103,7 +103,7 @@
 	?>
 
 	<section class="tweets">
-		
+
 		<h1 class="section-title"><span class="icon-twitter"></span> Latest Tweets</h1>
 
 		<ul>
@@ -121,7 +121,7 @@
 						<a href="<?php echo $twitter_url; ?>" class="real">Brad Touesnard</a>
 						<a href="<?php echo $twitter_url; ?>" class="username">@bradt</a>
 					</a>
-			
+
 					<p>
 					<?php
 					$content = $tweet->post_content;
@@ -155,57 +155,6 @@
 		</ul>
 
 		<p class="more"><a href="<?php echo $twitter_url; ?>">More Tweets &#9658;</a></p>
-
-	</section>
-
-	<?php endif; ?>
-
-	<?php
-	$r = new WP_Query( array(
-		'post_type' => 'attachment',
-		'post_status' => 'inherit',
-		'posts_per_page' => 5,
-		'meta_key' => 'date_taken',
-		'orderby' => 'meta_value_num',
-		'tax_query' => array( array(
-			'taxonomy' => 'photo_tag',
-			'field' => 'slug',
-			'terms' => 'handpicked'
-		) )
-	) );
-
-	if ( $r->have_posts() ) :
-	?>
-
-	<section class="photos">
-		
-		<h1 class="section-title icon-default">Photos</h1>
-		
-		<?php
-		while ( $r->have_posts() ) :
-			$r->the_post();
-
-			list ( $src, $w, $h ) = wp_get_attachment_image_src( get_the_ID(), 'large' );
-			$meta = wp_get_attachment_metadata( get_the_ID() );
-			$date_taken = gmdate( 'M j, Y', ( $meta['image_meta']['created_timestamp'] + ( get_option( 'gmt_offset' ) * 3600 ) ) );
-			?>
-
-			<figure>
-				<a href="<?php the_permalink(); ?>" style="background-image: url(<?php echo $src; ?>);">
-					<?php echo wp_get_attachment_image( get_the_ID(), 'large' ); ?>
-				</a>
-				<figcaption>
-					<h1><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h1>
-					<p class="date"><?php echo $date_taken; ?></p>
-				</figcaption>
-			</figure>
-
-			<?php
-		endwhile;
-		wp_reset_postdata();
-		?>
-
-		<p class="more"><a href="/photo-tag/handpicked/">More Photos &#9658;</a></p>
 
 	</section>
 
