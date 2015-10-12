@@ -11,9 +11,9 @@ get_header();
 	<div class="entry-content">
 
 		<p>I currently spend all my working time managing
-		<a style="white-space:nowrap;" href="http://deliciousbrains.com/?utm_source=bradt.ca&utm_medium=web&utm_content=deliciousbrainsinc&utm_campaign=bradtca-about-page">Delicious Brains Inc,</a>
+		<a style="white-space:nowrap;" href="http://deliciousbrains.com/">Delicious Brains Inc,</a>
 		a company I started in December 2012 to develop and sell
-		<a style="white-space:nowrap;" href="http://deliciousbrains.com/wp-migrate-db-pro/?utm_source=bradt.ca&utm_medium=web&utm_content=wpmdbpro&utm_campaign=bradtca-about-page">WP Migrate DB Pro</a>,
+		<a style="white-space:nowrap;" href="http://deliciousbrains.com/wp-migrate-db-pro/">WP Migrate DB Pro</a>,
 		a database migration plugin for WordPress.</p>
 
 		<p>Before that, I built web sites for a living. Working as an
