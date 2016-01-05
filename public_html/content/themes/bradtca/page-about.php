@@ -11,9 +11,9 @@ get_header();
 	<div class="entry-content">
 
 		<p>I currently spend all my working time managing
-		<a style="white-space:nowrap;" href="http://deliciousbrains.com/">Delicious Brains Inc,</a>
+		<a style="white-space:nowrap;" href="https://deliciousbrains.com/">Delicious Brains Inc,</a>
 		a company I started in December 2012 to develop and sell
-		<a style="white-space:nowrap;" href="http://deliciousbrains.com/wp-migrate-db-pro/">WP Migrate DB Pro</a>,
+		<a style="white-space:nowrap;" href="https://deliciousbrains.com/wp-migrate-db-pro/">WP Migrate DB Pro</a>,
 		a database migration plugin for WordPress.</p>
 
 		<p>Before that, I built web sites for a living. Working as an
@@ -21,7 +21,7 @@ get_header();
 		independent web designers. I did frontend and backend development,
 		working with SilverStripe CMS and WordPress. Check out my
 		<a href="/portfolio/">portfolio</a>	and
-		<a href="http://www.linkedin.com/in/bradt">LinkedIn profile</a> for more.</p>
+		<a href="https://www.linkedin.com/in/bradt">LinkedIn profile</a> for more.</p>
 
 		<p><img src="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/travel.jpg" alt="" /></p>
 
@@ -35,7 +35,7 @@ get_header();
 		beautiful, rural Cape Breton, Canada</a>. But I love
 		<strong>cities</strong>. I've lived in both Vancouver and Melbourne. They
 		truly are <a
-		href="http://en.wikipedia.org/wiki/World's_most_livable_cities">the
+		href="https://en.wikipedia.org/wiki/World's_most_livable_cities">the
 		most liveable cities</a> on the planet. I miss them both. Today, my
 		wife Carolyn and our two sons call Nova Scotia, Canada home.</p>
 
@@ -48,10 +48,10 @@ get_header();
 		business of building the web. Posts are few and far between here as I now
 		write mainly on <a href="https://deliciousbrains.com/author/bradt/">my
 		company blog</a>. I also share short thoughts on <a
-		href="http://twitter.com/bradt">Twitter</a> and
+		href="https://twitter.com/bradt">Twitter</a> and
 		<a href="https://plus.google.com/103798016457548612622">Google+</a>
 		and post code to <a href="https://github.com/bradt">GitHub</a> and
-		<a href="http://profiles.wordpress.org/bradt">WordPress.org</a>.
+		<a href="https://profiles.wordpress.org/bradt">WordPress.org</a>.
 		I also cohost the
 		<a href="http://applyfilters.fm">Apply Filters</a> podcast.</p>
 

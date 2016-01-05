@@ -13,10 +13,10 @@
 
 <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/images/favicon-32.png" />
 
-<link rel='openid.server' href='http://bradt.wordpress.com/?openidserver=1' />
-<link rel='openid.delegate' href='http://bradt.wordpress.com/' />
+<link rel='openid.server' href='https://bradt.wordpress.com/?openidserver=1' />
+<link rel='openid.delegate' href='https://bradt.wordpress.com/' />
 
-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 
 <?php wp_head(); ?>
 </head>
@@ -31,7 +31,7 @@
 	<div class="col-2">
 
 		<p class="bio">
-			Brad Touesnard is an <a href="http://deliciousbrains.com/"
+			Brad Touesnard is an <a href="https://deliciousbrains.com/"
 			title="Delicious Brains Inc. &mdash; We build super awesome products for WordPress">
 			entrepreneur</a>, <a href="http://applyfilters.fm"
 			title="Apply Filters &mdash; A podcast all about WordPress development">podcaster</a>,&nbsp;developer, and designer
@@ -44,10 +44,10 @@
 
 		<nav class="social">
 			<ul>
-				<li><a class="icon-twitter" href="http://twitter.com/bradt" title="Twitter"></a></li>
+				<li><a class="icon-twitter" href="https://twitter.com/bradt" title="Twitter"></a></li>
 				<li><a class="icon-gplus" href="https://plus.google.com/103798016457548612622" title="Google+"></a></li>
 				<li><a class="icon-github" href="https://github.com/bradt" title="GitHub"></a></li>
-				<li><a class="icon-wordpress" href="http://profiles.wordpress.org/bradt" title="WordPress.org"></a></li>
+				<li><a class="icon-wordpress" href="https://profiles.wordpress.org/bradt" title="WordPress.org"></a></li>
 				<li><a class="icon-email" href="/contact/" title="Email"></a></li>
 			</ul>
 		</nav>

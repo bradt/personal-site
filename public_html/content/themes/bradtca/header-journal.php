@@ -11,7 +11,7 @@
 
 <link rel="shortcut icon" href="<?php bloginfo('template_url'); ?>/images/favicon-32.png" />
 
-<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 
 <?php wp_head(); ?>
 </head>
