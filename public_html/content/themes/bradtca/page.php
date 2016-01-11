@@ -7,8 +7,8 @@
 	<div class="entry-content">
 
 		<?php the_content("more..."); ?>
-		
-		<?php link_pages('<p><strong>Pages:</strong> ', '</p>', 'number'); ?>
+
+		<?php wp_link_pages('<p><strong>Pages:</strong> ', '</p>', 'number'); ?>
 
 	</div>
 
