@@ -341,7 +341,6 @@ var Bradt;
 	};
 
 	$(document).ready(function() {
-		bradt_load_js_vars();
 		Bradt.init();
 	});
 
