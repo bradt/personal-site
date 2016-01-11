@@ -169,10 +169,15 @@ function bt_enqueue_scripts() {
 		return;
 	}
 
-	wp_enqueue_style( 'bradtca', get_template_directory_uri() . '/assets/css/style.css', array(), '20140902' );
-	wp_enqueue_script( 'bradtca', get_template_directory_uri() . '/assets/js/script' . $suffix . '.js', array( 'jquery' ), '20140902', true );
+	$path = '/assets/css/style.css';
+	$version = filemtime( get_template_directory() . $path );
+	wp_enqueue_style( 'bradtca', get_template_directory_uri() . $path, array(), $version );
+
+	$path = '/assets/js/script' . $suffix . '.js';
+	$version = filemtime( get_template_directory() . $path );
+	wp_enqueue_script( 'bradtca', get_template_directory_uri() . $path, array( 'jquery' ), $version, true );
 }
-add_action( 'wp_enqueue_scripts', 'bt_enqueue_scripts', 100 );
+add_action( 'wp_enqueue_scripts', 'bt_enqueue_scripts' );
 
 add_editor_style();
 
