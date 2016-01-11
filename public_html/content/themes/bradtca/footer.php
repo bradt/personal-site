@@ -15,12 +15,6 @@
 	</div>
 </footer>
 
-<script type="text/javascript">
-function bradt_load_js_vars() {
-    Bradt.template_url = '<?php echo get_stylesheet_directory_uri(); ?>';
-}
-</script>
-
 <?php wp_footer(); ?>
 
 <?php if ( WP_LOCAL_DEV ) : ?>

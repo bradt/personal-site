@@ -25,15 +25,6 @@ function bt_tiny_mce_before_init( $init ) {
 }
 add_filter( 'tiny_mce_before_init', 'bt_tiny_mce_before_init' );
 
-function bt_bloginfo( $output, $show ) {
-	if ( 'template_url' == $show && !is_admin() && !WP_LOCAL_DEV ) {
-		return 'https://d3ck65yvcums52.cloudfront.net';
-	}
-
-	return $output;
-}
-add_filter( 'bloginfo_url', 'bt_bloginfo', null, 2 );
-
 function bt_embed_oembed_html( $html ) {
 	return preg_replace( '@src="https?:@', 'class="oembed" src="', $html );
 }
