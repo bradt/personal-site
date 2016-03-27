@@ -1,18 +1,4 @@
 <?php
-function bt_photos_top() {
-?>
-	<h1 class="page-title">Photos</h1>
-
-	<nav class="photo-nav">
-		<a href="/photos/"<?php echo is_post_type_archive( 'photo_set' ) ? 'class="current"' : ''; ?>>Sets</a>
-		<span class="meta-sep">&bullet;</span>
-		<a href="/photo-collections/"<?php echo ( is_page( 'photo-collections' ) || is_tax( 'photo_collection' ) ) ? 'class="current"' : ''; ?>>Collections</a>
-		<span class="meta-sep">&bullet;</span>
-		<a href="/photo-tags/"<?php echo ( is_page( 'photo-tags' ) || is_tax( 'photo_tag' ) ) ? 'class="current"' : ''; ?>>Tags</a>
-	</nav>
-    <?php
-}
-
 function bt_related_posts() {
 	$tags = get_the_terms( get_the_ID(), 'post_tag' );
 	if ( !$tags ) return;
@@ -108,7 +94,7 @@ function bt_excerpt( $maxlength = 0 ) {
 function bt_pagination() {
 	global $wp_rewrite, $wp_query;
 	$wp_query->query_vars['paged'] > 1 ? $current = $wp_query->query_vars['paged'] : $current = 1;
-	
+
 	$pagination = array(
 		'base' => @add_query_arg('page','%#%'),
 		'format' => '',
@@ -117,13 +103,13 @@ function bt_pagination() {
 		'type' => 'list',
 		'prev_next' => false
 	);
-	
+
 	if( $wp_rewrite->using_permalinks() ) {
 		$pagination['base'] = user_trailingslashit( trailingslashit( remove_query_arg( 's', get_pagenum_link( 1 ) ) ) . 'page/%#%/', 'paged' );
 	}
-	
+
 	if( !empty($wp_query->query_vars['s']) )
 		$pagination['add_args'] = array( 's' => get_query_var( 's' ) );
-	
+
 	echo paginate_links( $pagination );
 }
