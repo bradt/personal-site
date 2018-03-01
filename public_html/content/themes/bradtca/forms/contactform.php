@@ -144,6 +144,7 @@ class ContactForm extends PHPFormWork {
         $headers = "MIME-Version: 1.0\n";
         $headers .= "List-ID: <contact-form.bradt.ca>\n";
         $headers .= "Content-Type: text/plain; charset=\"" . get_settings( 'blog_charset' ) . "\"\n";
+        $headers .= "Reply-To: $your_name <$your_email>\n";
 
         wp_mail( $to, $subject, $message, $headers );
     }
