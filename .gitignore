@@ -6,6 +6,7 @@ public_html/local-config.php
 public_html/content/uploads
 public_html/content/object-cache.php
 public_html/content/debug.log
+public_html/content/debug1.log
 public_html/content/plugins
 public_html/content/themes/bradtca/assets/.sass-cache/
 public_html/content/themes/bradtca/assets/node_modules
