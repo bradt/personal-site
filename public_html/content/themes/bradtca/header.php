@@ -19,6 +19,16 @@
 <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
 
 <?php wp_head(); ?>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-315453-4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-315453-4');
+</script>
+
 </head>
 
 <body <?php body_class( $post->post_name ); ?>>
