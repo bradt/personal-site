@@ -4,6 +4,10 @@
 
 	<h1 class="page-title"><?php the_title(); ?></h1>
 
+	<div class="entry-meta">
+		Last Updated <time datetime="<?php bt_the_modified_datetime(); ?>"><?php the_modified_time('F j, Y') ?></time>
+	</div>
+
 	<div class="entry-content">
 
 		<?php the_content("more..."); ?>

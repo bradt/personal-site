@@ -1,14 +1,12 @@
-<?php get_search_form(); ?>
-
 </div>
+
+<?php if ( ! is_front_page() ) : get_search_form(); endif; ?>
+
 </div>
 
 <footer class="site">
 	<div class="nav-meta">
 		<h1><a href="/">Home</a></h1>
-		<nav class="site">
-			<?php bt_site_nav(); ?>
-		</nav>
 		<p class="copyright">
 			Copyright &copy; 2004-<?php echo date( 'Y' ); ?> Brad Touesnard. All Rights Reserved.
 		</p>

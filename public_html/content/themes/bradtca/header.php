@@ -25,33 +25,11 @@
 
 <div class="container">
 
-<header class="site">
-	<a href="/" class="avatar"><img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=200" alt=""></a>
-
-	<div class="col-2">
-
-		<p class="bio">
-			Brad Touesnard is an <a href="https://deliciousbrains.com/"
-			title="Delicious Brains Inc. &mdash; We build super awesome products for WordPress">
-			entrepreneur</a>, <a href="http://applyfilters.fm"
-			title="Apply Filters &mdash; A podcast all about WordPress development">podcaster</a>,&nbsp;developer, and designer
-			living&nbsp;in&nbsp;Nova&nbsp;Scotia,&nbsp;Canada.
-		</p>
-
-		<nav class="site">
-			<?php bt_site_nav(); ?>
-		</nav>
-
-		<nav class="social">
-			<ul>
-				<li><a class="icon-twitter" href="https://twitter.com/bradt" title="Twitter"></a></li>
-				<li><a class="icon-gplus" href="https://plus.google.com/103798016457548612622" title="Google+"></a></li>
-				<li><a class="icon-github" href="https://github.com/bradt" title="GitHub"></a></li>
-				<li><a class="icon-wordpress" href="https://profiles.wordpress.org/bradt" title="WordPress.org"></a></li>
-				<li><a class="icon-email" href="/contact/" title="Email"></a></li>
-			</ul>
-		</nav>
-	</div>
-</header>
-
 <div class="content">
+
+<header class="site">
+	<a href="/">
+		<img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=200" alt="" class="avatar">
+		<?php if ( ! is_front_page() ) : ?><h1 class="site-title">Brad Touesnard</h1><?php endif; ?>
+	</a>
+</header>

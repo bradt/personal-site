@@ -55,17 +55,6 @@ function bt_related_posts() {
 	wp_reset_postdata();
 }
 
-function bt_site_nav() {
-?>
-	<ul>
-		<li><a href="/about/" <?php echo is_page( 'about' ) ? ' class="active"' : ''  ?>>About</a></li>
-		<li><a href="/blog/" <?php echo ( is_home() || is_tax( 'post_tag' ) || ( is_single() && 'post' == get_post_type() ) ) ? ' class="active"' : ''  ?>>Blog</a></li>
-		<li class="last"><a href="/contact/" <?php echo is_page( 'contact' ) ? ' class="active"' : ''  ?>>Contact</a></li>
-	</ul>
-	<?php
-}
-
-
 function bt_the_excerpt( $maxlength = 0 ) {
 	$excerpt = get_the_excerpt();
 	$excerpt = str_replace( '[...]', '...', $excerpt );
@@ -80,6 +69,13 @@ function bt_the_datetime() {
 	$timezone = substr( $timezone, 0, 3 ) . ':' . substr( $timezone, 3 );
 
 	the_time( 'Y-m-d\TH:i:s' ); echo $timezone;
+}
+
+function bt_the_modified_datetime() {
+	$timezone = get_the_modified_time( 'O' );
+	$timezone = substr( $timezone, 0, 3 ) . ':' . substr( $timezone, 3 );
+
+	the_modified_time( 'Y-m-d\TH:i:s' ); echo $timezone;
 }
 
 function bt_excerpt( $maxlength = 0 ) {

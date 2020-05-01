@@ -59,6 +59,16 @@ function bt_the_content_feed( $content ) {
 }
 add_filter( 'the_content_feed', 'bt_the_content_feed' );
 
-add_filter( 'private_title_format', function( $format ) {
-	return '';
-} );
+function bt_get_obfuscated_email() {
+	return '&#098;&#114;&#097;&#100;<span style="display:none;">+site</span>&#064;&#116;&#111;&#117;&#101;&#115;&#110;&#097;&#114;&#100;&#046;&#099;&#111;&#109;';
+}
+
+function bt_obfuscate_email( $content ) {
+	return str_replace( 'brad@touesnard.com', bt_get_obfuscated_email(), $content );
+}
+add_filter( 'the_content', 'bt_obfuscate_email' );
+
+function bt_remove_email_from_excerpt( $content ) {
+	return str_replace( wp_strip_all_tags( bt_get_obfuscated_email() ), '', $content );
+}
+add_filter( 'get_the_excerpt', 'bt_remove_email_from_excerpt' );
