@@ -3,12 +3,12 @@
 <section class="post-archive">
 
 	<header>
-		<h1 class="page-title">Blog</h1>
+		<h1 class="section-title">Blog</h1>
 
 		<?php if ( is_tag() ) : ?>
-		<h2>Posts tagged &#8220;<?php echo strtolower( single_tag_title( '', false ) ); ?>&#8221;</h2>
+		<h2 class="section-subtitle">Posts tagged &#8220;<?php echo strtolower( single_tag_title( '', false ) ); ?>&#8221;</h2>
 		<?php elseif ( is_year() ) : ?>
-		<h2>Posts published in <?php echo get_the_date( 'Y' ); ?></h2>
+		<h2 class="section-subtitle">Posts published in <?php echo get_the_date( 'Y' ); ?></h2>
 		<?php endif ?>
 	</header>
 
@@ -18,8 +18,8 @@
 		<article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 			<header>
-				<h1 class="entry-title"><a href="<?php the_permalink() ?>" rel="bookmark"><?php the_title(); ?></a></h1>
 				<time datetime="<?php bt_the_datetime(); ?>" pubdate="pubdate"><?php the_time('Y.m.d') ?></time>
+				<h1 class="entry-title"><a href="<?php the_permalink() ?>" rel="bookmark"><?php the_title(); ?></a></h1>
 			</header>
 
 		</article>

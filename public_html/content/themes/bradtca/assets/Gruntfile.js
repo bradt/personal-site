@@ -2,39 +2,28 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		uglify: {
-			build: {
-				files: {
-					'js/script.min.js': 'js/script.js'
-				}
-			}
-		},
-		compass: {
+		sass: {
 			dist: {
-				options: {
+				files: {
+					'css/style.css': 'sass/style.scss'
 				}
 			}
 		},
 		watch: {
-			js: {
-				files: ['js/*'],
-				tasks: ['uglify']
-			},
 			sass: {
 				files: ['sass/*'],
-				tasks: ['compass']
+				tasks: ['sass']
 			},
 			livereload: {
-				files: ['js/*.js','css/*'],
+				files: ['css/*'],
 				options: { livereload: 35730 }
 			}
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.loadNpmTasks('grunt-contrib-compass');
+	grunt.loadNpmTasks('grunt-contrib-sass');
 
-	grunt.registerTask('default', ['uglify','compass']);
+	grunt.registerTask('default', ['sass']);
 
 };

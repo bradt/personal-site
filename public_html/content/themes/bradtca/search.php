@@ -3,8 +3,8 @@
 <section class="post-archive">
 
 	<header>
-		<h1 class="page-title">Search</h1>
-		<h2>Results for &#8220;<?php echo esc_html( get_search_query() ); ?>&#8221;</h2>
+		<h1 class="section-title">Search</h1>
+		<h2 class="section-subtitle">Results for &#8220;<?php echo esc_html( get_search_query() ); ?>&#8221;</h2>
 	</header>
 
 	<?php $i = 0; if ( have_posts() ) : while ( have_posts() ) : the_post(); ?>

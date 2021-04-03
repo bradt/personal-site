@@ -16,7 +16,8 @@
 <link rel='openid.server' href='https://bradt.wordpress.com/?openidserver=1' />
 <link rel='openid.delegate' href='https://bradt.wordpress.com/' />
 
-<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,400,400italic,900,900italic|Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 
 <?php wp_head(); ?>
 
@@ -35,11 +36,12 @@
 
 <div class="container">
 
-<div class="content">
-
 <header class="site">
-	<a href="/">
-		<img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=200" alt="" class="avatar">
-		<?php if ( ! is_front_page() ) : ?><h1 class="site-title">Brad Touesnard</h1><?php endif; ?>
+	<?php if ( ! is_front_page() ) : ?>
+	<a href="/" title="Go to the homepage">
+	<?php endif; ?>
+		<img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=<?php echo is_front_page() ? '400' : '100'; ?>" alt="" class="avatar">
+	<?php if ( ! is_front_page() ) : ?>
 	</a>
+	<?php endif; ?>
 </header>

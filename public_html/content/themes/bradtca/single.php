@@ -2,10 +2,6 @@
 
 <section class="single-post">
 
-	<header>
-		<h1><?php echo ( 'journal_entry' == get_post_type() ) ? 'Travel Journal' : 'Blog'; ?></h1>
-	</header>
-
 	<?php
 	$i = 0;
 	if (have_posts()) : while (have_posts()) : the_post();
