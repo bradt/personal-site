@@ -22,6 +22,18 @@ a {
 
 input[type=search], input[type=submit] {
 	padding: .5rem;
+	background-color: #2c2e32;
+	color: #999;
+	border-color: #666;
+}
+
+input[type=search]:-webkit-autofill,
+input[type=search]:-webkit-autofill:hover,
+input[type=search]:-webkit-autofill:focus,
+input[type=search]:-webkit-autofill:active
+{
+	-webkit-box-shadow: 0 0 0 30px #2c2e32 inset !important;
+	-webkit-text-fill-color: #999 !important;
 }
 
 header.site {
