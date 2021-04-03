@@ -21,8 +21,8 @@ header.site {
   overflow: hidden;
   margin-bottom: 1rem; }
   header.site .avatar {
-    width: 48px;
-    height: 48px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%; }
 
 footer.site {
@@ -44,7 +44,8 @@ footer.site {
 
 .page-title {
   color: #61b0d7;
-  margin: 0 0 0.5rem 0; }
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem; }
 
 .search-form {
   margin-top: 5rem; }
@@ -67,7 +68,7 @@ section.post-archive > article {
 section.single-post > article > header {
   margin-bottom: 1rem; }
 section.single-post > article .entry-title {
-  font-size: 1.4rem;
+  font-size: 2rem;
   margin: 0 0 0.5rem 0; }
   section.single-post > article .entry-title a {
     text-decoration: none; }
@@ -76,10 +77,11 @@ body.home header.site .avatar {
   width: 200px;
   height: 200px; }
 body.home .bio .entry-content p {
+  font-size: 1.4rem;
   margin: 0; }
 body.home .site-title {
   color: #61b0d7;
-  font-size: 2rem;
+  font-size: 2.4rem;
   margin: 0; }
 
 .entry-meta {
@@ -87,6 +89,11 @@ body.home .site-title {
   font-style: italic; }
   .entry-meta a {
     color: #bb744f; }
+
+.entry-content,
+.comment-content {
+  font-size: 1.125rem;
+  line-height: 1.6; }
 
 .entry-content ol,
 .comment-content ol,
@@ -123,7 +130,7 @@ body.home .site-title {
     .entry-content li,
     .comment-content li,
     .mu_register li {
-      margin: 0 0 0 1.4rem; } }
+      margin: 0 0 0.5rem 1.4rem; } }
 
 .entry-content blockquote,
 .comment-content blockquote {

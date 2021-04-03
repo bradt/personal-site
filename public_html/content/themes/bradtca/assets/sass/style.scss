@@ -29,8 +29,8 @@ header.site {
 	margin-bottom: 1rem;
 
 	.avatar {
-		width: 48px;
-		height: 48px;
+		width: 80px;
+		height: 80px;
 		border-radius: 50%;
 	}
 }
@@ -59,6 +59,7 @@ footer.site {
 .page-title {
 	color: $text-blue;
 	margin: 0 0 0.5rem 0;
+	font-size: 2rem;
 }
 
 .search-form {
@@ -101,7 +102,7 @@ section.single-post {
 		}
 
 		.entry-title {
-			font-size: 1.4rem;
+			font-size: 2rem;
 			margin: 0 0 0.5rem 0;
 
 			a {
@@ -122,6 +123,7 @@ body.home {
 	.bio {
 		.entry-content {
 			p {
+				font-size: 1.4rem;
 				margin: 0;
 			}
 		}
@@ -129,7 +131,7 @@ body.home {
 
 	.site-title {
 		color: $text-blue;
-		font-size: 2rem;
+		font-size: 2.4rem;
 		margin: 0;
 	}
 }
@@ -141,6 +143,12 @@ body.home {
 	a {
 		color: #bb744f;
 	}
+}
+
+.entry-content,
+.comment-content {
+	font-size: 1.125rem;
+	line-height: 1.6;
 }
 
 .entry-content ol,
@@ -176,7 +184,7 @@ body.home {
 	margin: 0 0 0.5rem 1rem;
 
 	@media screen and (min-width: 480px) {
-		margin: 0 0 0 1.4rem;
+		margin: 0 0 0.5rem 1.4rem;
 	}
 }
 .entry-content blockquote,

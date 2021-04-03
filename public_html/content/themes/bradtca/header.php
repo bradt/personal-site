@@ -40,7 +40,7 @@
 	<?php if ( ! is_front_page() ) : ?>
 	<a href="/" title="Go to the homepage">
 	<?php endif; ?>
-		<img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=<?php echo is_front_page() ? '400' : '100'; ?>" alt="" class="avatar">
+		<img src="https://www.gravatar.com/avatar/e538ca4cb34839d4e5e3ccf20c37c67b?size=<?php echo is_front_page() ? '400' : '200'; ?>" alt="" class="avatar">
 	<?php if ( ! is_front_page() ) : ?>
 	</a>
 	<?php endif; ?>
