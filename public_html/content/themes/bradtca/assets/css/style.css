@@ -240,7 +240,9 @@ body.home .site-title {
   padding: 1rem 10px 1rem 0; }
 
 .entry-content img,
-.comment-content img {
+.comment-content img,
+.entry-content iframe,
+.comment-content iframe {
   max-width: 100%;
   min-width: auto;
   height: auto; }

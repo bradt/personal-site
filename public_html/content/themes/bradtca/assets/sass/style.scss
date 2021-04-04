@@ -298,7 +298,9 @@ body.home {
 }
 
 .entry-content img,
-.comment-content img {
+.comment-content img,
+.entry-content iframe,
+.comment-content iframe {
 	max-width: 100%;
 	min-width: auto;
 	height: auto;
