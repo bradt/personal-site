@@ -41,7 +41,8 @@ footer.site {
 
 .container {
   position: relative;
-  max-width: 800px; }
+  max-width: 800px;
+  margin: 0 auto; }
 
 .section-title {
   font-size: 1rem;

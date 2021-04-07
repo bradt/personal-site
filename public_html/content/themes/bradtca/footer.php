@@ -1,6 +1,6 @@
-<?php if ( ! is_front_page() ) : get_search_form(); endif; ?>
+<?php if ( ! is_front_page() ) : ?>
 
-</div>
+<?php get_search_form(); ?>
 
 <footer class="site">
 	<div class="nav-meta">
@@ -9,6 +9,10 @@
 		</p>
 	</div>
 </footer>
+
+<?php endif; ?>
+
+</div>
 
 <?php wp_footer(); ?>
 
